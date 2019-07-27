@@ -1,0 +1,2 @@
+﻿xmltest.obj : warning LNK4075: 忽略“/EDITANDCONTINUE”(由于“/INCREMENTAL:NO”规范)
+  tinyXmlTestSTL.vcxproj -> C:\MyWork\Git\editor\tinyxml\DebugtinyXmlTestSTL\tinyXmlTestSTL.exe
