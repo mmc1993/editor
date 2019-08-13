@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Settings">
     <WidgetsWindow>
-        <Property key="lastSkinGroup" value="Other"/>
+        <Property key="lastSkinGroup" value="Default"/>
         <Property key="widgetsButtonHeight" value="24"/>
         <Property key="widgetsButtonWidth" value="141"/>
     </WidgetsWindow>
