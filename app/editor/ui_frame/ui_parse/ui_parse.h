@@ -4,20 +4,20 @@
 
 class UIParser {
 public:
-    UIParser()
-    { }
+    static UIClass * Parse(const TiXmlElement * xml);
+    static UIClass * Parse(const TiXmlElement * xml, UIClass * parent);
 
-    virtual ~UIParser()
-    { }
-
-    virtual UIState * Parse(const std::string & url) = 0;
+    static void ParseAttr(const TiXmlElement * xml, UIState * state);
+    static void ParseProp(const TiXmlElement * xml, UIState * state);
+    static void ParseUser(const TiXmlElement * xml, UIState * state);
 };
 
-class UIParserPanel : public UIParser {
+class UIParserPanel {
 public:
-    virtual UIState * Parse(const std::string & url) override;
+    static UIClass * Parse(const TiXmlElement * xml);
 };
 
-class UIParserButton : public UIParser {
-    virtual UIState * Parse(const std::string & url) override;
+class UIParserButton {
+public:
+    static UIClass * Parse(const TiXmlElement * xml);
 };

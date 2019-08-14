@@ -23,7 +23,12 @@
     <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp" />
     <ClCompile Include="editor\opengl3\imgui_impl_opengl3.cpp" />
     <ClCompile Include="editor\third\glm\detail\glm.cpp" />
-    <ClCompile Include="editor\ui_frame\parse\parse.cpp" />
+    <ClCompile Include="editor\third\tinyxml\tinystr.cpp" />
+    <ClCompile Include="editor\third\tinyxml\tinyxml.cpp" />
+    <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="editor\ui_frame\ui_class\ui_class.cpp" />
+    <ClCompile Include="editor\ui_frame\ui_parse\ui_parse.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -277,6 +282,8 @@
     <ClInclude Include="editor\third\glm\vector_relational.hpp" />
     <ClInclude Include="editor\third\mmcjson.h" />
     <ClInclude Include="editor\third\sformat.h" />
+    <ClInclude Include="editor\third\tinyxml\tinystr.h" />
+    <ClInclude Include="editor\third\tinyxml\tinyxml.h" />
     <ClInclude Include="editor\tools\debug_tool.h" />
     <ClInclude Include="editor\tools\file_tool.h" />
     <ClInclude Include="editor\tools\serialize_tool.h" />
@@ -285,9 +292,11 @@
     <ClInclude Include="editor\tools\time_tool.h" />
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\include.h" />
-    <ClInclude Include="editor\ui_frame\parse\parse.h" />
+    <ClInclude Include="editor\ui_frame\ui_class\ui_class.h" />
+    <ClInclude Include="editor\ui_frame\ui_parse\ui_parse.h" />
     <ClInclude Include="editor\tools.h" />
     <ClInclude Include="editor\ui_frame\base.h" />
+    <ClInclude Include="editor\ui_frame\ui_state\ui_state.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
     <ClInclude Include="imgui\imgui_internal.h" />

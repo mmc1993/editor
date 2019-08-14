@@ -63,13 +63,18 @@ public:
 
     //  基础状态
     size_t          mID;
-    Skin            mSkin;
-    glm::vec2       mPos;
-    glm::vec2       mSize;
-    std::string     mName;
-    std::string     mTips;
-    std::string     mTitle;
-    Alignment       mAlignment;
+    Skin            mSkin;                          //  皮肤
+    glm::vec4       mMove;                          //  方位
+    std::string     mName;                          //  名字
+    std::string     mTips;                          //  工具提示
+    std::string     mTitle;                         //  显示标题
+    glm::vec4       mColor;                         //  混合颜色
+    bool            mEnabled;                        //  是否启用
+    bool            mVisible;                       //  是否显示
+    bool            mEnabledKey;                    //  是否接收键盘事件
+    bool            mEnabledMouse;                  //  是否接收鼠标事件
+    Alignment       mAlignment;                     //  对齐模式
+    std::map<std::string, std::string> mUserData;   //  用户数据
 };
 
 class UIStatePanel : public UIState {

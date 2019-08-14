@@ -48,7 +48,22 @@
     <ClCompile Include="editor\third\glm\detail\glm.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\ui_frame\parse\parse.cpp">
+    <ClCompile Include="editor\ui_frame\ui_parse\ui_parse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_class\ui_class.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxml.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinystr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -93,9 +108,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="libs\usynergy\uSynergy.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui_frame\parse\parse.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\tools\debug_tool.h">
@@ -852,6 +864,21 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\ui_frame\base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui_frame\ui_parse\ui_parse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui_frame\ui_state\ui_state.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui_frame\ui_class\ui_class.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\third\tinyxml\tinystr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\third\tinyxml\tinyxml.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
