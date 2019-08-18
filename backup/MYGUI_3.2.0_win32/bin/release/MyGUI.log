@@ -1,90 +1,91 @@
-23:34:52  |  Platform  |  Info  |  * Initialise: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  43
-23:34:52  |  Platform  |  Info  |  RenderManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  71
-23:34:52  |  Platform  |  Info  |  * Initialise: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  27
-23:34:52  |  Platform  |  Info  |  DataManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  35
-23:34:52  |  Core  |  Info  |  * Initialise: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  75
-23:34:52  |  Core  |  Info  |  * MyGUI version 3.2.0.4384M  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  82
-23:34:52  |  Core  |  Info  |  * Initialise: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  48
-23:34:52  |  Core  |  Info  |  ResourceManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  56
-23:34:52  |  Core  |  Info  |  * Initialise: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  49
-23:34:52  |  Core  |  Info  |  LayerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  57
-23:34:52  |  Core  |  Info  |  * Initialise: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  67
-23:34:52  |  Core  |  Info  |  WidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  98
-23:34:52  |  Core  |  Info  |  * Initialise: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  58
-23:34:52  |  Core  |  Info  |  InputManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  78
-23:34:52  |  Core  |  Info  |  * Initialise: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  49
-23:34:52  |  Core  |  Info  |  SubWidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  69
-23:34:52  |  Core  |  Info  |  * Initialise: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  53
-23:34:52  |  Core  |  Info  |  SkinManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  61
-23:34:52  |  Core  |  Info  |  * Initialise: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  48
-23:34:52  |  Core  |  Info  |  FontManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  57
-23:34:52  |  Core  |  Info  |  * Initialise: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  46
-23:34:52  |  Core  |  Info  |  ControllerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  56
-23:34:52  |  Core  |  Info  |  * Initialise: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  60
-23:34:52  |  Core  |  Info  |  PointerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  78
-23:34:52  |  Core  |  Info  |  * Initialise: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  87
-23:34:52  |  Core  |  Info  |  ClipboardManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  101
-23:34:52  |  Core  |  Info  |  * Initialise: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  45
-23:34:52  |  Core  |  Info  |  LayoutManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  50
-23:34:52  |  Core  |  Info  |  * Initialise: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  41
-23:34:52  |  Core  |  Info  |  DynLibManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  45
-23:34:52  |  Core  |  Info  |  * Initialise: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  45
-23:34:52  |  Core  |  Info  |  PluginManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  49
-23:34:52  |  Core  |  Info  |  * Initialise: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  45
-23:34:52  |  Core  |  Info  |  LanguageManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  49
-23:34:52  |  Core  |  Info  |  * Initialise: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  40
-23:34:52  |  Core  |  Info  |  FactoryManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  42
-23:34:52  |  Core  |  Info  |  * Initialise: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  48
-23:34:52  |  Core  |  Info  |  ToolTipManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  60
-23:34:52  |  Core  |  Info  |  Load ini file 'EditorTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'EditorLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MessageBoxResources.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MessageBoxLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MessageBoxIcons.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_Fonts.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using texture size 128 x 256.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  674
-23:34:52  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using real height 17 pixels.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  675
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_Images.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_CommonSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeImages.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTemplates.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_Pointers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'SelectionSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'TextureViewerSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'EditorReplaceSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'FrameworkSkin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'MyGUI_Layers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'EditorSettings.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Gui successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  133
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'arrow'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'beam'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'size_left'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'size_right'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'size_horz'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'size_vert'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'hand'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Warning  |  dublicate resource name 'link'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-23:34:52  |  Core  |  Info  |  destroy layer 'Wallpaper'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-23:34:52  |  Core  |  Error  |  Language 'Chinese (Simplified)' is not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  125
-23:34:52  |  Core  |  Info  |  Load ini file 'Widgets.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'WidgetsBackwardCompatibility.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'Values.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'Ignore.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'Hotkeys.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'SkinReplaces.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'EditorPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Load ini file 'StrangeButtonPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Loading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-23:34:52  |  Core  |  Info  |  Installing plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  151
-23:34:52  |  Plugin  |  Info  |  initialize  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  35
-23:34:52  |  Core  |  Info  |  Plugin successfully installed  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  158
-23:34:52  |  Core  |  Info  |  Load ini file 'HikariWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Loading library Plugin_HikariWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-23:34:52  |  Core  |  Error  |  Plugin 'Plugin_HikariWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
-23:34:52  |  Core  |  Info  |  Load ini file 'BerkeliumWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-23:34:52  |  Core  |  Info  |  Loading library Plugin_BerkeliumWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-23:34:52  |  Core  |  Error  |  Plugin 'Plugin_BerkeliumWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
-23:34:52  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318
-23:34:52  |  Core  |  Warning  |  Widget with name 'Projection' not found. [PositionSelectorControl.layout]  |  D:/my-gui/trunk/Common\BaseLayout/BaseLayout.h  |  55
+00:17:54  |  Platform  |  Info  |  * Initialise: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  43
+00:17:54  |  Platform  |  Info  |  RenderManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  71
+00:17:54  |  Platform  |  Info  |  * Initialise: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  27
+00:17:54  |  Platform  |  Info  |  DataManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  35
+00:17:54  |  Core  |  Info  |  * Initialise: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  75
+00:17:54  |  Core  |  Info  |  * MyGUI version 3.2.0.4384M  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  82
+00:17:54  |  Core  |  Info  |  * Initialise: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  48
+00:17:54  |  Core  |  Info  |  ResourceManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  56
+00:17:54  |  Core  |  Info  |  * Initialise: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  49
+00:17:54  |  Core  |  Info  |  LayerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  57
+00:17:54  |  Core  |  Info  |  * Initialise: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  67
+00:17:54  |  Core  |  Info  |  WidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  98
+00:17:54  |  Core  |  Info  |  * Initialise: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  58
+00:17:54  |  Core  |  Info  |  InputManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  78
+00:17:54  |  Core  |  Info  |  * Initialise: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  49
+00:17:54  |  Core  |  Info  |  SubWidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  69
+00:17:54  |  Core  |  Info  |  * Initialise: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  53
+00:17:54  |  Core  |  Info  |  SkinManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  61
+00:17:54  |  Core  |  Info  |  * Initialise: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  48
+00:17:54  |  Core  |  Info  |  FontManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  57
+00:17:54  |  Core  |  Info  |  * Initialise: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  46
+00:17:54  |  Core  |  Info  |  ControllerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  56
+00:17:54  |  Core  |  Info  |  * Initialise: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  60
+00:17:54  |  Core  |  Info  |  PointerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  78
+00:17:54  |  Core  |  Info  |  * Initialise: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  87
+00:17:54  |  Core  |  Info  |  ClipboardManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  101
+00:17:54  |  Core  |  Info  |  * Initialise: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  45
+00:17:54  |  Core  |  Info  |  LayoutManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  50
+00:17:54  |  Core  |  Info  |  * Initialise: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  41
+00:17:54  |  Core  |  Info  |  DynLibManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  45
+00:17:54  |  Core  |  Info  |  * Initialise: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  45
+00:17:54  |  Core  |  Info  |  PluginManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  49
+00:17:54  |  Core  |  Info  |  * Initialise: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  45
+00:17:54  |  Core  |  Info  |  LanguageManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  49
+00:17:54  |  Core  |  Info  |  * Initialise: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  40
+00:17:54  |  Core  |  Info  |  FactoryManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  42
+00:17:54  |  Core  |  Info  |  * Initialise: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  48
+00:17:54  |  Core  |  Info  |  ToolTipManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  60
+00:17:54  |  Core  |  Info  |  Load ini file 'EditorTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'EditorLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MessageBoxResources.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MessageBoxLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MessageBoxIcons.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_Fonts.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using texture size 128 x 256.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  674
+00:17:54  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using real height 17 pixels.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  675
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_Images.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_CommonSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeImages.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTemplates.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_Pointers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'SelectionSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'TextureViewerSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'EditorReplaceSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'FrameworkSkin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'MyGUI_Layers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'EditorSettings.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Gui successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  133
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'arrow'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'beam'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'size_left'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'size_right'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'size_horz'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'size_vert'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'hand'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Warning  |  dublicate resource name 'link'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+00:17:54  |  Core  |  Info  |  destroy layer 'Wallpaper'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+00:17:54  |  Core  |  Error  |  Language 'Chinese (Simplified)' is not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  125
+00:17:54  |  Core  |  Info  |  Load ini file 'Widgets.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'WidgetsBackwardCompatibility.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'Values.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'Ignore.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'Hotkeys.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'SkinReplaces.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'EditorPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Load ini file 'StrangeButtonPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Loading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+00:17:54  |  Core  |  Info  |  Installing plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  151
+00:17:54  |  Plugin  |  Info  |  initialize  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  35
+00:17:54  |  Core  |  Info  |  Plugin successfully installed  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  158
+00:17:54  |  Core  |  Info  |  Load ini file 'HikariWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Loading library Plugin_HikariWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+00:17:54  |  Core  |  Error  |  Plugin 'Plugin_HikariWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+00:17:54  |  Core  |  Info  |  Load ini file 'BerkeliumWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+00:17:54  |  Core  |  Info  |  Loading library Plugin_BerkeliumWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+00:17:54  |  Core  |  Error  |  Plugin 'Plugin_BerkeliumWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+00:17:54  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318
+00:17:54  |  Core  |  Warning  |  Widget with name 'Projection' not found. [PositionSelectorControl.layout]  |  D:/my-gui/trunk/Common\BaseLayout/BaseLayout.h  |  55
+00:57:38  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318

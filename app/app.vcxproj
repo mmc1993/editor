@@ -28,7 +28,9 @@
     <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="editor\ui_frame\ui_class\ui_class.cpp" />
+    <ClCompile Include="editor\ui_frame\ui_frame.cpp" />
     <ClCompile Include="editor\ui_frame\ui_parse\ui_parse.cpp" />
+    <ClCompile Include="editor\ui_frame\ui_state\ui_state.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
@@ -293,6 +295,7 @@
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\ui_frame\ui_class\ui_class.h" />
+    <ClInclude Include="editor\ui_frame\ui_frame.h" />
     <ClInclude Include="editor\ui_frame\ui_parse\ui_parse.h" />
     <ClInclude Include="editor\tools.h" />
     <ClInclude Include="editor\ui_frame\base.h" />
@@ -522,6 +525,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

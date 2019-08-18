@@ -50,13 +50,13 @@ public:
             kHCENTER_VCENTER,       //  水平居中, 垂直居中
             LENGTH,
         };
+        glm::vec4 mMargin;
         glm::vec4 mOrigin;
         TypeEnum    mType;
     };
 
 public:
-    UIState()
-    { }
+    UIState();
 
     virtual ~UIState()
     { }
@@ -69,7 +69,7 @@ public:
     std::string     mTips;                          //  工具提示
     std::string     mTitle;                         //  显示标题
     glm::vec4       mColor;                         //  混合颜色
-    bool            mEnabled;                        //  是否启用
+    bool            mEnabled;                       //  是否启用
     bool            mVisible;                       //  是否显示
     bool            mEnabledKey;                    //  是否接收键盘事件
     bool            mEnabledMouse;                  //  是否接收鼠标事件
@@ -77,16 +77,20 @@ public:
     std::map<std::string, std::string> mUserData;   //  用户数据
 };
 
-class UIStatePanel : public UIState {
+class UIStateDDContainer : public UIState {
 public:
     struct Layout {
         struct LinkEdge {
-            UIStatePanel * mPanel;
-            DirectEnum      mEdge;
+            UIStateDDContainer * mDDContainer;
+            DirectEnum           mEdge;
         };
-        std::vector<UIStatePanel *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Panel
-        std::vector<LinkEdge>       mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
+        std::vector<UIStateDDContainer *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Panel
+        std::vector<LinkEdge>             mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
     };
 
     Layout mLayout;
+};
+
+class UIStateButton : public UIState {
+public:
 };

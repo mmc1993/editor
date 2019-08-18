@@ -4,6 +4,7 @@
 
 class UIParser {
 public:
+    static UIClass * Parse(const std::string & url);
     static UIClass * Parse(const TiXmlElement * xml);
     static UIClass * Parse(const TiXmlElement * xml, UIClass * parent);
 
@@ -12,7 +13,7 @@ public:
     static void ParseUser(const TiXmlElement * xml, UIState * state);
 };
 
-class UIParserPanel {
+class UIParserDDContainer {
 public:
     static UIClass * Parse(const TiXmlElement * xml);
 };

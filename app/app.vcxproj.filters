@@ -66,6 +66,12 @@
     <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_frame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_state\ui_state.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
@@ -879,6 +885,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\third\tinyxml\tinyxml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui_frame\ui_frame.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

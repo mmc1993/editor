@@ -2,16 +2,23 @@
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
 
-static const std::unordered_map<std::string, UIClass * (*)(const TiXmlElement *)> PARSER_MAP = {
-    std::make_pair(WEIGET_PANEL,         UIParserPanel::Parse),
+static const std::unordered_map<std::string, UIClass * (*)(const TiXmlElement *)> PARSER_FUNCs = {
+    std::make_pair(WEIGET_CONTAINER,     UIParserDDContainer::Parse),
     std::make_pair(WEIGET_BUTTON,        UIParserButton::Parse),
 };
 
+UIClass * UIParser::Parse(const std::string & url)
+{
+    TiXmlDocument xml;
+    ASSERT_LOG(xml.LoadFile(url.c_str()), "Parse: {0}", url);
+    return Parse(xml.FirstChildElement());
+}
+
 UIClass * UIParser::Parse(const TiXmlElement * xml)
 {
-    auto node = xml->FirstChildElement("MyGUI");
-    ASSERT_LOG(node != nullptr,"Node==nullptr");
-    return Parse(node, new UIClassPanel(new UIStatePanel()));
+    ASSERT_LOG(xml != nullptr,                       "Parse Error.");
+    ASSERT_LOG((strcmp(xml->Value(), "MyGUI") == 0), "Parse Error.");
+    return Parse(xml, new UIClassDDContainer(new UIStateDDContainer()));
 }
 
 UIClass * UIParser::Parse(const TiXmlElement * xml, UIClass * parent)
@@ -19,9 +26,9 @@ UIClass * UIParser::Parse(const TiXmlElement * xml, UIClass * parent)
     for (auto ele = xml->FirstChildElement("Widget"); ele != nullptr;
               ele = ele->NextSiblingElement("Widget"))
     {
-        ASSERT_LOG(PARSER_MAP.find(ele->Attribute("type")) != PARSER_MAP.end(),
+        ASSERT_LOG(PARSER_FUNCs.find(ele->Attribute("type")) != PARSER_FUNCs.end(),
                    "ParseChildren Error: {0}", ele->Attribute("type"));
-        parent->AddChild(PARSER_MAP.at(ele->Attribute("type"))(ele));
+        parent->AddChild(PARSER_FUNCs.at(ele->Attribute("type"))(ele));
         Parse(ele, parent);
     }
     return parent;
@@ -70,13 +77,10 @@ void UIParser::ParseAttr(const TiXmlElement * xml, UIState * state)
     val = xml->Attribute("align");
     ASSERT_LOG(val != nullptr, "Not Alignment");
     state->mAlignment.mOrigin = state->mMove;
-    for (auto i = 0; i != std::length(ALIGNMENT); ++i)
-    {
-        if (strcmp(ALIGNMENT[i], val) == 0)
-        {
-            state->mAlignment.mType = UIState::Alignment::TypeEnum(i);
-        }
-    }
+    auto it = std::find(std::begin(ALIGNMENT), std::end(ALIGNMENT), std::string(val));
+    ASSERT_LOG(it != std::end(ALIGNMENT), "Not Alignment");
+    state->mAlignment.mType = UIState::Alignment::TypeEnum(
+                 std::distance(std::begin(ALIGNMENT), it));
 
     //  Æ¤·ô
     val = xml->Attribute("skin");
@@ -131,16 +135,19 @@ void UIParser::ParseUser(const TiXmlElement * xml, UIState * state)
     }
 }
 
-UIClass * UIParserPanel::Parse(const TiXmlElement * xml)
+UIClass * UIParserDDContainer::Parse(const TiXmlElement * xml)
 {
-    auto state = new UIStatePanel();
+    auto state = new UIStateDDContainer();
     UIParser::ParseAttr(xml, state);
     UIParser::ParseProp(xml, state);
-    return new UIClassPanel(state);
+    return new UIClassDDContainer(state);
 }
 
 UIClass * UIParserButton::Parse(const TiXmlElement * xml)
 {
-    return nullptr;
+    auto state = new UIStateButton();
+    UIParser::ParseAttr(xml, state);
+    UIParser::ParseProp(xml, state);
+    return new UIClassButton(state);
 }
 
