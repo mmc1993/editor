@@ -330,3 +330,10 @@ void ImGui_ImplGlfw_NewFrame()
     // Update game controllers (if enabled and available)
     ImGui_ImplGlfw_UpdateGamepads();
 }
+
+ImVec2 ImGui_ImplGlfw_GetWindowSize()
+{
+    int w, h;
+    glfwGetWindowSize(g_Window, &w, &h);
+    return ImVec2((float)w, (float)h);
+}

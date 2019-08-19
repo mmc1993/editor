@@ -74,7 +74,15 @@ public:
     bool            mEnabledKey;                    //  是否接收键盘事件
     bool            mEnabledMouse;                  //  是否接收鼠标事件
     Alignment       mAlignment;                     //  对齐模式
+    UITypeEnum      mUIType;                        //  部件类型
     std::map<std::string, std::string> mUserData;   //  用户数据
+};
+
+class UIStateWindow : public UIState {
+public:
+    bool mIsStretch;
+    bool mFullScreen;
+    UIStateWindow();
 };
 
 class UIStateDDContainer : public UIState {
@@ -87,6 +95,8 @@ public:
         std::vector<UIStateDDContainer *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Panel
         std::vector<LinkEdge>             mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
     };
+
+    UIStateDDContainer();
 
     Layout mLayout;
 };

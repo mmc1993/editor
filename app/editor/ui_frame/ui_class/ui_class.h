@@ -29,8 +29,22 @@ protected:
     virtual void OnDraw(float dt) = 0;
 
 private:
+    bool OnEnter();
+    void OnLeave();
+
+private:
     UIState *              _state;
     std::vector<UIClass *> _children;
+};
+
+class UIClassWindow : public UIClass {
+public:
+    UIClassWindow(UIState * state ): UIClass(state)
+    { }
+
+protected:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnDraw(float dt) override;
 };
 
 class UIClassDDContainer : public UIClass {

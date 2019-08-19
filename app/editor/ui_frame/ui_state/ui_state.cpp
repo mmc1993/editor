@@ -8,3 +8,16 @@ UIState::UIState()
     , mEnabledKey(true)
     , mEnabledMouse(true)
 { }
+
+UIStateWindow::UIStateWindow()
+{
+    mFullScreen = true;
+    mIsStretch = false;
+    mUIType = UITypeEnum::kWINDOW;
+}
+
+UIStateDDContainer::UIStateDDContainer()
+{
+    mUIType = UITypeEnum::kCONTAINER;
+}
+

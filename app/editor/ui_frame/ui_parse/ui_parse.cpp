@@ -18,7 +18,7 @@ UIClass * UIParser::Parse(const TiXmlElement * xml)
 {
     ASSERT_LOG(xml != nullptr,                       "Parse Error.");
     ASSERT_LOG((strcmp(xml->Value(), "MyGUI") == 0), "Parse Error.");
-    return Parse(xml, new UIClassDDContainer(new UIStateDDContainer()));
+    return Parse(xml, new UIClassWindow(new UIStateWindow()));
 }
 
 UIClass * UIParser::Parse(const TiXmlElement * xml, UIClass * parent)
