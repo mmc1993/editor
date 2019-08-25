@@ -25,7 +25,7 @@
 #include <cmath>
 
 #include "third/sformat.h"
+#include "third/mmcjson.h"
 #include "third/glm/glm.hpp"
 #include "third/glm/gtc/type_ptr.hpp"
 #include "third/glm/gtc/matrix_transform.hpp"
-#include "third/tinyxml/tinyxml.h"

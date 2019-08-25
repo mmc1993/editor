@@ -47,83 +47,6 @@ void UIClass::Draw(float dt)
     OnLeave();
 }
 
-bool UIClass::OnEnter()
-{
-    switch (GetState<UIState>().mUIType)
-    {
-    case UITypeEnum::kTREE:
-        break;
-    case UITypeEnum::kWINDOW:
-        {
-            auto state = GetState<UIStateWindow>();
-            ImVec2 pos;
-            ImVec2 size;
-            size_t flag = 0;
-            if (state.mFullScreen)
-            {
-                size    = ImGui_ImplGlfw_GetWindowSize();
-                pos.x   = 0;
-                pos.y   = 0;
-                flag    = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove 
-                    | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse 
-                    | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
-                ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-            }
-            else
-            {
-                pos.x = state.mMove.x;
-                pos.y = state.mMove.y;
-                size.x = state.mMove.z;
-                size.y = state.mMove.w;
-            }
-            ImGui::SetNextWindowPos(pos);
-            ImGui::SetNextWindowSize(size);
-            return ImGui::Begin(state.mName.c_str(), nullptr, ImVec2(state.mMove.z, state.mMove.w), -1.0, flag);
-        }
-    case UITypeEnum::kDIALOG:
-        break;
-    case UITypeEnum::kCONTAINER:
-        {
-            auto state = GetState<UIStateDDContainer>();
-            ImGui::SetCursorPos(ImVec2(state.mMove.x, state.mMove.y));
-            return ImGui::BeginChild(state.mName.c_str(), ImVec2(state.mMove.z, state.mMove.w));
-        }
-    }
-    ASSERT_LOG(false, "OnEnter Error: {0}.", (int)GetState<UIState>().mUIType);
-    return false;
-}
-
-void UIClass::OnLeave()
-{
-    switch (GetState<UIState>().mUIType)
-    {
-    case UITypeEnum::kTREE:
-        break;
-    case UITypeEnum::kWINDOW:
-        {
-            ImGui::PopStyleVar();
-            return ImGui::End();
-        }
-    case UITypeEnum::kDIALOG:
-        break;
-    case UITypeEnum::kCONTAINER:
-        {
-            auto state = GetState<UIState>();
-            ImVec2 points[] = {
-                ImVec2(state.mMove.x                 + 0, state.mMove.y                 + 0),
-                ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y                 + 0),
-                ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y + state.mMove.w - 1),
-                ImVec2(state.mMove.x                 + 0, state.mMove.y + state.mMove.w - 1),
-            };
-            ImGui::GetWindowDrawList()->AddLine(points[0], points[1], ImColor(0.75f, 0.75f, 0.75f));
-            ImGui::GetWindowDrawList()->AddLine(points[1], points[2], ImColor(0.75f, 0.75f, 0.75f));
-            ImGui::GetWindowDrawList()->AddLine(points[2], points[3], ImColor(0.75f, 0.75f, 0.75f));
-            ImGui::GetWindowDrawList()->AddLine(points[3], points[0], ImColor(0.75f, 0.75f, 0.75f));
-            return ImGui::EndChild();
-        }
-    }
-}
-
 void UIClassWindow::OnUpdate(float dt)
 {
 }
@@ -132,21 +55,69 @@ void UIClassWindow::OnDraw(float dt)
 {
 }
 
-void UIClassDDContainer::OnUpdate(float dt)
+bool UIClassWindow::OnEnter()
+{
+    auto state = GetState<UIStateWindow>();
+    ImVec2 move = ImVec2(state.mMove.x, state.mMove.y);
+    ImVec2 size = ImVec2(state.mMove.z, state.mMove.w);
+    size_t flag = 0;
+    if (__GET_USER_DATA(state.mUserData, __WindowIsFullScreen))
+    {
+        size = ImGui_ImplGlfw_GetWindowSize();
+        move.x = 0;
+        move.y = 0;
+        flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+            | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
+            | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
+    }
+    else
+    {
+        if (__GET_USER_DATA(state.mUserData, __WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
+        if (__GET_USER_DATA(state.mUserData, __WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
+        if (__GET_USER_DATA(state.mUserData, __WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
+        if (__GET_USER_DATA(state.mUserData, __WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (__GET_USER_DATA(state.mUserData, __WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (__GET_USER_DATA(state.mUserData, __WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+    }
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+    return ImGui::Begin(state.mName.c_str(), nullptr, flag);
+}
+
+void UIClassWindow::OnLeave()
+{
+    ImGui::PopStyleVar();
+    ImGui::End();
+}
+
+void UIClassLayout::OnUpdate(float dt)
 {
 }
 
-void UIClassDDContainer::OnDraw(float dt)
-{
-    auto & state = GetState<UIStateDDContainer>();
-    ImGui::Button("aaa");
-}
-
-void UIClassButton::OnUpdate(float dt)
+void UIClassLayout::OnDraw(float dt)
 {
 }
 
-void UIClassButton::OnDraw(float dt)
+bool UIClassLayout::OnEnter()
 {
-}
+    auto state = GetState<UIStateLayout>();
+    //ImVec2 points[] = {
+    //    ImVec2(state.mMove.x + 0, state.mMove.y + 0),
+    //    ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y + 0),
+    //    ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y + state.mMove.w - 1),
+    //    ImVec2(state.mMove.x + 0, state.mMove.y + state.mMove.w - 1),
+    //};
+    //ImGui::GetWindowDrawList()->AddLine(points[0], points[1], ImColor(0.75f, 0.75f, 0.75f));
+    //ImGui::GetWindowDrawList()->AddLine(points[1], points[2], ImColor(0.75f, 0.75f, 0.75f));
+    //ImGui::GetWindowDrawList()->AddLine(points[2], points[3], ImColor(0.75f, 0.75f, 0.75f));
+    //ImGui::GetWindowDrawList()->AddLine(points[3], points[0], ImColor(0.75f, 0.75f, 0.75f));
 
+    size_t flag = 0;
+    if (__GET_USER_DATA(state.mUserData, __WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
+    if (__GET_USER_DATA(state.mUserData, __WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
+    if (__GET_USER_DATA(state.mUserData, __WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
+    if (__GET_USER_DATA(state.mUserData, __WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
+    if (__GET_USER_DATA(state.mUserData, __WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
+    if (__GET_USER_DATA(state.mUserData, __WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+    return ImGui::BeginChild(state.mName.c_str(),  ImVec2(state.mMove.z, state.mMove.w), 
+                             __GET_USER_DATA(state.mUserData, __LayoutIsShowBorder), flag);
+}

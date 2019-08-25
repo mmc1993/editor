@@ -2,6 +2,10 @@
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
 
+//  自定义数据 Parse
+
+
+
 static const std::unordered_map<std::string, UIClass * (*)(const TiXmlElement *)> PARSER_FUNCs = {
     std::make_pair(WEIGET_CONTAINER,     UIParserDDContainer::Parse),
     std::make_pair(WEIGET_BUTTON,        UIParserButton::Parse),

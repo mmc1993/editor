@@ -62,7 +62,6 @@ public:
     { }
 
     //  基础状态
-    size_t          mID;
     Skin            mSkin;                          //  皮肤
     glm::vec4       mMove;                          //  方位
     std::string     mName;                          //  名字
@@ -75,32 +74,31 @@ public:
     bool            mEnabledMouse;                  //  是否接收鼠标事件
     Alignment       mAlignment;                     //  对齐模式
     UITypeEnum      mUIType;                        //  部件类型
-    std::map<std::string, std::string> mUserData;   //  用户数据
+    std::map<std::string, std::any> mUserData;      //  用户数据
 };
 
 class UIStateWindow : public UIState {
 public:
-    bool mIsStretch;
-    bool mFullScreen;
+    //  是否可以移动
+    bool mIsMove;
+    //  是否可以拉伸
+    bool mIsSize;
     UIStateWindow();
 };
 
-class UIStateDDContainer : public UIState {
+class UIStateLayout : public UIState {
 public:
-    struct Layout {
+    struct LayoutInfo {
         struct LinkEdge {
-            UIStateDDContainer * mDDContainer;
-            DirectEnum           mEdge;
+            UIStateLayout * mLayout;
+            DirectEnum      mEdge;
         };
-        std::vector<UIStateDDContainer *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Panel
-        std::vector<LinkEdge>             mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
+        std::vector<UIStateLayout *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Layout
+        std::vector<LinkEdge>        mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
     };
 
-    UIStateDDContainer();
+    //  布局信息
+    LayoutInfo mLayoutInfo;
 
-    Layout mLayout;
-};
-
-class UIStateButton : public UIState {
-public:
+    UIStateLayout();
 };

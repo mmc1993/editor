@@ -16,6 +16,8 @@ public:
     void ClearChild();
 
     void Update(float dt);
+
+private:
     void Draw(float dt);
 
 protected:
@@ -27,10 +29,8 @@ protected:
 
     virtual void OnUpdate(float dt) = 0;
     virtual void OnDraw(float dt) = 0;
-
-private:
-    bool OnEnter();
-    void OnLeave();
+    virtual bool OnEnter() = 0;
+    virtual void OnLeave() = 0;
 
 private:
     UIState *              _state;
@@ -45,24 +45,22 @@ public:
 protected:
     virtual void OnUpdate(float dt) override;
     virtual void OnDraw(float dt) override;
+
+private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave() override;
 };
 
-class UIClassDDContainer : public UIClass {
+class UIClassLayout : public UIClass {
 public:
-    UIClassDDContainer(UIState * state): UIClass(state)
+    UIClassLayout(UIState * state): UIClass(state)
     { }
 
 protected:
     virtual void OnUpdate(float dt) override;
     virtual void OnDraw(float dt) override;
-};
 
-class UIClassButton : public UIClass {
-public:
-    UIClassButton(UIState * state) : UIClass(state)
-    { }
-
-protected:
-    virtual void OnUpdate(float dt) override;
-    virtual void OnDraw(float dt) override;
+private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave() override;
 };

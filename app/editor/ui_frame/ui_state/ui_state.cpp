@@ -1,23 +1,21 @@
 #include "ui_state.h"
 
 UIState::UIState()
-    : mID(~0)
-    , mName("root")
-    , mEnabled(true)
+    : mEnabled(true)
     , mVisible(true)
-    , mEnabledKey(true)
-    , mEnabledMouse(true)
+    , mEnabledKey(false)
+    , mEnabledMouse(false)
 { }
 
 UIStateWindow::UIStateWindow()
 {
-    mFullScreen = true;
-    mIsStretch = false;
+    mIsMove = true;
+    mIsSize = false;
     mUIType = UITypeEnum::kWINDOW;
 }
 
-UIStateDDContainer::UIStateDDContainer()
+UIStateLayout::UIStateLayout()
 {
-    mUIType = UITypeEnum::kCONTAINER;
+    mUIType = UITypeEnum::kLAYOUT;
 }
 
