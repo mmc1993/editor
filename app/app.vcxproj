@@ -297,7 +297,6 @@
     <ClInclude Include="editor\ui_frame\ui_class\ui_class.h" />
     <ClInclude Include="editor\ui_frame\ui_frame.h" />
     <ClInclude Include="editor\ui_frame\ui_parse\ui_parse.h" />
-    <ClInclude Include="editor\tools.h" />
     <ClInclude Include="editor\ui_frame\base.h" />
     <ClInclude Include="editor\ui_frame\ui_state\ui_state.h" />
     <ClInclude Include="imgui\imconfig.h" />
@@ -450,7 +449,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B275AC70-3F0A-459C-8D4C-62932D5D9483}</ProjectGuid>
     <RootNamespace>app</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

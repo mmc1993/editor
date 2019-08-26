@@ -25,56 +25,47 @@ enum class UITypeEnum {
     kGLCONVAS,              //  GL画布
 };
 
-//  控件列表
-static const std::string WEIGET_TREE        = "Tree";
-static const std::string WEIGET_IMAGE       = "Image";
-static const std::string WEIGET_BUTTON      = "Button";
-static const std::string WEIGET_LAYOUT      = "LAYOUT";
-static const std::string WEIGET_WINDOW      = "Window";
-static const std::string WEIGET_EDITBOX     = "EditBox";
-static const std::string WEIGET_TEXTBOX     = "TextBox";
-static const std::string WEIGET_ComboBox    = "ComboBox";
-static const std::string WEIGET_UICANVAS    = "UICanvas";
-static const std::string WEIGET_GLCANVAS    = "GLCanvas";
+//  控件状态
+enum class UIStateEnum {
+    kDISABLED,              //  禁用
+    kNORMAL,                //  正常
+    kOVER,                  //  悬浮
+    kPRESSED,               //  按下
+    kSELECTED_DISABLED,     //  选中禁止
+    kSELECTED_NORMAL,       //  选中正常
+    kSELECTED_OVER,         //  选中悬浮
+    kSELECTED_PRESSED,      //  选中按下
+    LENGTH,
+};
 
-//  自定义数据 Get/Set
-using UserData = std::map<std::string, std::any>;
-
-template <class T>
-const T & __GetUserData(const UserData & data, const std::string & key)
-{
-    return std::any_cast<const T &>(data.at(key));
-}
-
-#define __REG_GET_USER_DATA_FUNC(type, key)                         \
-    inline const type & __GetUserData##key(const UserData & data)   \
-    {                                                               \
-        return __GetUserData<type>(data, #key);                     \
-    }
-
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsNav)                   //  有导航栏 
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsSize)                  //  可以拉伸
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsMove)                  //  可以移动
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsTitleBar)              //  有标题栏
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsCollapse)              //  可以收缩
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsScrollBar)             //  有滚动条
-__REG_GET_USER_DATA_FUNC(bool, __WindowIsFullScreen)            //  铺满全屏
-
-__REG_GET_USER_DATA_FUNC(bool, __LayoutIsShowBorder)            //  显示边框
-__REG_GET_USER_DATA_FUNC(float, __LayoutBorderNumber)           //  边框宽度
-
-#define __GET_USER_DATA(data, key)  __GetUserData##key(data)
+//  控件对齐
+enum class UIAlignEnum {
+    kDEFAULT,               //  绝对坐标
+    kSTRETCH,               //  拉伸
+    kCENTER,                //  居中
+    kLEFT_TOP,              //  左上停靠
+    kLEFT_BOTTOM,           //  左下停靠
+    kLEFT_VSTRETCH,         //  左停靠,     垂直拉伸
+    kLEFT_VCENTER,          //  左停靠,     垂直居中
+    kRIGHT_TOP,             //  右上停靠
+    kRIGHT_BOTTOM,          //  右下停靠
+    kRIGHT_VSTRETCH,        //  右停靠,     垂直拉伸
+    kRIGHT_VCENTER,         //  右停靠,     垂直居中
+    kHSTRETCH_TOP,          //  上停靠,     水平拉伸
+    kHSTRETCH_BOTTOM,       //  下停靠,     水平拉伸
+    kHSTRETCH_VSTRETCH,     //  水平拉伸,   垂直拉伸
+    kHSTRETCH_VCENTER,      //  垂直居中,   水平拉伸
+    kHCENTER_TOP,           //  上停靠,     水平居中
+    kHCENTER_BOTTOM,        //  下停靠,     垂直居中
+    kHCENTER_VSTRETCH,      //  水平居中,   垂直拉伸
+    kHCENTER_VCENTER,       //  水平居中,   垂直居中
+    LENGTH,
+};
 
 //  字符串转其他类型
-inline float S2F(const std::string & s)
-{
-    return std::stof(s);
-}
-
-inline bool S2B(const std::string & s)
-{
-    return s == "ok";
-}
+inline bool S2B(const std::string & s) { return s == "ok"; }
+inline int S2I(const std::string & s) { return std::stoi(s); }
+inline float S2F(const std::string & s) { return std::stof(s); }
 
 inline glm::vec2 S2V2(const std::string & s)
 {
@@ -90,9 +81,99 @@ inline glm::vec3 S2V3(const std::string & s)
     return glm::vec3(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)));
 }
 
-inline glm::vec3 S2V3(const std::string & s)
+inline glm::vec3 S2V4(const std::string & s)
 {
     auto arr = string_tool::Split(s, " ");
     ASSERT_LOG(arr.size() == 4, "Arr Length: {0}!", arr.size());
     return glm::vec4(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)), S2F(arr.at(3)));
 }
+
+//  控件列表
+static const std::string WEIGET_TREE        = "Tree";
+static const std::string WEIGET_IMAGE       = "Image";
+static const std::string WEIGET_BUTTON      = "Button";
+static const std::string WEIGET_LAYOUT      = "LAYOUT";
+static const std::string WEIGET_WINDOW      = "Window";
+static const std::string WEIGET_EDITBOX     = "EditBox";
+static const std::string WEIGET_TEXTBOX     = "TextBox";
+static const std::string WEIGET_ComboBox    = "ComboBox";
+static const std::string WEIGET_UICANVAS    = "UICanvas";
+static const std::string WEIGET_GLCANVAS    = "GLCanvas";
+
+//  自定义数据 Get/Set
+using CustomData = std::map<std::string, std::any>;
+
+#define __REG_GET_DATA(type, key, def)                                          \
+    inline const type & __GetData##key(const CustomData & data)                 \
+    {                                                                           \
+        static type tmp = def;                                                  \
+        auto it = data.find(#key);                                              \
+        if (it == data.end()) return tmp;                                       \
+        return std::any_cast<const type &>(it->second);                         \
+    }
+
+__REG_GET_DATA(bool,            WindowIsNav,            false)              //  有导航栏
+__REG_GET_DATA(bool,            WindowIsSize,           false)              //  可以拉伸
+__REG_GET_DATA(bool,            WindowIsMove,           false)              //  可以移动
+__REG_GET_DATA(bool,            WindowIsTitleBar,       false)              //  有标题栏
+__REG_GET_DATA(bool,            WindowIsCollapse,       false)              //  可以收缩
+__REG_GET_DATA(bool,            WindowIsScrollBar,      false)              //  有滚动条
+__REG_GET_DATA(bool,            WindowIsFullScreen,     false)              //  铺满全屏
+__REG_GET_DATA(bool,            LayoutIsShowBorder,     false)              //  显示边框
+__REG_GET_DATA(float,           LayoutBorderNumber,     1)                  //  边框宽度
+__REG_GET_DATA(int,             Align,                  0)                  //  对齐
+__REG_GET_DATA(glm::vec4,       Color,                  glm::vec4())        //  颜色
+__REG_GET_DATA(glm::vec4,       Move,                   glm::vec4())        //  方位
+__REG_GET_DATA(std::string,     Name,                   std::string())      //  名字
+__REG_GET_DATA(std::string,     Tips,                   std::string())      //  提示
+__REG_GET_DATA(std::string,     Skin,                   std::string())      //  皮肤
+__REG_GET_DATA(std::string,     Title,                  std::string())      //  标题
+__REG_GET_DATA(bool,            Enabled,                true)               //  启用
+__REG_GET_DATA(bool,            Visible,                true)               //  可见
+__REG_GET_DATA(bool,            EnabledKey,             false)              //  启用键盘
+__REG_GET_DATA(bool,            EnabledMouse,           false)              //  启用鼠标
+__REG_GET_DATA(glm::vec4,       Origin,                 glm::vec4())        //  原始方位
+__REG_GET_DATA(glm::vec4,       Margin,                 glm::vec4())        //  边距
+
+template <class T>
+void __SetData(CustomData & data, const std::string & key, const std::string & val)
+{
+    if constexpr (std::is_same_v<T, int>) { data.emplace(key, S2I(val)); }
+    else if constexpr (std::is_same_v<T, bool>) { data.emplace(key, S2B(val)); }
+    else if constexpr (std::is_same_v<T, float>) { data.emplace(key, S2F(val)); }
+    else if constexpr (std::is_same_v<T, std::string>) { data.emplace(key, (val)); }
+    else if constexpr (std::is_same_v<T, glm::vec2>) { data.emplace(key, S2V2(val)); }
+    else if constexpr (std::is_same_v<T, glm::vec3>) { data.emplace(key, S2V3(val)); }
+    else if constexpr (std::is_same_v<T, glm::vec4>) { data.emplace(key, S2V4(val)); }
+    else { static_assert(false); }
+}
+
+#define __REG_SET_DATA(data, key, val, t, k)     if (#k == key) __SetData<t>(data, key, val)
+
+inline void SET_DATA(CustomData & data, const std::string & key, const std::string & val)
+{
+    __REG_SET_DATA(data, key, val, bool,            WindowIsNav);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsSize);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsMove);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsTitleBar);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsCollapse);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsScrollBar);
+    __REG_SET_DATA(data, key, val, bool,            WindowIsFullScreen);
+    __REG_SET_DATA(data, key, val, bool,            LayoutIsShowBorder);
+    __REG_SET_DATA(data, key, val, float,           LayoutBorderNumber);
+    __REG_SET_DATA(data, key, val, int,             Align);
+    __REG_SET_DATA(data, key, val, glm::vec4,       Color);
+    __REG_SET_DATA(data, key, val, glm::vec4,       Move);
+    __REG_SET_DATA(data, key, val, std::string,     Name);
+    __REG_SET_DATA(data, key, val, std::string,     Tips);
+    __REG_SET_DATA(data, key, val, std::string,     Skin);
+    __REG_SET_DATA(data, key, val, std::string,     Title);
+    __REG_SET_DATA(data, key, val, bool,            Enabled);
+    __REG_SET_DATA(data, key, val, bool,            Visible);
+    __REG_SET_DATA(data, key, val, bool,            EnabledKey);
+    __REG_SET_DATA(data, key, val, bool,            EnabledMouse);
+    __REG_SET_DATA(data, key, val, glm::vec4,       Origin);
+    __REG_SET_DATA(data, key, val, glm::vec4,       Margin);
+}
+
+#define GET_DATA(data, key)  __GetData##key(data)

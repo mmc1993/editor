@@ -24,6 +24,13 @@
 #include <math.h>
 #include <cmath>
 
+#include "tools/serialize_tool.h"
+#include "tools/string_tool.h"
+#include "tools/debug_tool.h"
+#include "tools/time_tool.h"
+#include "tools/file_tool.h"
+#include "tools/std_tool.h"
+
 #include "third/sformat.h"
 #include "third/mmcjson.h"
 #include "third/glm/glm.hpp"

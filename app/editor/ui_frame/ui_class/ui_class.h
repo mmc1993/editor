@@ -5,6 +5,12 @@
 class UIClass {
 public:
     template <class T>
+    T & GetState()
+    {
+        return *(T *)_state;
+    }
+
+    template <class T>
     const T & GetState() const
     {
         return (const T *)_state;
@@ -16,16 +22,11 @@ public:
     void ClearChild();
 
     void Update(float dt);
-
-private:
     void Draw(float dt);
 
 protected:
     UIClass(UIState * state) : _state(state)
     { }
-
-    template <class T>
-    T & GetState() { return *(T *)_state; }
 
     virtual void OnUpdate(float dt) = 0;
     virtual void OnDraw(float dt) = 0;

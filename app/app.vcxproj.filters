@@ -866,9 +866,6 @@
     <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\ui_frame\base.h">
       <Filter>头文件</Filter>
     </ClInclude>

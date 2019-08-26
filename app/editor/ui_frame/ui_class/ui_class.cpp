@@ -58,10 +58,10 @@ void UIClassWindow::OnDraw(float dt)
 bool UIClassWindow::OnEnter()
 {
     auto state = GetState<UIStateWindow>();
-    ImVec2 move = ImVec2(state.mMove.x, state.mMove.y);
-    ImVec2 size = ImVec2(state.mMove.z, state.mMove.w);
+    ImVec2 move = ImVec2(GET_DATA(state.mData, Move).x, GET_DATA(state.mData, Move).y);
+    ImVec2 size = ImVec2(GET_DATA(state.mData, Move).z, GET_DATA(state.mData, Move).w);
     size_t flag = 0;
-    if (__GET_USER_DATA(state.mUserData, __WindowIsFullScreen))
+    if (GET_DATA(state.mData, WindowIsFullScreen))
     {
         size = ImGui_ImplGlfw_GetWindowSize();
         move.x = 0;
@@ -72,15 +72,16 @@ bool UIClassWindow::OnEnter()
     }
     else
     {
-        if (__GET_USER_DATA(state.mUserData, __WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
-        if (__GET_USER_DATA(state.mUserData, __WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
-        if (__GET_USER_DATA(state.mUserData, __WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
-        if (__GET_USER_DATA(state.mUserData, __WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (__GET_USER_DATA(state.mUserData, __WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (__GET_USER_DATA(state.mUserData, __WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+        if (GET_DATA(state.mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
+        if (GET_DATA(state.mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
+        if (GET_DATA(state.mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
+        if (GET_DATA(state.mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (GET_DATA(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (GET_DATA(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     }
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-    return ImGui::Begin(state.mName.c_str(), nullptr, flag);
+
+    return ImGui::Begin(GET_DATA(state.mData, Name).c_str(), nullptr, flag);
 }
 
 void UIClassWindow::OnLeave()
@@ -112,12 +113,20 @@ bool UIClassLayout::OnEnter()
     //ImGui::GetWindowDrawList()->AddLine(points[3], points[0], ImColor(0.75f, 0.75f, 0.75f));
 
     size_t flag = 0;
-    if (__GET_USER_DATA(state.mUserData, __WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
-    if (__GET_USER_DATA(state.mUserData, __WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
-    if (__GET_USER_DATA(state.mUserData, __WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
-    if (__GET_USER_DATA(state.mUserData, __WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
-    if (__GET_USER_DATA(state.mUserData, __WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
-    if (__GET_USER_DATA(state.mUserData, __WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
-    return ImGui::BeginChild(state.mName.c_str(),  ImVec2(state.mMove.z, state.mMove.w), 
-                             __GET_USER_DATA(state.mUserData, __LayoutIsShowBorder), flag);
+    if (GET_DATA(state.mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
+    if (GET_DATA(state.mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
+    if (GET_DATA(state.mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
+    if (GET_DATA(state.mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
+    if (GET_DATA(state.mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
+    if (GET_DATA(state.mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+    return ImGui::BeginChild(
+        GET_DATA(state.mData, Name).c_str(), 
+        ImVec2(GET_DATA(state.mData, Move).z, 
+               GET_DATA(state.mData, Move).w),
+        GET_DATA(state.mData, LayoutIsShowBorder), flag);
+}
+
+void UIClassLayout::OnLeave()
+{
+    ImGui::EndChild();
 }
