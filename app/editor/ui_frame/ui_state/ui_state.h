@@ -21,15 +21,16 @@ class UIStateLayout : public UIState {
 public:
     struct LayoutInfo {
         struct LinkEdge {
-            UIStateLayout * mLayout;
-            DirectEnum      mEdge;
+            UIClass  * mLayout;
+            DirectEnum mDirect;
+            LinkEdge(DirectEnum direct = DirectEnum::kU,
+                     UIClass * object   = nullptr)
+                : mDirect(direct), mLayout(object)
+            { }
         };
-        std::vector<UIStateLayout *> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Layout
-        std::vector<LinkEdge>        mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
-    };
-
-    //  布局信息
-    LayoutInfo mLayoutInfo;
+        std::vector<UIClass*> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Layout
+        std::vector<LinkEdge> mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
+    } mLayoutInfo;
 
     UIStateLayout();
 };

@@ -49,7 +49,7 @@ void UIParser::ParseCustomData(const mmc::JsonValue::Value json, UIState & state
     for (auto ele : json)
     {
         ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
-        SET_DATA(state.mData, ele.mKey, ele.mValue->ToString());
+        PARSE_DATA(state.mData, ele.mKey, ele.mValue->ToString());
     }
 }
 

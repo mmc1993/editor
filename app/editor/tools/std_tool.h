@@ -1,8 +1,5 @@
 #pragma once
 
-#include <iterator>
-#include <algorithm>
-
 #define SAFE_DELETE(ptr)        { delete ptr; ptr = nullptr; }
 
 namespace std {

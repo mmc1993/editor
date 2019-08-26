@@ -10,16 +10,14 @@ public:
         return *(T *)_state;
     }
 
-    UITypeEnum GetType() const
-    {
-        return _type;
-    }
+    UITypeEnum GetType() const;
 
     std::vector<UIClass *>   GetChildren(UITypeEnum type);
     std::vector<UIClass *> & GetChildren();
     void AddChild(UIClass * child);
     void DelChild(UIClass * child);
     void ClearChild();
+    UIClass * GetParent();
 
     void Update(float dt);
     void Render(float dt);
@@ -27,7 +25,10 @@ public:
     virtual void ApplyLayout();
 
 protected:
-    UIClass(UITypeEnum type, UIState * state) : _type(type), _state(state)
+    UIClass(UITypeEnum type, UIState * state) 
+        : _type(type)
+        , _state(state)
+        , _parent(nullptr)
     { }
 
     virtual void OnUpdate(float dt) = 0;
@@ -38,6 +39,7 @@ protected:
 private:
     UITypeEnum             _type;
     UIState *              _state;
+    UIClass *              _parent;
     std::vector<UIClass *> _children;
 };
 
@@ -55,6 +57,7 @@ protected:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave() override;
+
 };
 
 class UIClassLayout : public UIClass {

@@ -2,6 +2,11 @@
 #include "../ui_state/ui_state.h"
 #include "imgui_impl_glfw.h"
 
+UITypeEnum UIClass::GetType() const
+{
+    return _type;
+}
+
 std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type)
 {
     std::vector<UIClass *> result;
@@ -20,7 +25,9 @@ std::vector<UIClass*>& UIClass::GetChildren()
 
 void UIClass::AddChild(UIClass * child)
 {
+    ASSERT_LOG(child->GetParent() == nullptr, "");
     _children.push_back(child);
+    child->_parent = this;
 }
 
 void UIClass::DelChild(UIClass * child)
@@ -36,6 +43,11 @@ void UIClass::ClearChild()
         delete _children.back();
         _children.pop_back();
     }
+}
+
+UIClass * UIClass::GetParent()
+{
+    return _parent;
 }
 
 void UIClass::Update(float dt)
@@ -60,6 +72,17 @@ void UIClass::Render(float dt)
 
 void UIClass::ApplyLayout()
 {
+    auto & thisMove = GET_DATA(GetState<UIState>().mData, Move);
+    for (auto child : GetChildren())
+    {
+        auto & move  = GET_DATA(child->GetState<UIState>().mData, Move);
+        glm::vec4 margin = {
+            move.x, move.y,
+            thisMove.z - move.x + move.z,
+            thisMove.w - move.y + move.w 
+        };
+        SET_DATA(child->GetState<UIState>().mData, Margin, margin);
+    }
 }
 
 //--------------------------------------------------------------------------------
@@ -68,8 +91,22 @@ void UIClass::ApplyLayout()
 void UIClassWindow::ApplyLayout()
 {
     auto layouts = GetChildren(UITypeEnum::kLAYOUT);
+    ASSERT_LOG(!layouts.empty(), "Must Have At Least Layout");
 
-    //  确定自身大小
+    auto selfMove = GET_DATA(layouts.at(0)->GetState<UIState>().mData, Move);
+    for (auto layout : layouts)
+    {
+        auto & move = GET_DATA(layout->GetState<UIState>().mData, Move);
+        if (move.x < selfMove.x) selfMove.x = move.x;
+        if (move.y < selfMove.y) selfMove.y = move.y;
+        if (move.x + move.z > selfMove.x + selfMove.z)
+            selfMove.z = move.x + move.z - selfMove.x;
+        if (move.y + move.w > selfMove.y + selfMove.w)
+            selfMove.w = move.y + move.w - selfMove.y;
+    }
+
+    SET_DATA(GetState<UIState>().mData, Move, selfMove);
+
     UIClass::ApplyLayout();
 }
 
@@ -121,6 +158,34 @@ void UIClassWindow::OnLeave()
 //--------------------------------------------------------------------------------
 void UIClassLayout::ApplyLayout()
 {
+    auto thisState  = GetState<UIStateLayout>();
+    auto thisUp     = GET_DATA(thisState.mData, Move).y;
+    auto thisDown   = thisUp + GET_DATA(thisState.mData, Move).w;
+    auto thisLeft   = GET_DATA(thisState.mData, Move).x;
+    auto thisRight  = thisLeft + GET_DATA(thisState.mData, Move).z;
+    for (auto layout : GetParent()->GetChildren(UITypeEnum::kLAYOUT))
+    {
+        if (layout == this) { continue; }
+        auto state  = layout->GetState<UIState>();
+        auto up     = GET_DATA(state.mData, Move).y;
+        auto down   = thisUp + GET_DATA(state.mData, Move).w;
+        auto left   = GET_DATA(state.mData, Move).x;
+        auto right  = thisLeft + GET_DATA(state.mData, Move).z;
+
+        if      (thisUp == down)    { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kU].push_back(layout); }
+        else if (thisDown == up)    { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kD].push_back(layout); }
+        else if (thisLeft == right) { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kL].push_back(layout); }
+        else if (thisRight == left) { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kR].push_back(layout); }
+
+        if (thisUp == up)       { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kU].emplace_back(DirectEnum::kU, layout); }
+        if (thisUp == down)     { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kU].emplace_back(DirectEnum::kD, layout); }
+        if (thisDown == down)   { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kD].emplace_back(DirectEnum::kD, layout); }
+        if (thisDown == up)     { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kD].emplace_back(DirectEnum::kU, layout); }
+        if (thisLeft == left)   { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kL].emplace_back(DirectEnum::kL, layout); }
+        if (thisLeft == right)  { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kL].emplace_back(DirectEnum::kR, layout); }
+        if (thisRight == right) { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kR].emplace_back(DirectEnum::kR, layout); }
+        if (thisRight == left)  { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kR].emplace_back(DirectEnum::kL, layout); }
+    }
 }
 
 void UIClassLayout::OnUpdate(float dt)

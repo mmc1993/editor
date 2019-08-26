@@ -1,7 +1,5 @@
 #pragma once
 
-#include "../include.h"
-
 namespace file_tool {
     inline size_t GetFileLength(std::ifstream & istream)
     {
