@@ -10,12 +10,12 @@ public:
         return *(T *)_state;
     }
 
-    template <class T>
-    const T & GetState() const
+    UITypeEnum GetType() const
     {
-        return (const T *)_state;
+        return _type;
     }
 
+    std::vector<UIClass *>   GetChildren(UITypeEnum type);
     std::vector<UIClass *> & GetChildren();
     void AddChild(UIClass * child);
     void DelChild(UIClass * child);
@@ -24,10 +24,10 @@ public:
     void Update(float dt);
     void Render(float dt);
 
-    virtual void ApplyLayout() = 0;
+    virtual void ApplyLayout();
 
 protected:
-    UIClass(UIState * state) : _state(state)
+    UIClass(UITypeEnum type, UIState * state) : _type(type), _state(state)
     { }
 
     virtual void OnUpdate(float dt) = 0;
@@ -36,19 +36,17 @@ protected:
     virtual void OnLeave() = 0;
 
 private:
+    UITypeEnum             _type;
     UIState *              _state;
     std::vector<UIClass *> _children;
 };
 
 class UIClassWindow : public UIClass {
 public:
-    UIClassWindow(UIState * state ): UIClass(state)
+    UIClassWindow(UIState * state ): UIClass(UITypeEnum::kWINDOW, state)
     { }
 
-    virtual void ApplyLayout() override
-    {
-
-    }
+    virtual void ApplyLayout() override;
 
 protected:
     virtual void OnUpdate(float dt) override;
@@ -61,13 +59,10 @@ private:
 
 class UIClassLayout : public UIClass {
 public:
-    UIClassLayout(UIState * state): UIClass(state)
+    UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)
     { }
 
-    virtual void ApplyLayout() override
-    {
-
-    }
+    virtual void ApplyLayout() override;
 
 protected:
     virtual void OnUpdate(float dt) override;

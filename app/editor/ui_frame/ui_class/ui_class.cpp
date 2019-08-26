@@ -2,6 +2,17 @@
 #include "../ui_state/ui_state.h"
 #include "imgui_impl_glfw.h"
 
+std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type)
+{
+    std::vector<UIClass *> result;
+    std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
+        [type](const UIClass * object)
+        {
+            return object->GetType() == type;
+        });
+    return std::move(result);
+}
+
 std::vector<UIClass*>& UIClass::GetChildren()
 {
     return _children;
@@ -47,6 +58,21 @@ void UIClass::Render(float dt)
     OnLeave();
 }
 
+void UIClass::ApplyLayout()
+{
+}
+
+//--------------------------------------------------------------------------------
+//  Window
+//--------------------------------------------------------------------------------
+void UIClassWindow::ApplyLayout()
+{
+    auto layouts = GetChildren(UITypeEnum::kLAYOUT);
+
+    //  确定自身大小
+    UIClass::ApplyLayout();
+}
+
 void UIClassWindow::OnUpdate(float dt)
 {
 }
@@ -88,6 +114,13 @@ void UIClassWindow::OnLeave()
 {
     ImGui::PopStyleVar();
     ImGui::End();
+}
+
+//--------------------------------------------------------------------------------
+//  Layout
+//--------------------------------------------------------------------------------
+void UIClassLayout::ApplyLayout()
+{
 }
 
 void UIClassLayout::OnUpdate(float dt)
