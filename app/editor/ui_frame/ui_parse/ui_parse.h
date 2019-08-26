@@ -21,8 +21,3 @@ public:
     static void ParseCustomData(const mmc::JsonValue::Value json, UIState & state);
     static UIClass * CreateObject(UITypeEnum type);
 };
-
-class UIParserLayout {
-public:
-    static UIClass * Parse(const mmc::JsonValue::Value json);
-};

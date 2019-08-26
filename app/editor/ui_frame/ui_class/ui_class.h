@@ -22,14 +22,16 @@ public:
     void ClearChild();
 
     void Update(float dt);
-    void Draw(float dt);
+    void Render(float dt);
+
+    virtual void ApplyLayout() = 0;
 
 protected:
     UIClass(UIState * state) : _state(state)
     { }
 
     virtual void OnUpdate(float dt) = 0;
-    virtual void OnDraw(float dt) = 0;
+    virtual void OnRender(float dt) = 0;
     virtual bool OnEnter() = 0;
     virtual void OnLeave() = 0;
 
@@ -43,9 +45,14 @@ public:
     UIClassWindow(UIState * state ): UIClass(state)
     { }
 
+    virtual void ApplyLayout() override
+    {
+
+    }
+
 protected:
     virtual void OnUpdate(float dt) override;
-    virtual void OnDraw(float dt) override;
+    virtual void OnRender(float dt) override;
 
 private:
     virtual bool OnEnter() override;
@@ -57,9 +64,14 @@ public:
     UIClassLayout(UIState * state): UIClass(state)
     { }
 
+    virtual void ApplyLayout() override
+    {
+
+    }
+
 protected:
     virtual void OnUpdate(float dt) override;
-    virtual void OnDraw(float dt) override;
+    virtual void OnRender(float dt) override;
 
 private:
     virtual bool OnEnter() override;

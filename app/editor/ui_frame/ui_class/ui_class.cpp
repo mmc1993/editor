@@ -35,13 +35,13 @@ void UIClass::Update(float dt)
                   std::placeholders::_1, dt));
 }
 
-void UIClass::Draw(float dt)
+void UIClass::Render(float dt)
 {
     if (OnEnter())
     {
-        OnDraw(dt);
+        OnRender(dt);
         std::for_each(_children.begin(), _children.end(),
-                      std::bind(&UIClass::Draw, 
+                      std::bind(&UIClass::Render, 
                       std::placeholders::_1, dt));
     }
     OnLeave();
@@ -51,7 +51,7 @@ void UIClassWindow::OnUpdate(float dt)
 {
 }
 
-void UIClassWindow::OnDraw(float dt)
+void UIClassWindow::OnRender(float dt)
 {
 }
 
@@ -94,7 +94,7 @@ void UIClassLayout::OnUpdate(float dt)
 {
 }
 
-void UIClassLayout::OnDraw(float dt)
+void UIClassLayout::OnRender(float dt)
 {
 }
 

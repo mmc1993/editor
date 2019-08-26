@@ -57,28 +57,16 @@ UIClass * UIParser::CreateObject(UITypeEnum type)
 {
     switch (type)
     {
-    case UITypeEnum::kTREE:
-        break;
-    case UITypeEnum::kIMAGE:
-        break;
-    case UITypeEnum::kBUTTON:
-        break;
-    case UITypeEnum::kLAYOUT:
-        break;
-    case UITypeEnum::kWINDOW:
-        return new UIClassWindow(new UIStateWindow());
-    case UITypeEnum::kEDITBOX:
-        break;
-    case UITypeEnum::kTEXTBOX:
-        break;
-    case UITypeEnum::kCOMBOBOX:
-        break;
-    case UITypeEnum::kUICONVAS:
-        break;
-    case UITypeEnum::kGLCONVAS:
-        break;
-    default:
-        break;
+    case UITypeEnum::kTREE: break;
+    case UITypeEnum::kIMAGE: break;
+    case UITypeEnum::kBUTTON: break;
+    case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
+    case UITypeEnum::kWINDOW: return new UIClassWindow(new UIStateWindow());
+    case UITypeEnum::kEDITBOX: break;
+    case UITypeEnum::kTEXTBOX: break;
+    case UITypeEnum::kCOMBOBOX: break;
+    case UITypeEnum::kUICONVAS: break;
+    case UITypeEnum::kGLCONVAS: break;
     }
     ASSERT_LOG(false, "Error Type: {0}!", (int)type);
     return nullptr;
