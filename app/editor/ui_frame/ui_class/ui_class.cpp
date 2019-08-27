@@ -136,12 +136,12 @@ bool UIClassWindow::OnEnter()
     }
     else
     {
-        if (GET_DATA(state.mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
-        if (GET_DATA(state.mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
-        if (GET_DATA(state.mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
-        if (GET_DATA(state.mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (GET_DATA(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (GET_DATA(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+        if (!GET_DATA(state.mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
+        if (!GET_DATA(state.mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
+        if (!GET_DATA(state.mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
+        if (!GET_DATA(state.mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (!GET_DATA(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (!GET_DATA(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     }
     ImGui::SetNextWindowPos(move);
     ImGui::SetNextWindowSize(size);

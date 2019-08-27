@@ -224,6 +224,7 @@ namespace mmc {
         {
             std::string buffer;
             std::ifstream ifile(fname);
+            std::noskipws(ifile);
             std::copy(std::istream_iterator<char>(ifile),
                 std::istream_iterator<char>(),
                 std::back_inserter(buffer));

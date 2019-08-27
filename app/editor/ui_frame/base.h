@@ -93,7 +93,7 @@ inline glm::vec3 S2V3(const std::string & s)
     return glm::vec3(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)));
 }
 
-inline glm::vec3 S2V4(const std::string & s)
+inline glm::vec4 S2V4(const std::string & s)
 {
     auto arr = string_tool::Split(s, " ");
     ASSERT_LOG(arr.size() == 4, "Arr Length: {0}!", arr.size());
