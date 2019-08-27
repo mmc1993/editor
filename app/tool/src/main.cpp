@@ -21,7 +21,8 @@ static const std::map<std::string, std::string> FieldMap{
 static const std::map<std::string, std::map<std::string, std::string>> StringMap{
     std::make_pair("Type", std::map<std::string, std::string>
         {
-            std::make_pair("Widget", "Layout")
+            std::make_pair("Widget", "Layout"),
+            std::make_pair("Layout", "Window"),
         })
 };
 
