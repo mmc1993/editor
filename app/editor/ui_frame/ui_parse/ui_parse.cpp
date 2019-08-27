@@ -11,7 +11,7 @@ UIClass * UIParser::Parse(const std::string & url)
 
 UIClass * UIParser::Parse(const mmc::JsonValue::Value json)
 {
-    auto object = CreateObject(json->At("__Property", "Type")->ToString());
+    auto object = CreateObject(std::stoi(json->At("__Property", "Type")->ToString()));
     ASSERT_LOG(object != nullptr, "");
     Parse__Property(json, object);
     Parse__Children(json, object);
@@ -35,18 +35,21 @@ void UIParser::Parse__Children(const mmc::JsonValue::Value json, UIClass * objec
     }
 }
 
-UIClass * UIParser::CreateObject(const std::string & type)
+UIClass * UIParser::CreateObject(const int type)
 {
-    if      (type == WIDGET_TREE) {}
-    else if (type == WIDGET_IMAGE) {}
-    else if (type == WIDGET_BUTTON) {}
-    else if (type == WIDGET_LAYOUT) { return new UIClassLayout(new UIStateLayout()); }
-    else if (type == WIDGET_WINDOW) { return new UIClassWindow(new UIStateWindow()); }
-    else if (type == WIDGET_EDITBOX) {}
-    else if (type == WIDGET_TEXTBOX) {}
-    else if (type == WIDGET_ComboBox) {}
-    else if (type == WIDGET_UICANVAS) {}
-    else if (type == WIDGET_GLCANVAS) {}
-    else { ASSERT_LOG(false, "Error Type: {0}!", type); }
+    switch ((UITypeEnum)type)
+    {
+    case UITypeEnum::kTREE: break;
+    case UITypeEnum::kIMAGE: break;
+    case UITypeEnum::kBUTTON: break;
+    case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());;
+    case UITypeEnum::kWINDOW: return new UIClassWindow(new UIStateWindow());;
+    case UITypeEnum::kEDITBOX: break;
+    case UITypeEnum::kTEXTBOX: break;
+    case UITypeEnum::kCOMBOBOX: break;
+    case UITypeEnum::kUICONVAS: break;
+    case UITypeEnum::kGLCONVAS: break;
+    }
+    ASSERT_LOG(false, "Error Type: {0}!", type);
     return nullptr;
 }

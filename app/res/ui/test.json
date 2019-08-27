@@ -1,14 +1,14 @@
 {
 	"__Property": {
-		"Type": "Window",
+		"Type": "3",
 		"Version": "3.2.0"
 	},
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "Layout",
+				"Type": "3",
 				"Skin": "PanelSkin",
-				"Position": "310 225 500 260",
+				"Move": "310 225 500 260",
 				"Align": "0",
 				"Layer": "Info",
 				"Name": "abc",
