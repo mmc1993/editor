@@ -12,15 +12,22 @@
 constexpr auto JSON_PROPERTY = "__Property";
 constexpr auto JSON_CHILDREN = "__Children";
 
+//  字段替换
+static const std::map<std::string, std::string> FieldMap{
+    std::make_pair("Position", "Move")
+};
+
+//  值转换到字符串
 static const std::map<std::string, std::map<std::string, std::string>> StringMap{
-    std::make_pair("type", std::map<std::string, std::string>
+    std::make_pair("Type", std::map<std::string, std::string>
         {
             std::make_pair("Widget", "Layout")
         })
 };
 
+//  值转换到枚举
 static const std::map<std::string, std::vector<std::string>> NumberMap{
-    std::make_pair("align", std::vector<std::string>
+    std::make_pair("Align", std::vector<std::string>
         {
             "Default",
             "Stretch",
@@ -41,6 +48,19 @@ static const std::map<std::string, std::vector<std::string>> NumberMap{
             "Hcenter Bottom",
             "Hcenter Vstretch",
             "Hcenter Vcenter",
+        }),
+    std::make_pair("Type", std::vector<std::string>
+        {
+            "Tree",
+            "Image",
+            "Button",
+            "Layout",
+            "Window",
+            "EditBox",
+            "TextBox",
+            "ComboBox",
+            "UICanvas",
+            "GLCanvas",
         })
 };
 
@@ -55,6 +75,11 @@ bool HasKey(const std::map<std::string, std::map<std::string, std::string>> & m,
         return it1 != it0->second.end();
     }
     return false;
+}
+
+bool HasKey(const std::map<std::string, std::string> & m, const std::string & k)
+{
+    return m.find(k) != m.end();
 }
 
 bool HasKey(const std::map<std::string, std::vector<std::string>> & m, 
@@ -72,6 +97,12 @@ const std::string & CheckString(
     return m.find(k0)->second.find(k1)->second;
 }
 
+const std::string & CheckString(
+    const std::map<std::string,std::string> & m, const std::string & k0)
+{
+    return m.find(k0)->second;
+}
+
 std::string CheckNumber(
     const std::map<std::string, std::vector<std::string>> & m,
     const std::string & k0, 
@@ -87,6 +118,15 @@ void CustomTransfer(mmc::JsonValue::Value json)
 {
     for (auto & ele : json->At(JSON_PROPERTY))
     {
+        if ('a' <= ele.mKey.at(0) && 'z' >= ele.mKey.at(0))
+        {
+            ele.mKey.at(0) -= 'a';
+            ele.mKey.at(0) += 'A';
+        }
+        if (HasKey(FieldMap, ele.mKey))
+        {
+            ele.mKey = CheckString(FieldMap, ele.mKey);
+        }
         if (HasKey(StringMap, ele.mKey, ele.mValue->ToString()))
         {
             ele.mValue->Set(CheckString(StringMap, ele.mKey, ele.mValue->ToString()));
@@ -94,11 +134,6 @@ void CustomTransfer(mmc::JsonValue::Value json)
         if (HasKey(NumberMap, ele.mKey))
         {
             ele.mValue->Set(CheckNumber(NumberMap, ele.mKey, ele.mValue->ToString()));
-        }
-        if ('a' <= ele.mKey.at(0) && 'z' >= ele.mKey.at(0))
-        {
-            ele.mKey.at(0) -= 'a';
-            ele.mKey.at(0) += 'A';
         }
     }
     for (auto ele : json->At(JSON_CHILDREN))
