@@ -23,6 +23,7 @@ public:
     void Render(float dt);
 
     virtual void ApplyLayout();
+    virtual void ResetLayout();
 
 protected:
     UIClass(UITypeEnum type, UIState * state) 
@@ -49,6 +50,7 @@ public:
     { }
 
     virtual void ApplyLayout() override;
+    virtual void ResetLayout() override;
 
 protected:
     virtual void OnUpdate(float dt) override;
@@ -66,6 +68,7 @@ public:
     { }
 
     virtual void ApplyLayout() override;
+    virtual void ResetLayout() override;
 
 protected:
     virtual void OnUpdate(float dt) override;

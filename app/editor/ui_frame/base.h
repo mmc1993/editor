@@ -25,18 +25,6 @@ enum class UITypeEnum {
     kGLCONVAS,              //  GL画布
 };
 
-//  控件列表
-static const std::string WIDGET_TREE = "Tree";
-static const std::string WIDGET_IMAGE = "Image";
-static const std::string WIDGET_BUTTON = "Button";
-static const std::string WIDGET_LAYOUT = "Layout";
-static const std::string WIDGET_WINDOW = "Window";
-static const std::string WIDGET_EDITBOX = "EditBox";
-static const std::string WIDGET_TEXTBOX = "TextBox";
-static const std::string WIDGET_ComboBox = "ComboBox";
-static const std::string WIDGET_UICANVAS = "UICanvas";
-static const std::string WIDGET_GLCANVAS = "GLCanvas";
-
 //  控件状态
 enum class UIStateEnum {
     kDISABLED,              //  禁用

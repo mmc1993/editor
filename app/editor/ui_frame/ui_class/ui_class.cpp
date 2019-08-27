@@ -72,14 +72,18 @@ void UIClass::Render(float dt)
 
 void UIClass::ApplyLayout()
 {
+}
+
+void UIClass::ResetLayout()
+{
     auto & thisMove = GET_DATA(GetState<UIState>().mData, Move);
     for (auto child : GetChildren())
     {
-        auto & move  = GET_DATA(child->GetState<UIState>().mData, Move);
+        auto & move = GET_DATA(child->GetState<UIState>().mData, Move);
         glm::vec4 margin = {
             move.x, move.y,
             thisMove.z - move.x + move.z,
-            thisMove.w - move.y + move.w 
+            thisMove.w - move.y + move.w
         };
         SET_DATA(child->GetState<UIState>().mData, Margin, margin);
     }
@@ -89,6 +93,10 @@ void UIClass::ApplyLayout()
 //  Window
 //--------------------------------------------------------------------------------
 void UIClassWindow::ApplyLayout()
+{
+}
+
+void UIClassWindow::ResetLayout()
 {
     auto layouts = GetChildren(UITypeEnum::kLAYOUT);
     ASSERT_LOG(!layouts.empty(), "Must Have At Least Layout");
@@ -104,10 +112,9 @@ void UIClassWindow::ApplyLayout()
         if (move.y + move.w > selfMove.y + selfMove.w)
             selfMove.w = move.y + move.w - selfMove.y;
     }
-
     SET_DATA(GetState<UIState>().mData, Move, selfMove);
 
-    UIClass::ApplyLayout();
+    UIClass::ResetLayout();
 }
 
 void UIClassWindow::OnUpdate(float dt)
@@ -160,6 +167,10 @@ void UIClassWindow::OnLeave()
 //--------------------------------------------------------------------------------
 void UIClassLayout::ApplyLayout()
 {
+}
+
+void UIClassLayout::ResetLayout()
+{
     auto thisState  = GetState<UIStateLayout>();
     auto thisUp     = GET_DATA(thisState.mData, Move).y;
     auto thisDown   = thisUp + GET_DATA(thisState.mData, Move).w;
@@ -201,16 +212,6 @@ void UIClassLayout::OnRender(float dt)
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
-    //ImVec2 points[] = {
-    //    ImVec2(state.mMove.x + 0, state.mMove.y + 0),
-    //    ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y + 0),
-    //    ImVec2(state.mMove.x + state.mMove.z - 1, state.mMove.y + state.mMove.w - 1),
-    //    ImVec2(state.mMove.x + 0, state.mMove.y + state.mMove.w - 1),
-    //};
-    //ImGui::GetWindowDrawList()->AddLine(points[0], points[1], ImColor(0.75f, 0.75f, 0.75f));
-    //ImGui::GetWindowDrawList()->AddLine(points[1], points[2], ImColor(0.75f, 0.75f, 0.75f));
-    //ImGui::GetWindowDrawList()->AddLine(points[2], points[3], ImColor(0.75f, 0.75f, 0.75f));
-    //ImGui::GetWindowDrawList()->AddLine(points[3], points[0], ImColor(0.75f, 0.75f, 0.75f));
 
     size_t flag = 0;
     if (GET_DATA(state.mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
