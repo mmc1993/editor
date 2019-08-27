@@ -121,6 +121,7 @@ void UIClassWindow::OnRender(float dt)
 bool UIClassWindow::OnEnter()
 {
     auto state = GetState<UIStateWindow>();
+    auto & name = GET_DATA(state.mData, Name);
     ImVec2 move = ImVec2(GET_DATA(state.mData, Move).x, GET_DATA(state.mData, Move).y);
     ImVec2 size = ImVec2(GET_DATA(state.mData, Move).z, GET_DATA(state.mData, Move).w);
     size_t flag = 0;
@@ -142,9 +143,10 @@ bool UIClassWindow::OnEnter()
         if (GET_DATA(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
         if (GET_DATA(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     }
+    ImGui::SetNextWindowPos(move);
+    ImGui::SetNextWindowSize(size);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-
-    return ImGui::Begin(GET_DATA(state.mData, Name).c_str(), nullptr, flag);
+    return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
 }
 
 void UIClassWindow::OnLeave()
@@ -217,8 +219,10 @@ bool UIClassLayout::OnEnter()
     if (GET_DATA(state.mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (GET_DATA(state.mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
     if (GET_DATA(state.mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+
+    auto & name = GET_DATA(state.mData, Name);
     return ImGui::BeginChild(
-        GET_DATA(state.mData, Name).c_str(), 
+        name.empty()? nullptr: name.c_str(),
         ImVec2(GET_DATA(state.mData, Move).z, 
                GET_DATA(state.mData, Move).w),
         GET_DATA(state.mData, LayoutIsShowBorder), flag);

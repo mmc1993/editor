@@ -8,16 +8,15 @@
 //      __Property
 //      __Children
 //          MyGUI
-//          Weiget
+//          Widget
 //          Property
 //          UserData
 
 class UIParser {
 public:
     static UIClass * Parse(const std::string & url);
-    static UIClass * Parse(const std::string & tag, const mmc::JsonValue::Value json);
+    static UIClass * Parse(const mmc::JsonValue::Value json);
     static void Parse__Property(const mmc::JsonValue::Value json, UIClass * object);
     static void Parse__Children(const mmc::JsonValue::Value json, UIClass * object);
-    static void ParseCustomData(const mmc::JsonValue::Value json, UIState & state);
-    static UIClass * CreateObject(UITypeEnum type);
+    static UIClass * CreateObject(const std::string & type);
 };

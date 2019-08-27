@@ -121,7 +121,7 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
     UIFrame uiFrame;
-    uiFrame.SetRoot("res/ui/test.layout");
+    uiFrame.SetRoot("res/ui/test.json");
 
     // Main loop
     while (!glfwWindowShouldClose(window))

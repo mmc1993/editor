@@ -25,6 +25,18 @@ enum class UITypeEnum {
     kGLCONVAS,              //  GL画布
 };
 
+//  控件列表
+static const std::string WIDGET_TREE = "Tree";
+static const std::string WIDGET_IMAGE = "Image";
+static const std::string WIDGET_BUTTON = "Button";
+static const std::string WIDGET_LAYOUT = "Layout";
+static const std::string WIDGET_WINDOW = "Window";
+static const std::string WIDGET_EDITBOX = "EditBox";
+static const std::string WIDGET_TEXTBOX = "TextBox";
+static const std::string WIDGET_ComboBox = "ComboBox";
+static const std::string WIDGET_UICANVAS = "UICanvas";
+static const std::string WIDGET_GLCANVAS = "GLCanvas";
+
 //  控件状态
 enum class UIStateEnum {
     kDISABLED,              //  禁用
@@ -88,18 +100,6 @@ inline glm::vec3 S2V4(const std::string & s)
     return glm::vec4(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)), S2F(arr.at(3)));
 }
 
-//  控件列表
-static const std::string WEIGET_TREE        = "Tree";
-static const std::string WEIGET_IMAGE       = "Image";
-static const std::string WEIGET_BUTTON      = "Button";
-static const std::string WEIGET_LAYOUT      = "LAYOUT";
-static const std::string WEIGET_WINDOW      = "Window";
-static const std::string WEIGET_EDITBOX     = "EditBox";
-static const std::string WEIGET_TEXTBOX     = "TextBox";
-static const std::string WEIGET_ComboBox    = "ComboBox";
-static const std::string WEIGET_UICANVAS    = "UICanvas";
-static const std::string WEIGET_GLCANVAS    = "GLCanvas";
-
 //  自定义数据 Get/Set
 using CustomData = std::map<std::string, std::any>;
 
@@ -117,7 +117,7 @@ using CustomData = std::map<std::string, std::any>;
 #define __REG_SET_DATA(T, K)                                               \
     inline void __SetData##K(CustomData & data, const T & val)             \
     {                                                                      \
-        data.at(#K) = val;                                                 \
+        data[#K] = val;                                                    \
     }
 
 __REG_GET_DATA(bool,            WindowIsNav,            false               )   //  有导航栏

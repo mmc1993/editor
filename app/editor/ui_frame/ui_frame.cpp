@@ -26,6 +26,7 @@ void UIFrame::SetRoot(UIClass * uiClass)
 void UIFrame::SetRoot(const std::string & url)
 {
      SetRoot(UIParser::Parse(url));
+     _uiRoot->ApplyLayout();
 }
 
 void UIFrame::Update(float dt)
