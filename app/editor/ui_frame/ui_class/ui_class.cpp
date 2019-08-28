@@ -52,6 +52,11 @@ UIClass * UIClass::GetParent()
 
 void UIClass::Update(float dt)
 {
+    if (GetParent() != nullptr)
+    {
+        ApplyLayout();
+    }
+    
     OnUpdate(dt);
     std::for_each(_children.begin(), _children.end(),
                   std::bind(&UIClass::Update,
@@ -72,20 +77,21 @@ void UIClass::Render(float dt)
 
 void UIClass::ApplyLayout()
 {
+    auto parentState = GetState<UIState>();
 }
 
 void UIClass::ResetLayout()
 {
-    auto & thisMove = GET_DATA(GetState<UIState>().mData, Move);
+    auto & thisMove = GetUIData(GetState<UIState>().mData, Move);
     for (auto child : GetChildren())
     {
-        auto & move = GET_DATA(child->GetState<UIState>().mData, Move);
+        auto & move = GetUIData(child->GetState<UIState>().mData, Move);
         glm::vec4 margin = {
             move.x, move.y,
             thisMove.z - move.x + move.z,
             thisMove.w - move.y + move.w
         };
-        SET_DATA(child->GetState<UIState>().mData, Margin, margin);
+        SetUIData(child->GetState<UIState>().mData, Margin, margin);
     }
 }
 
@@ -101,10 +107,10 @@ void UIClassWindow::ResetLayout()
     auto layouts = GetChildren(UITypeEnum::kLAYOUT);
     ASSERT_LOG(!layouts.empty(), "Must Have At Least Layout");
 
-    auto selfMove = GET_DATA(layouts.at(0)->GetState<UIState>().mData, Move);
+    auto selfMove = GetUIData(layouts.at(0)->GetState<UIState>().mData, Move);
     for (auto layout : layouts)
     {
-        auto & move = GET_DATA(layout->GetState<UIState>().mData, Move);
+        auto & move = GetUIData(layout->GetState<UIState>().mData, Move);
         if (move.x < selfMove.x) selfMove.x = move.x;
         if (move.y < selfMove.y) selfMove.y = move.y;
         if (move.x + move.z > selfMove.x + selfMove.z)
@@ -112,7 +118,7 @@ void UIClassWindow::ResetLayout()
         if (move.y + move.w > selfMove.y + selfMove.w)
             selfMove.w = move.y + move.w - selfMove.y;
     }
-    SET_DATA(GetState<UIState>().mData, Move, selfMove);
+    SetUIData(GetState<UIState>().mData, Move, selfMove);
 
     UIClass::ResetLayout();
 }
@@ -128,11 +134,11 @@ void UIClassWindow::OnRender(float dt)
 bool UIClassWindow::OnEnter()
 {
     auto state = GetState<UIStateWindow>();
-    auto & name = GET_DATA(state.mData, Name);
-    ImVec2 move = ImVec2(GET_DATA(state.mData, Move).x, GET_DATA(state.mData, Move).y);
-    ImVec2 size = ImVec2(GET_DATA(state.mData, Move).z, GET_DATA(state.mData, Move).w);
+    auto & name = GetUIData(state.mData, Name);
+    ImVec2 move = ImVec2(GetUIData(state.mData, Move).x, GetUIData(state.mData, Move).y);
+    ImVec2 size = ImVec2(GetUIData(state.mData, Move).z, GetUIData(state.mData, Move).w);
     size_t flag = 0;
-    if (GET_DATA(state.mData, WindowIsFullScreen))
+    if (GetUIData(state.mData, WindowIsFullScreen))
     {
         size = ImGui_ImplGlfw_GetWindowSize();
         move.x = 0;
@@ -143,12 +149,12 @@ bool UIClassWindow::OnEnter()
     }
     else
     {
-        if (!GET_DATA(state.mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
-        if (!GET_DATA(state.mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
-        if (!GET_DATA(state.mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
-        if (!GET_DATA(state.mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (!GET_DATA(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (!GET_DATA(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+        if (!GetUIData(state.mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
+        if (!GetUIData(state.mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
+        if (!GetUIData(state.mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
+        if (!GetUIData(state.mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (!GetUIData(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (!GetUIData(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     }
     ImGui::SetNextWindowPos(move);
     ImGui::SetNextWindowSize(size);
@@ -172,18 +178,18 @@ void UIClassLayout::ApplyLayout()
 void UIClassLayout::ResetLayout()
 {
     auto thisState  = GetState<UIStateLayout>();
-    auto thisUp     = GET_DATA(thisState.mData, Move).y;
-    auto thisDown   = thisUp + GET_DATA(thisState.mData, Move).w;
-    auto thisLeft   = GET_DATA(thisState.mData, Move).x;
-    auto thisRight  = thisLeft + GET_DATA(thisState.mData, Move).z;
+    auto thisUp     = GetUIData(thisState.mData, Move).y;
+    auto thisDown   = thisUp + GetUIData(thisState.mData, Move).w;
+    auto thisLeft   = GetUIData(thisState.mData, Move).x;
+    auto thisRight  = thisLeft + GetUIData(thisState.mData, Move).z;
     for (auto layout : GetParent()->GetChildren(UITypeEnum::kLAYOUT))
     {
         if (layout == this) { continue; }
         auto state  = layout->GetState<UIState>();
-        auto up     = GET_DATA(state.mData, Move).y;
-        auto down   = thisUp + GET_DATA(state.mData, Move).w;
-        auto left   = GET_DATA(state.mData, Move).x;
-        auto right  = thisLeft + GET_DATA(state.mData, Move).z;
+        auto up     = GetUIData(state.mData, Move).y;
+        auto down   = thisUp + GetUIData(state.mData, Move).w;
+        auto left   = GetUIData(state.mData, Move).x;
+        auto right  = thisLeft + GetUIData(state.mData, Move).z;
 
         if      (thisUp == down)    { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kU].push_back(layout); }
         else if (thisDown == up)    { thisState.mLayoutInfo.mLinks[(size_t)DirectEnum::kD].push_back(layout); }
@@ -214,19 +220,19 @@ bool UIClassLayout::OnEnter()
     auto state = GetState<UIStateLayout>();
 
     size_t flag = 0;
-    if (GET_DATA(state.mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
-    if (GET_DATA(state.mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
-    if (GET_DATA(state.mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
-    if (GET_DATA(state.mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
-    if (GET_DATA(state.mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
-    if (GET_DATA(state.mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+    if (!GetUIData(state.mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
+    if (!GetUIData(state.mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
+    if (!GetUIData(state.mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
+    if (!GetUIData(state.mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
+    if (!GetUIData(state.mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
+    if (!GetUIData(state.mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
 
-    auto & name = GET_DATA(state.mData, Name);
+    auto & name = GetUIData(state.mData, Name);
     return ImGui::BeginChild(
         name.empty()? nullptr: name.c_str(),
-        ImVec2(GET_DATA(state.mData, Move).z, 
-               GET_DATA(state.mData, Move).w),
-        GET_DATA(state.mData, LayoutIsShowBorder), flag);
+        ImVec2(GetUIData(state.mData, Move).z, 
+               GetUIData(state.mData, Move).w),
+        GetUIData(state.mData, LayoutIsShowBorder), flag);
 }
 
 void UIClassLayout::OnLeave()

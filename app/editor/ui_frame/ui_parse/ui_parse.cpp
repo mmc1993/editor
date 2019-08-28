@@ -23,7 +23,7 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * objec
     for (auto ele : json->At("__Property"))
     {
         ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
-        PARSE_DATA(object->GetState<UIState>().mData, ele.mKey, ele.mValue->ToString());
+        ParseUIData(object->GetState<UIState>().mData, ele.mKey, ele.mValue->ToString());
     }
 }
 

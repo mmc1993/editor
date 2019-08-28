@@ -5,7 +5,7 @@ UIState::UIState()
 
 UIStateWindow::UIStateWindow()
 {
-    SET_DATA(mData, Name, "Default");
+    SetUIData(mData, Name, "Default");
 }
 
 UIStateLayout::UIStateLayout()
