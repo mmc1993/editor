@@ -77,7 +77,18 @@ void UIClass::Render(float dt)
 
 void UIClass::ApplyLayout()
 {
-    auto parentState = GetState<UIState>();
+    const auto & parentMove = GetUIData(GetParent()->GetState<UIState>().mData, Move);
+    auto align  = GetUIData(GetState<UIState>().mData, Align);
+    auto move   = GetUIData(GetState<UIState>().mData, Move);
+    //  上停靠
+    //  下停靠
+    //  左停靠
+    //  右停靠
+
+    //  上拉伸
+    //  下拉伸
+    //  左拉伸
+    //  右拉伸
 }
 
 void UIClass::ResetLayout()
