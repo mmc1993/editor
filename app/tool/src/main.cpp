@@ -12,6 +12,20 @@
 constexpr auto JSON_PROPERTY = "__Property";
 constexpr auto JSON_CHILDREN = "__Children";
 
+//  控件对齐
+enum class UIAlignEnum {
+    kDEFAULT,               //  绝对坐标
+    kCLING_T = 1 << 1,      //  靠上
+    kCLING_B = 1 << 2,      //  靠下
+    kCLING_L = 1 << 3,      //  靠左
+    kCLING_R = 1 << 4,      //  靠右
+    kCENTER_H = 1 << 5,     //  水平居中
+    kCENTER_V = 1 << 6,     //  垂直居中
+    kSTRETCH_H = 1 << 7,    //  水平拉伸
+    kSTRETCH_V = 1 << 8,    //  垂直拉伸
+    LENGTH,
+};
+
 //  字段替换
 static const std::map<std::string, std::string> FieldMap{
     std::make_pair("Position", "Move")
@@ -27,41 +41,41 @@ static const std::map<std::string, std::map<std::string, std::string>> StringMap
 };
 
 //  值转换到枚举
-static const std::map<std::string, std::vector<std::string>> NumberMap{
-    std::make_pair("Align", std::vector<std::string>
+static const std::map<std::string, std::map<std::string, int>> NumberMap{
+    std::make_pair("Align", std::map<std::string, int>
         {
-            "Default",
-            "Stretch",
-            "Center",
-            "Left Top",
-            "Left Bottom",
-            "Left Vstretch",
-            "Left Vcenter",
-            "Right Top",
-            "Right Bottom",
-            "Right Vstretch",
-            "Right Vcenter",
-            "Hstretch Top",
-            "Hstretch Bottom",
-            "Hstretch Vstretch",
-            "Hstretch Vcenter",
-            "Hcenter Top",
-            "Hcenter Bottom",
-            "Hcenter Vstretch",
-            "Hcenter Vcenter",
+            std::make_pair("Default",               (int)UIAlignEnum::kDEFAULT),
+            std::make_pair("Stretch",               (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Center",                (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Left Top",              (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Left Bottom",           (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Left Vstretch",         (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Left Vcenter",          (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Right Top",             (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Right Bottom",          (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Right Vstretch",        (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Right Vcenter",         (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Hstretch Top",          (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Hstretch Bottom",       (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Hstretch Vstretch",     (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Hstretch Vcenter",      (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Hcenter Top",           (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Hcenter Bottom",        (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Hcenter Vstretch",      (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Hcenter Vcenter",       (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCENTER_V),
         }),
-    std::make_pair("Type", std::vector<std::string>
+    std::make_pair("Type", std::map<std::string, int>
         {
-            "Tree",
-            "Image",
-            "Button",
-            "Layout",
-            "Window",
-            "EditBox",
-            "TextBox",
-            "ComboBox",
-            "UICanvas",
-            "GLCanvas",
+            std::make_pair("Tree",      0),
+            std::make_pair("Image",     1),
+            std::make_pair("Button",        2),
+            std::make_pair("Layout",        3),
+            std::make_pair("Window",        4),
+            std::make_pair("EditBox",       5),
+            std::make_pair("TextBox",       6),
+            std::make_pair("ComboBox",      7),
+            std::make_pair("UICanvas",      8),
+            std::make_pair("GLCanvas",      9),
         })
 };
 
@@ -78,16 +92,23 @@ bool HasKey(const std::map<std::string, std::map<std::string, std::string>> & m,
     return false;
 }
 
-bool HasKey(const std::map<std::string, std::string> & m, const std::string & k)
+bool HasKey(const std::map<std::string, std::string> & m, 
+            const std::string & k)
 {
     return m.find(k) != m.end();
 }
 
-bool HasKey(const std::map<std::string, std::vector<std::string>> & m, 
-            const std::string & k0)
+bool HasKey(const std::map<std::string, std::map<std::string, int>> & m,
+            const std::string & k0,
+            const std::string & k1)
 {
     auto it0 = m.find(k0);
-    return it0 != m.end();
+    if (it0 != m.end())
+    {
+        auto it1 = it0->second.find(k1);
+        return it1 != it0->second.end();
+    }
+    return false;
 }
 
 const std::string & CheckString(
@@ -99,20 +120,18 @@ const std::string & CheckString(
 }
 
 const std::string & CheckString(
-    const std::map<std::string,std::string> & m, const std::string & k0)
+    const std::map<std::string,std::string> & m, 
+    const std::string & k0)
 {
     return m.find(k0)->second;
 }
 
 std::string CheckNumber(
-    const std::map<std::string, std::vector<std::string>> & m,
+    const std::map<std::string, std::map<std::string, int>> & m,
     const std::string & k0, 
     const std::string & k1)
 {
-    auto & a = m.find(k0)->second;
-    auto it = std::find(a.begin(), a.end(), k1);
-    auto i = std::distance(a.begin(), it);
-    return std::to_string(i);
+    return std::to_string(m.find(k0)->second.find(k1)->second);
 }
 
 void CustomTransfer(mmc::JsonValue::Value json)
@@ -132,7 +151,7 @@ void CustomTransfer(mmc::JsonValue::Value json)
         {
             ele.mValue->Set(CheckString(StringMap, ele.mKey, ele.mValue->ToString()));
         }
-        if (HasKey(NumberMap, ele.mKey))
+        if (HasKey(NumberMap, ele.mKey, ele.mValue->ToString()))
         {
             ele.mValue->Set(CheckNumber(NumberMap, ele.mKey, ele.mValue->ToString()));
         }
