@@ -81,12 +81,11 @@ void UIClass::Render(float dt)
 
 void UIClass::ResetLayout()
 {
+    OnResetLayout();
+
     //  初始化备份数据
     auto & data = GetState<UIState>().mData;
     SetUIData(data, _Move, GetUIData(data, Move));
-
-    //  重置其他数据
-    OnResetLayout();
 
     std::for_each(_children.begin(), _children.end(),
                     std::bind(&UIClass::ResetLayout, 
@@ -129,11 +128,11 @@ void UIClass::ApplyLayout()
 
         if (!(align & (int)UIAlignEnum::kCLING_T))
         {
-            margin.y = margin.z - move.z;
+            margin.y = margin.w - move.w;
         }
         if (!(align & (int)UIAlignEnum::kCLING_L))
         {
-            margin.x = margin.w - move.w;
+            margin.x = margin.z - move.z;
         }
         move.x = margin.x;
         move.y = margin.y;
@@ -163,6 +162,15 @@ void UIClassWindow::OnResetLayout()
             selfMove.z = move.x + move.z - selfMove.x;
         if (move.y + move.w > selfMove.y + selfMove.w)
             selfMove.w = move.y + move.w - selfMove.y;
+    }
+
+    for (auto layout : layouts)
+    {
+        auto & data = layout->GetState<UIState>().mData;
+        auto move = GetUIData(data, Move);
+        move.x -= selfMove.x;
+        move.y -= selfMove.y;
+        SetUIData(data, Move, move);
     }
 
     SetUIData(GetState<UIState>().mData, Move, selfMove);
@@ -205,15 +213,17 @@ bool UIClassWindow::OnEnter()
         if (!GetUIData(state.mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
         if (!GetUIData(state.mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     }
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
+
     ImGui::SetNextWindowPos(move);
     ImGui::SetNextWindowSize(size);
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
     return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
 }
 
 void UIClassWindow::OnLeave()
 {
-    ImGui::PopStyleVar();
+    ImGui::PopStyleVar(2);
     ImGui::End();
 }
 
@@ -275,12 +285,11 @@ bool UIClassLayout::OnEnter()
     if (!GetUIData(state.mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (!GetUIData(state.mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
     if (!GetUIData(state.mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
-
+    
     auto & name = GetUIData(state.mData, Name);
-    return ImGui::BeginChild(
-        name.empty()? nullptr: name.c_str(),
-        ImVec2(GetUIData(state.mData, Move).z, 
-               GetUIData(state.mData, Move).w),
+    auto & move = GetUIData(state.mData, Move);
+    ImGui::SetCursorPos(ImVec2(move.x,move.y));
+    return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
         GetUIData(state.mData, LayoutIsShowBorder), flag);
 }
 

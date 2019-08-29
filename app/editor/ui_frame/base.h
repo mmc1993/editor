@@ -145,7 +145,7 @@ __REG_GET_UI_DATA(bool,            WindowIsScrollBar,      false               )
 __REG_SET_UI_DATA(bool,            WindowIsScrollBar                           )
 __REG_GET_UI_DATA(bool,            WindowIsFullScreen,     false               )   //  ÆÌÂúÈ«ÆÁ
 __REG_SET_UI_DATA(bool,            WindowIsFullScreen                          )
-__REG_GET_UI_DATA(bool,            LayoutIsShowBorder,     false               )   //  ÏÔÊ¾±ß¿ò
+__REG_GET_UI_DATA(bool,            LayoutIsShowBorder,     true                )   //  ÏÔÊ¾±ß¿ò
 __REG_SET_UI_DATA(bool,            LayoutIsShowBorder                          )
 __REG_GET_UI_DATA(float,           LayoutBorderNumber,     1                   )   //  ±ß¿ò¿í¶È
 __REG_SET_UI_DATA(float,           LayoutBorderNumber                          )

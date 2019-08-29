@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="PanelEmpty" position="0 0 320 720" />
+    <Widget type="Widget" skin="PanelEmpty" position="320 0 650 540"/>
+    <Widget type="Widget" skin="PanelEmpty" position="320 540 650 180"/>
+    <Widget type="Widget" skin="PanelEmpty" position="970 0 310 720"/>
+</MyGUI>
