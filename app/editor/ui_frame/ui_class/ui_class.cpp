@@ -11,10 +11,7 @@ std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type)
 {
     std::vector<UIClass *> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
-        [type](const UIClass * object)
-        {
-            return object->GetType() == type;
-        });
+        [type](const UIClass * object) { return object->GetType() == type; });
     return std::move(result);
 }
 
