@@ -61,6 +61,10 @@ void UIClass::Update(float dt)
     std::for_each(_children.begin(), _children.end(),
                   std::bind(&UIClass::Update,
                   std::placeholders::_1, dt));
+
+    //  刷新备份数据
+    auto & data = GetState<UIState>().mData;
+    SetUIData(data, _Move, GetUIData(data, Move));
 }
 
 void UIClass::Render(float dt)
@@ -75,45 +79,76 @@ void UIClass::Render(float dt)
     OnLeave();
 }
 
-void UIClass::ApplyLayout()
-{
-    const auto & parentMove = GetUIData(GetParent()->GetState<UIState>().mData, Move);
-    auto align  = GetUIData(GetState<UIState>().mData, Align);
-    auto move   = GetUIData(GetState<UIState>().mData, Move);
-    //  上停靠
-    //  下停靠
-    //  左停靠
-    //  右停靠
-
-    //  上拉伸
-    //  下拉伸
-    //  左拉伸
-    //  右拉伸
-}
-
 void UIClass::ResetLayout()
 {
-    auto & thisMove = GetUIData(GetState<UIState>().mData, Move);
-    for (auto child : GetChildren())
+    //  初始化备份数据
+    auto & data = GetState<UIState>().mData;
+    SetUIData(data, _Move, GetUIData(data, Move));
+
+    //  重置其他数据
+    OnResetLayout();
+
+    std::for_each(_children.begin(), _children.end(),
+                    std::bind(&UIClass::ResetLayout, 
+                    std::placeholders::_1));
+}
+
+void UIClass::ApplyLayout()
+{
+    auto & parentData = GetParent()->GetState<UIState>().mData;
+    auto & parentMoveOld = GetUIData(parentData, _Move);
+    auto & parentMoveNew = GetUIData(parentData,  Move);
+    auto & thisData = GetState<UIState>().mData;
+
+    if (parentMoveOld.z != parentMoveNew.z || 
+        parentMoveOld.w != parentMoveNew.w)
     {
-        auto & move = GetUIData(child->GetState<UIState>().mData, Move);
-        glm::vec4 margin = {
-            move.x, move.y,
-            thisMove.z - move.x + move.z,
-            thisMove.w - move.y + move.w
-        };
-        SetUIData(child->GetState<UIState>().mData, Margin, margin);
+        auto move    = GetUIData(thisData, Move);
+        auto align   = GetUIData(thisData, Align);
+        auto margin  = glm::vec4(move.x, move.y,
+                                 move.x + move.z,
+                                 move.y + move.w);
+        if (align & (int)UIAlignEnum::kCLING_B)
+        {
+            margin.w += parentMoveNew.w - parentMoveOld.w;
+        }
+        if (align & (int)UIAlignEnum::kCLING_R)
+        {
+            margin.z += parentMoveNew.z - parentMoveOld.z;
+        }
+        if (align & (int)UIAlignEnum::kCENTER_H)
+        {
+            margin.x = margin.x / parentMoveOld.z * parentMoveNew.z;
+            margin.z = margin.z / parentMoveOld.z * parentMoveNew.z;
+        }
+        if (align & (int)UIAlignEnum::kCENTER_V)
+        {
+            margin.y = margin.y / parentMoveOld.w * parentMoveNew.w;
+            margin.w = margin.w / parentMoveOld.w * parentMoveNew.w;
+        }
+
+        if (!(align & (int)UIAlignEnum::kCLING_T))
+        {
+            margin.y = margin.z - move.z;
+        }
+        if (!(align & (int)UIAlignEnum::kCLING_L))
+        {
+            margin.x = margin.w - move.w;
+        }
+        move.x = margin.x;
+        move.y = margin.y;
+        move.z = margin.z - margin.x;
+        move.w = margin.w - margin.y;
+        SetUIData(thisData, Move, move);
     }
+    
+    OnApplyLayout();
 }
 
 //--------------------------------------------------------------------------------
 //  Window
 //--------------------------------------------------------------------------------
-void UIClassWindow::ApplyLayout()
-{
-}
-
-void UIClassWindow::ResetLayout()
+void UIClassWindow::OnResetLayout()
 {
     auto layouts = GetChildren(UITypeEnum::kLAYOUT);
     ASSERT_LOG(!layouts.empty(), "Must Have At Least Layout");
@@ -129,9 +164,12 @@ void UIClassWindow::ResetLayout()
         if (move.y + move.w > selfMove.y + selfMove.w)
             selfMove.w = move.y + move.w - selfMove.y;
     }
-    SetUIData(GetState<UIState>().mData, Move, selfMove);
 
-    UIClass::ResetLayout();
+    SetUIData(GetState<UIState>().mData, Move, selfMove);
+}
+
+void UIClassWindow::OnApplyLayout()
+{
 }
 
 void UIClassWindow::OnUpdate(float dt)
@@ -182,11 +220,7 @@ void UIClassWindow::OnLeave()
 //--------------------------------------------------------------------------------
 //  Layout
 //--------------------------------------------------------------------------------
-void UIClassLayout::ApplyLayout()
-{
-}
-
-void UIClassLayout::ResetLayout()
+void UIClassLayout::OnResetLayout()
 {
     auto thisState  = GetState<UIStateLayout>();
     auto thisUp     = GetUIData(thisState.mData, Move).y;
@@ -216,6 +250,10 @@ void UIClassLayout::ResetLayout()
         if (thisRight == right) { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kR].emplace_back(DirectEnum::kR, layout); }
         if (thisRight == left)  { thisState.mLayoutInfo.mEdges[(size_t)DirectEnum::kR].emplace_back(DirectEnum::kL, layout); }
     }
+}
+
+void UIClassLayout::OnApplyLayout()
+{
 }
 
 void UIClassLayout::OnUpdate(float dt)

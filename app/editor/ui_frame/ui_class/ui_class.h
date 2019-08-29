@@ -22,8 +22,8 @@ public:
     void Update(float dt);
     void Render(float dt);
 
-    virtual void ApplyLayout();
-    virtual void ResetLayout();
+    void ResetLayout();
+    void ApplyLayout();
 
 protected:
     UIClass(UITypeEnum type, UIState * state) 
@@ -32,6 +32,8 @@ protected:
         , _parent(nullptr)
     { }
 
+    virtual void OnResetLayout() = 0;
+    virtual void OnApplyLayout() = 0;
     virtual void OnUpdate(float dt) = 0;
     virtual void OnRender(float dt) = 0;
     virtual bool OnEnter() = 0;
@@ -49,10 +51,9 @@ public:
     UIClassWindow(UIState * state ): UIClass(UITypeEnum::kWINDOW, state)
     { }
 
-    virtual void ApplyLayout() override;
-    virtual void ResetLayout() override;
-
 protected:
+    virtual void OnResetLayout() override;
+    virtual void OnApplyLayout() override;
     virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 
@@ -67,10 +68,9 @@ public:
     UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)
     { }
 
-    virtual void ApplyLayout() override;
-    virtual void ResetLayout() override;
-
 protected:
+    virtual void OnResetLayout() override;
+    virtual void OnApplyLayout() override;
     virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 

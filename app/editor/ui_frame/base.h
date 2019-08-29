@@ -41,25 +41,31 @@ enum class UIStateEnum {
 //  控件对齐
 enum class UIAlignEnum {
     kDEFAULT,               //  绝对坐标
-    kSTRETCH,               //  拉伸
-    kCENTER,                //  居中
-    kLEFT_TOP,              //  左上停靠
-    kLEFT_BOTTOM,           //  左下停靠
-    kLEFT_VSTRETCH,         //  左停靠,     垂直拉伸
-    kLEFT_VCENTER,          //  左停靠,     垂直居中
-    kRIGHT_TOP,             //  右上停靠
-    kRIGHT_BOTTOM,          //  右下停靠
-    kRIGHT_VSTRETCH,        //  右停靠,     垂直拉伸
-    kRIGHT_VCENTER,         //  右停靠,     垂直居中
-    kHSTRETCH_TOP,          //  上停靠,     水平拉伸
-    kHSTRETCH_BOTTOM,       //  下停靠,     水平拉伸
-    kHSTRETCH_VSTRETCH,     //  水平拉伸,   垂直拉伸
-    kHSTRETCH_VCENTER,      //  垂直居中,   水平拉伸
-    kHCENTER_TOP,           //  上停靠,     水平居中
-    kHCENTER_BOTTOM,        //  下停靠,     垂直居中
-    kHCENTER_VSTRETCH,      //  水平居中,   垂直拉伸
-    kHCENTER_VCENTER,       //  水平居中,   垂直居中
+    kCLING_T = 1 << 1,      //  靠上
+    kCLING_B = 1 << 2,      //  靠下
+    kCLING_L = 1 << 3,      //  靠左
+    kCLING_R = 1 << 4,      //  靠右
+    kCENTER_H = 1 << 5,     //  水平居中
+    kCENTER_V = 1 << 6,     //  垂直居中
     LENGTH,
+    //kSTRETCH,               //  拉伸
+    //kCENTER,                //  居中
+    //kLEFT_TOP,              //  左上停靠
+    //kLEFT_BOTTOM,           //  左下停靠
+    //kLEFT_VSTRETCH,         //  左停靠,     垂直拉伸
+    //kLEFT_VCENTER,          //  左停靠,     垂直居中
+    //kRIGHT_TOP,             //  右上停靠
+    //kRIGHT_BOTTOM,          //  右下停靠
+    //kRIGHT_VSTRETCH,        //  右停靠,     垂直拉伸
+    //kRIGHT_VCENTER,         //  右停靠,     垂直居中
+    //kHSTRETCH_TOP,          //  上停靠,     水平拉伸
+    //kHSTRETCH_BOTTOM,       //  下停靠,     水平拉伸
+    //kHSTRETCH_VSTRETCH,     //  水平拉伸,   垂直拉伸
+    //kHSTRETCH_VCENTER,      //  垂直居中,   水平拉伸
+    //kHCENTER_TOP,           //  上停靠,     水平居中
+    //kHCENTER_BOTTOM,        //  下停靠,     垂直居中
+    //kHCENTER_VSTRETCH,      //  水平居中,   垂直拉伸
+    //kHCENTER_VCENTER,       //  水平居中,   垂直居中
 };
 
 //  字符串转其他类型
@@ -165,10 +171,8 @@ __REG_GET_UI_DATA(bool,            EnabledKey,             false               )
 __REG_SET_UI_DATA(bool,            EnabledKey                                  )
 __REG_GET_UI_DATA(bool,            EnabledMouse,           false               )   //  启用鼠标
 __REG_SET_UI_DATA(bool,            EnabledMouse                                )
-__REG_GET_UI_DATA(glm::vec4,       Origin,                 glm::vec4()         )   //  原始方位
-__REG_SET_UI_DATA(glm::vec4,       Origin                                      )
-__REG_GET_UI_DATA(glm::vec4,       Margin,                 glm::vec4()         )   //  边距
-__REG_SET_UI_DATA(glm::vec4,       Margin                                      )
+__REG_GET_UI_DATA(glm::vec4,       _Move,                 glm::vec4()          )   //  方位
+__REG_SET_UI_DATA(glm::vec4,       _Move                                       )
 
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
@@ -192,8 +196,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool,          Visible);
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledKey);
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledMouse);
-    __REG_PARSE_UI_DATA(data, key, val, glm::vec4,     Origin);
-    __REG_PARSE_UI_DATA(data, key, val, glm::vec4,     Margin);
+    __REG_PARSE_UI_DATA(data, key, val, glm::vec4,     _Move);
 }
 
 #define GetUIData(data, K)         __GetData##K(data)
