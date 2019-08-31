@@ -175,97 +175,12 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
 }
 
 //--------------------------------------------------------------------------------
-//  Window
-//--------------------------------------------------------------------------------
-void UIClassWindow::OnResetLayout()
-{
-    auto layouts = GetChildren(UITypeEnum::kLAYOUT);
-    ASSERT_LOG(!layouts.empty(), "Must Have At Least Layout");
-
-    auto selfMove = GetUIData(layouts.at(0)->GetState<UIState>()->mData, Move);
-    for (auto layout : layouts)
-    {
-        auto & move = GetUIData(layout->GetState<UIState>()->mData, Move);
-        if (move.x < selfMove.x) selfMove.x = move.x;
-        if (move.y < selfMove.y) selfMove.y = move.y;
-        if (move.x + move.z > selfMove.x + selfMove.z)
-            selfMove.z = move.x + move.z - selfMove.x;
-        if (move.y + move.w > selfMove.y + selfMove.w)
-            selfMove.w = move.y + move.w - selfMove.y;
-    }
-
-    for (auto layout : layouts)
-    {
-        auto & data = layout->GetState<UIState>()->mData;
-        auto move = GetUIData(data, Move);
-        move.x -= selfMove.x;
-        move.y -= selfMove.y;
-        SetUIData(data, Move, move);
-    }
-
-    SetUIData(GetState<UIState>()->mData, Move, selfMove);
-}
-
-void UIClassWindow::OnApplyLayout()
-{
-}
-
-void UIClassWindow::OnUpdate(float dt)
-{
-}
-
-void UIClassWindow::OnRender(float dt)
-{
-    if (ImGui::IsMouseReleased(0))
-    {
-        GetState<UIStateWindow>()->mStretchFocus.mObject = nullptr;
-    }
-}
-
-bool UIClassWindow::OnEnter()
-{
-    auto state = GetState<UIStateWindow>();
-    auto & name = GetUIData(state->mData, Name);
-    ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
-    ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
-    size_t flag = 0;
-    if (GetUIData(state->mData, WindowIsFullScreen))
-    {
-        size = ImGui_ImplGlfw_GetWindowSize();
-        move.x = 0;
-        move.y = 0;
-        flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
-            | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-            | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
-    }
-    else
-    {
-        if (!GetUIData(state->mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
-        if (!GetUIData(state->mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
-        if (!GetUIData(state->mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
-        if (!GetUIData(state->mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (!GetUIData(state->mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (!GetUIData(state->mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
-    }
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
-    ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-
-    ImGui::SetNextWindowPos(move);
-    ImGui::SetNextWindowSize(size);
-    return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
-}
-
-void UIClassWindow::OnLeave()
-{
-    ImGui::PopStyleVar(2);
-    ImGui::End();
-}
-
-//--------------------------------------------------------------------------------
 //  Layout
 //--------------------------------------------------------------------------------
 void UIClassLayout::OnResetLayout()
 {
+    if (GetParent() == nullptr) { return; }
+
     auto thisState  = GetState<UIStateLayout>();
     auto thisUp     = GetUIData(thisState->mData, Move).y;
     auto thisDown   = thisUp + GetUIData(thisState->mData, Move).w;
@@ -340,7 +255,7 @@ void UIClassLayout::OnUpdate(float dt)
 void UIClassLayout::OnRender(float dt)
 {
     auto thisState =            GetState<UIStateLayout>();
-    auto rootState = GetRoot()->GetState<UIStateWindow>();
+    auto rootState = GetRoot()->GetState<UIStateLayout>();
 
     if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsWindowHovered())
     {
@@ -352,15 +267,14 @@ void UIClassLayout::OnRender(float dt)
             glm::vec2(mouse.x, mouse.y), LAYOUT_DRAG_PADDING);
         if (direct != -1 && thisState->mJoin[direct].mIn.first == nullptr)
         {
-            switch (direct)
+            switch ((DirectEnum)direct)
             {
-            case (int)DirectEnum::kU: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
-            case (int)DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
-            case (int)DirectEnum::kL: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
-            case (int)DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
-            case -1: ImGui::SetMouseCursor(ImGuiMouseCursor_Arrow); break;
+            case DirectEnum::kU: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
+            case DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
+            case DirectEnum::kL: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
+            case DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
             }
-            if (direct != -1 && ImGui::IsMouseDown(0))
+            if (ImGui::IsMouseDown(0))
             {
                 rootState->mStretchFocus.mObject = this;
                 rootState->mStretchFocus.mDirect = (DirectEnum)direct;
@@ -370,7 +284,7 @@ void UIClassLayout::OnRender(float dt)
 
     if (rootState->mStretchFocus.mObject == this)
     {
-        auto offset = ImGui::GetIO().MouseDelta;
+        const auto & offset = ImGui::GetIO().MouseDelta;
         auto move   = GetUIData(thisState->mData, Move);
         switch ((int)rootState->mStretchFocus.mDirect)
         {
@@ -381,30 +295,78 @@ void UIClassLayout::OnRender(float dt)
         }
         SetUIData(thisState->mData, Move, move);
     }
+
+    if (ImGui::IsMouseReleased(0))
+    {
+        thisState->mStretchFocus.mObject = nullptr;
+    }
 }
 
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
+    if (GetUIData(state->mData, IsWindow))
+    {
+        //  Ðü¸¡´°¿Ú
+        auto & name = GetUIData(state->mData, Name);
+        ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
+        ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
+        size_t flag = 0;
+        if (GetUIData(state->mData, WindowIsFullScreen))
+        {
+            size = ImGui_ImplGlfw_GetWindowSize();
+            move.x = 0;
+            move.y = 0;
+            flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
+                | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
+        }
+        else
+        {
+            if (!GetUIData(state->mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
+            if (!GetUIData(state->mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
+            if (!GetUIData(state->mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
+            if (!GetUIData(state->mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+            if (!GetUIData(state->mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+            if (!GetUIData(state->mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+        }
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-    size_t flag = 0;
-    if (!GetUIData(state->mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
-    if (!GetUIData(state->mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
-    if (!GetUIData(state->mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
-    if (!GetUIData(state->mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
-    if (!GetUIData(state->mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
-    if (!GetUIData(state->mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+        ImGui::SetNextWindowPos(move);
+        ImGui::SetNextWindowSize(size);
+        return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
+    }
+    else
+    {
+        size_t flag = 0;
+        if (!GetUIData(state->mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
+        if (!GetUIData(state->mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
+        if (!GetUIData(state->mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
+        if (!GetUIData(state->mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (!GetUIData(state->mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (!GetUIData(state->mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
     
-    auto & name = GetUIData(state->mData, Name);
-    auto & move = GetUIData(state->mData, Move);
-    ImGui::SetCursorPos(ImVec2(move.x,move.y));
-    return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
-        GetUIData(state->mData, LayoutIsShowBorder), flag);
+        auto & name = GetUIData(state->mData, Name);
+        auto & move = GetUIData(state->mData, Move);
+        ImGui::SetCursorPos(ImVec2(move.x,move.y));
+        return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
+            GetUIData(state->mData, LayoutIsShowBorder), flag);
+    }
 }
 
 void UIClassLayout::OnLeave()
 {
-    ImGui::EndChild();
+    auto state = GetState<UIStateLayout>();
+    if (GetUIData(state->mData, IsWindow))
+    {
+        ImGui::PopStyleVar(2);
+        ImGui::End();
+    }
+    else
+    {
+        ImGui::EndChild();
+    }
 }
 
 glm::vec4 UIClassLayout::StretchU(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move)

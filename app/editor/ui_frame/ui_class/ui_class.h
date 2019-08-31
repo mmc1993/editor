@@ -51,23 +51,6 @@ private:
     std::vector<UIClass *> _children;
 };
 
-class UIClassWindow : public UIClass {
-public:
-    UIClassWindow(UIState * state ): UIClass(UITypeEnum::kWINDOW, state)
-    { }
-
-protected:
-    virtual void OnResetLayout() override;
-    virtual void OnApplyLayout() override;
-    virtual void OnUpdate(float dt) override;
-    virtual void OnRender(float dt) override;
-
-private:
-    virtual bool OnEnter() override;
-    virtual void OnLeave() override;
-
-};
-
 class UIClassLayout : public UIClass {
 public:
     UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)

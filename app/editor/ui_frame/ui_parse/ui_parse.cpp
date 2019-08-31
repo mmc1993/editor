@@ -42,8 +42,7 @@ UIClass * UIParser::CreateObject(const int type)
     case UITypeEnum::kTREE: break;
     case UITypeEnum::kIMAGE: break;
     case UITypeEnum::kBUTTON: break;
-    case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());;
-    case UITypeEnum::kWINDOW: return new UIClassWindow(new UIStateWindow());;
+    case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
     case UITypeEnum::kEDITBOX: break;
     case UITypeEnum::kTEXTBOX: break;
     case UITypeEnum::kCOMBOBOX: break;

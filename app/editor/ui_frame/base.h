@@ -173,8 +173,10 @@ __REG_GET_UI_DATA(bool,            EnabledKey,             false               )
 __REG_SET_UI_DATA(bool,            EnabledKey                                  )
 __REG_GET_UI_DATA(bool,            EnabledMouse,           false               )   //  启用鼠标
 __REG_SET_UI_DATA(bool,            EnabledMouse                                )
-__REG_GET_UI_DATA(glm::vec4,       _Move,                 glm::vec4()          )   //  方位
+__REG_GET_UI_DATA(glm::vec4,       _Move,                  glm::vec4()         )   //  方位
 __REG_SET_UI_DATA(glm::vec4,       _Move                                       )
+__REG_GET_UI_DATA(bool,            IsWindow,               false               )   //  窗口
+__REG_SET_UI_DATA(bool,            IsWindow                                    )
 
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
@@ -196,9 +198,11 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, std::string,   Title);
     __REG_PARSE_UI_DATA(data, key, val, bool,          Enabled);
     __REG_PARSE_UI_DATA(data, key, val, bool,          Visible);
+    __REG_PARSE_UI_DATA(data, key, val, bool,          IsWindow);
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledKey);
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledMouse);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4,     _Move);
+
 }
 
 #define GetUIData(data, K)         __GetData##K(data)

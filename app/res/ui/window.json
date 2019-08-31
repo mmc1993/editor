@@ -1,7 +1,10 @@
 {
 	"__Property": {
-		"Type": "4",
-		"Version": "3.2.0"
+		"Type": "3",
+		"Name": "Root",
+		"Version": "3.2.0",
+		"Move": "0 0 1280 720",
+		"IsWindow": "ok"
 	},
 	"__Children": [
 		{
