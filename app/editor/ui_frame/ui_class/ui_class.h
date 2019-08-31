@@ -5,9 +5,9 @@
 class UIClass {
 public:
     template <class T>
-    T & GetState()
+    T * GetState()
     {
-        return *(T *)_state;
+        return (T *)_state;
     }
 
     UITypeEnum GetType() const;
@@ -17,6 +17,7 @@ public:
     void AddChild(UIClass * child);
     void DelChild(UIClass * child);
     void ClearChild();
+    UIClass * GetRoot();
     UIClass * GetParent();
 
     void Update(float dt);
@@ -81,4 +82,9 @@ protected:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave() override;
+
+    glm::vec4 StretchU(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
+    glm::vec4 StretchD(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
+    glm::vec4 StretchL(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
+    glm::vec4 StretchR(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
 };

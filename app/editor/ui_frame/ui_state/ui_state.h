@@ -14,23 +14,22 @@ public:
 
 class UIStateWindow : public UIState {
 public:
+    struct StretchFocus {
+        UIClass *   mObject;
+        DirectEnum  mDirect;
+        StretchFocus() : mObject(nullptr) {}
+    } mStretchFocus;
+
     UIStateWindow();
 };
 
 class UIStateLayout : public UIState {
 public:
-    struct LayoutInfo {
-        struct LinkEdge {
-            UIClass  * mLayout;
-            DirectEnum mDirect;
-            LinkEdge(DirectEnum direct = DirectEnum::kU,
-                     UIClass * object   = nullptr)
-                : mDirect(direct), mLayout(object)
-            { }
-        };
-        std::vector<UIClass*> mLinks[(size_t)DirectEnum::LENGTH]; //  相连的Layout
-        std::vector<LinkEdge> mEdges[(size_t)DirectEnum::LENGTH]; //  相连的Edge
-    } mLayoutInfo;
+    struct Join {
+        std::vector<UIClass *>          mOut;
+        std::pair<UIClass *, DirectEnum> mIn;
+        Join() {}
+    } mJoin[(size_t)DirectEnum::LENGTH];
 
     UIStateLayout();
 };
