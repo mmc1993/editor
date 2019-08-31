@@ -24,15 +24,17 @@
 #include <math.h>
 #include <cmath>
 
+#include "third/sformat.h"
+#include "third/glm/glm.hpp"
+#include "third/glm/gtc/type_ptr.hpp"
+#include "third/glm/gtc/matrix_transform.hpp"
+
 #include "tools/serialize_tool.h"
 #include "tools/string_tool.h"
 #include "tools/debug_tool.h"
 #include "tools/time_tool.h"
 #include "tools/file_tool.h"
+#include "tools/math_tool.h"
 #include "tools/std_tool.h"
 
-#include "third/sformat.h"
 #include "third/mmcjson.h"
-#include "third/glm/glm.hpp"
-#include "third/glm/gtc/type_ptr.hpp"
-#include "third/glm/gtc/matrix_transform.hpp"

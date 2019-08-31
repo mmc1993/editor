@@ -68,6 +68,8 @@ enum class UIAlignEnum {
     //kHCENTER_VCENTER,       //  水平居中,   垂直居中
 };
 
+constexpr auto LAYOUT_DRAG_PADDING = 5.0f;      //  layout 可拖动边距
+
 //  字符串转其他类型
 inline bool     S2B(const std::string & s) { return s == "ok"; }
 inline int      S2I(const std::string & s) { return std::stoi(s); }

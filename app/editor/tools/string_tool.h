@@ -1,6 +1,5 @@
 #pragma once
 
-
 namespace string_tool {
 	inline std::string Join(const std::vector<std::string> & vec, const std::string & str)
 	{

@@ -25,6 +25,10 @@ public:
     void ResetLayout();
     void ApplyLayout();
 
+    glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0));
+    glm::vec4 ToLocalCoord(const glm::vec4 & coord);
+    glm::vec2 ToLocalCoord(const glm::vec2 & coord);
+
 protected:
     UIClass(UITypeEnum type, UIState * state) 
         : _type(type)

@@ -288,6 +288,7 @@
     <ClInclude Include="editor\third\tinyxml\tinyxml.h" />
     <ClInclude Include="editor\tools\debug_tool.h" />
     <ClInclude Include="editor\tools\file_tool.h" />
+    <ClInclude Include="editor\tools\math_tool.h" />
     <ClInclude Include="editor\tools\serialize_tool.h" />
     <ClInclude Include="editor\tools\std_tool.h" />
     <ClInclude Include="editor\tools\string_tool.h" />
