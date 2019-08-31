@@ -174,6 +174,19 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
+glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
+{
+    auto move = GetUIData(GetState<UIState>()->mData, Move);
+    switch (direct)
+    {
+    case DirectEnum::kU: move.y += offset.y; move.w -= offset.y; break;
+    case DirectEnum::kD: move.w += offset.y; break;
+    case DirectEnum::kL: move.x += offset.x; move.z -= offset.x; break;
+    case DirectEnum::kR: move.z += offset.x; break;
+    }
+    return move;
+}
+
 //--------------------------------------------------------------------------------
 //  Layout
 //--------------------------------------------------------------------------------
@@ -257,7 +270,7 @@ void UIClassLayout::OnRender(float dt)
     auto thisState =            GetState<UIStateLayout>();
     auto rootState = GetRoot()->GetState<UIStateLayout>();
 
-    if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsWindowHovered())
+    if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
         const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
@@ -265,7 +278,7 @@ void UIClassLayout::OnRender(float dt)
         const auto direct = math_tool::IsHitEdge(
             glm::vec4(world.x, world.y, move.z, move.w),
             glm::vec2(mouse.x, mouse.y), LAYOUT_DRAG_PADDING);
-        if (direct != -1 && thisState->mJoin[direct].mIn.first == nullptr)
+        if (direct != -1 && IsCanDrag((DirectEnum)direct))
         {
             switch ((DirectEnum)direct)
             {
@@ -286,20 +299,70 @@ void UIClassLayout::OnRender(float dt)
     {
         const auto & offset = ImGui::GetIO().MouseDelta;
         auto move   = GetUIData(thisState->mData, Move);
-        switch ((int)rootState->mStretchFocus.mDirect)
+        if (IsCanDrag(rootState->mStretchFocus.mDirect, glm::vec2(offset.x, offset.y)))
         {
-        case (int)DirectEnum::kU: move.y += offset.y; break;
-        case (int)DirectEnum::kD: move.w += offset.y; break;
-        case (int)DirectEnum::kL: move.x += offset.x; break;
-        case (int)DirectEnum::kR: move.z += offset.x; break;
+            switch ((int)rootState->mStretchFocus.mDirect)
+            {
+            case (int)DirectEnum::kU: move.y += offset.y; break;
+            case (int)DirectEnum::kD: move.w += offset.y; break;
+            case (int)DirectEnum::kL: move.x += offset.x; break;
+            case (int)DirectEnum::kR: move.z += offset.x; break;
+            }
+            SetUIData(thisState->mData, Move, move);
         }
-        SetUIData(thisState->mData, Move, move);
     }
 
     if (ImGui::IsMouseReleased(0))
     {
         thisState->mStretchFocus.mObject = nullptr;
     }
+}
+
+bool UIClassLayout::IsCanDrag(DirectEnum edge)
+{
+    auto parent = GetParent();
+    CHECK_RET(parent != nullptr, false);
+    ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
+    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
+    const auto & thisMove   = GetUIData(        GetState<UIState>()->mData, Move);
+    if (GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first == nullptr)
+    {
+        switch (edge)
+        {
+        case DirectEnum::kU: return thisMove.y != 0;
+        case DirectEnum::kD: return thisMove.y + thisMove.w != parentMove.w;
+        case DirectEnum::kL: return thisMove.x != 0;
+        case DirectEnum::kR: return thisMove.x + thisMove.z != parentMove.z;
+        }
+        ASSERT_LOG(false, "{0}", (int)edge);
+    }
+    return false;
+}
+
+bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
+{
+    CHECK_RET((edge == DirectEnum::kU || edge == DirectEnum::kD) && offset.y != 0 ||
+              (edge == DirectEnum::kL || edge == DirectEnum::kR) && offset.x != 0, false);
+
+    auto thisState = GetState<UIStateLayout>();
+    const auto & move = CalcStretech(edge, offset);
+    const auto & min  = GetUIData(thisState->mData, StretchMin);
+    if (move.z < min.x || move.w < min.y) {
+        return false;
+    }
+
+    for (auto object : thisState->mJoin[(int)edge].mOut)
+    {
+        auto state = object->GetState<UIStateLayout>();
+        for (auto i = 0; i != (int)DirectEnum::LENGTH; ++i)
+        {
+            if (state->mJoin[i].mIn.first  == this && 
+                state->mJoin[i].mIn.second == edge &&
+                !((UIClassLayout *)object)->IsCanDrag((DirectEnum)i, offset))
+            { return false; }
+        }
+    }
+    return true;
 }
 
 bool UIClassLayout::OnEnter()

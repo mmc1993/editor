@@ -177,6 +177,8 @@ __REG_GET_UI_DATA(glm::vec4,       _Move,                  glm::vec4()         )
 __REG_SET_UI_DATA(glm::vec4,       _Move                                       )
 __REG_GET_UI_DATA(bool,            IsWindow,               false               )   //  窗口
 __REG_SET_UI_DATA(bool,            IsWindow                                    )
+__REG_GET_UI_DATA(glm::vec2,       StretchMin,             glm::vec2(LAYOUT_DRAG_PADDING * 3, LAYOUT_DRAG_PADDING * 3))   //  可拉动最小宽度
+__REG_SET_UI_DATA(glm::vec2,       StretchMin                                  )
 
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
@@ -202,6 +204,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledKey);
     __REG_PARSE_UI_DATA(data, key, val, bool,          EnabledMouse);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4,     _Move);
+    __REG_PARSE_UI_DATA(data, key, val, glm::vec2,     StretchMin);
 
 }
 
