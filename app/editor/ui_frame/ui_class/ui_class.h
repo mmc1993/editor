@@ -69,9 +69,4 @@ protected:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave() override;
-
-    glm::vec4 StretchU(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
-    glm::vec4 StretchD(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
-    glm::vec4 StretchL(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
-    glm::vec4 StretchR(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move);
 };

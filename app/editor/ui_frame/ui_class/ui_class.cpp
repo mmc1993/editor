@@ -242,21 +242,24 @@ void UIClassLayout::OnResetLayout()
 void UIClassLayout::OnApplyLayout()
 {
     auto thisState = GetState<UIStateLayout>();
-
+    auto& thisMove = GetUIData(thisState->mData, Move);
     for (auto direct = 0; direct != (int)DirectEnum::LENGTH; ++direct)
     {
-        auto thisState = GetState<UIStateLayout>();
         if (thisState->mJoin[(int)direct].mIn.first != nullptr)
         {
             const auto & edge = thisState->mJoin[(int)direct].mIn;
             const auto & move = GetUIData(edge.first->GetState<UIState>()->mData, Move);
-            switch ((DirectEnum)direct)
-            {
-            case DirectEnum::kU: SetUIData(thisState->mData, Move, StretchU(edge, move)); break;
-            case DirectEnum::kD: SetUIData(thisState->mData, Move, StretchD(edge, move)); break;
-            case DirectEnum::kL: SetUIData(thisState->mData, Move, StretchL(edge, move)); break;
-            case DirectEnum::kR: SetUIData(thisState->mData, Move, StretchR(edge, move)); break;
-            }
+            glm::vec2 offset(0, 0);
+            if      ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y; }
+            else if ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisMove.y; }
+            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisMove.y - thisMove.w; }
+            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y - thisMove.w; }
+
+            if      ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kL) { offset.x = move.x - thisMove.x; }
+            else if ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisMove.x; }
+            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisMove.x - thisMove.z; }
+            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kL) { offset.x = move.x - thisMove.x - thisMove.z; }
+            SetUIData(thisState->mData, Move, CalcStretech((DirectEnum)direct, offset));
         }
     }
 }
@@ -430,68 +433,4 @@ void UIClassLayout::OnLeave()
     {
         ImGui::EndChild();
     }
-}
-
-glm::vec4 UIClassLayout::StretchU(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move)
-{
-    auto thisState = GetState<UIStateLayout>();
-    auto thisMove = GetUIData(thisState->mData, Move);
-    if      (edge.second == DirectEnum::kU)
-    {
-        thisMove.w += (thisMove.y - move.y);
-        thisMove.y = move.y;
-    }
-    else if (edge.second == DirectEnum::kD)
-    {
-        thisMove.w += (thisMove.y - move.y - move.w);
-        thisMove.y = move.y + move.w;
-    }
-    return thisMove;
-}
-
-glm::vec4 UIClassLayout::StretchD(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move)
-{
-    auto thisState = GetState<UIStateLayout>();
-    auto thisMove = GetUIData(thisState->mData, Move);
-    if      (edge.second == DirectEnum::kU)
-    {
-        thisMove.w += (move.y - thisMove.y - thisMove.w);
-    }
-    else if (edge.second == DirectEnum::kD)
-    {
-        thisMove.w += (move.y + move.w - thisMove.y - thisMove.w);
-    }
-    return thisMove;
-}
-
-glm::vec4 UIClassLayout::StretchL(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move)
-{
-    auto thisState = GetState<UIStateLayout>();
-    auto thisMove = GetUIData(thisState->mData, Move);
-    if      (edge.second == DirectEnum::kL)
-    {
-        thisMove.z += (thisMove.x - move.x);
-        thisMove.x = move.x;
-    }
-    else if (edge.second == DirectEnum::kR)
-    {
-        thisMove.z += (thisMove.x - move.x - move.z);
-        thisMove.x = move.x + move.z;
-    }
-    return thisMove;
-}
-
-glm::vec4 UIClassLayout::StretchR(const std::pair<UIClass *, DirectEnum> &edge, const glm::vec4 & move)
-{
-    auto thisState = GetState<UIStateLayout>();
-    auto thisMove = GetUIData(thisState->mData, Move);
-    if      (edge.second == DirectEnum::kL)
-    {
-        thisMove.z += (move.x - thisMove.x - thisMove.z);
-    }
-    else if (edge.second == DirectEnum::kR)
-    {
-        thisMove.z += (move.x + move.z - thisMove.x - thisMove.z);
-    }
-    return thisMove;
 }
