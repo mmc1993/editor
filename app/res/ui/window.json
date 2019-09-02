@@ -4,7 +4,8 @@
 		"Name": "Root",
 		"Version": "3.2.0",
 		"Move": "0 0 1280 720",
-		"IsWindow": "ok"
+        "IsWindow": "ok",
+        "IsFullScreen": "ok"
 	},
 	"__Children": [
 		{
@@ -12,7 +13,8 @@
 				"Type": "3",
 				"Skin": "PanelEmpty",
 				"Move": "0 0 320 720",
-				"Name": "1"
+                "Name": "1",
+                "Align": "384"
 			},
 			"__Children": [
 				
@@ -23,7 +25,8 @@
 				"Type": "3",
 				"Skin": "PanelEmpty",
 				"Move": "320 0 650 540",
-				"Name": "2"
+                "Name": "2",
+                "Align": "384"
 			},
 			"__Children": [
 				
@@ -34,7 +37,8 @@
 				"Type": "3",
 				"Skin": "PanelEmpty",
 				"Move": "320 540 650 180",
-				"Name": "3"
+				"Name": "3",
+                "Align": "384"
 			},
 			"__Children": [
 				
@@ -45,7 +49,8 @@
 				"Type": "3",
 				"Skin": "PanelEmpty",
 				"Move": "970 0 310 720",
-				"Name": "4"
+				"Name": "4",
+                "Align": "384"
 			},
 			"__Children": [
 				

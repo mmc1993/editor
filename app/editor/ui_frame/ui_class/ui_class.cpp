@@ -57,10 +57,7 @@ UIClass * UIClass::GetParent()
 
 void UIClass::Update(float dt)
 {
-    if (GetParent() != nullptr)
-    {
-        ApplyLayout();
-    }
+    ApplyLayout();
     
     OnUpdate(dt);
     std::for_each(_children.begin(), _children.end(),
@@ -68,7 +65,7 @@ void UIClass::Update(float dt)
                   std::placeholders::_1, dt));
 
     //  刷新备份数据
-    auto data = GetState<UIState>()->mData;
+    auto & data = GetState<UIState>()->mData;
     SetUIData(data, _Move, GetUIData(data, Move));
 }
 
@@ -91,55 +88,82 @@ void UIClass::ResetLayout()
     //  初始化备份数据
     auto & data = GetState<UIState>()->mData;
     SetUIData(data, _Move, GetUIData(data, Move));
-
-    std::for_each(_children.begin(), _children.end(),
+    std::for_each(_children.begin(),_children.end(),
                     std::bind(&UIClass::ResetLayout, 
                     std::placeholders::_1));
 }
 
 void UIClass::ApplyLayout()
 {
-    auto & parentData = GetParent()->GetState<UIState>()->mData;
-    auto & parentMoveOld = GetUIData(parentData, _Move);
-    auto & parentMoveNew = GetUIData(parentData,  Move);
     auto & thisData = GetState<UIState>()->mData;
-
-    if (parentMoveOld.z != parentMoveNew.z || 
-        parentMoveOld.w != parentMoveNew.w)
+    if (GetParent() != nullptr)
     {
-        auto move    = GetUIData(thisData, Move);
-        auto align   = GetUIData(thisData, Align);
-        auto margin  = glm::vec4(move.x, move.y,
-                                 move.x + move.z,
-                                 move.y + move.w);
-        if (align & (int)UIAlignEnum::kCLING_B)
-        {
-            margin.w += parentMoveNew.w - parentMoveOld.w;
-        }
-        if (align & (int)UIAlignEnum::kCLING_R)
-        {
-            margin.z += parentMoveNew.z - parentMoveOld.z;
-        }
-        if (align & (int)UIAlignEnum::kCENTER_H)
-        {
-            margin.x = margin.x / parentMoveOld.z * parentMoveNew.z;
-            margin.z = margin.z / parentMoveOld.z * parentMoveNew.z;
-        }
-        if (align & (int)UIAlignEnum::kCENTER_V)
-        {
-            margin.y = margin.y / parentMoveOld.w * parentMoveNew.w;
-            margin.w = margin.w / parentMoveOld.w * parentMoveNew.w;
-        }
+        auto & parentData = GetParent()->GetState<UIState>()->mData;
+        auto & parentMoveOld = GetUIData(parentData, _Move);
+        auto & parentMoveNew = GetUIData(parentData,  Move);
 
-        if (!(align & (int)UIAlignEnum::kCLING_T)) { margin.y = margin.w - move.w; }
-        if (!(align & (int)UIAlignEnum::kCLING_L)) { margin.x = margin.z - move.z; }
-        move.x = margin.x;
-        move.y = margin.y;
-        move.z = margin.z - margin.x;
-        move.w = margin.w - margin.y;
+        if (!math_tool::Equal(parentMoveOld.z, parentMoveNew.z) || 
+            !math_tool::Equal(parentMoveOld.w, parentMoveNew.w))
+        {
+            auto move    = GetUIData(thisData, Move);
+            auto align   = GetUIData(thisData, Align);
+            auto margin  = glm::vec4(move.x, move.y, move.x + move.z, move.y + move.w);
+            //  上下贴边, 排斥垂直居中, 垂直拉伸
+            ASSERT_LOG((align & ((int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B)) == 0
+                    || (align & (int)UIAlignEnum::kCENTER_V)  == 0
+                    && (align & (int)UIAlignEnum::kSTRETCH_V) == 0, "{0}", align);
+            //  左右贴边, 排斥水平居中, 水平拉伸
+            ASSERT_LOG((align & ((int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R)) == 0
+                    || (align & (int)UIAlignEnum::kCENTER_H)  == 0
+                    && (align & (int)UIAlignEnum::kSTRETCH_H) == 0, "{0}", align);
+            //  水平居中, 排斥水平拉伸
+            ASSERT_LOG((align & (int)UIAlignEnum::kCENTER_H) == 0
+                    || (align & (int)UIAlignEnum::kSTRETCH_H) == 0, "{0}", align);
+            //  垂直居中, 排斥垂直拉伸
+            ASSERT_LOG((align & (int)UIAlignEnum::kCENTER_V) == 0
+                    || (align & (int)UIAlignEnum::kSTRETCH_V) == 0, "{0}", align);
+            if (align & (int)UIAlignEnum::kCLING_B)
+            {
+                margin.w += parentMoveNew.w - parentMoveOld.w;
+                if ((align & (int)UIAlignEnum::kCLING_T) == 0) { margin.y = margin.w - move.w; }
+            }
+            if (align & (int)UIAlignEnum::kCLING_R)
+            {
+                margin.z += parentMoveNew.z - parentMoveOld.z;
+                if ((align & (int)UIAlignEnum::kCLING_L) == 0) { margin.x = margin.z - move.z; }
+            }
+            if (align & (int)UIAlignEnum::kCENTER_H)
+            {
+                margin.x = margin.x / parentMoveOld.z * parentMoveNew.z + margin.z / parentMoveOld.z * parentMoveNew.z;
+            }
+            if (align & (int)UIAlignEnum::kCENTER_V)
+            {
+                margin.y = margin.y / parentMoveOld.w * parentMoveNew.w + margin.w / parentMoveOld.w * parentMoveNew.w;
+            }
+            if (align & (int)UIAlignEnum::kSTRETCH_H)
+            {
+                margin.x = std::floor(margin.x / parentMoveOld.z * parentMoveNew.z);
+                margin.z = std::floor(margin.z / parentMoveOld.z * parentMoveNew.z);
+            }
+            if (align & (int)UIAlignEnum::kSTRETCH_V)
+            {
+                margin.y = std::floor(margin.y / parentMoveOld.w * parentMoveNew.w);
+                margin.w = std::floor(margin.w / parentMoveOld.w * parentMoveNew.w);
+            }
+            move.x = margin.x;
+            move.y = margin.y;
+            move.z = margin.z - margin.x;
+            move.w = margin.w - margin.y;
+            SetUIData(thisData, Move, move);
+        }
+    }
+    else
+    {
+        const auto & size = ImGui_ImplGlfw_GetWindowSize();
+        auto move = GetUIData(thisData, Move);
+        move.z = size.x;move.w = size.y;
         SetUIData(thisData, Move, move);
     }
-    
     OnApplyLayout();
 }
 
@@ -242,9 +266,9 @@ void UIClassLayout::OnResetLayout()
 void UIClassLayout::OnApplyLayout()
 {
     auto thisState = GetState<UIStateLayout>();
-    auto& thisMove = GetUIData(thisState->mData, Move);
     for (auto direct = 0; direct != (int)DirectEnum::LENGTH; ++direct)
     {
+        auto & thisMove = GetUIData(thisState->mData, Move);
         if (thisState->mJoin[(int)direct].mIn.first != nullptr)
         {
             const auto & edge = thisState->mJoin[(int)direct].mIn;
@@ -272,13 +296,12 @@ void UIClassLayout::OnRender(float dt)
 {
     auto thisState =            GetState<UIStateLayout>();
     auto rootState = GetRoot()->GetState<UIStateLayout>();
-
     if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
         const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
         const auto & move = GetUIData(thisState->mData, Move);
-        const auto direct = math_tool::IsHitEdge(
+        const auto direct = math_tool::IsOnEdge(
             glm::vec4(world.x, world.y, move.z, move.w),
             glm::vec2(mouse.x, mouse.y), LAYOUT_DRAG_PADDING);
         if (direct != -1 && IsCanDrag((DirectEnum)direct))
@@ -326,16 +349,16 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge)
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
-    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
     const auto & thisMove   = GetUIData(        GetState<UIState>()->mData, Move);
+    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
     if (GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first == nullptr)
     {
         switch (edge)
         {
-        case DirectEnum::kU: return thisMove.y != 0;
-        case DirectEnum::kD: return thisMove.y + thisMove.w != parentMove.w;
-        case DirectEnum::kL: return thisMove.x != 0;
-        case DirectEnum::kR: return thisMove.x + thisMove.z != parentMove.z;
+        case DirectEnum::kU: return !math_tool::Equal(thisMove.y, 0);
+        case DirectEnum::kD: return !math_tool::Equal(thisMove.y + thisMove.w, parentMove.w);
+        case DirectEnum::kL: return !math_tool::Equal(thisMove.x, 0);
+        case DirectEnum::kR: return !math_tool::Equal(thisMove.x + thisMove.z, parentMove.z);
         }
         ASSERT_LOG(false, "{0}", (int)edge);
     }
@@ -350,9 +373,7 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
     auto thisState = GetState<UIStateLayout>();
     const auto & move = CalcStretech(edge, offset);
     const auto & min  = GetUIData(thisState->mData, StretchMin);
-    if (move.z < min.x || move.w < min.y) {
-        return false;
-    }
+    if (move.z < min.x || move.w < min.y) { return false; }
 
     for (auto object : thisState->mJoin[(int)edge].mOut)
     {
@@ -378,7 +399,7 @@ bool UIClassLayout::OnEnter()
         ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
         ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
         size_t flag = 0;
-        if (GetUIData(state->mData, WindowIsFullScreen))
+        if (GetUIData(state->mData, IsFullScreen))
         {
             size = ImGui_ImplGlfw_GetWindowSize();
             move.x = 0;
@@ -389,35 +410,42 @@ bool UIClassLayout::OnEnter()
         }
         else
         {
-            if (!GetUIData(state->mData, WindowIsNav))        { flag |= ImGuiWindowFlags_NoNav; }
-            if (!GetUIData(state->mData, WindowIsMove))       { flag |= ImGuiWindowFlags_NoMove; }
-            if (!GetUIData(state->mData, WindowIsSize))       { flag |= ImGuiWindowFlags_NoResize; }
-            if (!GetUIData(state->mData, WindowIsTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-            if (!GetUIData(state->mData, WindowIsCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-            if (!GetUIData(state->mData, WindowIsScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+            if (!GetUIData(state->mData, IsShowNav))        { flag |= ImGuiWindowFlags_NoNav; }
+            if (!GetUIData(state->mData, IsCanMove))        { flag |= ImGuiWindowFlags_NoMove; }
+            if (!GetUIData(state->mData, IsCanStretch))     { flag |= ImGuiWindowFlags_NoResize; }
+            if (!GetUIData(state->mData, IsShowTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+            if (!GetUIData(state->mData, IsShowCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+            if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-        ImGui::SetNextWindowPos(move);
+        if (GetUIData(state->mData, IsFullScreen) || 
+            GetUIData(state->mData, Align) != (int)UIAlignEnum::kDEFAULT)
+        {
+            ImGui::SetNextWindowPos(move);
+        }
         ImGui::SetNextWindowSize(size);
         return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
     }
     else
     {
         size_t flag = 0;
-        if (!GetUIData(state->mData, WindowIsNav)) { flag |= ImGuiWindowFlags_NoNav; }
-        if (!GetUIData(state->mData, WindowIsMove)) { flag |= ImGuiWindowFlags_NoMove; }
-        if (!GetUIData(state->mData, WindowIsSize)) { flag |= ImGuiWindowFlags_NoResize; }
-        if (!GetUIData(state->mData, WindowIsTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (!GetUIData(state->mData, WindowIsCollapse)) { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (!GetUIData(state->mData, WindowIsScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+        if (!GetUIData(state->mData, IsShowNav))        { flag |= ImGuiWindowFlags_NoNav; }
+        if (!GetUIData(state->mData, IsCanMove))        { flag |= ImGuiWindowFlags_NoMove; }
+        if (!GetUIData(state->mData, IsCanStretch))     { flag |= ImGuiWindowFlags_NoResize; }
+        if (!GetUIData(state->mData, IsShowTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
+        if (!GetUIData(state->mData, IsShowCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
+        if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     
         auto & name = GetUIData(state->mData, Name);
         auto & move = GetUIData(state->mData, Move);
-        ImGui::SetCursorPos(ImVec2(move.x,move.y));
+        if (GetUIData(state->mData, Align) != (int)UIAlignEnum::kDEFAULT)
+        {
+            ImGui::SetCursorPos(ImVec2(move.x, move.y));
+        }
         return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
-            GetUIData(state->mData, LayoutIsShowBorder), flag);
+            GetUIData(state->mData, IsShowBorder), flag);
     }
 }
 
