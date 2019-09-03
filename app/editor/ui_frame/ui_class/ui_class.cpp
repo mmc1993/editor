@@ -481,7 +481,9 @@ void UIClassTextBox::OnRender(float dt)
     LockPosition();
 
     //  ‰÷»æ«∞
+    auto & bgColor = GetUIData(state->mData, BgColor);
     auto & color = GetUIData(state->mData, Color);
+    ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
     ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.x, color.y, color.z, color.w));
 
     if      (GetUIData(state->mData, IsTextBox))
@@ -494,7 +496,11 @@ void UIClassTextBox::OnRender(float dt)
                   | ImGuiInputTextFlags_AutoSelectAll;
         if (GetUIData(state->mData, IsMulti))
         {
-            if (ImGui::InputTextMultiline(GetUIData(state->mData, Title).c_str(), state->mBuffer.data(), state->mBuffer.size(), ImVec2(move.z, move.w), flag))
+            if (ImGui::InputTextMultiline(
+                GetUIData(state->mData, Title).c_str(), 
+                state->mBuffer.data(), 
+                state->mBuffer.size(), 
+                ImVec2(move.z, move.w), flag))
             {
                 std::cout << "Input Text" << std::endl;
             }
@@ -502,7 +508,10 @@ void UIClassTextBox::OnRender(float dt)
         else
         {
             ImGui::PushItemWidth(move.z);
-            if (ImGui::InputText(GetUIData(state->mData, Title).c_str(), state->mBuffer.data(), state->mBuffer.size(), flag))
+            if (ImGui::InputText(
+                GetUIData(state->mData, Title).c_str(), 
+                state->mBuffer.data(), 
+                state->mBuffer.size(), flag))
             {
                 std::cout << "Input Text" << std::endl;
             }
@@ -510,6 +519,13 @@ void UIClassTextBox::OnRender(float dt)
         }
     }
 
+    if (GetUIData(state->mData, IsShowBorder))
+    {
+        const auto & min = ImGui::GetItemRectMin();
+        const auto & max = ImGui::GetItemRectMax();
+        ImGui::GetWindowDrawList()->AddRect(min, max, 0xFFFFFFFF);
+    }
+
     //  ‰÷»æ∫Û
-    ImGui::PopStyleColor();
+    ImGui::PopStyleColor(2);
 }

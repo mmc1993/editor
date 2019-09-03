@@ -166,6 +166,8 @@ __REG_GET_UI_DATA(glm::vec4, Color, glm::vec4()) //  颜色
 __REG_SET_UI_DATA(glm::vec4, Color)
 __REG_GET_UI_DATA(glm::vec4, _Move, glm::vec4()) //  方位
 __REG_SET_UI_DATA(glm::vec4, _Move)
+__REG_GET_UI_DATA(glm::vec4, BgColor, glm::vec4()) //  背景色
+__REG_SET_UI_DATA(glm::vec4, BgColor)
 
 __REG_GET_UI_DATA(glm::vec2, StretchMin, glm::vec2(LAYOUT_DRAG_PADDING * 3, LAYOUT_DRAG_PADDING * 3)) //  可拉动最小宽度
 __REG_SET_UI_DATA(glm::vec2, StretchMin)
@@ -196,6 +198,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color);
+    __REG_PARSE_UI_DATA(data, key, val, glm::vec4, BgColor);
 }
 
 #define GetUIData(data, K)         __GetData##K(data)

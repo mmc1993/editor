@@ -26,7 +26,8 @@
                         "Align": "20",
                         "IsEditBox": "ok",
                         "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##1"
+                        "Title": "##1",
+                        "BgColor": "0.19 0.19 0.19 1.0"
                     },
                     "__Children": [
                         
@@ -41,7 +42,9 @@
                         "Align": "20",
                         "IsEditBox": "ok",
                         "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##2"
+                        "Title": "##2",
+                        "BgColor": "0.19 0.19 0.19 1.0",
+                        "IsMulti": "ok"
                     },
                     "__Children": [
                         
@@ -56,7 +59,8 @@
                         "Align": "20",
                         "IsEditBox": "ok",
                         "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##3"
+                        "Title": "##3",
+                        "BgColor": "0.19 0.19 0.19 1.0"
                     },
                     "__Children": [
                         
