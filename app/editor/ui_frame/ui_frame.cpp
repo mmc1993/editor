@@ -31,7 +31,6 @@ void UIFrame::SetRoot(const std::string & url)
 
 void UIFrame::Update(float dt)
 {
-    _uiRoot->Update(dt);
     _uiRoot->Render(dt);
 }
 

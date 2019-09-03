@@ -20,9 +20,7 @@ public:
     UIClass * GetRoot();
     UIClass * GetParent();
 
-    void Update(float dt);
     void Render(float dt);
-
     void ResetLayout();
     void ApplyLayout();
 
@@ -42,7 +40,6 @@ protected:
     virtual void OnLeave();
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
-    virtual void OnUpdate(float dt) = 0;
     virtual void OnRender(float dt) = 0;
 
 private:
@@ -60,7 +57,6 @@ public:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave() override;
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -70,7 +66,6 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -84,7 +79,6 @@ private:
     virtual void OnLeave() override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 
     bool IsCanDrag(DirectEnum edge);
@@ -97,7 +91,6 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -107,7 +100,6 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -117,7 +109,6 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -127,7 +118,6 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -137,6 +127,5 @@ public:
     { }
 
 private:
-    virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };

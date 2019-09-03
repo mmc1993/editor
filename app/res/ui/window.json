@@ -1,6 +1,6 @@
 {
 	"__Property": {
-		"Type": "3",
+		"Type": "2",
 		"Name": "Root",
 		"Version": "3.2.0",
 		"Move": "0 0 1280 720",
@@ -10,7 +10,7 @@
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "2",
 				"Skin": "PanelEmpty",
 				"Move": "0 0 320 720",
                 "Name": "1",
@@ -22,7 +22,7 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "2",
 				"Skin": "PanelEmpty",
 				"Move": "320 0 650 540",
                 "Name": "2",
@@ -34,7 +34,7 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "2",
 				"Skin": "PanelEmpty",
 				"Move": "320 540 650 180",
 				"Name": "3",
@@ -46,7 +46,7 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "2",
 				"Skin": "PanelEmpty",
 				"Move": "970 0 310 720",
 				"Name": "4",
