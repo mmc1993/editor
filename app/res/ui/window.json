@@ -17,7 +17,51 @@
                 "Align": "384"
 			},
 			"__Children": [
-				
+                {
+                    "__Property": {
+                        "Type": "3",
+                        "Skin": "Text",
+                        "Move": "10 100 100 50",
+                        "Name": "1",
+                        "Align": "20",
+                        "IsEditBox": "ok",
+                        "Color": "1.0 1.0 1.0 1.0",
+                        "Title": "##1"
+                    },
+                    "__Children": [
+                        
+                    ]
+                },
+                {
+                    "__Property": {
+                        "Type": "3",
+                        "Skin": "Text",
+                        "Move": "10 200 100 50",
+                        "Name": "1",
+                        "Align": "20",
+                        "IsEditBox": "ok",
+                        "Color": "1.0 1.0 1.0 1.0",
+                        "Title": "##2"
+                    },
+                    "__Children": [
+                        
+                    ]
+                },
+                {
+                    "__Property": {
+                        "Type": "3",
+                        "Skin": "Text",
+                        "Move": "10 300 100 50",
+                        "Name": "1",
+                        "Align": "20",
+                        "IsEditBox": "ok",
+                        "Color": "1.0 1.0 1.0 1.0",
+                        "Title": "##3"
+                    },
+                    "__Children": [
+                        
+                    ]
+                }
 			]
 		},
 		{

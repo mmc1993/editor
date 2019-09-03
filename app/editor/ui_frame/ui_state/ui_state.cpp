@@ -9,10 +9,7 @@ UIStateImage::UIStateImage()
 UIStateLayout::UIStateLayout()
 { }
 
-UIStateEditBox::UIStateEditBox()
-{ }
-
-UIStateTextBox::UIStateTextBox()
+UIStateTextBox::UIStateTextBox(): mBuffer(1024, '\0')
 { }
 
 UIStateComboBox::UIStateComboBox()

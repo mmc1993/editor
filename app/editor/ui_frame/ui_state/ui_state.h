@@ -40,13 +40,10 @@ public:
     UIStateLayout();
 };
 
-class UIStateEditBox : public UIState {
-public:
-    UIStateEditBox();
-};
-
 class UIStateTextBox : public UIState {
 public:
+    std::string mBuffer;
+
     UIStateTextBox();
 };
 

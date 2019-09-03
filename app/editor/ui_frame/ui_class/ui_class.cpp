@@ -203,6 +203,16 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
+void UIClass::LockPosition()
+{
+    auto & move = GetUIData(GetState<UIState>()->mData, Move);
+    auto align = GetUIData(GetState<UIState>()->mData, Align);
+    if (align != (int)UIAlignEnum::kDEFAULT)
+    {
+        ImGui::SetCursorPos(ImVec2(move.x, move.y));
+    }
+}
+
 bool UIClass::OnEnter()
 {
     return true;
@@ -269,12 +279,9 @@ bool UIClassLayout::OnEnter()
         if (!GetUIData(state->mData, IsShowCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
         if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     
+        LockPosition();
         auto & name = GetUIData(state->mData, Name);
         auto & move = GetUIData(state->mData, Move);
-        if (GetUIData(state->mData, Align) != (int)UIAlignEnum::kDEFAULT)
-        {
-            ImGui::SetCursorPos(ImVec2(move.x, move.y));
-        }
         return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
             GetUIData(state->mData, IsShowBorder), flag);
     }
@@ -463,4 +470,46 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
         }
     }
     return true;
+}
+
+void UIClassTextBox::OnRender(float dt)
+{
+    auto state = GetState<UIStateTextBox>();
+    auto & move = GetUIData(state->mData, Move);
+    ASSERT_LOG(GetUIData(state->mData, IsTextBox) || GetUIData(state->mData, IsEditBox), "");
+
+    LockPosition();
+
+    //  äÖÈ¾Ç°
+    auto & color = GetUIData(state->mData, Color);
+    ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.x, color.y, color.z, color.w));
+
+    if      (GetUIData(state->mData, IsTextBox))
+    {
+        ImGui::Text(GetUIData(state->mData, Title).c_str());
+    }
+    else if (GetUIData(state->mData, IsEditBox))
+    {
+        auto flag = ImGuiInputTextFlags_EnterReturnsTrue
+                  | ImGuiInputTextFlags_AutoSelectAll;
+        if (GetUIData(state->mData, IsMulti))
+        {
+            if (ImGui::InputTextMultiline(GetUIData(state->mData, Title).c_str(), state->mBuffer.data(), state->mBuffer.size(), ImVec2(move.z, move.w), flag))
+            {
+                std::cout << "Input Text" << std::endl;
+            }
+        }
+        else
+        {
+            ImGui::PushItemWidth(move.z);
+            if (ImGui::InputText(GetUIData(state->mData, Title).c_str(), state->mBuffer.data(), state->mBuffer.size(), flag))
+            {
+                std::cout << "Input Text" << std::endl;
+            }
+            ImGui::PopItemWidth();
+        }
+    }
+
+    //  äÖÈ¾ºó
+    ImGui::PopStyleColor();
 }

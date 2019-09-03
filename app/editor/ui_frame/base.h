@@ -16,7 +16,6 @@ enum class UITypeEnum {
     kTREE,                  //  树形
     kIMAGE,                 //  图片
     kLAYOUT,                //  布局
-    kEDITBOX,               //  编辑框
     kTEXTBOX,               //  文本框
     kCOMBOBOX,              //  下拉框
     kUICONVAS,              //  UI画布
@@ -121,12 +120,18 @@ __REG_SET_UI_DATA(int, Align)
 __REG_GET_UI_DATA(float, BorderNumber, 1) //  边框宽度
 __REG_SET_UI_DATA(float, BorderNumber)
 
+__REG_GET_UI_DATA(bool, IsMulti, false) //  多行
+__REG_SET_UI_DATA(bool, IsMulti)
 __REG_GET_UI_DATA(bool, IsWindow, false) //  窗口
 __REG_SET_UI_DATA(bool, IsWindow)
 __REG_GET_UI_DATA(bool, IsVisible, true) //  可见
 __REG_SET_UI_DATA(bool, IsVisible)
 __REG_GET_UI_DATA(bool, IsShowNav, false) //  有导航栏
 __REG_SET_UI_DATA(bool, IsShowNav)
+__REG_GET_UI_DATA(bool, IsTextBox, false) //  文本框
+__REG_SET_UI_DATA(bool, IsTextBox)
+__REG_GET_UI_DATA(bool, IsEditBox, false) //  编辑框
+__REG_SET_UI_DATA(bool, IsEditBox)
 __REG_GET_UI_DATA(bool, IsCanMove, false) //  可以移动
 __REG_SET_UI_DATA(bool, IsCanMove)
 __REG_GET_UI_DATA(bool, EnabledKey, false) //  启用键盘
@@ -169,9 +174,12 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
 {
     __REG_PARSE_UI_DATA(data, key, val, int, Align);
     __REG_PARSE_UI_DATA(data, key, val, float, BorderNumber);
+    __REG_PARSE_UI_DATA(data, key, val, bool, IsMulti);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsWindow);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsVisible);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowNav);
+    __REG_PARSE_UI_DATA(data, key, val, bool, IsTextBox);
+    __REG_PARSE_UI_DATA(data, key, val, bool, IsEditBox);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsCanMove);
     __REG_PARSE_UI_DATA(data, key, val, bool, EnabledKey);
     __REG_PARSE_UI_DATA(data, key, val, bool, EnabledMouse);
@@ -188,7 +196,6 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color);
-    __REG_PARSE_UI_DATA(data, key, val, glm::vec4, _Move);
 }
 
 #define GetUIData(data, K)         __GetData##K(data)

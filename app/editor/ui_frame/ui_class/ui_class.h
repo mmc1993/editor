@@ -36,6 +36,7 @@ protected:
         , _parent(nullptr)
     { }
 
+    void LockPosition();
     virtual bool OnEnter();
     virtual void OnLeave();
     virtual void OnResetLayout();
@@ -83,15 +84,6 @@ private:
 
     bool IsCanDrag(DirectEnum edge);
     bool IsCanDrag(DirectEnum edge, const glm::vec2 & offset);
-};
-
-class UIClassEditBox : public UIClass {
-public:
-    UIClassEditBox(UIState * state) : UIClass(UITypeEnum::kEDITBOX, state)
-    { }
-
-private:
-    virtual void OnRender(float dt) override;
 };
 
 class UIClassTextBox : public UIClass {
