@@ -17,7 +17,6 @@ enum class UITypeEnum {
     kIMAGE,                 //  图片
     kBUTTON,                //  按钮
     kLAYOUT,                //  布局
-    kWINDOW,                //  窗口
     kEDITBOX,               //  编辑框
     kTEXTBOX,               //  文本框
     kCOMBOBOX,              //  下拉框
@@ -50,24 +49,6 @@ enum class UIAlignEnum {
     kSTRETCH_H = 1 << 7,    //  水平拉伸
     kSTRETCH_V = 1 << 8,    //  垂直拉伸
     LENGTH,
-    //kSTRETCH,               //  拉伸
-    //kCENTER,                //  居中
-    //kLEFT_TOP,              //  左上停靠
-    //kLEFT_BOTTOM,           //  左下停靠
-    //kLEFT_VSTRETCH,         //  左停靠,     垂直拉伸
-    //kLEFT_VCENTER,          //  左停靠,     垂直居中
-    //kRIGHT_TOP,             //  右上停靠
-    //kRIGHT_BOTTOM,          //  右下停靠
-    //kRIGHT_VSTRETCH,        //  右停靠,     垂直拉伸
-    //kRIGHT_VCENTER,         //  右停靠,     垂直居中
-    //kHSTRETCH_TOP,          //  上停靠,     水平拉伸
-    //kHSTRETCH_BOTTOM,       //  下停靠,     水平拉伸
-    //kHSTRETCH_VSTRETCH,     //  水平拉伸,   垂直拉伸
-    //kHSTRETCH_VCENTER,      //  垂直居中,   水平拉伸
-    //kHCENTER_TOP,           //  上停靠,     水平居中
-    //kHCENTER_BOTTOM,        //  下停靠,     垂直居中
-    //kHCENTER_VSTRETCH,      //  水平居中,   垂直拉伸
-    //kHCENTER_VCENTER,       //  水平居中,   垂直居中
 };
 
 constexpr auto LAYOUT_DRAG_PADDING = 5.0f;      //  layout 可拖动边距

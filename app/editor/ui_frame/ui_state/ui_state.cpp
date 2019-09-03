@@ -1,8 +1,28 @@
 #include "ui_state.h"
 
-UIState::UIState()
+UIStateTree::UIStateTree()
+{ }
+
+UIStateImage::UIStateImage()
 { }
 
 UIStateLayout::UIStateLayout()
 { }
 
+UIStateButton::UIStateButton()
+{ }
+
+UIStateEditBox::UIStateEditBox()
+{ }
+
+UIStateTextBox::UIStateTextBox()
+{ }
+
+UIStateComboBox::UIStateComboBox()
+{ }
+
+UIStateUICanvas::UIStateUICanvas()
+{ }
+
+UIStateGLCanvas::UIStateGLCanvas()
+{ }

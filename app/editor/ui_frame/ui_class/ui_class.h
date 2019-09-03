@@ -38,12 +38,12 @@ protected:
         , _parent(nullptr)
     { }
 
-    virtual void OnResetLayout() = 0;
-    virtual void OnApplyLayout() = 0;
+    virtual bool OnEnter();
+    virtual void OnLeave();
+    virtual void OnResetLayout();
+    virtual void OnApplyLayout();
     virtual void OnUpdate(float dt) = 0;
     virtual void OnRender(float dt) = 0;
-    virtual bool OnEnter() = 0;
-    virtual void OnLeave() = 0;
 
 private:
     UITypeEnum             _type;
@@ -52,12 +52,44 @@ private:
     std::vector<UIClass *> _children;
 };
 
+class UIClassTree : public UIClass {
+public:
+    UIClassTree(UIState * state): UIClass(UITypeEnum::kTREE, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassImage : public UIClass {
+public:
+    UIClassImage(UIState * state): UIClass(UITypeEnum::kIMAGE, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassButton : public UIClass {
+public:
+    UIClassButton(UIState * state) : UIClass(UITypeEnum::kBUTTON, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
 class UIClassLayout : public UIClass {
 public:
     UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)
     { }
 
-protected:
+private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave() override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
     virtual void OnUpdate(float dt) override;
@@ -65,8 +97,55 @@ protected:
 
     bool IsCanDrag(DirectEnum edge);
     bool IsCanDrag(DirectEnum edge, const glm::vec2 & offset);
+};
+
+class UIClassEditBox : public UIClass {
+public:
+    UIClassEditBox(UIState * state) : UIClass(UITypeEnum::kEDITBOX, state)
+    { }
 
 private:
-    virtual bool OnEnter() override;
-    virtual void OnLeave() override;
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassTextBox : public UIClass {
+public:
+    UIClassTextBox(UIState * state) : UIClass(UITypeEnum::kTEXTBOX, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassComboBox : public UIClass {
+public:
+    UIClassComboBox(UIState * state) : UIClass(UITypeEnum::kCOMBOBOX, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassUICanvas : public UIClass {
+public:
+    UIClassUICanvas(UIState * state) : UIClass(UITypeEnum::kUICONVAS, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
+};
+
+
+class UIClassGLCanvas : public UIClass {
+public:
+    UIClassGLCanvas(UIState * state) : UIClass(UITypeEnum::kGLCONVAS, state)
+    { }
+
+private:
+    virtual void OnUpdate(float dt) override;
+    virtual void OnRender(float dt) override;
 };

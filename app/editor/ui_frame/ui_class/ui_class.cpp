@@ -88,6 +88,7 @@ void UIClass::ResetLayout()
     //  初始化备份数据
     auto & data = GetState<UIState>()->mData;
     SetUIData(data, _Move, GetUIData(data, Move));
+
     std::for_each(_children.begin(),_children.end(),
                     std::bind(&UIClass::ResetLayout, 
                     std::placeholders::_1));
@@ -142,13 +143,13 @@ void UIClass::ApplyLayout()
             }
             if (align & (int)UIAlignEnum::kSTRETCH_H)
             {
-                margin.x = std::floor(margin.x / parentMoveOld.z * parentMoveNew.z);
-                margin.z = std::floor(margin.z / parentMoveOld.z * parentMoveNew.z);
+                margin.x = (margin.x / parentMoveOld.z * parentMoveNew.z);
+                margin.z = (margin.z / parentMoveOld.z * parentMoveNew.z);
             }
             if (align & (int)UIAlignEnum::kSTRETCH_V)
             {
-                margin.y = std::floor(margin.y / parentMoveOld.w * parentMoveNew.w);
-                margin.w = std::floor(margin.w / parentMoveOld.w * parentMoveNew.w);
+                margin.y = (margin.y / parentMoveOld.w * parentMoveNew.w);
+                margin.w = (margin.w / parentMoveOld.w * parentMoveNew.w);
             }
             move.x = margin.x;
             move.y = margin.y;
@@ -210,6 +211,20 @@ glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
     }
     return move;
 }
+
+bool UIClass::OnEnter()
+{
+    return true;
+}
+
+void UIClass::OnLeave()
+{ }
+
+void UIClass::OnResetLayout()
+{ }
+
+void UIClass::OnApplyLayout()
+{ }
 
 //--------------------------------------------------------------------------------
 //  Layout
@@ -460,5 +475,25 @@ void UIClassLayout::OnLeave()
     else
     {
         ImGui::EndChild();
+    }
+}
+
+void UIClassButton::OnUpdate(float dt)
+{
+}
+
+void UIClassButton::OnRender(float dt)
+{
+    auto & data = GetState<UIState>()->mData;
+    auto & title = GetUIData(data, Title);
+    auto & align = GetUIData(data, Align);
+    auto & move = GetUIData(data, Move);
+    if (align != (int)UIAlignEnum::kDEFAULT)
+    {
+        ImGui::SetCursorPos(ImVec2(move.x, move.y));
+    }
+    if (ImGui::Button(title.c_str(), ImVec2(move.z, move.w)))
+    {
+        std::cout << "Button Click." << std::endl;
     }
 }
