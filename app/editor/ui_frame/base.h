@@ -15,7 +15,6 @@ enum class DirectEnum {
 enum class UITypeEnum {
     kTREE,                  //  树形
     kIMAGE,                 //  图片
-    kBUTTON,                //  按钮
     kLAYOUT,                //  布局
     kEDITBOX,               //  编辑框
     kTEXTBOX,               //  文本框

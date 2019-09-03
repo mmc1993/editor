@@ -26,10 +26,10 @@ public:
     void ResetLayout();
     void ApplyLayout();
 
+    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset);
     glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0));
     glm::vec4 ToLocalCoord(const glm::vec4 & coord);
     glm::vec2 ToLocalCoord(const glm::vec2 & coord);
-    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset);
 
 protected:
     UIClass(UITypeEnum type, UIState * state) 
@@ -58,6 +58,8 @@ public:
     { }
 
 private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave() override;
     virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
@@ -65,16 +67,6 @@ private:
 class UIClassImage : public UIClass {
 public:
     UIClassImage(UIState * state): UIClass(UITypeEnum::kIMAGE, state)
-    { }
-
-private:
-    virtual void OnUpdate(float dt) override;
-    virtual void OnRender(float dt) override;
-};
-
-class UIClassButton : public UIClass {
-public:
-    UIClassButton(UIState * state) : UIClass(UITypeEnum::kBUTTON, state)
     { }
 
 private:
@@ -138,7 +130,6 @@ private:
     virtual void OnUpdate(float dt) override;
     virtual void OnRender(float dt) override;
 };
-
 
 class UIClassGLCanvas : public UIClass {
 public:

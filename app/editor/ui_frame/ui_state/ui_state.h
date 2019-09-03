@@ -23,11 +23,6 @@ public:
     UIStateImage();
 };
 
-class UIStateButton : public UIState {
-public:
-    UIStateButton();
-};
-
 class UIStateLayout : public UIState {
 public:
     struct Join {

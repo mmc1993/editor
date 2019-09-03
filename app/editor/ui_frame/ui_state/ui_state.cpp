@@ -9,9 +9,6 @@ UIStateImage::UIStateImage()
 UIStateLayout::UIStateLayout()
 { }
 
-UIStateButton::UIStateButton()
-{ }
-
 UIStateEditBox::UIStateEditBox()
 { }
 

@@ -168,6 +168,19 @@ void UIClass::ApplyLayout()
     OnApplyLayout();
 }
 
+glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
+{
+    auto move = GetUIData(GetState<UIState>()->mData, Move);
+    switch (direct)
+    {
+    case DirectEnum::kU: move.y += offset.y; move.w -= offset.y; break;
+    case DirectEnum::kD: move.w += offset.y; break;
+    case DirectEnum::kL: move.x += offset.x; move.z -= offset.x; break;
+    case DirectEnum::kR: move.z += offset.x; break;
+    }
+    return move;
+}
+
 glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord)
 {
     auto move = GetUIData(GetState<UIState>()->mData, Move);
@@ -197,19 +210,6 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
     const auto & world = ToWorldCoord();
     return glm::vec2(coord.x - world.x,
                      coord.y - world.y);
-}
-
-glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
-{
-    auto move = GetUIData(GetState<UIState>()->mData, Move);
-    switch (direct)
-    {
-    case DirectEnum::kU: move.y += offset.y; move.w -= offset.y; break;
-    case DirectEnum::kD: move.w += offset.y; break;
-    case DirectEnum::kL: move.x += offset.x; move.z -= offset.x; break;
-    case DirectEnum::kR: move.z += offset.x; break;
-    }
-    return move;
 }
 
 bool UIClass::OnEnter()
@@ -478,22 +478,10 @@ void UIClassLayout::OnLeave()
     }
 }
 
-void UIClassButton::OnUpdate(float dt)
+void UIClassTree::OnUpdate(float dt)
 {
 }
 
-void UIClassButton::OnRender(float dt)
+void UIClassTree::OnRender(float dt)
 {
-    auto & data = GetState<UIState>()->mData;
-    auto & title = GetUIData(data, Title);
-    auto & align = GetUIData(data, Align);
-    auto & move = GetUIData(data, Move);
-    if (align != (int)UIAlignEnum::kDEFAULT)
-    {
-        ImGui::SetCursorPos(ImVec2(move.x, move.y));
-    }
-    if (ImGui::Button(title.c_str(), ImVec2(move.z, move.w)))
-    {
-        std::cout << "Button Click." << std::endl;
-    }
 }
