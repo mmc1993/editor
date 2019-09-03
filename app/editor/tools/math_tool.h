@@ -13,10 +13,12 @@ namespace math_tool {
     //   «∑Ò‘⁄±ﬂ…œ
     inline int IsOnEdge(const glm::vec4 & rect, const glm::vec2 & point, float border = 0)
     {
-        if (std::abs(point.y - rect.y) <= border) return 0;
-        if (std::abs(point.y - (rect.y + rect.w)) <= border) return 1;
-        if (std::abs(point.x - rect.x) <= border) return 2;
-        if (std::abs(point.x - (rect.x + rect.z)) <= border) return 3;
+        auto t = rect.y, b = rect.y + rect.w;
+        auto l = rect.x, r = rect.x + rect.z;
+        if (point.x >= l && point.x <= r && std::abs(point.y - rect.y) <= border) return 0;
+        if (point.x >= l && point.x <= r && std::abs(point.y - (rect.y + rect.w)) <= border) return 1;
+        if (point.y >= t && point.y <= b && std::abs(point.x - rect.x) <= border) return 2;
+        if (point.y >= t && point.y <= b && std::abs(point.x - (rect.x + rect.z)) <= border) return 3;
         return -1;
     }
 

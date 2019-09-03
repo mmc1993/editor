@@ -126,11 +126,13 @@ void UIClass::ApplyLayout()
             }
             if (align & (int)UIAlignEnum::kCENTER_H)
             {
-                margin.x = margin.x / parentMoveOld.z * parentMoveNew.z + margin.z / parentMoveOld.z * parentMoveNew.z;
+                margin.x = margin.x / parentMoveOld.z * parentMoveNew.z 
+                         + margin.z / parentMoveOld.z * parentMoveNew.z;
             }
             if (align & (int)UIAlignEnum::kCENTER_V)
             {
-                margin.y = margin.y / parentMoveOld.w * parentMoveNew.w + margin.w / parentMoveOld.w * parentMoveNew.w;
+                margin.y = margin.y / parentMoveOld.w * parentMoveNew.w
+                         + margin.w / parentMoveOld.w * parentMoveNew.w;
             }
             if (align & (int)UIAlignEnum::kSTRETCH_H)
             {
@@ -432,10 +434,10 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge)
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
-    const auto & thisMove   = GetUIData(        GetState<UIState>()->mData, Move);
-    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
     if (GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first == nullptr)
     {
+        const auto & thisMove   = GetUIData(        GetState<UIState>()->mData, Move);
+        const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
         switch (edge)
         {
         case DirectEnum::kU: return !math_tool::Equal(thisMove.y, 0);
