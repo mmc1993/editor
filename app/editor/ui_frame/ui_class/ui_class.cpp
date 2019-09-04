@@ -477,7 +477,6 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
 void UIClassTextBox::OnRender(float dt)
 {
     auto state = GetState<UIStateTextBox>();
-    auto & move = GetUIData(state->mData, Move);
     ASSERT_LOG(GetUIData(state->mData, IsTextBox) || GetUIData(state->mData, IsEditBox), "");
 
     LockPosition();
@@ -494,6 +493,7 @@ void UIClassTextBox::OnRender(float dt)
     }
     else if (GetUIData(state->mData, IsEditBox))
     {
+        auto & move = GetUIData(state->mData, Move);
         auto flag = ImGuiInputTextFlags_EnterReturnsTrue
                   | ImGuiInputTextFlags_AutoSelectAll;
         if (GetUIData(state->mData, IsMulti))
@@ -530,4 +530,14 @@ void UIClassTextBox::OnRender(float dt)
 
     //  ‰÷»æ∫Û
     ImGui::PopStyleColor(2);
+}
+
+void UIClassComboBox::OnRender(float dt)
+{
+    auto state = GetState<UIStateComboBox>();
+
+    LockPosition();
+
+    //ImGui::BeginCombo(
+    //    GetUIData(state->mData, Title).c_str())
 }

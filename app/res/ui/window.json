@@ -19,7 +19,7 @@
 			"__Children": [
                 {
                     "__Property": {
-                        "Type": "3",
+                        "Type": "4",
                         "Skin": "Text",
                         "Move": "10 100 100 50",
                         "Name": "1",
@@ -27,39 +27,6 @@
                         "IsEditBox": "ok",
                         "Color": "1.0 1.0 1.0 1.0",
                         "Title": "##1",
-                        "BgColor": "0.19 0.19 0.19 1.0"
-                    },
-                    "__Children": [
-                        
-                    ]
-                },
-                {
-                    "__Property": {
-                        "Type": "3",
-                        "Skin": "Text",
-                        "Move": "10 200 100 50",
-                        "Name": "1",
-                        "Align": "20",
-                        "IsEditBox": "ok",
-                        "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##2",
-                        "BgColor": "0.19 0.19 0.19 1.0",
-                        "IsMulti": "ok"
-                    },
-                    "__Children": [
-                        
-                    ]
-                },
-                {
-                    "__Property": {
-                        "Type": "3",
-                        "Skin": "Text",
-                        "Move": "10 300 100 50",
-                        "Name": "1",
-                        "Align": "20",
-                        "IsEditBox": "ok",
-                        "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##3",
                         "BgColor": "0.19 0.19 0.19 1.0"
                     },
                     "__Children": [
