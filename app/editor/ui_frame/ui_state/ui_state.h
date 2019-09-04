@@ -49,6 +49,8 @@ public:
 
 class UIStateComboBox : public UIState {
 public:
+    std::string mSelected;
+
     UIStateComboBox();
 };
 

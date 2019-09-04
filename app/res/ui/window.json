@@ -20,17 +20,33 @@
                 {
                     "__Property": {
                         "Type": "4",
-                        "Skin": "Text",
+                        "Skin": "Combo",
                         "Move": "10 100 100 50",
                         "Name": "1",
                         "Align": "20",
                         "IsEditBox": "ok",
-                        "Color": "1.0 1.0 1.0 1.0",
-                        "Title": "##1",
-                        "BgColor": "0.19 0.19 0.19 1.0"
+                        "Color": "0.7 0.7 0.7 1.0",
+                        "BgColor": "0.3 0.3 0.3 1.0",
+                        "Title": "##1"
                     },
                     "__Children": [
-                        
+						{
+							"__Property": {
+								"Type": "3",
+								"Skin": "Text",
+								"Move": "0 0 30 30",
+								"Name": "2",
+								"Align": "0",
+								"IsTextBox": "ok",
+								"Title": "aaa",
+								"IsShowBorder": "no",
+								"Color": "1.0 1.0 1.0 1.0",
+								"BgColor": "0.19 0.19 0.19 1.0"
+							},
+							"__Children": [
+								
+							]
+						}
                     ]
                 }
 			]

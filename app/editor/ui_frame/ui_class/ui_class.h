@@ -4,7 +4,7 @@
 
 class UIClass {
 public:
-    template <class T>
+    template <class T = UIState>
     T * GetState()
     {
         return (T *)_state;
@@ -38,7 +38,7 @@ protected:
 
     void LockPosition();
     virtual bool OnEnter();
-    virtual void OnLeave();
+    virtual void OnLeave(bool ret);
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
     virtual void OnRender(float dt) = 0;
@@ -57,7 +57,7 @@ public:
 
 private:
     virtual bool OnEnter() override;
-    virtual void OnLeave() override;
+    virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
 };
 
@@ -77,7 +77,7 @@ public:
 
 private:
     virtual bool OnEnter() override;
-    virtual void OnLeave() override;
+    virtual void OnLeave(bool ret) override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
     virtual void OnRender(float dt) override;
@@ -101,6 +101,8 @@ public:
     { }
 
 private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
 };
 

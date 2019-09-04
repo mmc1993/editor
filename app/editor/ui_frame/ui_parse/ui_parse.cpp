@@ -23,7 +23,7 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * objec
     for (auto ele : json->At("__Property"))
     {
         ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
-        ParseUIData(object->GetState<UIState>()->mData, ele.mKey, ele.mValue->ToString());
+        ParseUIData(object->GetState()->mData, ele.mKey, ele.mValue->ToString());
     }
 }
 
@@ -43,7 +43,7 @@ UIClass * UIParser::CreateObject(const int type)
     case UITypeEnum::kIMAGE: break;
     case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
     case UITypeEnum::kTEXTBOX: return new UIClassTextBox(new UIStateTextBox());
-    case UITypeEnum::kCOMBOBOX: break;
+    case UITypeEnum::kCOMBOBOX: return new UIClassComboBox(new UIStateComboBox());
     case UITypeEnum::kUICONVAS: break;
     case UITypeEnum::kGLCONVAS: break;
     }

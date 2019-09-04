@@ -58,17 +58,18 @@ UIClass * UIClass::GetParent()
 void UIClass::Render(float dt)
 {
     ApplyLayout();
-    if (OnEnter())
+    auto ret = OnEnter();
+    if (ret)
     {
         OnRender(dt);
         std::for_each(_children.begin(), _children.end(),
                       std::bind(&UIClass::Render, 
                       std::placeholders::_1, dt));
     }
-    OnLeave();
+    OnLeave(ret);
 
     //  刷新备份数据
-    auto & data = GetState<UIState>()->mData;
+    auto & data = GetState()->mData;
     SetUIData(data, _Move, GetUIData(data, Move));
 }
 
@@ -77,7 +78,7 @@ void UIClass::ResetLayout()
     OnResetLayout();
 
     //  初始化备份数据
-    auto & data = GetState<UIState>()->mData;
+    auto & data = GetState()->mData;
     SetUIData(data, _Move, GetUIData(data, Move));
 
     std::for_each(_children.begin(),_children.end(),
@@ -87,10 +88,10 @@ void UIClass::ResetLayout()
 
 void UIClass::ApplyLayout()
 {
-    auto & thisData = GetState<UIState>()->mData;
+    auto & thisData = GetState()->mData;
     if (GetParent() != nullptr)
     {
-        auto & parentData = GetParent()->GetState<UIState>()->mData;
+        auto & parentData = GetParent()->GetState()->mData;
         auto & parentMoveOld = GetUIData(parentData, _Move);
         auto & parentMoveNew = GetUIData(parentData,  Move);
 
@@ -163,7 +164,7 @@ void UIClass::ApplyLayout()
 
 glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
 {
-    auto move = GetUIData(GetState<UIState>()->mData, Move);
+    auto move = GetUIData(GetState()->mData, Move);
     switch (direct)
     {
     case DirectEnum::kU: move.y += offset.y; move.w -= offset.y; break;
@@ -176,15 +177,15 @@ glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
 
 glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord)
 {
-    auto move = GetUIData(GetState<UIState>()->mData, Move);
+    auto move = GetUIData(GetState()->mData, Move);
     move.x += coord.x;
     move.y += coord.y;
 
     auto parent = GetParent();
     while (parent != nullptr)
     {
-        move.x += GetUIData(parent->GetState<UIState>()->mData, Move).x;
-        move.y += GetUIData(parent->GetState<UIState>()->mData, Move).y;
+        move.x += GetUIData(parent->GetState()->mData, Move).x;
+        move.y += GetUIData(parent->GetState()->mData, Move).y;
         parent = parent->GetParent();
     }
     return glm::vec2(move.x, move.y);
@@ -207,8 +208,8 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
 
 void UIClass::LockPosition()
 {
-    auto & move = GetUIData(GetState<UIState>()->mData, Move);
-    auto align = GetUIData(GetState<UIState>()->mData, Align);
+    auto & move = GetUIData(GetState()->mData, Move);
+    auto align = GetUIData(GetState()->mData, Align);
     if (align != (int)UIAlignEnum::kDEFAULT)
     {
         ImGui::SetCursorPos(ImVec2(move.x, move.y));
@@ -220,7 +221,7 @@ bool UIClass::OnEnter()
     return true;
 }
 
-void UIClass::OnLeave()
+void UIClass::OnLeave(bool ret)
 { }
 
 void UIClass::OnResetLayout()
@@ -289,7 +290,7 @@ bool UIClassLayout::OnEnter()
     }
 }
 
-void UIClassLayout::OnLeave()
+void UIClassLayout::OnLeave(bool ret)
 {
     auto state = GetState<UIStateLayout>();
     if (GetUIData(state->mData, IsWindow))
@@ -361,7 +362,7 @@ void UIClassLayout::OnApplyLayout()
         if (thisState->mJoin[(int)direct].mIn.first != nullptr)
         {
             const auto & edge = thisState->mJoin[(int)direct].mIn;
-            const auto & move = GetUIData(edge.first->GetState<UIState>()->mData, Move);
+            const auto & move = GetUIData(edge.first->GetState()->mData, Move);
             glm::vec2 offset(0, 0);
             if      ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y; }
             else if ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisMove.y; }
@@ -438,8 +439,8 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge)
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
     auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
                ? GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first : this;
-    const auto & clingMove  = GetUIData(cling->GetState<UIState>()->mData, Move);
-    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
+    const auto & clingMove  = GetUIData(cling->GetState()->mData, Move);
+    const auto & parentMove = GetUIData(parent->GetState()->mData, Move);
     switch (edge)
     {
     case DirectEnum::kU: return !math_tool::Equal(clingMove.y, 0);
@@ -532,12 +533,31 @@ void UIClassTextBox::OnRender(float dt)
     ImGui::PopStyleColor(2);
 }
 
-void UIClassComboBox::OnRender(float dt)
+bool UIClassComboBox::OnEnter()
 {
-    auto state = GetState<UIStateComboBox>();
-
     LockPosition();
 
-    //ImGui::BeginCombo(
-    //    GetUIData(state->mData, Title).c_str())
+    auto  state = GetState<UIStateComboBox>();
+    auto & move = GetUIData(state->mData, Move);
+    auto & color   = GetUIData(state->mData, Color);
+    auto & bgColor = GetUIData(state->mData, BgColor);
+    ImGui::SetNextItemWidth(move.z);
+    ImGui::PushStyleColor(ImGuiCol_FrameBg,        ImVec4(bgColor.x * 0.5f, bgColor.y * 0.5f, bgColor.z * 0.5f, 1.0f));
+    ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(bgColor.x,        bgColor.y,        bgColor.z,        1.0f));
+    ImGui::PushStyleColor(ImGuiCol_Button,         ImVec4(color.x   * 0.5f, color.y   * 0.5f, color.z * 0.5f,   1.0f));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,  ImVec4(color.x,          color.y,          color.z,          1.0f));
+    if (state->mSelected.empty() && !GetChildren().empty())
+    {
+        state->mSelected = GetUIData(GetChildren().at(0)->GetState()->mData, Title);
+    }
+    return ImGui::BeginCombo(GetUIData(state->mData, Title).c_str(), state->mSelected.c_str());
 }
+
+void UIClassComboBox::OnLeave(bool ret)
+{
+    ImGui::PopStyleColor(4);
+    if (ret) { ImGui::EndCombo(); }
+}
+
+void UIClassComboBox::OnRender(float dt)
+{ }
