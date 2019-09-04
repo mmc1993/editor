@@ -393,15 +393,17 @@ void UIClassLayout::OnRender(float dt)
         {
             switch ((DirectEnum)direct)
             {
-            case DirectEnum::kU: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
+            case DirectEnum::kU:
             case DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
-            case DirectEnum::kL: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
+            case DirectEnum::kL:
             case DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
             }
             if (ImGui::IsMouseDown(0))
             {
-                rootState->mStretchFocus.mObject = this;
-                rootState->mStretchFocus.mDirect = (DirectEnum)direct;
+                rootState->mStretchFocus.mObject = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
+                                                 ? GetState<UIStateLayout>()->mJoin[direct].mIn.first : this;
+                rootState->mStretchFocus.mDirect = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
+                                                 ? GetState<UIStateLayout>()->mJoin[direct].mIn.second : (DirectEnum)direct;
             }
         }
     }
@@ -434,20 +436,18 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge)
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
-    if (GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first == nullptr)
+    auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
+               ? GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first : this;
+    const auto & clingMove  = GetUIData(cling->GetState<UIState>()->mData, Move);
+    const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
+    switch (edge)
     {
-        const auto & thisMove   = GetUIData(        GetState<UIState>()->mData, Move);
-        const auto & parentMove = GetUIData(parent->GetState<UIState>()->mData, Move);
-        switch (edge)
-        {
-        case DirectEnum::kU: return !math_tool::Equal(thisMove.y, 0);
-        case DirectEnum::kD: return !math_tool::Equal(thisMove.y + thisMove.w, parentMove.w);
-        case DirectEnum::kL: return !math_tool::Equal(thisMove.x, 0);
-        case DirectEnum::kR: return !math_tool::Equal(thisMove.x + thisMove.z, parentMove.z);
-        }
-        ASSERT_LOG(false, "{0}", (int)edge);
+    case DirectEnum::kU: return !math_tool::Equal(clingMove.y, 0);
+    case DirectEnum::kD: return !math_tool::Equal(clingMove.y + clingMove.w, parentMove.w);
+    case DirectEnum::kL: return !math_tool::Equal(clingMove.x, 0);
+    case DirectEnum::kR: return !math_tool::Equal(clingMove.x + clingMove.z, parentMove.z);
     }
-    return false;
+    ASSERT_LOG(false, "{0}", (int)edge);
 }
 
 bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
