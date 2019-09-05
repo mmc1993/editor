@@ -1,0 +1,84 @@
+{"frames": {
+
+"a (1).png":
+{
+	"frame": {"x":574,"y":0,"w":254,"h":191},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":254,"h":191},
+	"sourceSize": {"w":254,"h":191}
+},
+"a (2).png":
+{
+	"frame": {"x":0,"y":721,"w":350,"h":530},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":350,"h":530},
+	"sourceSize": {"w":350,"h":530}
+},
+"a (3).png":
+{
+	"frame": {"x":0,"y":0,"w":162,"h":104},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":162,"h":104},
+	"sourceSize": {"w":162,"h":104}
+},
+"a (4).png":
+{
+	"frame": {"x":356,"y":0,"w":218,"h":163},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":218,"h":163},
+	"sourceSize": {"w":218,"h":163}
+},
+"a (5).png":
+{
+	"frame": {"x":203,"y":191,"w":242,"h":199},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":242,"h":199},
+	"sourceSize": {"w":242,"h":199}
+},
+"a (6).png":
+{
+	"frame": {"x":350,"y":721,"w":350,"h":530},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":350,"h":530},
+	"sourceSize": {"w":350,"h":530}
+},
+"a (7).png":
+{
+	"frame": {"x":0,"y":191,"w":203,"h":196},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":203,"h":196},
+	"sourceSize": {"w":203,"h":196}
+},
+"a (8).png":
+{
+	"frame": {"x":162,"y":0,"w":194,"h":160},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":194,"h":160},
+	"sourceSize": {"w":194,"h":160}
+},
+"a (9).png":
+{
+	"frame": {"x":445,"y":191,"w":350,"h":530},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":350,"h":530},
+	"sourceSize": {"w":350,"h":530}
+}},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.0",
+	"image": "aaa.png",
+	"format": "RGBA8888",
+	"size": {"w":828,"h":1251},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:13e6a401542913e169fb9b2649a4c23d:cdb2ef80cb4e57708c193f8850910463:27ddf17f00af56a4ddb64f2c88011c1b$"
+}
+}
