@@ -72,6 +72,15 @@
     <ClCompile Include="editor\ui_frame\ui_state\ui_state.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\global.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\res\res.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\res\res_mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
@@ -888,6 +897,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\tools\math_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\global.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\res\res_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\res\res.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

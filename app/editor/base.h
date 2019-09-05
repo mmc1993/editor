@@ -24,11 +24,19 @@
 #include <math.h>
 #include <cmath>
 
+//  libs
+#include "../libs/gl3w/gl3w.h"
+
+//  third
 #include "third/sformat.h"
+#define STB_IMAGE_STATIC
+#define STB_IMAGE_IMPLEMENTATION
+#include "third/stb_image.h"
 #include "third/glm/glm.hpp"
 #include "third/glm/gtc/type_ptr.hpp"
 #include "third/glm/gtc/matrix_transform.hpp"
 
+//  tools
 #include "tools/serialize_tool.h"
 #include "tools/string_tool.h"
 #include "tools/debug_tool.h"
