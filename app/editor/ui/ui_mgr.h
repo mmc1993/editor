@@ -2,10 +2,10 @@
 
 #include "base.h"
 
-class UIFrame {
+class UIMgr {
 public:
-    UIFrame();
-    ~UIFrame();
+    UIMgr();
+    ~UIMgr();
     UIClass * GetRoot();
     void SetRoot(UIClass * uiClass);
     void SetRoot(const std::string & url);

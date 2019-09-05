@@ -5,7 +5,7 @@
 
 class UIState;
 class UIClass;
-class UIFrame;
+class UIMgr;
 
 enum class DirectEnum {
     kU, kD, kL, kR, LENGTH

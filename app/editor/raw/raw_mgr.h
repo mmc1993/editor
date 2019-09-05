@@ -1,20 +1,20 @@
 #pragma once
 
-#include "res.h"
+#include "raw.h"
 
-class ResMgr {
+class RawMgr {
 public:
-    bool Import(const std::string & url);
+    Raw* Import(const std::string & url);
     void Delete(const std::string & url);
     void Clear();
 
     template <class T>
-    T * Ref(const std::string & url)
+    T * Get(const std::string & url)
     {
         auto it = _resources.find(url);
         ASSERT_LOG(it != _resources.end(), "{0}", url);
         return (T *)it->second;
     }
 private:
-    std::map<std::string, Res *> _resources;
+    std::map<std::string, Raw *> _resources;
 };

@@ -33,7 +33,7 @@
 #endif
 
 #include "global.h"
-#include "ui_frame/ui_frame.h"
+#include "ui/ui_mgr.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -122,8 +122,8 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     
     //  ³õÊ¼»¯
-    Global::Ref().mUIFrame = new UIFrame();
-    Global::Ref().mUIFrame->SetRoot("res/ui/window.json");
+    Global::Ref().mUIMgr = new UIMgr();
+    Global::Ref().mUIMgr->SetRoot("res/ui/window.json");
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -142,7 +142,7 @@ int main(int, char**)
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
-            Global::Ref().mUIFrame->Update(0);
+            Global::Ref().mUIMgr->Update(0);
             //ImGui::ShowDemoWindow(&show_demo_window);
 
         // Rendering
@@ -161,6 +161,7 @@ int main(int, char**)
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();
+    Global::Ref().Free();
 
     glfwDestroyWindow(window);
     glfwTerminate();

@@ -2,18 +2,18 @@
 
 #include "../include.h"
 
-class Res {
+class Raw {
 public:
-    virtual ~Res()
+    virtual ~Raw()
     { }
 
     virtual bool Init(const std::string & url) = 0;
 protected:
-    Res()
+    Raw()
     { }
 };
 
-class ResBitmap : public Res {
+class RawBitmap : public Raw {
 public:
     struct Sample {
         uint32_t minfilter;
@@ -29,8 +29,8 @@ public:
     };
 
 public:
-    ResBitmap();
-    ~ResBitmap();
+    RawBitmap();
+    ~RawBitmap();
     std::uint32_t GetW() const { return _w; }
     std::uint32_t GetH() const { return _h; }
     std::uint32_t GetID() const { return _id; }

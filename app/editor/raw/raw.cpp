@@ -1,14 +1,14 @@
-#include "res.h"
+#include "raw.h"
 
-ResBitmap::ResBitmap(): _fmt(0), _id(0), _w(0), _h(0)
+RawBitmap::RawBitmap(): _fmt(0), _id(0), _w(0), _h(0)
 { }
 
-ResBitmap::~ResBitmap()
+RawBitmap::~RawBitmap()
 {
     glDeleteTextures(1, &_id);
 }
 
-bool ResBitmap::Init(const std::string & url)
+bool RawBitmap::Init(const std::string & url)
 {
     int w, h, fmt;
     auto data = stbi_load(url.c_str(), &w, &h, &fmt, 0);

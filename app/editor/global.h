@@ -2,7 +2,9 @@
 
 #include "include.h"
 
-class UIFrame;
+class AtlasMgr;
+class UIMgr;
+class RawMgr;
 
 class Global {
 public:
@@ -15,7 +17,9 @@ public:
 public:
     void Free();
 
-    UIFrame * mUIFrame;
+    AtlasMgr * mAtlasMgr;
+    RawMgr * mRawMgr;
+    UIMgr * mUIMgr;
 
 private:
     Global();
