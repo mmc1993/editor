@@ -39,7 +39,7 @@ UIClass * UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {
-    case UITypeEnum::kTREE: break;
+    case UITypeEnum::kTREE: return new UIClassTree(new UIStateTree());
     case UITypeEnum::kIMAGE: break;
     case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
     case UITypeEnum::kTEXTBOX: return new UIClassTextBox(new UIStateTextBox());

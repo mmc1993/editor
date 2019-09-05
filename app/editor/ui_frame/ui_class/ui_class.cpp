@@ -231,6 +231,40 @@ void UIClass::OnApplyLayout()
 { }
 
 //--------------------------------------------------------------------------------
+//  Tree
+//--------------------------------------------------------------------------------
+bool UIClassTree::OnEnter()
+{
+    LockPosition();
+
+    auto  state = GetState<UIStateTree>();
+    auto & move = GetUIData(state->mData, Move);
+
+    ImGui::SetNextItemWidth(move.z);
+    if (ImGui::TreeNode(GetUIData(state->mData, Title).c_str()))
+    {
+        ImGui::Indent(move.x + ImGui::GetStyle().IndentSpacing);
+        return true;
+    }
+    return false;
+}
+
+void UIClassTree::OnLeave(bool ret)
+{
+    if (ret)
+    {
+        ImGui::TreePop();
+        auto  state = GetState<UIStateTree>();
+        auto & move = GetUIData(state->mData, Move);
+        ImGui::Unindent(move.x + ImGui::GetStyle().IndentSpacing);
+    }
+}
+
+void UIClassTree::OnRender(float dt)
+{
+}
+
+//--------------------------------------------------------------------------------
 //  Layout
 //--------------------------------------------------------------------------------
 bool UIClassLayout::OnEnter()
@@ -561,3 +595,4 @@ void UIClassComboBox::OnLeave(bool ret)
 
 void UIClassComboBox::OnRender(float dt)
 { }
+
