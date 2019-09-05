@@ -261,8 +261,7 @@ void UIClassTree::OnLeave(bool ret)
 }
 
 void UIClassTree::OnRender(float dt)
-{
-}
+{ }
 
 //--------------------------------------------------------------------------------
 //  Layout
