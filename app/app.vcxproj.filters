@@ -15,15 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\opengl3\imgui_impl_opengl3.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="imgui\misc\cpp\imgui_stdlib.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -45,34 +36,10 @@
     <ClCompile Include="libs\usynergy\uSynergy.c">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\third\glm\detail\glm.cpp">
+    <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\ui_frame\ui_parse\ui_parse.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui_frame\ui_class\ui_class.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\third\tinyxml\tinyxml.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\third\tinyxml\tinystr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui_frame\ui_frame.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui_frame\ui_state\ui_state.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\global.cpp">
+    <ClCompile Include="editor\opengl3\imgui_impl_opengl3.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\res\res.cpp">
@@ -81,14 +48,41 @@
     <ClCompile Include="editor\res\res_mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\third\glm\detail\glm.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinystr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxml.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_class\ui_class.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_parse\ui_parse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_state\ui_state.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\ui_frame\ui_frame.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\global.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="imgui\misc\cpp\imgui_stdlib.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -125,22 +119,16 @@
     <ClInclude Include="libs\usynergy\uSynergy.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\debug_tool.h">
+    <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\file_tool.h">
+    <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\serialize_tool.h">
+    <ClInclude Include="editor\res\res.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\std_tool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\tools\string_tool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\tools\time_tool.h">
+    <ClInclude Include="editor\res\res_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\third\glm\detail\_features.hpp">
@@ -863,19 +851,43 @@
     <ClInclude Include="editor\third\glm\vector_relational.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\third\tinyxml\tinystr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\third\tinyxml\tinyxml.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="editor\third\mmcjson.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\third\sformat.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\base.h">
+    <ClInclude Include="editor\third\stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\include.h">
+    <ClInclude Include="editor\tools\debug_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui_frame\base.h">
+    <ClInclude Include="editor\tools\file_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\math_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\serialize_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\std_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\string_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\time_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui_frame\ui_class\ui_class.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\ui_frame\ui_parse\ui_parse.h">
@@ -884,28 +896,19 @@
     <ClInclude Include="editor\ui_frame\ui_state\ui_state.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui_frame\ui_class\ui_class.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\third\tinyxml\tinystr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\third\tinyxml\tinyxml.h">
+    <ClInclude Include="editor\ui_frame\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\ui_frame\ui_frame.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\math_tool.h">
+    <ClInclude Include="editor\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\global.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\res\res_mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\res\res.h">
+    <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

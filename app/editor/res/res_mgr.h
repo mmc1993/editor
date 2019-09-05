@@ -6,6 +6,7 @@ class ResMgr {
 public:
     bool Import(const std::string & url);
     void Delete(const std::string & url);
+    void Clear();
 
     template <class T>
     T * Ref(const std::string & url)

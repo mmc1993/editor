@@ -22,3 +22,12 @@ void ResMgr::Delete(const std::string & url)
         _resources.erase(it);
     }
 }
+
+void ResMgr::Clear()
+{
+    for (auto res : _resources)
+    {
+        delete res.second;
+    }
+    _resources.clear();
+}
