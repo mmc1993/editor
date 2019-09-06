@@ -28,8 +28,8 @@ bool AtlasMgr::ImportImage(const std::string & url)
     image.mKey = url;
     image.mQuat.x = 0;
     image.mQuat.y = 0;
-    image.mQuat.z = raw->GetW();
-    image.mQuat.w = raw->GetH();
+    image.mQuat.z = (float)raw->GetW();
+    image.mQuat.w = (float)raw->GetH();
     _resources.insert(std::make_pair(image.mKey, image));
     return true;
 }
