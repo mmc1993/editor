@@ -447,7 +447,7 @@ bool UIClassLayout::OnEnter()
     if (GetUIData(state->mData, IsWindow))
     {
         //  Ðü¸¡´°¿Ú
-        auto & name = GetUIData(state->mData, Name);
+        auto & title = GetUIData(state->mData, Title);
         ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
         ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
         size_t flag = 0;
@@ -478,7 +478,7 @@ bool UIClassLayout::OnEnter()
             ImGui::SetNextWindowPos(move);
         }
         ImGui::SetNextWindowSize(size);
-        return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
+        return ImGui::Begin(title.empty()? nullptr: title.c_str(), nullptr, flag);
     }
     else
     {
@@ -491,9 +491,9 @@ bool UIClassLayout::OnEnter()
         if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     
         LockPosition();
-        auto & name = GetUIData(state->mData, Name);
+        auto & Title = GetUIData(state->mData, Title);
         auto & move = GetUIData(state->mData, Move);
-        return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
+        return ImGui::BeginChild(Title.c_str(), ImVec2(move.z, move.w),
             GetUIData(state->mData, IsShowBorder), flag);
     }
 }

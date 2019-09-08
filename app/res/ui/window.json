@@ -1,79 +1,132 @@
 {
 	"__Property": {
-		"Type": "2",
-		"Name": "Root",
+		"Type": "0",
 		"Version": "3.2.0",
+		"Title": "root",
 		"Move": "0 0 1280 720",
-        "IsWindow": "ok",
-        "IsFullScreen": "ok"
+		"IsWindow": "ok",
+		"IsFullWindow": "ok"
 	},
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "2",
-				"Skin": "PanelEmpty",
-				"Move": "0 0 320 720",
-                "Name": "1",
-                "Align": "384"
+				"Type": "0",
+				"Skin": "PanelSkin",
+				"Move": "0 0 320 370",
+				"Align": "384",
+				"Title": "##0"
 			},
 			"__Children": [
-
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 0 320 50",
+						"Align": "384"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "0 0 320 50",
+								"Align": "34",
+								"Title": "Component List",
+								"TextAlign": "Center",
+								"IsTextBox": "ok"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				},
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 50 320 320",
+						"Align": "384"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "1",
+								"Skin": "ListBox",
+								"Move": "0 0 320 320",
+								"Align": "10"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				}
 			]
 		},
 		{
 			"__Property": {
-				"Type": "2",
-				"Skin": "PanelEmpty",
-				"Move": "320 0 650 540",
-                "Name": "2",
-                "Align": "384"
+				"Type": "0",
+				"Skin": "PanelSkin",
+				"Move": "0 370 320 350",
+				"Align": "384",
+				"Title": "##1"
 			},
 			"__Children": [
-                {
-                    "__Property": {
-                        "Type": "4",
-                        "Move": "0 100 100 50",
-                        "Name": "1",
-                        "Align": "20",
-                        "Title": "combo"
-                    },
-                    "__Children": [
-                        {
-                            "__Property": {
-                                "Type": "3",
-                                "Name": "1",
-                                "Align": "0",
-                                "Title": "text1",
-                                "IsTextBox": "ok",
-                                "IsShowBorder": "no",
-                            },
-                            "__Children": [
-                                
-                            ]
-                        },
-                        {
-                            "__Property": {
-                                "Type": "3",
-                                "Name": "1",
-                                "Align": "0",
-                                "Title": "text2",
-                                "IsTextBox": "ok"
-                            },
-                            "__Children": [
-                                
-                            ]
-                        }
-                    ]
-                }
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 0 320 50",
+						"Align": "384"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "0 0 320 50",
+								"Align": "34",
+								"Title": "Object List",
+								"TextAlign": "Center",
+								"IsTextBox": "ok"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				},
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 50 320 300",
+						"Align": "384"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "1",
+								"Skin": "ListBox",
+								"Move": "0 0 320 300",
+								"Align": "10"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				}
 			]
 		},
 		{
 			"__Property": {
-				"Type": "2",
-				"Skin": "PanelEmpty",
-				"Move": "320 540 650 180",
-				"Name": "3",
-                "Align": "384"
+				"Type": "0",
+				"Skin": "PanelSkin",
+				"Move": "320 0 960 510",
+				"Align": "384",
+				"Title": "##2"
 			},
 			"__Children": [
 				
@@ -81,14 +134,72 @@
 		},
 		{
 			"__Property": {
-				"Type": "2",
-				"Skin": "PanelEmpty",
-				"Move": "970 0 310 720",
-				"Name": "4",
-                "Align": "384"
+				"Type": "0",
+				"Skin": "PanelSkin",
+				"Move": "320 510 960 210",
+				"Align": "384",
+				"Title": "##3"
 			},
 			"__Children": [
-				
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 0 960 50",
+						"Align": "384"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "0 0 200 50",
+								"Align": "72",
+								"Title": "Resources List",
+								"TextAlign": "Left VCenter",
+								"IsTextBox": "ok"
+							},
+							"__Children": [
+								
+							]
+						},
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "EditBox",
+								"Move": "680 0 280 50",
+								"Align": "80",
+								"IsEditBox": "ok"
+							},
+							"__Children": [
+								
+							]
+						},
+						{
+							"__Property": {
+								"Type": "3",
+								"Skin": "ImageBox",
+								"Move": "625 0 50 50",
+								"Align": "80",
+								"LSkin": "res/atlas/icon/a (1).png"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				},
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 50 960 160",
+						"Align": "384"
+					},
+					"__Children": [
+						
+					]
+				}
 			]
 		}
 	]

@@ -37,20 +37,20 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
             std::make_pair("Center",                (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("Left Top",              (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_T),
             std::make_pair("Left Bottom",           (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Left Vstretch",         (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Left Vcenter",          (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Left VStretch",         (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Left VCenter",          (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCENTER_V),
             std::make_pair("Right Top",             (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_T),
             std::make_pair("Right Bottom",          (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Right Vstretch",        (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Right Vcenter",         (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("Hstretch Top",          (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("Hstretch Bottom",       (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Hstretch Vstretch",     (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Hstretch Vcenter",      (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("Hcenter Top",           (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("Hcenter Bottom",        (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Hcenter Vstretch",      (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Hcenter Vcenter",       (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Right VStretch",        (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Right VCenter",         (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("HStretch Top",          (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("HStretch Bottom",       (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("HStretch VStretch",     (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("HStretch VCenter",      (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("HCenter Top",           (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_T),
+            std::make_pair("HCenter Bottom",        (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("HCenter VStretch",      (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("HCenter VCenter",       (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCENTER_V),
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
@@ -80,6 +80,7 @@ static const std::map<std::string, std::map<std::string, std::string>> VALUE_STR
         {
             std::make_pair("Widget", "Layout"),
             std::make_pair("ListBox", "TreeBox"),
+            std::make_pair("EditBox", "TextBox"),
         })
 };
 
@@ -275,6 +276,6 @@ int main(int argc, char **argv)
     //{
     //    Main(argv[1], argv[2]);
     //}
-    Main("test.layout", "test.json");
+    Main("unnamed.layout", "window.json");
     return 0;
 }

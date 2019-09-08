@@ -1,30 +1,35 @@
 {
 	"__Property": {
-		"Type": "4",
+		"Type": "0",
 		"Version": "3.2.0"
 	},
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "0",
 				"Skin": "PanelSkin",
-				"Move": "0 0 320 370"
+				"Move": "0 0 320 370",
+				"Align": "384",
+				"Title": "##0"
 			},
 			"__Children": [
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 0 320 50"
+						"Move": "0 0 320 50",
+						"Align": "130"
 					},
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "6",
+								"Type": "2",
 								"Skin": "TextBox",
 								"Move": "0 0 320 50",
-								"Caption": "Component List",
-								"TextAlign": "Center"
+								"Align": "34",
+								"Title": "Component List",
+								"TextAlign": "Center",
+								"IsTextBox": "ok"
 							},
 							"__Children": [
 								
@@ -34,16 +39,18 @@
 				},
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 50 320 320"
+						"Move": "0 50 320 320",
+						"Align": "130"
 					},
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "ListBox",
+								"Type": "1",
 								"Skin": "ListBox",
-								"Move": "0 0 320 320"
+								"Move": "0 0 320 320",
+								"Align": "10"
 							},
 							"__Children": [
 								
@@ -55,25 +62,30 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "0",
 				"Skin": "PanelSkin",
-				"Move": "0 370 320 350"
+				"Move": "0 370 320 350",
+				"Align": "384",
+				"Title": "##1"
 			},
 			"__Children": [
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 0 320 50"
+						"Move": "0 0 320 50",
+						"Align": "384"
 					},
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "6",
+								"Type": "2",
 								"Skin": "TextBox",
 								"Move": "0 0 320 50",
-								"Caption": "Object List",
-								"TextAlign": "Center"
+								"Align": "34",
+								"Title": "Object List",
+								"TextAlign": "Center",
+								"IsTextBox": "ok"
 							},
 							"__Children": [
 								
@@ -83,16 +95,18 @@
 				},
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 50 320 300"
+						"Move": "0 50 320 300",
+						"Align": "384"
 					},
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "ListBox",
+								"Type": "1",
 								"Skin": "ListBox",
-								"Move": "0 0 320 300"
+								"Move": "0 0 320 300",
+								"Align": "10"
 							},
 							"__Children": [
 								
@@ -104,9 +118,11 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "0",
 				"Skin": "PanelSkin",
-				"Move": "320 0 960 510"
+				"Move": "320 0 960 510",
+				"Align": "384",
+				"Title": "##2"
 			},
 			"__Children": [
 				
@@ -114,25 +130,30 @@
 		},
 		{
 			"__Property": {
-				"Type": "3",
+				"Type": "0",
 				"Skin": "PanelSkin",
-				"Move": "320 510 960 210"
+				"Move": "320 510 960 210",
+				"Align": "384",
+				"Title": "##3"
 			},
 			"__Children": [
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 0 960 50"
+						"Move": "0 0 960 50",
+						"Align": "384"
 					},
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "6",
+								"Type": "2",
 								"Skin": "TextBox",
 								"Move": "0 0 200 50",
-								"Caption": "Resources List",
-								"TextAlign": "Left VCenter"
+								"Align": "72",
+								"Title": "Resources List",
+								"TextAlign": "Left VCenter",
+								"IsTextBox": "ok"
 							},
 							"__Children": [
 								
@@ -140,9 +161,11 @@
 						},
 						{
 							"__Property": {
-								"Type": "5",
+								"Type": "2",
 								"Skin": "EditBox",
-								"Move": "680 0 280 50"
+								"Move": "680 0 280 50",
+								"Align": "80",
+								"IsEditBox": "ok"
 							},
 							"__Children": [
 								
@@ -150,9 +173,11 @@
 						},
 						{
 							"__Property": {
-								"Type": "ImageBox",
+								"Type": "3",
 								"Skin": "ImageBox",
-								"Move": "625 0 50 50"
+								"Move": "625 0 50 50",
+								"Align": "80",
+								"LSkin": "res/atlas/icon/a (1).png"
 							},
 							"__Children": [
 								
@@ -162,9 +187,10 @@
 				},
 				{
 					"__Property": {
-						"Type": "3",
+						"Type": "0",
 						"Skin": "PanelSkin",
-						"Move": "0 50 960 160"
+						"Move": "0 50 960 160",
+						"Align": "384"
 					},
 					"__Children": [
 						
