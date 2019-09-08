@@ -515,12 +515,6 @@ void UIClassTextBox::OnRender(float dt)
 
     LockPosition();
 
-    //  ‰÷»æ«∞
-    //auto & bgColor = GetUIData(state->mData, BgColor);
-    //auto & color = GetUIData(state->mData, Color);
-    //ImGui::PushStyleColor(ImGuiCol_FrameBg, ImVec4(bgColor.x, bgColor.y, bgColor.z, bgColor.w));
-    //ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(color.x, color.y, color.z, color.w));
-
     if      (GetUIData(state->mData, IsTextBox))
     {
         ImGui::Text(GetUIData(state->mData, Title).c_str());
@@ -561,9 +555,6 @@ void UIClassTextBox::OnRender(float dt)
         const auto & max = ImGui::GetItemRectMax();
         ImGui::GetWindowDrawList()->AddRect(min, max, 0xFFFFFFFF);
     }
-
-    //  ‰÷»æ∫Û
-    //ImGui::PopStyleColor(2);
 }
 
 bool UIClassComboBox::OnEnter()
@@ -572,13 +563,8 @@ bool UIClassComboBox::OnEnter()
 
     auto  state = GetState<UIStateComboBox>();
     auto & move = GetUIData(state->mData, Move);
-    //auto & color   = GetUIData(state->mData, Color);
-    //auto & bgColor = GetUIData(state->mData, BgColor);
     ImGui::SetNextItemWidth(move.z);
-    //ImGui::PushStyleColor(ImGuiCol_FrameBg,        ImVec4(bgColor.x * 0.5f, bgColor.y * 0.5f, bgColor.z * 0.5f, 1.0f));
-    //ImGui::PushStyleColor(ImGuiCol_FrameBgHovered, ImVec4(bgColor.x,        bgColor.y,        bgColor.z,        1.0f));
-    //ImGui::PushStyleColor(ImGuiCol_Button,         ImVec4(color.x   * 0.5f, color.y   * 0.5f, color.z * 0.5f,   1.0f));
-    //ImGui::PushStyleColor(ImGuiCol_ButtonHovered,  ImVec4(color.x,          color.y,          color.z,          1.0f));
+
     if (state->mSelected.empty() && !GetChildren().empty())
     {
         state->mSelected = GetUIData(GetChildren().at(0)->GetState()->mData, Title);
@@ -588,7 +574,6 @@ bool UIClassComboBox::OnEnter()
 
 void UIClassComboBox::OnLeave(bool ret)
 {
-    //ImGui::PopStyleColor(4);
     if (ret) { ImGui::EndCombo(); }
 }
 
