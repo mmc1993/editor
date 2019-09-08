@@ -11,7 +11,9 @@ enum class DirectEnum {
     kU, kD, kL, kR, LENGTH
 };
 
+// ---
 //  控件列表
+// ---
 enum class UITypeEnum {
     kTREE,                  //  树形
     kIMAGE,                 //  图片
@@ -22,7 +24,9 @@ enum class UITypeEnum {
     kGLCONVAS,              //  GL画布
 };
 
+// ---
 //  控件对齐
+// ---
 enum class UIAlignEnum {
     kDEFAULT,               //  绝对坐标
     kCLING_T = 1 << 1,      //  靠上
@@ -36,7 +40,9 @@ enum class UIAlignEnum {
     LENGTH,
 };
 
+// ---
 //  控件事件
+// ---
 enum class UIEventEnum {
     kKEY_PRESS,         //  按键-按下
     kKEY_RELEASE,       //  按键-抬起
@@ -48,9 +54,14 @@ enum class UIEventEnum {
     kEDIT_TEXT_FINISH,  //  输入完成
 };
 
-constexpr auto LAYOUT_DRAG_PADDING = 5.0f;      //  layout 可拖动边距
+// ---
+//  默认值定义
+// ---
+constexpr auto LAYOUT_DRAG_PADDING = 5.0f;      //  Layout 可拖动边距
 
+// ---
 //  字符串转其他类型
+// ---
 inline bool     S2B(const std::string & s) { return s == "ok"; }
 inline int      S2I(const std::string & s) { return std::stoi(s); }
 inline float    S2F(const std::string & s) { return std::stof(s); }
@@ -76,7 +87,9 @@ inline glm::vec4 S2V4(const std::string & s)
     return glm::vec4(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)), S2F(arr.at(3)));
 }
 
+// ---
 //  自定义数据 Get/Set
+// ---
 using CustomData = std::map<std::string, std::any>;
 
 //  解析数据

@@ -3,9 +3,9 @@
 #include "../ui_state/ui_state.h"
 #include "imgui_impl_glfw.h"
 
-///
+// ---
 //  EventTool
-///
+// ---
 int UIClass::EventDetails::CheckStateKey()
 {
     int flag = 0;
@@ -53,9 +53,9 @@ int UIClass::EventDetails::CheckMouseKey(UIEventEnum e, bool repeat)
     return -1;
 }
 
-///
+// ---
 //  UIClass
-///
+// ---
 UITypeEnum UIClass::GetType() const
 {
     return _type;
@@ -337,9 +337,9 @@ void UIClass::OnResetLayout()
 void UIClass::OnApplyLayout()
 { }
 
-///
+// ---
 //  UIClassTree
-///
+// ---
 bool UIClassTree::OnEnter()
 {
     LockPosition();
@@ -415,9 +415,9 @@ void UIClassImage::OnRender(float dt)
     }
 }
 
-///
+// ---
 //  Layout
-///
+// ---
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
@@ -660,9 +660,9 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
     return true;
 }
 
-///
+// ---
 //  UIClassTextBox
-///
+// ---
 void UIClassTextBox::OnRender(float dt)
 {
     auto state = GetState<UIStateTextBox>();
@@ -712,9 +712,9 @@ void UIClassTextBox::OnRender(float dt)
     }
 }
 
-///
+// ---
 //  UIClassComboBox
-///
+// ---
 bool UIClassComboBox::OnEnter()
 {
     LockPosition();
