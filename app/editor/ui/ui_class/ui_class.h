@@ -10,16 +10,13 @@ public:
 
         //  返回鼠标键
         static int CheckMouseKey(UIEventEnum e, bool repeat);
-
-        //  返回键盘按下键
-        static int CheckKeyPressKey();
     };
 
     //  键盘事件
     struct EventKey {
         int mKey;
-        int mAct;   //  0, 1, 2 => 按下, 抬起, 连续按下
-        int mState; //  1, 2, 4 => alt, ctrl, shift
+        int mAct;   //  0, 1, 2, 3 => 按下, 抬起, 单击, 单击延迟
+        int mState; //  1, 2, 4    => alt, ctrl, shift
         EventKey() { memset(this, sizeof(EventKey), 0); }
     };
 
@@ -76,8 +73,12 @@ protected:
     virtual void OnApplyLayout();
     virtual void OnRender(float dt) = 0;
 
-    int PostEventMessage(UIEventEnum e, UIClass * object);
-    int CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
+    //  事件处理
+    void                        CheckEventM();
+    void                        CheckEventK();
+    void                        PostEventMessage(UIEventEnum e, UIClass * object);
+    UIEventResultEnum           CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
+    virtual UIEventResultEnum   OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param) { return UIEventResultEnum::kPASS; };
 
 private:
     UITypeEnum             _type;
@@ -117,9 +118,13 @@ private:
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
     virtual void OnRender(float dt) override;
+    virtual UIEventResultEnum OnCallEventMessage(
+        UIEventEnum e, UIClass * object, 
+        const std::any & param) override 
+    { return UIEventResultEnum::kSTOP; }
 
-    bool IsCanDrag(DirectEnum edge);
-    bool IsCanDrag(DirectEnum edge, const glm::vec2 & offset);
+    bool IsCanStretch(DirectEnum edge);
+    bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
 };
 
 class UIClassTextBox : public UIClass {
@@ -140,6 +145,9 @@ private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
+    virtual UIEventResultEnum OnCallEventMessage(
+        UIEventEnum e, UIClass * object,
+        const std::any & param) override;
 };
 
 class UIClassUICanvas : public UIClass {

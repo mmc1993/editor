@@ -44,9 +44,8 @@ enum class UIAlignEnum {
 //  控件事件
 // ---
 enum class UIEventEnum {
-    kKEY_PRESS,         //  按键-按下
-    kKEY_RELEASE,       //  按键-抬起
-    kMOUSE_PRESS,       //  鼠标-按下
+    kKEY,               //  按键
+    kMOUSE_DOWN,        //  鼠标-按下
     kMOUSE_RELEASE,     //  鼠标-抬起
     kMOUSE_HOVERED,     //  鼠标-悬浮
     kMOUSE_CLICK,       //  鼠标-单击
@@ -55,36 +54,53 @@ enum class UIEventEnum {
 };
 
 // ---
+//  事件返回值
+// ---
+enum class UIEventResultEnum {
+    kSTOP,      //  停止传递
+    kPASS,      //  传递通过
+};
+
+// ---
 //  默认值定义
 // ---
-constexpr auto LAYOUT_DRAG_PADDING = 5.0f;      //  Layout 可拖动边距
+constexpr auto LAYOUT_STRETCH_BORDER = 5.0f;      //  Layout 可拖动边距
 
 // ---
 //  字符串转其他类型
 // ---
-inline bool     S2B(const std::string & s) { return s == "ok"; }
-inline int      S2I(const std::string & s) { return std::stoi(s); }
-inline float    S2F(const std::string & s) { return std::stof(s); }
+inline bool     s2b(const std::string & s) { return s == "ok"; }
+inline int      s2i(const std::string & s) { return std::stoi(s); }
+inline float    s2f(const std::string & s) { return std::stof(s); }
 
-inline glm::vec2 S2V2(const std::string & s)
+inline glm::vec2 s2v2(const std::string & s)
 {
     auto arr = string_tool::Split(s, " ");
     ASSERT_LOG(arr.size() == 2, "Arr Length: {0}!", arr.size());
-    return glm::vec2(S2F(arr.at(0)), S2F(arr.at(1)));
+    return glm::vec2(s2f(arr.at(0)), s2f(arr.at(1)));
 }
 
-inline glm::vec3 S2V3(const std::string & s)
+inline glm::vec3 s2v3(const std::string & s)
 {
     auto arr = string_tool::Split(s, " ");
     ASSERT_LOG(arr.size() == 3, "Arr Length: {0}!", arr.size());
-    return glm::vec3(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)));
+    return glm::vec3(s2f(arr.at(0)), s2f(arr.at(1)), s2f(arr.at(2)));
 }
 
-inline glm::vec4 S2V4(const std::string & s)
+inline glm::vec4 s2v4(const std::string & s)
 {
     auto arr = string_tool::Split(s, " ");
     ASSERT_LOG(arr.size() == 4, "Arr Length: {0}!", arr.size());
-    return glm::vec4(S2F(arr.at(0)), S2F(arr.at(1)), S2F(arr.at(2)), S2F(arr.at(3)));
+    return glm::vec4(s2f(arr.at(0)), s2f(arr.at(1)), s2f(arr.at(2)), s2f(arr.at(3)));
+}
+
+inline std::vector<int> s2vi(const std::string & s)
+{
+    std::vector<int> ret;
+    auto arr = string_tool::Split(s, " ");
+    std::transform(arr.begin(), arr.end(), std::back_inserter(ret), 
+        [] (const std::string & s) { return std::stoi(s); });
+    return ret;
 }
 
 // ---
@@ -96,13 +112,14 @@ using CustomData = std::map<std::string, std::any>;
 template <class T>
 void __ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
-    if constexpr (std::is_same_v<T, int>)           { data.emplace(key, S2I(val)); }
-    else if constexpr (std::is_same_v<T, bool>)     { data.emplace(key, S2B(val)); }
-    else if constexpr (std::is_same_v<T, float>)    { data.emplace(key, S2F(val)); }
+    if constexpr (std::is_same_v<T, int>)           { data.emplace(key, s2i(val)); }
+    else if constexpr (std::is_same_v<T, bool>)     { data.emplace(key, s2b(val)); }
+    else if constexpr (std::is_same_v<T, float>)    { data.emplace(key, s2f(val)); }
     else if constexpr (std::is_same_v<T, std::string>)  { data.emplace(key, (val)); }
-    else if constexpr (std::is_same_v<T, glm::vec2>)    { data.emplace(key, S2V2(val)); }
-    else if constexpr (std::is_same_v<T, glm::vec3>)    { data.emplace(key, S2V3(val)); }
-    else if constexpr (std::is_same_v<T, glm::vec4>)    { data.emplace(key, S2V4(val)); }
+    else if constexpr (std::is_same_v<T, glm::vec2>)    { data.emplace(key, s2v2(val)); }
+    else if constexpr (std::is_same_v<T, glm::vec3>)    { data.emplace(key, s2v3(val)); }
+    else if constexpr (std::is_same_v<T, glm::vec4>)    { data.emplace(key, s2v4(val)); }
+    else if constexpr (std::is_same_v<T, std::vector<int>>) { data.emplace(key, s2vi(val)); }
     else { static_assert(false); }
 }
 
@@ -181,8 +198,11 @@ __REG_SET_UI_DATA(glm::vec4, Color0)
 __REG_GET_UI_DATA(glm::vec4, _Move, glm::vec4()) //  方位
 __REG_SET_UI_DATA(glm::vec4, _Move)
 
-__REG_GET_UI_DATA(glm::vec2, StretchMin, glm::vec2(LAYOUT_DRAG_PADDING * 3, LAYOUT_DRAG_PADDING * 3)) //  可拉动最小宽度
+__REG_GET_UI_DATA(glm::vec2, StretchMin, glm::vec2(LAYOUT_STRETCH_BORDER * 3, LAYOUT_STRETCH_BORDER * 3)) //  可拉动最小宽度
 __REG_SET_UI_DATA(glm::vec2, StretchMin)
+
+__REG_GET_UI_DATA(std::vector<int>, Hotkeys, std::vector<int>())  //  热键响应
+__REG_SET_UI_DATA(std::vector<int>, Hotkeys)
 
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
@@ -211,6 +231,8 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color0);
+    __REG_PARSE_UI_DATA(data, key, val, std::vector<int>, Hotkey);
+
 }
 
 #define GetUIData(data, K)         __GetData##K(data)
