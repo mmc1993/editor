@@ -3,6 +3,59 @@
 #include "../ui_state/ui_state.h"
 #include "imgui_impl_glfw.h"
 
+///
+//  EventTool
+///
+int UIClass::EventDetails::CheckStateKey()
+{
+    int flag = 0;
+    if (ImGui::GetIO().KeyAlt) { flag |= 1; }
+    if (ImGui::GetIO().KeyCtrl) { flag |= 2; }
+    if (ImGui::GetIO().KeyShift) { flag |= 4; }
+    return flag;
+}
+
+int UIClass::EventDetails::CheckMouseKey(UIEventEnum e, bool repeat)
+{
+    static const int MOUSE_KEYS[] = {0, 1, 2};
+    switch (e)
+    {
+    case UIEventEnum::kMOUSE_PRESS: 
+    case UIEventEnum::kMOUSE_RELEASE: 
+    case UIEventEnum::kMOUSE_DCLICK:
+        {
+            auto fn 
+                = e == UIEventEnum::kMOUSE_PRESS    ? &ImGui::IsMouseDown
+                : e == UIEventEnum::kMOUSE_RELEASE  ? &ImGui::IsMouseReleased 
+                : e == UIEventEnum::kMOUSE_DCLICK   ? &ImGui::IsMouseDoubleClicked
+                : nullptr;
+            ASSERT_LOG(fn != nullptr, "{0}", (int)e);
+            auto it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), fn);
+            ASSERT_LOG(it != std::end(MOUSE_KEYS), "");
+            return *it;
+        }
+    case UIEventEnum::kMOUSE_HOVERED:
+        {
+            auto it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), ImGui::IsMouseDown);
+            if (it != std::end(MOUSE_KEYS)) { return *it; }
+            it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), ImGui::IsMouseReleased);
+            if (it != std::end(MOUSE_KEYS)) { return *it; }
+            return -1;
+        }
+    case UIEventEnum::kMOUSE_CLICK:
+        {
+            auto fn = std::bind(&ImGui::IsMouseClicked, std::placeholders::_1, repeat);
+            auto it = std::find_if(std::begin(MOUSE_KEYS),std::end(MOUSE_KEYS), fn);
+            return it != std::end(MOUSE_KEYS) ? *it : -1;
+        }
+    }
+    ASSERT_LOG(false, "{0}", (int)e);
+    return -1;
+}
+
+///
+//  UIClass
+///
 UITypeEnum UIClass::GetType() const
 {
     return _type;
@@ -207,6 +260,59 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
+void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
+{
+    switch (e)
+    {
+    case UIEventEnum::kKEY_PRESS:
+    case UIEventEnum::kKEY_RELEASE:
+        break;
+    case UIEventEnum::kMOUSE_PRESS:
+    case UIEventEnum::kMOUSE_CLICK:
+    case UIEventEnum::kMOUSE_DCLICK:
+    case UIEventEnum::kMOUSE_RELEASE:
+    case UIEventEnum::kMOUSE_HOVERED:
+        {
+            EventMouse eo;
+            if (e == UIEventEnum::kMOUSE_HOVERED)       { eo.mAct = 0; eo.mKey = EventDetails::CheckMouseKey(e, false); }
+            else if (e == UIEventEnum::kMOUSE_PRESS)    { eo.mAct = 1; eo.mKey = EventDetails::CheckMouseKey(e, false); }
+            else if (e == UIEventEnum::kMOUSE_RELEASE)  { eo.mAct = 2; eo.mKey = EventDetails::CheckMouseKey(e, false); }
+            else if (e == UIEventEnum::kMOUSE_DCLICK)   { eo.mAct = 3; eo.mKey = EventDetails::CheckMouseKey(e, false); }
+            else if (e == UIEventEnum::kMOUSE_CLICK)
+            { 
+                eo.mKey = EventDetails::CheckMouseKey(e, true);
+                if (eo.mKey != -1)
+                {
+                    eo.mAct = 5;
+                }
+                else
+                { 
+                    eo.mAct = 4; 
+                    eo.mKey = EventDetails::CheckMouseKey(e, false);
+                }
+            }
+            eo.mState = EventDetails::CheckStateKey();
+            //  处理事件
+            CallEventMessage(e, object, eo);
+        }
+        break;
+    case UIEventEnum::kEDIT_TEXT_FINISH:
+        {
+            ASSERT_LOG(dynamic_cast<UIClassTextBox *>(object) != nullptr, "");
+            EventEditText eo;
+            eo.mText = object->GetState<UIStateTextBox>()->mBuffer;
+            //  处理事件
+            CallEventMessage(e, object, eo);
+        }
+        break;
+    }
+}
+
+void UIClass::CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
+{
+
+}
+
 void UIClass::LockPosition()
 {
     auto & move = GetUIData(GetState()->mData, Move);
@@ -231,9 +337,9 @@ void UIClass::OnResetLayout()
 void UIClass::OnApplyLayout()
 { }
 
-//--------------------------------------------------------------------------------
-//  Tree
-//--------------------------------------------------------------------------------
+///
+//  UIClassTree
+///
 bool UIClassTree::OnEnter()
 {
     LockPosition();
@@ -265,7 +371,7 @@ void UIClassTree::OnRender(float dt)
 { }
 
 //--------------------------------------------------------------------------------
-//  Image
+//  UIClassImage
 //--------------------------------------------------------------------------------
 void UIClassImage::OnRender(float dt)
 {
@@ -309,9 +415,9 @@ void UIClassImage::OnRender(float dt)
     }
 }
 
-//--------------------------------------------------------------------------------
+///
 //  Layout
-//--------------------------------------------------------------------------------
+///
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
@@ -554,6 +660,9 @@ bool UIClassLayout::IsCanDrag(DirectEnum edge, const glm::vec2 & offset)
     return true;
 }
 
+///
+//  UIClassTextBox
+///
 void UIClassTextBox::OnRender(float dt)
 {
     auto state = GetState<UIStateTextBox>();
@@ -603,6 +712,9 @@ void UIClassTextBox::OnRender(float dt)
     }
 }
 
+///
+//  UIClassComboBox
+///
 bool UIClassComboBox::OnEnter()
 {
     LockPosition();

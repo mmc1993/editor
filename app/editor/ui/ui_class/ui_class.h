@@ -4,6 +4,39 @@
 
 class UIClass {
 public:
+    struct EventDetails {
+        //  返回按下的状态键
+        static int CheckStateKey();
+
+        //  返回鼠标键
+        static int CheckMouseKey(UIEventEnum e, bool repeat);
+
+        //  返回键盘按下键
+        static int CheckKeyPressKey();
+    };
+
+    //  键盘事件
+    struct EventKey {
+        int mKey;
+        int mAct;   //  0, 1, 2 => 按下, 抬起, 连续按下
+        int mState; //  1, 2, 4 => alt, ctrl, shift
+        EventKey() { memset(this, sizeof(EventKey), 0); }
+    };
+
+    //  鼠标事件
+    struct EventMouse {
+        int mKey;   //  0, 1, 2          => 左键, 右键, 中键
+        int mAct;   //  0, 1, 2, 3, 4, 5 => 悬浮, 按下, 抬起, 双击, 单击, 单击延迟
+        int mState; //  1, 2, 4          => alt, ctrl, shift
+        EventMouse() { memset(this, sizeof(EventMouse), 0); }
+    };
+
+    //  编辑文本事件
+    struct EventEditText {
+        std::string mText;
+    };
+
+public:
     template <class T = UIState>
     T * GetState()
     {
@@ -42,6 +75,9 @@ protected:
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
     virtual void OnRender(float dt) = 0;
+
+    void PostEventMessage(UIEventEnum e, UIClass * object);
+    void CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
 
 private:
     UITypeEnum             _type;
