@@ -31,16 +31,38 @@
 			"__Children": [
                 {
                     "__Property": {
-                        "Type": "1",
-                        "LSkin": "res/atlas/icon/a (1).png",
+                        "Type": "4",
                         "Move": "0 100 100 50",
                         "Name": "1",
                         "Align": "20",
-                        "IsButton": "ok",
-                        "Title": "tree"
+                        "Title": "combo"
                     },
                     "__Children": [
-
+                        {
+                            "__Property": {
+                                "Type": "3",
+                                "Name": "1",
+                                "Align": "0",
+                                "Title": "text1",
+                                "IsTextBox": "ok",
+                                "IsShowBorder": "no",
+                            },
+                            "__Children": [
+                                
+                            ]
+                        },
+                        {
+                            "__Property": {
+                                "Type": "3",
+                                "Name": "1",
+                                "Align": "0",
+                                "Title": "text2",
+                                "IsTextBox": "ok"
+                            },
+                            "__Children": [
+                                
+                            ]
+                        }
                     ]
                 }
 			]
