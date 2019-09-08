@@ -1,15 +1,15 @@
 #include "ui_state.h"
 
-UIStateTree::UIStateTree()
-{ }
-
-UIStateImage::UIStateImage()
-{ }
-
 UIStateLayout::UIStateLayout()
 { }
 
+UIStateTreeBox::UIStateTreeBox()
+{ }
+
 UIStateTextBox::UIStateTextBox(): mBuffer(1024, '\0')
+{ }
+
+UIStateImageBox::UIStateImageBox()
 { }
 
 UIStateComboBox::UIStateComboBox()

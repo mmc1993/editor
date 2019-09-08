@@ -12,7 +12,9 @@
 constexpr auto JSON_PROPERTY = "__Property";
 constexpr auto JSON_CHILDREN = "__Children";
 
+// ---
 //  控件对齐
+// ---
 enum class UIAlignEnum {
     kDEFAULT,               //  绝对坐标
     kCLING_T = 1 << 1,      //  靠上
@@ -26,22 +28,8 @@ enum class UIAlignEnum {
     LENGTH,
 };
 
-//  字段替换
-static const std::map<std::string, std::string> FieldMap{
-    std::make_pair("Position", "Move")
-};
-
-//  值转换到字符串
-static const std::map<std::string, std::map<std::string, std::string>> StringMap{
-    std::make_pair("Type", std::map<std::string, std::string>
-        {
-            std::make_pair("Widget", "Layout"),
-            std::make_pair("Layout", "Window"),
-        })
-};
-
-//  值转换到枚举
-static const std::map<std::string, std::map<std::string, int>> NumberMap{
+//  值字符串转数字
+static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NUMBER {
     std::make_pair("Align", std::map<std::string, int>
         {
             std::make_pair("Default",               (int)UIAlignEnum::kDEFAULT),
@@ -66,20 +54,57 @@ static const std::map<std::string, std::map<std::string, int>> NumberMap{
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
-            std::make_pair("Tree",      0),
-            std::make_pair("Image",     1),
-            std::make_pair("Button",        2),
-            std::make_pair("Layout",        3),
-            std::make_pair("Window",        4),
-            std::make_pair("EditBox",       5),
-            std::make_pair("TextBox",       6),
-            std::make_pair("ComboBox",      7),
-            std::make_pair("UICanvas",      8),
-            std::make_pair("GLCanvas",      9),
+            std::make_pair("Layout",        0),
+            std::make_pair("TreeBox",       1),
+            std::make_pair("TextBox",       2),
+            std::make_pair("ImageBox",      3),
+            std::make_pair("ComboBox",      4),
+            std::make_pair("UICanvas",      5),
+            std::make_pair("GLCanvas",      6),
+        }),
+    std::make_pair("TextAlign", std::map<std::string, int>
+        {
+            std::make_pair("Default",       0),
+            std::make_pair("TreeBox",       1),
+            std::make_pair("TextBox",       2),
+            std::make_pair("ImageBox",      3),
+            std::make_pair("ComboBox",      4),
+            std::make_pair("UICanvas",      5),
+            std::make_pair("GLCanvas",      6),
         })
 };
 
-bool HasKey(const std::map<std::string, std::map<std::string, std::string>> & m, 
+//  值字符串替换
+static const std::map<std::string, std::map<std::string, std::string>> VALUE_STRING_2_REPLACE {
+    std::make_pair("Type", std::map<std::string, std::string>
+        {
+            std::make_pair("Widget", "Layout"),
+            std::make_pair("ListBox", "TreeBox"),
+        })
+};
+
+//  键字符串替换
+static const std::map<std::string, std::string> KEY_STRING_2_REPLACE {
+    std::make_pair("Position",  "Move"),
+    std::make_pair("Caption",   "Title"),
+};
+
+//  值字符串转数字
+bool IsHasKey(const std::map<std::string, std::map<std::string, int>> & m,
+    const std::string & k0,
+    const std::string & k1)
+{
+    auto it0 = m.find(k0);
+    if (it0 != m.end())
+    {
+        auto it1 = it0->second.find(k1);
+        return it1 != it0->second.end();
+    }
+    return false;
+}
+
+//  键字符串替换
+bool IsHasKey(const std::map<std::string, std::map<std::string, std::string>> & m, 
             const std::string & k0, 
             const std::string & k1)
 {
@@ -92,26 +117,22 @@ bool HasKey(const std::map<std::string, std::map<std::string, std::string>> & m,
     return false;
 }
 
-bool HasKey(const std::map<std::string, std::string> & m, 
+//  值字符串替换
+bool IsHasKey(const std::map<std::string, std::string> & m, 
             const std::string & k)
 {
     return m.find(k) != m.end();
 }
 
-bool HasKey(const std::map<std::string, std::map<std::string, int>> & m,
-            const std::string & k0,
-            const std::string & k1)
+std::string Replace(
+    const std::map<std::string, std::map<std::string, int>> & m,
+    const std::string & k0, 
+    const std::string & k1)
 {
-    auto it0 = m.find(k0);
-    if (it0 != m.end())
-    {
-        auto it1 = it0->second.find(k1);
-        return it1 != it0->second.end();
-    }
-    return false;
+    return std::to_string(m.find(k0)->second.find(k1)->second);
 }
 
-const std::string & CheckString(
+const std::string & Replace(
     const std::map<std::string, std::map<std::string, std::string>> & m, 
     const std::string & k0, 
     const std::string & k1)
@@ -119,19 +140,11 @@ const std::string & CheckString(
     return m.find(k0)->second.find(k1)->second;
 }
 
-const std::string & CheckString(
+const std::string & Replace(
     const std::map<std::string,std::string> & m, 
     const std::string & k0)
 {
     return m.find(k0)->second;
-}
-
-std::string CheckNumber(
-    const std::map<std::string, std::map<std::string, int>> & m,
-    const std::string & k0, 
-    const std::string & k1)
-{
-    return std::to_string(m.find(k0)->second.find(k1)->second);
 }
 
 void CustomTransfer(mmc::JsonValue::Value json)
@@ -143,17 +156,17 @@ void CustomTransfer(mmc::JsonValue::Value json)
             ele.mKey.at(0) -= 'a';
             ele.mKey.at(0) += 'A';
         }
-        if (HasKey(FieldMap, ele.mKey))
+        if (IsHasKey(KEY_STRING_2_REPLACE, ele.mKey))
         {
-            ele.mKey = CheckString(FieldMap, ele.mKey);
+            ele.mKey = Replace(KEY_STRING_2_REPLACE, ele.mKey);
         }
-        if (HasKey(StringMap, ele.mKey, ele.mValue->ToString()))
+        if (IsHasKey(VALUE_STRING_2_REPLACE, ele.mKey, ele.mValue->ToString()))
         {
-            ele.mValue->Set(CheckString(StringMap, ele.mKey, ele.mValue->ToString()));
+            ele.mValue->Set(Replace(VALUE_STRING_2_REPLACE, ele.mKey, ele.mValue->ToString()));
         }
-        if (HasKey(NumberMap, ele.mKey, ele.mValue->ToString()))
+        if (IsHasKey(VALUE_STRING_2_NUMBER, ele.mKey, ele.mValue->ToString()))
         {
-            ele.mValue->Set(CheckNumber(NumberMap, ele.mKey, ele.mValue->ToString()));
+            ele.mValue->Set(Replace(VALUE_STRING_2_NUMBER, ele.mKey, ele.mValue->ToString()));
         }
     }
     for (auto ele : json->At(JSON_CHILDREN))
@@ -249,19 +262,19 @@ void Main(const std::string & xmlURL, const std::string & jsonURL)
 //  程序入口
 int main(int argc, char **argv)
 {
-    if (argc != 3)
-    {
-        std::cout 
-            << SFormat(
-            "> 参数!\n"
-            "  1: 输入路径(.xml)\n"
-            "  2: 输出路径(.json)\n")
-            << std::endl;
-    }
-    else
-    {
-        Main(argv[1], argv[2]);
-    }
+    //if (argc != 3)
+    //{
+    //    std::cout 
+    //        << SFormat(
+    //        "> 参数!\n"
+    //        "  1: 输入路径(.xml)\n"
+    //        "  2: 输出路径(.json)\n")
+    //        << std::endl;
+    //}
+    //else
+    //{
+    //    Main(argv[1], argv[2]);
+    //}
     Main("test.layout", "test.json");
     return 0;
 }

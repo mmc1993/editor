@@ -13,16 +13,6 @@ public:
     std::map<std::string, std::any> mData;
 };
 
-class UIStateTree : public UIState {
-public:
-    UIStateTree();
-};
-
-class UIStateImage : public UIState {
-public:
-    UIStateImage();
-};
-
 class UIStateLayout : public UIState {
 public:
     struct Join {
@@ -40,11 +30,21 @@ public:
     UIStateLayout();
 };
 
+class UIStateTreeBox : public UIState {
+public:
+    UIStateTreeBox();
+};
+
 class UIStateTextBox : public UIState {
 public:
     std::string mBuffer;
 
     UIStateTextBox();
+};
+
+class UIStateImageBox : public UIState {
+public:
+    UIStateImageBox();
 };
 
 class UIStateComboBox : public UIState {

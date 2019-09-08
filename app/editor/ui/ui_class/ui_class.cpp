@@ -406,11 +406,11 @@ void UIClass::OnApplyLayout()
 // ---
 //  UIClassTree
 // ---
-bool UIClassTree::OnEnter()
+bool UIClassTreeBox::OnEnter()
 {
     LockPosition();
 
-    auto  state = GetState<UIStateTree>();
+    auto  state = GetState<UIStateTreeBox>();
     auto & move = GetUIData(state->mData, Move);
 
     ImGui::SetNextItemWidth(move.z);
@@ -422,66 +422,20 @@ bool UIClassTree::OnEnter()
     return false;
 }
 
-void UIClassTree::OnLeave(bool ret)
+void UIClassTreeBox::OnLeave(bool ret)
 {
     if (ret)
     {
         ImGui::TreePop();
-        auto  state = GetState<UIStateTree>();
+        auto  state = GetState<UIStateTreeBox>();
         auto & move = GetUIData(state->mData, Move);
         ImGui::Unindent(move.x + ImGui::GetStyle().IndentSpacing);
     }
 }
 
-void UIClassTree::OnRender(float dt)
+void UIClassTreeBox::OnRender(float dt)
 {
     CheckEventM();
-}
-
-//--------------------------------------------------------------------------------
-//  UIClassImage
-//--------------------------------------------------------------------------------
-void UIClassImage::OnRender(float dt)
-{
-    LockPosition();
-
-    auto  state    = GetState<UIStateImage>();
-    auto & move    = GetUIData(state->mData, Move);
-    auto & strSkin = GetUIData(state->mData, LSkin);
-    if (GetUIData(state->mData, IsButton))
-    {
-        if (!strSkin.empty())
-        {
-            auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
-            if (ImGui::ImageButton(
-                (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
-                ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
-                ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
-            {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
-            }
-        }
-        else
-        {
-            if (ImGui::Button(
-                GetUIData(state->mData, Title).c_str(), 
-                ImVec2(move.z, move.y)))
-            {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
-            }
-        }
-    }
-    else
-    {
-        ASSERT_LOG(!strSkin.empty(), "");
-        auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
-        ImGui::Image(
-            (ImTextureID)imgSkin.mID,
-            ImVec2(move.z, move.w),
-            ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
-            ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
-        CheckEventM();
-    }
 }
 
 // ---
@@ -784,6 +738,52 @@ void UIClassTextBox::OnRender(float dt)
     }
 
     CheckEventM();
+}
+
+//--------------------------------------------------------------------------------
+//  UIClassImage
+//--------------------------------------------------------------------------------
+void UIClassImageBox::OnRender(float dt)
+{
+    LockPosition();
+
+    auto  state    = GetState<UIStateImageBox>();
+    auto & move    = GetUIData(state->mData, Move);
+    auto & strSkin = GetUIData(state->mData, LSkin);
+    if (GetUIData(state->mData, IsButton))
+    {
+        if (!strSkin.empty())
+        {
+            auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+            if (ImGui::ImageButton(
+                (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
+                ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
+                ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
+            {
+                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
+            }
+        }
+        else
+        {
+            if (ImGui::Button(
+                GetUIData(state->mData, Title).c_str(), 
+                ImVec2(move.z, move.y)))
+            {
+                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
+            }
+        }
+    }
+    else
+    {
+        ASSERT_LOG(!strSkin.empty(), "");
+        auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+        ImGui::Image(
+            (ImTextureID)imgSkin.mID,
+            ImVec2(move.z, move.w),
+            ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
+            ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
+        CheckEventM();
+    }
 }
 
 // ---

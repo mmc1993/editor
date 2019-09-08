@@ -87,26 +87,6 @@ private:
     std::vector<UIClass *> _children;
 };
 
-class UIClassTree : public UIClass {
-public:
-    UIClassTree(UIState * state): UIClass(UITypeEnum::kTREE, state)
-    { }
-
-private:
-    virtual bool OnEnter() override;
-    virtual void OnLeave(bool ret) override;
-    virtual void OnRender(float dt) override;
-};
-
-class UIClassImage : public UIClass {
-public:
-    UIClassImage(UIState * state): UIClass(UITypeEnum::kIMAGE, state)
-    { }
-
-private:
-    virtual void OnRender(float dt) override;
-};
-
 class UIClassLayout : public UIClass {
 public:
     UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)
@@ -127,9 +107,29 @@ private:
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
 };
 
+class UIClassTreeBox : public UIClass {
+public:
+    UIClassTreeBox(UIState * state): UIClass(UITypeEnum::kTREEBOX, state)
+    { }
+
+private:
+    virtual bool OnEnter() override;
+    virtual void OnLeave(bool ret) override;
+    virtual void OnRender(float dt) override;
+};
+
 class UIClassTextBox : public UIClass {
 public:
     UIClassTextBox(UIState * state) : UIClass(UITypeEnum::kTEXTBOX, state)
+    { }
+
+private:
+    virtual void OnRender(float dt) override;
+};
+
+class UIClassImageBox : public UIClass {
+public:
+    UIClassImageBox(UIState * state): UIClass(UITypeEnum::kIMAGEBOX, state)
     { }
 
 private:

@@ -15,10 +15,10 @@ enum class DirectEnum {
 //  控件列表
 // ---
 enum class UITypeEnum {
-    kTREE,                  //  树形
-    kIMAGE,                 //  图片
     kLAYOUT,                //  布局
+    kTREEBOX,               //  树形框
     kTEXTBOX,               //  文本框
+    kIMAGEBOX,              //  图片框
     kCOMBOBOX,              //  下拉框
     kUICONVAS,              //  UI画布
     kGLCONVAS,              //  GL画布

@@ -39,10 +39,10 @@ UIClass * UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {
-    case UITypeEnum::kTREE: return new UIClassTree(new UIStateTree());
-    case UITypeEnum::kIMAGE: return new UIClassImage(new UIStateImage());
     case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
+    case UITypeEnum::kTREEBOX: return new UIClassTreeBox(new UIStateTreeBox());
     case UITypeEnum::kTEXTBOX: return new UIClassTextBox(new UIStateTextBox());
+    case UITypeEnum::kIMAGEBOX: return new UIClassImageBox(new UIStateImageBox());
     case UITypeEnum::kCOMBOBOX: return new UIClassComboBox(new UIStateComboBox());
     case UITypeEnum::kUICONVAS: break;
     case UITypeEnum::kGLCONVAS: break;
