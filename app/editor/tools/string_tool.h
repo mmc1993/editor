@@ -87,6 +87,15 @@ namespace string_tool {
             });
     }
 
+    //  返回目录名 带斜杆
+    inline std::string QueryFileDir(const std::string & fname)
+    {
+        auto pos = fname.find_last_of('/');
+        pos = pos != std::string::npos
+            ? pos + 1 : 0;
+        return fname.substr(0, pos);
+    }
+
     //  返回文件名 没后缀
     inline std::string QueryFileName(const std::string & fname)
     {

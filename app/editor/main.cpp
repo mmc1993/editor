@@ -34,6 +34,8 @@
 
 #include "global.h"
 #include "ui/ui_mgr.h"
+#include "raw/raw_mgr.h"
+#include "atlas/atlas_mgr.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -121,9 +123,14 @@ int main(int, char**)
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     
-    //  初始化
+    //  初始化UI管理器
     Global::Ref().mUIMgr = new UIMgr();
     Global::Ref().mUIMgr->SetRoot("res/ui/window.json");
+    //  初始化资源管理器
+    Global::Ref().mRawMgr = new RawMgr();
+    //  初始化图集管理器
+    Global::Ref().mAtlasMgr = new AtlasMgr();
+    Global::Ref().mAtlasMgr->Import("res/atlas/icon/atlas.json");
 
     // Main loop
     while (!glfwWindowShouldClose(window))

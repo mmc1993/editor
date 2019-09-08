@@ -124,6 +124,8 @@ __REG_GET_UI_DATA(bool, IsMulti, false) //  多行
 __REG_SET_UI_DATA(bool, IsMulti)
 __REG_GET_UI_DATA(bool, IsWindow, false) //  窗口
 __REG_SET_UI_DATA(bool, IsWindow)
+__REG_GET_UI_DATA(bool, IsButton, false) //  按钮
+__REG_SET_UI_DATA(bool, IsButton)
 __REG_GET_UI_DATA(bool, IsVisible, true) //  可见
 __REG_SET_UI_DATA(bool, IsVisible)
 __REG_GET_UI_DATA(bool, IsShowNav, false) //  有导航栏
@@ -155,8 +157,8 @@ __REG_GET_UI_DATA(std::string, Name, std::string()) //  名字
 __REG_SET_UI_DATA(std::string, Name)
 __REG_GET_UI_DATA(std::string, Tips, std::string()) //  提示
 __REG_SET_UI_DATA(std::string, Tips)
-__REG_GET_UI_DATA(std::string, Skin, std::string()) //  皮肤
-__REG_SET_UI_DATA(std::string, Skin)
+__REG_GET_UI_DATA(std::string, LSkin, std::string()) //  皮肤
+__REG_SET_UI_DATA(std::string, LSkin)
 __REG_GET_UI_DATA(std::string, Title, std::string()) //  标题
 __REG_SET_UI_DATA(std::string, Title)
 
@@ -176,6 +178,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, float, BorderNumber);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsMulti);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsWindow);
+    __REG_PARSE_UI_DATA(data, key, val, bool, IsButton);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsVisible);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowNav);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsTextBox);
@@ -191,7 +194,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowScrollBar);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Name);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Tips);
-    __REG_PARSE_UI_DATA(data, key, val, std::string, Skin);
+    __REG_PARSE_UI_DATA(data, key, val, std::string, LSkin);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Title);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);

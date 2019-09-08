@@ -1,4 +1,5 @@
 #include "ui_class.h"
+#include "../../atlas/atlas_mgr.h"
 #include "../ui_state/ui_state.h"
 #include "imgui_impl_glfw.h"
 
@@ -262,6 +263,51 @@ void UIClassTree::OnLeave(bool ret)
 
 void UIClassTree::OnRender(float dt)
 { }
+
+//--------------------------------------------------------------------------------
+//  Image
+//--------------------------------------------------------------------------------
+void UIClassImage::OnRender(float dt)
+{
+    LockPosition();
+
+    auto  state    = GetState<UIStateImage>();
+    auto & move    = GetUIData(state->mData, Move);
+    auto & strSkin = GetUIData(state->mData, LSkin);
+    if (GetUIData(state->mData, IsButton))
+    {
+        if (!strSkin.empty())
+        {
+            auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+            if (ImGui::ImageButton(
+                (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
+                ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
+                ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
+            {
+                std::cout << "Press Button." << std::endl;
+            }
+        }
+        else
+        {
+            if (ImGui::Button(
+                GetUIData(state->mData, Title).c_str(), 
+                ImVec2(move.z, move.y)))
+            {
+                std::cout << "Press Button." << std::endl;
+            }
+        }
+    }
+    else
+    {
+        ASSERT_LOG(!strSkin.empty(), "");
+        auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+        ImGui::Image(
+            (ImTextureID)imgSkin.mID,
+            ImVec2(move.z, move.w),
+            ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
+            ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
+    }
+}
 
 //--------------------------------------------------------------------------------
 //  Layout
@@ -579,4 +625,3 @@ void UIClassComboBox::OnLeave(bool ret)
 
 void UIClassComboBox::OnRender(float dt)
 { }
-
