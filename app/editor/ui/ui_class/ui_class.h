@@ -76,8 +76,8 @@ protected:
     virtual void OnApplyLayout();
     virtual void OnRender(float dt) = 0;
 
-    void PostEventMessage(UIEventEnum e, UIClass * object);
-    void CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
+    int PostEventMessage(UIEventEnum e, UIClass * object);
+    int CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
 
 private:
     UITypeEnum             _type;

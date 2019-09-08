@@ -260,7 +260,7 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
-void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
+int UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
 {
     switch (e)
     {
@@ -293,7 +293,7 @@ void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
             }
             eo.mState = EventDetails::CheckStateKey();
             //  处理事件
-            CallEventMessage(e, object, eo);
+            return CallEventMessage(e, object, eo);
         }
         break;
     case UIEventEnum::kEDIT_TEXT_FINISH:
@@ -302,15 +302,16 @@ void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
             EventEditText eo;
             eo.mText = object->GetState<UIStateTextBox>()->mBuffer;
             //  处理事件
-            CallEventMessage(e, object, eo);
+            return CallEventMessage(e, object, eo);
         }
         break;
     }
+    return -1;
 }
 
-void UIClass::CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
+int UIClass::CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
 {
-
+    return -1;
 }
 
 void UIClass::LockPosition()
