@@ -404,41 +404,6 @@ void UIClass::OnApplyLayout()
 { }
 
 // ---
-//  UIClassTree
-// ---
-bool UIClassTreeBox::OnEnter()
-{
-    LockPosition();
-
-    auto  state = GetState<UIStateTreeBox>();
-    auto & move = GetUIData(state->mData, Move);
-
-    ImGui::SetNextItemWidth(move.z);
-    if (ImGui::TreeNode(GetUIData(state->mData, Title).c_str()))
-    {
-        ImGui::Indent(move.x + ImGui::GetStyle().IndentSpacing);
-        return true;
-    }
-    return false;
-}
-
-void UIClassTreeBox::OnLeave(bool ret)
-{
-    if (ret)
-    {
-        ImGui::TreePop();
-        auto  state = GetState<UIStateTreeBox>();
-        auto & move = GetUIData(state->mData, Move);
-        ImGui::Unindent(move.x + ImGui::GetStyle().IndentSpacing);
-    }
-}
-
-void UIClassTreeBox::OnRender(float dt)
-{
-    CheckEventM();
-}
-
-// ---
 //  Layout
 // ---
 bool UIClassLayout::OnEnter()
@@ -687,6 +652,41 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
 }
 
 // ---
+//  UIClassTree
+// ---
+bool UIClassTreeBox::OnEnter()
+{
+    LockPosition();
+
+    auto  state = GetState<UIStateTreeBox>();
+    auto & move = GetUIData(state->mData, Move);
+
+    ImGui::SetNextItemWidth(move.z);
+    if (ImGui::TreeNodeEx(GetUIData(state->mData, Title).c_str()))
+    {
+        ImGui::Indent(move.x + ImGui::GetStyle().IndentSpacing);
+        return true;
+    }
+    return false;
+}
+
+void UIClassTreeBox::OnLeave(bool ret)
+{
+    if (ret)
+    {
+        ImGui::TreePop();
+        auto  state = GetState<UIStateTreeBox>();
+        auto & move = GetUIData(state->mData, Move);
+        ImGui::Unindent(move.x + ImGui::GetStyle().IndentSpacing);
+    }
+}
+
+void UIClassTreeBox::OnRender(float dt)
+{
+    CheckEventM();
+}
+
+// ---
 //  UIClassTextBox
 // ---
 void UIClassTextBox::OnRender(float dt)
@@ -757,9 +757,7 @@ void UIClassImageBox::OnRender(float dt)
         }
         else
         {
-            if (ImGui::Button(
-                GetUIData(state->mData, Title).c_str(), 
-                ImVec2(move.z, move.y)))
+            if (ImGui::Button(GetUIData(state->mData, Title).c_str(), ImVec2(move.z, move.y)))
             {
                 PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
             }

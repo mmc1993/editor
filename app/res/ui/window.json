@@ -60,7 +60,34 @@
 								"Align": "10"
 							},
 							"__Children": [
-								
+                                {
+                                    "__Property": {
+                                        "Type": "2",
+                                        "Skin": "TextBox",
+                                        "Move": "0 0 200 50",
+                                        "Align": "0",
+                                        "Title": "Resources List",
+                                        "TextAlign": "72",
+                                        "IsTextBox": "ok"
+                                    },
+                                    "__Children": [
+                                        
+                                    ]
+                                },
+                                {
+                                    "__Property": {
+                                        "Type": "2",
+                                        "Skin": "TextBox",
+                                        "Move": "0 0 200 50",
+                                        "Align": "0",
+                                        "Title": "Resources List1",
+                                        "TextAlign": "72",
+                                        "IsTextBox": "ok"
+                                    },
+                                    "__Children": [
+                                        
+                                    ]
+                                }
 							]
 						}
 					]
