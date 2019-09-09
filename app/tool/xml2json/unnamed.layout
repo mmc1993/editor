@@ -3,6 +3,7 @@
     <Widget type="Widget" skin="PanelSkin" position="0 0 1280 720" align="Stretch">
         <Property key="IsWindow" value="ok"/>
         <Property key="IsFullScreen" value="ok"/>
+        <Property key="Title" value="root"/>
         <Widget type="Widget" skin="PanelSkin" position="0 0 320 370" align="Stretch">
             <UserString key="Title" value="##0"/>
             <Widget type="Widget" skin="PanelSkin" position="0 0 320 50" align="HStretch Top">

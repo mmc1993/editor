@@ -5,7 +5,8 @@
 		"Move": "0 0 1280 720",
 		"Align": "384",
 		"IsWindow": "ok",
-		"IsFullScreen": "ok"
+		"IsFullScreen": "ok",
+		"Title": "root"
 	},
 	"__Children": [
 		{
