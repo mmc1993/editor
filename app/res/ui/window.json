@@ -187,7 +187,8 @@
 								"Skin": "ImageBox",
 								"Move": "625 0 50 50",
 								"Align": "80",
-								"LSkin": "res/atlas/icon/a (1).png"
+                                "LSkin": "res/atlas/icon/a (1).png",
+                                "IsButton": "ok"
 							},
 							"__Children": [
 								
