@@ -1,11 +1,12 @@
 {
 	"__Property": {
 		"Type": "0",
-		"Version": "3.2.0",
-		"Title": "root",
+		"Skin": "PanelSkin",
 		"Move": "0 0 1280 720",
+		"Align": "384",
 		"IsWindow": "ok",
-		"IsFullWindow": "ok"
+		"IsFullScreen": "ok",
+		"Title": "root"
 	},
 	"__Children": [
 		{
@@ -22,7 +23,7 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 0 320 50",
-						"Align": "384"
+						"Align": "130"
 					},
 					"__Children": [
 						{
@@ -32,7 +33,7 @@
 								"Move": "0 0 320 50",
 								"Align": "34",
 								"Title": "Component List",
-								"TextAlign": "Center",
+								"TextAlign": "96",
 								"IsTextBox": "ok"
 							},
 							"__Children": [
@@ -46,7 +47,7 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 50 320 320",
-						"Align": "384"
+						"Align": "130"
 					},
 					"__Children": [
 						{
@@ -88,7 +89,7 @@
 								"Move": "0 0 320 50",
 								"Align": "34",
 								"Title": "Object List",
-								"TextAlign": "Center",
+								"TextAlign": "96",
 								"IsTextBox": "ok"
 							},
 							"__Children": [
@@ -156,7 +157,7 @@
 								"Move": "0 0 200 50",
 								"Align": "72",
 								"Title": "Resources List",
-								"TextAlign": "Left VCenter",
+								"TextAlign": "72",
 								"IsTextBox": "ok"
 							},
 							"__Children": [
