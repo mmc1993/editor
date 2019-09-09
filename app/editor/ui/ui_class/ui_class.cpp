@@ -730,13 +730,6 @@ void UIClassTextBox::OnRender(float dt)
         }
     }
 
-    if (GetUIData(state->mData, IsShowBorder))
-    {
-        const auto & min = ImGui::GetItemRectMin();
-        const auto & max = ImGui::GetItemRectMax();
-        ImGui::GetWindowDrawList()->AddRect(min, max, 0xFFFFFFFF);
-    }
-
     CheckEventM();
 }
 
