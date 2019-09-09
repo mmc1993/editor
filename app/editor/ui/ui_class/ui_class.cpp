@@ -692,15 +692,10 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
 void UIClassTextBox::OnRender(float dt)
 {
     auto state = GetState<UIStateTextBox>();
-    ASSERT_LOG(GetUIData(state->mData, IsTextBox) || GetUIData(state->mData, IsEditBox), "");
-
+    
     LockPosition();
 
-    if      (GetUIData(state->mData, IsTextBox))
-    {
-        ImGui::Text(GetUIData(state->mData, Title).c_str());
-    }
-    else if (GetUIData(state->mData, IsEditBox))
+    if (GetUIData(state->mData, IsEditBox))
     {
         auto & move = GetUIData(state->mData, Move);
         auto flag = ImGuiInputTextFlags_EnterReturnsTrue
@@ -728,6 +723,10 @@ void UIClassTextBox::OnRender(float dt)
             }
             ImGui::PopItemWidth();
         }
+    }
+    else
+    {
+        ImGui::Text(GetUIData(state->mData, Title).c_str());
     }
 
     CheckEventM();
