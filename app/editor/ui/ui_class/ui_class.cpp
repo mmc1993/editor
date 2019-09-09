@@ -412,7 +412,7 @@ bool UIClassLayout::OnEnter()
     if (GetUIData(state->mData, IsWindow))
     {
         //  Ðü¸¡´°¿Ú
-        auto & title = GetUIData(state->mData, Title);
+        auto & name = GetUIData(state->mData, Name);
         ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
         ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
         size_t flag = 0;
@@ -443,7 +443,7 @@ bool UIClassLayout::OnEnter()
             ImGui::SetNextWindowPos(move);
         }
         ImGui::SetNextWindowSize(size);
-        return ImGui::Begin(title.empty()? nullptr: title.c_str(), nullptr, flag);
+        return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
     }
     else
     {
@@ -456,9 +456,9 @@ bool UIClassLayout::OnEnter()
         if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
     
         LockPosition();
-        auto & Title = GetUIData(state->mData, Title);
+        auto & name = GetUIData(state->mData, Name);
         auto & move = GetUIData(state->mData, Move);
-        return ImGui::BeginChild(Title.c_str(), ImVec2(move.z, move.w),
+        return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
             GetUIData(state->mData, IsShowBorder), flag);
     }
 }
@@ -662,7 +662,7 @@ bool UIClassTreeBox::OnEnter()
     auto & move = GetUIData(state->mData, Move);
 
     ImGui::SetNextItemWidth(move.z);
-    if (ImGui::TreeNodeEx(GetUIData(state->mData, Title).c_str()))
+    if (ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str()))
     {
         ImGui::Indent(move.x + ImGui::GetStyle().IndentSpacing);
         return true;
@@ -703,7 +703,7 @@ void UIClassTextBox::OnRender(float dt)
         if (GetUIData(state->mData, IsMulti))
         {
             if (ImGui::InputTextMultiline(
-                GetUIData(state->mData, Title).c_str(), 
+                GetUIData(state->mData, Name).c_str(), 
                 state->mBuffer.data(), 
                 state->mBuffer.size(), 
                 ImVec2(move.z, move.w), flag))
@@ -715,7 +715,7 @@ void UIClassTextBox::OnRender(float dt)
         {
             ImGui::PushItemWidth(move.z);
             if (ImGui::InputText(
-                GetUIData(state->mData, Title).c_str(), 
+                GetUIData(state->mData, Name).c_str(), 
                 state->mBuffer.data(), 
                 state->mBuffer.size(), flag))
             {
@@ -726,7 +726,7 @@ void UIClassTextBox::OnRender(float dt)
     }
     else
     {
-        ImGui::Text(GetUIData(state->mData, Title).c_str());
+        ImGui::Text(GetUIData(state->mData, Name).c_str());
     }
 
     CheckEventM();
@@ -757,7 +757,7 @@ void UIClassImageBox::OnRender(float dt)
         }
         else
         {
-            if (ImGui::Button(GetUIData(state->mData, Title).c_str(), ImVec2(move.z, move.y)))
+            if (ImGui::Button(GetUIData(state->mData, Name).c_str(), ImVec2(move.z, move.y)))
             {
                 PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
             }
@@ -789,9 +789,9 @@ bool UIClassComboBox::OnEnter()
 
     if (state->mSelected.empty() && !GetChildren().empty())
     {
-        state->mSelected = GetUIData(GetChildren().at(0)->GetState()->mData, Title);
+        state->mSelected = GetUIData(GetChildren().at(0)->GetState()->mData, Name);
     }
-    return ImGui::BeginCombo(GetUIData(state->mData, Title).c_str(), state->mSelected.c_str());
+    return ImGui::BeginCombo(GetUIData(state->mData, Name).c_str(), state->mSelected.c_str());
 }
 
 void UIClassComboBox::OnLeave(bool ret)
@@ -809,7 +809,7 @@ UIEventResultEnum UIClassComboBox::OnCallEventMessage(UIEventEnum e, UIClass * o
     auto state = GetState<UIStateComboBox>();
     if (e == UIEventEnum::kMOUSE_CLICK)
     {
-        state->mSelected = GetUIData(object->GetState()->mData, Title);
+        state->mSelected = GetUIData(object->GetState()->mData, Name);
         ImGui::CloseCurrentPopup();
         return UIEventResultEnum::kSTOP;
     }

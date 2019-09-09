@@ -200,8 +200,6 @@ __REG_GET_UI_DATA(std::string, Tips, std::string()) //  提示
 __REG_SET_UI_DATA(std::string, Tips)
 __REG_GET_UI_DATA(std::string, LSkin, std::string()) //  皮肤
 __REG_SET_UI_DATA(std::string, LSkin)
-__REG_GET_UI_DATA(std::string, Title, std::string()) //  标题
-__REG_SET_UI_DATA(std::string, Title)
 
 __REG_GET_UI_DATA(glm::vec4, Move, glm::vec4()) //  方位
 __REG_SET_UI_DATA(glm::vec4, Move)
@@ -239,7 +237,6 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, std::string, Name);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Tips);
     __REG_PARSE_UI_DATA(data, key, val, std::string, LSkin);
-    __REG_PARSE_UI_DATA(data, key, val, std::string, Title);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color0);
