@@ -41,6 +41,18 @@ enum class UIAlignEnum {
 };
 
 // ---
+//  文本对齐
+// ---
+enum class TextAlignEnum {
+    kCLING_T = 1 << 1,      //  靠上
+    kCLING_B = 1 << 2,      //  靠下
+    kCLING_L = 1 << 3,      //  靠左
+    kCLING_R = 1 << 4,      //  靠右
+    kCENTER_H = 1 << 5,     //  水平居中
+    kCENTER_V = 1 << 6,     //  垂直居中
+};
+
+// ---
 //  控件事件
 // ---
 enum class UIEventEnum {
