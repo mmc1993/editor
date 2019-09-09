@@ -1,41 +1,54 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
     <Widget type="Widget" skin="PanelSkin" position="0 0 1280 720" align="Stretch">
+        <Property key="Title" value="Root"/>
         <Property key="IsWindow" value="ok"/>
         <Property key="IsFullScreen" value="ok"/>
-        <Property key="Title" value="root"/>
+
+
         <Widget type="Widget" skin="PanelSkin" position="0 0 320 370" align="Stretch">
-            <UserString key="Title" value="##0"/>
+            <UserString key="Title" value="C0"/>
             <Widget type="Widget" skin="PanelSkin" position="0 0 320 50" align="HStretch Top">
                 <Widget type="TextBox" skin="TextBox" position="0 0 320 50" align="HCenter Top">
                     <Property key="Caption" value="Component List"/>
                     <Property key="TextAlign" value="Center"/>
                     <UserString key="IsTextBox" value="ok"/>
                 </Widget>
+                <Property key="Title" value="C0"/>
             </Widget>
-            <Widget type="Widget" skin="PanelSkin" position="0 50 320 320" align="HStretch Top">
+            <Widget type="Widget" skin="PanelSkin" position="0 50 320 320" align="Top Bottom Right Left">
                 <Widget type="ListBox" skin="ListBox" position="0 0 320 320" align="Left Top"/>
+                <Property key="Title" value="C1"/>
             </Widget>
         </Widget>
+
+
         <Widget type="Widget" skin="PanelSkin" position="0 370 320 350" align="Stretch">
-            <UserString key="Title" value="##1"/>
-            <Widget type="Widget" skin="PanelSkin" position="0 0 320 50" align="Stretch">
+            <UserString key="Title" value="C1"/>
+            <Widget type="Widget" skin="PanelSkin" position="0 0 320 50" align="HStretch Top">
                 <Widget type="TextBox" skin="TextBox" position="0 0 320 50" align="HCenter Top">
                     <Property key="Caption" value="Object List"/>
                     <Property key="TextAlign" value="Center"/>
                     <UserString key="IsTextBox" value="ok"/>
                 </Widget>
+                <Property key="Title" value="C0"/>
             </Widget>
-            <Widget type="Widget" skin="PanelSkin" position="0 50 320 300" align="Stretch">
+            <Widget type="Widget" skin="PanelSkin" position="0 50 320 300" align="Top Bottom Right Left">
                 <Widget type="ListBox" skin="ListBox" position="0 0 320 300" align="Left Top"/>
+                <Property key="Title" value="C1"/>
             </Widget>
         </Widget>
+
+
         <Widget type="Widget" skin="PanelSkin" position="320 0 960 510" align="Stretch">
-            <UserString key="Title" value="##2"/>
+            <UserString key="Title" value="C2"/>
         </Widget>
+
+
         <Widget type="Widget" skin="PanelSkin" position="320 510 960 210" align="Stretch">
-            <UserString key="Title" value="##3"/>
-            <Widget type="Widget" skin="PanelSkin" position="0 0 960 50" align="Stretch">
+            <UserString key="Title" value="C3"/>
+            <Widget type="Widget" skin="PanelSkin" position="0 0 960 50" align="HStretch Top">
+                <Property key="Title" value="C0"/>
                 <Widget type="TextBox" skin="TextBox" position="0 0 200 50" align="Left VCenter">
                     <Property key="Caption" value="Resources List"/>
                     <Property key="TextAlign" value="Left VCenter"/>
@@ -48,7 +61,11 @@
                     <UserString key="LSkin" value="res/atlas/icon/a (1).png"/>
                 </Widget>
             </Widget>
-            <Widget type="Widget" skin="PanelSkin" position="0 50 960 160" align="Stretch"/>
+            <Widget type="Widget" skin="PanelSkin" position="0 50 960 160" align="Top Bottom Right Left">
+                <Property key="Title" value="C1"/>
+            </Widget>
         </Widget>
+
+
     </Widget>
 </MyGUI>

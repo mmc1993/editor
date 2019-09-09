@@ -181,13 +181,13 @@ void UIClass::ApplyLayout()
             }
             if (align & (int)UIAlignEnum::kCENTER_H)
             {
-                margin.x = margin.x / parentMoveOld.z * parentMoveNew.z 
-                         + margin.z / parentMoveOld.z * parentMoveNew.z;
+                margin.x = (parentMoveNew.z - (margin.z - margin.x)) * 0.5f;
+                margin.z = margin.x + move.z;
             }
             if (align & (int)UIAlignEnum::kCENTER_V)
             {
-                margin.y = margin.y / parentMoveOld.w * parentMoveNew.w
-                         + margin.w / parentMoveOld.w * parentMoveNew.w;
+                margin.y = (parentMoveNew.w - (margin.w - margin.y)) * 0.5f;
+                margin.w = margin.y + move.w;
             }
             if (align & (int)UIAlignEnum::kSTRETCH_H)
             {

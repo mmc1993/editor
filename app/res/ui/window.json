@@ -4,9 +4,9 @@
 		"Skin": "PanelSkin",
 		"Move": "0 0 1280 720",
 		"Align": "384",
+		"Title": "Root",
 		"IsWindow": "ok",
-		"IsFullScreen": "ok",
-		"Title": "root"
+		"IsFullScreen": "ok"
 	},
 	"__Children": [
 		{
@@ -15,7 +15,7 @@
 				"Skin": "PanelSkin",
 				"Move": "0 0 320 370",
 				"Align": "384",
-				"Title": "##0"
+				"Title": "C0"
 			},
 			"__Children": [
 				{
@@ -23,7 +23,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 0 320 50",
-						"Align": "130"
+						"Align": "130",
+						"Title": "C0"
 					},
 					"__Children": [
 						{
@@ -47,7 +48,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 50 320 320",
-						"Align": "130"
+						"Align": "30",
+						"Title": "C1"
 					},
 					"__Children": [
 						{
@@ -71,7 +73,7 @@
 				"Skin": "PanelSkin",
 				"Move": "0 370 320 350",
 				"Align": "384",
-				"Title": "##1"
+				"Title": "C1"
 			},
 			"__Children": [
 				{
@@ -79,7 +81,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 0 320 50",
-						"Align": "384"
+						"Align": "130",
+						"Title": "C0"
 					},
 					"__Children": [
 						{
@@ -103,7 +106,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 50 320 300",
-						"Align": "384"
+						"Align": "30",
+						"Title": "C1"
 					},
 					"__Children": [
 						{
@@ -127,7 +131,7 @@
 				"Skin": "PanelSkin",
 				"Move": "320 0 960 510",
 				"Align": "384",
-				"Title": "##2"
+				"Title": "C2"
 			},
 			"__Children": [
 				
@@ -139,7 +143,7 @@
 				"Skin": "PanelSkin",
 				"Move": "320 510 960 210",
 				"Align": "384",
-				"Title": "##3"
+				"Title": "C3"
 			},
 			"__Children": [
 				{
@@ -147,7 +151,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 0 960 50",
-						"Align": "384"
+						"Align": "130",
+						"Title": "C0"
 					},
 					"__Children": [
 						{
@@ -195,7 +200,8 @@
 						"Type": "0",
 						"Skin": "PanelSkin",
 						"Move": "0 50 960 160",
-						"Align": "384"
+						"Align": "30",
+						"Title": "C1"
 					},
 					"__Children": [
 						
