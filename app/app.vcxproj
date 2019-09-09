@@ -36,7 +36,6 @@
     <ClCompile Include="editor\ui\ui_parse\ui_parse.cpp" />
     <ClCompile Include="editor\ui\ui_state\ui_state.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
-    <ClCompile Include="imgui\imgui_demo.cpp" />
     <ClCompile Include="imgui\imgui_draw.cpp" />
     <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="libs\gl3w\gl3w.c" />
