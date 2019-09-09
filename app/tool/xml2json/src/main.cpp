@@ -51,6 +51,11 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
             std::make_pair("HCenter Bottom",        (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_B),
             std::make_pair("HCenter VStretch",      (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("HCenter VCenter",       (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Left Right",            (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Top Bottom",            (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Top Bottom Left",       (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_L),
+            std::make_pair("Top Bottom Right",      (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Top Bottom Right Left", (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_L  |   (int)UIAlignEnum::kCLING_R),
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
@@ -256,8 +261,8 @@ void Save(const mmc::JsonValue::Value json, const std::string & url)
 void Main(const std::string & xmlURL, const std::string & jsonURL)
 {
     auto json = ParseXML(xmlURL);
-    CustomTransfer(json);
-    Save(json, jsonURL);
+    CustomTransfer(json->At(JSON_CHILDREN)->At(0));
+    Save(json->At(JSON_CHILDREN)->At(0), jsonURL);
 }
 
 //  ³ÌÐòÈë¿Ú
