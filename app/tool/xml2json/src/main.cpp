@@ -68,7 +68,7 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
             std::make_pair("Top Left Right",        (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
             std::make_pair("Top Bottom Left",       (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L),
             std::make_pair("Top Bottom Right",      (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_R),
-            std::make_pair("Top Bottom Right Left", (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Top Bottom Left Right", (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
         }),
     std::make_pair("Type", std::map<std::string, int>
         {

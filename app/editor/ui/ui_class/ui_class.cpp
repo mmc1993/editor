@@ -613,6 +613,8 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge)
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
+    CHECK_RET(GetUIData(GetState()->mData, IsCanStretch), false);
+
     auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
                ? GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first : this;
     const auto & clingMove  = GetUIData(cling->GetState()->mData, Move);

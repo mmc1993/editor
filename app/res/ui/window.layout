@@ -3,8 +3,30 @@
     <Widget type="Widget" skin="PanelSkin" position="0 0 1280 720" align="Stretch" name="Root">
         <UserString key="IsWindow" value="ok"/>
         <UserString key="IsFullScreen" value="ok"/>
-        <Widget type="Widget" skin="PanelSkin" position="0 0 300 720" align="Stretch" name="C_0"/>
-        <Widget type="Widget" skin="PanelSkin" position="300 550 980 170" align="Stretch" name="C_1"/>
-        <Widget type="Widget" skin="PanelSkin" position="300 0 980 550" align="Stretch" name="C_2"/>
+        <Widget type="Widget" skin="PanelSkin" position="0 0 300 720" align="Stretch" name="C_0">
+            <UserString key="StretchMin" value="300 720"/>
+            <UserString key="IsCanStretch" value="ok"/>
+        </Widget>
+        <Widget type="Widget" skin="PanelSkin" position="300 550 980 170" align="Stretch" name="C_1">
+            <UserString key="StretchMin" value="980 170"/>
+            <UserString key="IsCanStretch" value="ok"/>
+            <Widget type="Widget" skin="PanelSkin" position="0 0 980 40" align="Top Left Right" name="C_0">
+                <Widget type="TextBox" skin="TextBox" position="15 12 50 15" align="Left VCenter">
+                    <Property key="Caption" value="Import"/>
+                </Widget>
+                <Widget type="TextBox" skin="TextBox" position="80 12 65 15" align="Left VCenter">
+                    <Property key="Caption" value="Refresh"/>
+                </Widget>
+                <Widget type="TextBox" skin="TextBox" position="690 12 225 15" align="Right VCenter">
+                    <Property key="Caption" value="Serach"/>
+                    <UserString key="IsEditBox" value="ok"/>
+                </Widget>
+            </Widget>
+            <Widget type="Widget" skin="PanelSkin" position="0 40 980 130" align="Top Bottom Left Right" name="C_1"/>
+        </Widget>
+        <Widget type="Widget" skin="PanelSkin" position="300 0 980 550" align="Stretch" name="C_2">
+            <UserString key="StretchMin" value="980 550"/>
+            <UserString key="IsCanStretch" value="ok"/>
+        </Widget>
     </Widget>
 </MyGUI>

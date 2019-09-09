@@ -15,7 +15,9 @@
 				"Skin": "PanelSkin",
 				"Move": "0 0 300 720",
 				"Align": "384",
-				"Name": "C_0"
+				"Name": "C_0",
+				"StretchMin": "300 720",
+				"IsCanStretch": "ok"
 			},
 			"__Children": [
 				
@@ -27,10 +29,71 @@
 				"Skin": "PanelSkin",
 				"Move": "300 550 980 170",
 				"Align": "384",
-				"Name": "C_1"
+				"Name": "C_1",
+				"StretchMin": "980 170",
+				"IsCanStretch": "ok"
 			},
 			"__Children": [
-				
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 0 980 40",
+						"Align": "26",
+						"Name": "C_0"
+					},
+					"__Children": [
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "15 12 50 15",
+								"Align": "72",
+								"Name": "Import"
+							},
+							"__Children": [
+								
+							]
+						},
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "80 12 65 15",
+								"Align": "72",
+								"Name": "Refresh"
+							},
+							"__Children": [
+								
+							]
+						},
+						{
+							"__Property": {
+								"Type": "2",
+								"Skin": "TextBox",
+								"Move": "690 12 225 15",
+								"Align": "80",
+								"Name": "Serach",
+								"IsEditBox": "ok"
+							},
+							"__Children": [
+								
+							]
+						}
+					]
+				},
+				{
+					"__Property": {
+						"Type": "0",
+						"Skin": "PanelSkin",
+						"Move": "0 40 980 130",
+						"Align": "30",
+						"Name": "C_1"
+					},
+					"__Children": [
+						
+					]
+				}
 			]
 		},
 		{
@@ -39,7 +102,9 @@
 				"Skin": "PanelSkin",
 				"Move": "300 0 980 550",
 				"Align": "384",
-				"Name": "C_2"
+				"Name": "C_2",
+				"StretchMin": "980 550",
+				"IsCanStretch": "ok"
 			},
 			"__Children": [
 				
