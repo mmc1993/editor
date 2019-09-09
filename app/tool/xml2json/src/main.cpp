@@ -100,6 +100,7 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
 static const std::map<std::string, std::map<std::string, std::string>> VALUE_STRING_2_REPLACE {
     std::make_pair("Type", std::map<std::string, std::string>
         {
+            std::make_pair("Caption", "Name"),
             std::make_pair("Widget", "Layout"),
             std::make_pair("ListBox", "TreeBox"),
             std::make_pair("EditBox", "TextBox"),
