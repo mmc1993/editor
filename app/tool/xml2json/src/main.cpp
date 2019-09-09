@@ -110,7 +110,7 @@ static const std::map<std::string, std::map<std::string, std::string>> VALUE_STR
 //  ¼ü×Ö·û´®Ìæ»»
 static const std::map<std::string, std::string> KEY_STRING_2_REPLACE {
     std::make_pair("Position",  "Move"),
-    std::make_pair("Caption",   "Title"),
+    std::make_pair("Caption",   "Name"),
 };
 
 //  Öµ×Ö·û´®×ªÊý×Ö
