@@ -28,34 +28,46 @@ enum class UIAlignEnum {
     LENGTH,
 };
 
+// ---
+//  文本对齐
+// ---
+enum class UITextAlignEnum {
+    kCLING_T = 1 << 1,      //  靠上
+    kCLING_B = 1 << 2,      //  靠下
+    kCLING_L = 1 << 3,      //  靠左
+    kCLING_R = 1 << 4,      //  靠右
+    kCENTER_H = 1 << 5,     //  水平居中
+    kCENTER_V = 1 << 6,     //  垂直居中
+};
+
 //  值字符串转数字
 static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NUMBER {
     std::make_pair("Align", std::map<std::string, int>
         {
             std::make_pair("Default",               (int)UIAlignEnum::kDEFAULT),
-            std::make_pair("Stretch",               (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Center",                (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Left Top",              (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("Left Bottom",           (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Left VStretch",         (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Left VCenter",          (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("Right Top",             (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("Right Bottom",          (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Right VStretch",        (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("Right VCenter",         (int)UIAlignEnum::kCLING_R      |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("HStretch Top",          (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("HStretch Bottom",       (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("HStretch VStretch",     (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("HStretch VCenter",      (int)UIAlignEnum::kSTRETCH_H    |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("HCenter Top",           (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_T),
-            std::make_pair("HCenter Bottom",        (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("HCenter VStretch",      (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kSTRETCH_V),
-            std::make_pair("HCenter VCenter",       (int)UIAlignEnum::kCENTER_H     |   (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("Left Right",            (int)UIAlignEnum::kCLING_L      |   (int)UIAlignEnum::kCLING_R),
-            std::make_pair("Top Bottom",            (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Top Bottom Left",       (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_L),
-            std::make_pair("Top Bottom Right",      (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_R),
-            std::make_pair("Top Bottom Right Left", (int)UIAlignEnum::kCLING_T      |   (int)UIAlignEnum::kCLING_B      |   (int)UIAlignEnum::kCLING_L  |   (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Stretch",               (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Center",                (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Left Top",              (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Left Bottom",           (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Left VStretch",         (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Left VCenter",          (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Right Top",             (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Right Bottom",          (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Right VStretch",        (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("Right VCenter",         (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("HStretch Top",          (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCLING_T),
+            std::make_pair("HStretch Bottom",       (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("HStretch VStretch",     (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("HStretch VCenter",      (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("HCenter Top",           (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCLING_T),
+            std::make_pair("HCenter Bottom",        (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("HCenter VStretch",      (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kSTRETCH_V),
+            std::make_pair("HCenter VCenter",       (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCENTER_V),
+            std::make_pair("Left Right",            (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Top Bottom",            (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Top Bottom Left",       (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L),
+            std::make_pair("Top Bottom Right",      (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Top Bottom Right Left", (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
@@ -69,13 +81,17 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
         }),
     std::make_pair("TextAlign", std::map<std::string, int>
         {
-            std::make_pair("Default",       0),
-            std::make_pair("TreeBox",       1),
-            std::make_pair("TextBox",       2),
-            std::make_pair("ImageBox",      3),
-            std::make_pair("ComboBox",      4),
-            std::make_pair("UICanvas",      5),
-            std::make_pair("GLCanvas",      6),
+            std::make_pair("Default",           (int)UITextAlignEnum::kCLING_L),
+            std::make_pair("Center",            (int)UITextAlignEnum::kCENTER_H | (int)UITextAlignEnum::kCENTER_V),
+            std::make_pair("Left Top",          (int)UITextAlignEnum::kCLING_L | (int)UITextAlignEnum::kCLING_T),
+            std::make_pair("Left Bottom",       (int)UITextAlignEnum::kCLING_L | (int)UITextAlignEnum::kCLING_B),
+            std::make_pair("Left VCenter",      (int)UITextAlignEnum::kCLING_L | (int)UITextAlignEnum::kCENTER_V),
+            std::make_pair("Right Top",         (int)UITextAlignEnum::kCLING_R | (int)UITextAlignEnum::kCLING_T),
+            std::make_pair("Right Bottom",      (int)UITextAlignEnum::kCLING_R | (int)UITextAlignEnum::kCLING_B),
+            std::make_pair("Right VCenter",     (int)UITextAlignEnum::kCLING_R | (int)UITextAlignEnum::kCENTER_V),
+            std::make_pair("HCenter Top",       (int)UITextAlignEnum::kCENTER_H | (int)UITextAlignEnum::kCLING_T),
+            std::make_pair("HCenter Bottom",    (int)UITextAlignEnum::kCENTER_H | (int)UITextAlignEnum::kCLING_B),
+            std::make_pair("HCenter VCenter",   (int)UITextAlignEnum::kCENTER_H | (int)UITextAlignEnum::kCENTER_V),
         })
 };
 
