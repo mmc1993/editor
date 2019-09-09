@@ -43,7 +43,7 @@ enum class UIAlignEnum {
 // ---
 //  文本对齐
 // ---
-enum class TextAlignEnum {
+enum class UITextAlignEnum {
     kCLING_T = 1 << 1,      //  靠上
     kCLING_B = 1 << 2,      //  靠下
     kCLING_L = 1 << 3,      //  靠左
