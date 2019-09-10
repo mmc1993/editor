@@ -306,10 +306,12 @@ void UIClass::DispatchEventK()
 
 bool UIClass::CallEventMessage(UIEventEnum e, const Event & param)
 {
-    if (e == UIEventEnum::kMOUSE_RELEASE)
+    if (e != UIEventEnum::kMOUSE_HOVERED)
     {
-        std::cout << GetUIData(GetState()->mData, Name) << std::endl;
+        std::cout <<  "e: " << (int)e  << ' '
+            << "Name: " << GetUIData(GetState()->mData, Name) << std::endl;
     }
+    
 
     auto ret = OnCallEventMessage(e, param);
     //  _TODO
