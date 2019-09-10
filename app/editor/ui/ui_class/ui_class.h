@@ -98,13 +98,11 @@ private:
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
     virtual void OnRender(float dt) override;
-    virtual UIEventResultEnum OnCallEventMessage(
-        UIEventEnum e, UIClass * object, 
-        const std::any & param) override 
-    { return UIEventResultEnum::kSTOP; }
+    virtual UIEventResultEnum OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param) override;
 
     bool IsCanStretch(DirectEnum edge);
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
+    void HandleStretch();
 };
 
 class UIClassTreeBox : public UIClass {

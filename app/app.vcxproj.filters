@@ -75,6 +75,9 @@
     <ClCompile Include="imgui\imgui_draw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\ui\ui_menu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -900,6 +903,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\atlas\atlas_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\ui\ui_menu.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

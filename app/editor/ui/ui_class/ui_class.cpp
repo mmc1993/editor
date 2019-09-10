@@ -208,9 +208,11 @@ void UIClass::ApplyLayout()
     }
     else
     {
-        const auto & size = ImGui_ImplGlfw_GetWindowSize();
-        auto move = GetUIData(thisData, Move);
-        move.z = size.x;move.w = size.y;
+        const auto & wsize = ImGui_ImplGlfw_GetWindowSize();
+        auto & size = GetUIData(thisData, StretchMin);
+        auto   move = GetUIData(thisData, Move);
+        move.z = std::max(wsize.x, size.x);
+        move.w = std::max(wsize.y, size.y);
         SetUIData(thisData, Move, move);
     }
     OnApplyLayout();
@@ -475,6 +477,9 @@ void UIClassLayout::OnLeave(bool ret)
     {
         ImGui::EndChild();
     }
+    HandleStretch();
+    CheckEventK();
+    CheckEventM();
 }
 
 void UIClassLayout::OnResetLayout()
@@ -489,7 +494,6 @@ void UIClassLayout::OnResetLayout()
     for (auto layout : GetParent()->GetChildren(UITypeEnum::kLAYOUT))
     {
         if (layout == this) { continue; }
-        auto index  = (size_t)~0;
         auto state  = layout->GetState<UIStateLayout>();
         auto up     = GetUIData(state->mData, Move).y;
         auto left   = GetUIData(state->mData, Move).x;
@@ -552,60 +556,11 @@ void UIClassLayout::OnApplyLayout()
 }
 
 void UIClassLayout::OnRender(float dt)
+{ }
+
+UIEventResultEnum UIClassLayout::OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
 {
-    auto thisState =            GetState<UIStateLayout>();
-    auto rootState = GetRoot()->GetState<UIStateLayout>();
-    if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
-    {
-        const auto & world = ToWorldCoord();
-        const auto & mouse = ImGui::GetMousePos();
-        const auto & move = GetUIData(thisState->mData, Move);
-        const auto direct = math_tool::IsOnEdge(
-            glm::vec4(world.x, world.y, move.z, move.w),
-            glm::vec2(mouse.x, mouse.y), LAYOUT_STRETCH_BORDER);
-        if (direct != -1 && IsCanStretch((DirectEnum)direct))
-        {
-            switch ((DirectEnum)direct)
-            {
-            case DirectEnum::kU:
-            case DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
-            case DirectEnum::kL:
-            case DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
-            }
-            if (ImGui::IsMouseDown(0))
-            {
-                rootState->mStretchFocus.mObject = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
-                                                 ? GetState<UIStateLayout>()->mJoin[direct].mIn.first : this;
-                rootState->mStretchFocus.mDirect = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
-                                                 ? GetState<UIStateLayout>()->mJoin[direct].mIn.second : (DirectEnum)direct;
-            }
-        }
-    }
-
-    if (rootState->mStretchFocus.mObject == this)
-    {
-        const auto & offset = ImGui::GetIO().MouseDelta;
-        auto move   = GetUIData(thisState->mData, Move);
-        if (IsCanStretch(rootState->mStretchFocus.mDirect, glm::vec2(offset.x, offset.y)))
-        {
-            switch ((int)rootState->mStretchFocus.mDirect)
-            {
-            case (int)DirectEnum::kU: move.y += offset.y; break;
-            case (int)DirectEnum::kD: move.w += offset.y; break;
-            case (int)DirectEnum::kL: move.x += offset.x; break;
-            case (int)DirectEnum::kR: move.z += offset.x; break;
-            }
-            SetUIData(thisState->mData, Move, move);
-        }
-    }
-
-    if (ImGui::IsMouseReleased(0))
-    {
-        thisState->mStretchFocus.mObject = nullptr;
-    }
-
-    CheckEventK();
-    CheckEventM();
+    return UIEventResultEnum::kSTOP;
 }
 
 bool UIClassLayout::IsCanStretch(DirectEnum edge)
@@ -651,6 +606,58 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
         }
     }
     return true;
+}
+
+void UIClassLayout::HandleStretch()
+{
+    auto thisState =            GetState<UIStateLayout>();
+    auto rootState = GetRoot()->GetState<UIStateLayout>();
+    if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsItemHovered())
+    {
+        const auto & world = ToWorldCoord();
+        const auto & mouse = ImGui::GetMousePos();
+        const auto & move = GetUIData(thisState->mData, Move);
+        const auto direct = math_tool::IsOnEdge(
+            glm::vec4(world.x, world.y, move.z, move.w),
+            glm::vec2(mouse.x, mouse.y), LAYOUT_STRETCH_BORDER);
+        if (direct != -1 && IsCanStretch((DirectEnum)direct))
+        {
+            switch ((DirectEnum)direct)
+            {
+            case DirectEnum::kU: case DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
+            case DirectEnum::kL: case DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
+            }
+            if (ImGui::IsMouseDown(0))
+            {
+                rootState->mStretchFocus.mObject = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
+                                                ? GetState<UIStateLayout>()->mJoin[direct].mIn.first : this;
+                rootState->mStretchFocus.mDirect = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
+                                                ? GetState<UIStateLayout>()->mJoin[direct].mIn.second : (DirectEnum)direct;
+            }
+        }
+    }
+
+    if (rootState->mStretchFocus.mObject == this)
+    {
+        const auto & offset = ImGui::GetIO().MouseDelta;
+        auto move   = GetUIData(thisState->mData, Move);
+        if (IsCanStretch(rootState->mStretchFocus.mDirect, glm::vec2(offset.x, offset.y)))
+        {
+            switch ((int)rootState->mStretchFocus.mDirect)
+            {
+            case (int)DirectEnum::kU: move.y += offset.y; break;
+            case (int)DirectEnum::kD: move.w += offset.y; break;
+            case (int)DirectEnum::kL: move.x += offset.x; break;
+            case (int)DirectEnum::kR: move.z += offset.x; break;
+            }
+            SetUIData(thisState->mData, Move, move);
+        }
+    }
+
+    if (ImGui::IsMouseReleased(0))
+    {
+        thisState->mStretchFocus.mObject = nullptr;
+    }
 }
 
 // ---

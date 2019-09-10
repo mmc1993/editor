@@ -12,3 +12,10 @@
     组件0
     组件1
     组件2
+
+
+窗口菜单:
+    Menu = "Menu0/Menu0#v, Menu0/Menu1#v, Menu1/Menu0#v"
+
+BarMenu(this, params)
+PopMenu(this, params)
