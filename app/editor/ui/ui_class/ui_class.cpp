@@ -115,13 +115,10 @@ void UIClass::Render(float dt)
 {
     ApplyLayout();
     auto ret = OnEnter();
-    if (ret)
-    {
-        OnRender(dt);
-        std::for_each(_children.begin(), _children.end(),
-                      std::bind(&UIClass::Render, 
-                      std::placeholders::_1, dt));
-    }
+    if (ret) { OnRender(dt); }
+    std::for_each(_children.begin(), _children.end(),
+                    std::bind(&UIClass::Render, 
+                    std::placeholders::_1, dt));
     OnLeave(ret);
 
     //  刷新备份数据
