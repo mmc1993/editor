@@ -100,7 +100,9 @@ UIClass * UIClass::GetRoot()
 {
     auto ret = this;
     while (ret->GetParent() != nullptr)
+    {
         ret = ret->GetParent();
+    }
     return ret;
 }
 
@@ -809,12 +811,10 @@ void UIClassComboBox::OnRender(float dt)
 
 UIEventResultEnum UIClassComboBox::OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
 {
-    auto state = GetState<UIStateComboBox>();
     if (e == UIEventEnum::kMOUSE_CLICK)
     {
-        state->mSelected = GetUIData(object->GetState()->mData, Name);
+        GetState<UIStateComboBox>()->mSelected = GetUIData(object->GetState()->mData, Name);
         ImGui::CloseCurrentPopup();
-        return UIEventResultEnum::kSTOP;
     }
     return UIEventResultEnum::kPASS;
 }
