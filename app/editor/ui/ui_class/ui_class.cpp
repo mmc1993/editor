@@ -121,9 +121,6 @@ void UIClass::Render(float dt)
         std::for_each(_children.begin(), _children.end(),
                       std::bind(&UIClass::Render, 
                       std::placeholders::_1, dt));
-
-        CheckEventM();
-        CheckEventK();
     }
     OnLeave(ret);
 
@@ -267,38 +264,38 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
-void UIClass::CheckEventM()
+void UIClass::CollectEventM()
 {
-    if (ImGui::IsItemHovered())
+    if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered())
     {
         if (ImGui::IsMouseDown(0) ||
             ImGui::IsMouseDown(1) ||
             ImGui::IsMouseDown(2))
         {
-            PostEventMessage(UIEventEnum::kMOUSE_DOWN, this);
+            PostEventMessage(UIEventEnum::kMOUSE_DOWN, this, 0);
         }
         if (ImGui::IsMouseReleased(0) ||
             ImGui::IsMouseReleased(1) ||
             ImGui::IsMouseReleased(2))
         {
-            PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
+            PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
         }
         if (ImGui::IsMouseClicked(0) ||
             ImGui::IsMouseClicked(1) ||
             ImGui::IsMouseClicked(2))
         {
-            PostEventMessage(UIEventEnum::kMOUSE_CLICK, this);
+            PostEventMessage(UIEventEnum::kMOUSE_CLICK, this, 0);
         }
         if (ImGui::IsMouseDoubleClicked(0) ||
             ImGui::IsMouseDoubleClicked(1) ||
             ImGui::IsMouseDoubleClicked(2))
         {
-            PostEventMessage(UIEventEnum::kMOUSE_DCLICK, this);
+            PostEventMessage(UIEventEnum::kMOUSE_DCLICK, this, 0);
         }
     }
 }
 
-void UIClass::CheckEventK()
+void UIClass::CollectEventK()
 {
     auto flag = false;
     auto state = GetState();
@@ -307,10 +304,10 @@ void UIClass::CheckEventK()
         if (flag = ImGui::IsKeyReleased(key)
                 || ImGui::IsKeyDown(key) ) { break; }
     }
-    if (flag) { PostEventMessage(UIEventEnum::kKEY, this); }
+    if (flag) { PostEventMessage(UIEventEnum::kKEY, this, 0); }
 }
 
-void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
+void UIClass::PostEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
 {
     switch (e)
     {
@@ -326,7 +323,7 @@ void UIClass::PostEventMessage(UIEventEnum e, UIClass * object)
                 else if (ImGui::IsKeyReleased(key))         { eo.mAct = 1; }
                 else if (ImGui::IsKeyPressed(key, false))   { eo.mAct = 3; }
                 else if (ImGui::IsKeyPressed(key, true))    { eo.mAct = 4; }
-                if (eo.mAct != -1) { PostEventMessage(e, object); }
+                if (eo.mAct != -1) { CallEventMessage(e, object, eo); }
             }
         }
         break;
@@ -476,6 +473,8 @@ void UIClassLayout::OnLeave(bool ret)
     if (GetUIData(state->mData, IsWindow))
     {
         ImGui::PopStyleVar(2);
+        CollectEventM();
+        CollectEventK();
         ImGui::End();
     }
     else
@@ -718,7 +717,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.size(), 
                 ImVec2(move.z, move.w), flag))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this);
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this, 0);
             }
         }
         else
@@ -729,7 +728,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.data(), 
                 state->mBuffer.size(), flag))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this);
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this, 0);
             }
             ImGui::PopItemWidth();
         }
@@ -760,14 +759,14 @@ void UIClassImageBox::OnRender(float dt)
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
+                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
             }
         }
         else
         {
             if (ImGui::Button(GetUIData(state->mData, Name).c_str(), ImVec2(move.z, move.y)))
             {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this);
+                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
             }
         }
     }

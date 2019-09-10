@@ -74,9 +74,9 @@ protected:
     virtual void OnRender(float dt) = 0;
 
     //  事件处理
-    void                        CheckEventM();
-    void                        CheckEventK();
-    void                        PostEventMessage(UIEventEnum e, UIClass * object);
+    void                        CollectEventM();
+    void                        CollectEventK();
+    void                        PostEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
     UIEventResultEnum           CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
     virtual UIEventResultEnum   OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param) { return UIEventResultEnum::kPASS; };
 
