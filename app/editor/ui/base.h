@@ -66,14 +66,6 @@ enum class UIEventEnum {
 };
 
 // ---
-//  事件返回值
-// ---
-enum class UIEventResultEnum {
-    kSTOP,      //  停止传递
-    kPASS,      //  传递通过
-};
-
-// ---
 //  默认值定义
 // ---
 constexpr auto LAYOUT_STRETCH_BORDER = 5.0f;      //  Layout 可拖动边距

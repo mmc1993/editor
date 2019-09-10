@@ -264,123 +264,118 @@ glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
                      coord.y - world.y);
 }
 
-void UIClass::CollectEventM()
+glm::vec4 UIClass::ToWorldRect()
 {
-    if (ImGui::IsWindowFocused() && ImGui::IsWindowHovered())
+    auto & move = GetUIData(GetState()->mData, Move);
+    return glm::vec4(ToWorldCoord(), move.z, move.w);
+}
+
+void UIClass::DispatchEventM()
+{
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) && 
+        ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        if (ImGui::IsMouseDown(0) ||
-            ImGui::IsMouseDown(1) ||
-            ImGui::IsMouseDown(2))
-        {
-            PostEventMessage(UIEventEnum::kMOUSE_DOWN, this, 0);
-        }
-        if (ImGui::IsMouseReleased(0) ||
-            ImGui::IsMouseReleased(1) ||
-            ImGui::IsMouseReleased(2))
-        {
-            PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
-        }
-        if (ImGui::IsMouseClicked(0) ||
-            ImGui::IsMouseClicked(1) ||
-            ImGui::IsMouseClicked(2))
-        {
-            PostEventMessage(UIEventEnum::kMOUSE_CLICK, this, 0);
-        }
-        if (ImGui::IsMouseDoubleClicked(0) ||
-            ImGui::IsMouseDoubleClicked(1) ||
-            ImGui::IsMouseDoubleClicked(2))
-        {
-            PostEventMessage(UIEventEnum::kMOUSE_DCLICK, this, 0);
-        }
+        if (ImGui::IsMouseReleased(0)) { DispatchEventM(UIEventEnum::kMOUSE_RELEASE, EventMouse(2, 0)); }
+        if (ImGui::IsMouseReleased(1)) { DispatchEventM(UIEventEnum::kMOUSE_RELEASE, EventMouse(2, 1)); }
+        if (ImGui::IsMouseReleased(2)) { DispatchEventM(UIEventEnum::kMOUSE_RELEASE, EventMouse(2, 2)); }
+        
+        if (ImGui::IsMouseClicked(0)) { DispatchEventM(UIEventEnum::kMOUSE_CLICK, EventMouse(3, 0)); }
+        if (ImGui::IsMouseClicked(1)) { DispatchEventM(UIEventEnum::kMOUSE_CLICK, EventMouse(3, 1)); }
+        if (ImGui::IsMouseClicked(2)) { DispatchEventM(UIEventEnum::kMOUSE_CLICK, EventMouse(3, 2)); }
+
+        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventM(UIEventEnum::kMOUSE_DCLICK, EventMouse(4, 0)); }
+        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventM(UIEventEnum::kMOUSE_DCLICK, EventMouse(4, 1)); }
+        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventM(UIEventEnum::kMOUSE_DCLICK, EventMouse(4, 2)); }
+
+        auto hoverKey = -1;
+        if (ImGui::IsMouseDown(0)) { DispatchEventM(UIEventEnum::kMOUSE_DOWN, EventMouse(1, 0)); hoverKey = 0; }
+        if (ImGui::IsMouseDown(1)) { DispatchEventM(UIEventEnum::kMOUSE_DOWN, EventMouse(1, 1)); hoverKey = 1; }
+        if (ImGui::IsMouseDown(2)) { DispatchEventM(UIEventEnum::kMOUSE_DOWN, EventMouse(1, 2)); hoverKey = 2; }
+        DispatchEventM(UIEventEnum::kMOUSE_HOVERED, EventMouse(0, hoverKey));
     }
 }
 
-void UIClass::CollectEventK()
+void UIClass::DispatchEventK()
 {
-    auto flag = false;
-    auto state = GetState();
-    for (auto key : GetUIData(state->mData, Hotkeys))
-    {
-        if (flag = ImGui::IsKeyReleased(key)
-                || ImGui::IsKeyDown(key) ) { break; }
-    }
-    if (flag) { PostEventMessage(UIEventEnum::kKEY, this, 0); }
+    //auto flag = false;
+    //auto state = GetState();
+    //for (auto key : GetUIData(state->mData, Hotkeys))
+    //{
+    //    if (flag = ImGui::IsKeyReleased(key)
+    //            || ImGui::IsKeyDown(key) ) { break; }
+    //}
+    //if (flag) { PostEventMessage(UIEventEnum::kKEY, this, 0); }
 }
 
-void UIClass::PostEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
+bool UIClass::CallEventMessage(UIEventEnum e, const Event & param)
 {
-    switch (e)
+    if (e == UIEventEnum::kMOUSE_RELEASE)
     {
-    case UIEventEnum::kKEY:
-        {
-            EventKey eo;
-            for (auto key : GetUIData(object->GetState<UIState>()->mData, Hotkeys))
-            {
-                eo.mKey = key;
-                eo.mAct =  -1;
-                eo.mState = EventDetails::CheckStateKey();
-                if      (ImGui::IsKeyDown(key))             { eo.mAct = 0; }
-                else if (ImGui::IsKeyReleased(key))         { eo.mAct = 1; }
-                else if (ImGui::IsKeyPressed(key, false))   { eo.mAct = 3; }
-                else if (ImGui::IsKeyPressed(key, true))    { eo.mAct = 4; }
-                if (eo.mAct != -1) { CallEventMessage(e, object, eo); }
-            }
-        }
-        break;
-    case UIEventEnum::kMOUSE_DOWN:
-    case UIEventEnum::kMOUSE_CLICK:
-    case UIEventEnum::kMOUSE_DCLICK:
-    case UIEventEnum::kMOUSE_RELEASE:
-    case UIEventEnum::kMOUSE_HOVERED:
-        {
-            EventMouse eo;
-            if (e == UIEventEnum::kMOUSE_HOVERED)       { eo.mAct = 0; eo.mKey = EventDetails::CheckMouseKey(e, false); }
-            else if (e == UIEventEnum::kMOUSE_DOWN)    { eo.mAct = 1; eo.mKey = EventDetails::CheckMouseKey(e, false); }
-            else if (e == UIEventEnum::kMOUSE_RELEASE)  { eo.mAct = 2; eo.mKey = EventDetails::CheckMouseKey(e, false); }
-            else if (e == UIEventEnum::kMOUSE_DCLICK)   { eo.mAct = 3; eo.mKey = EventDetails::CheckMouseKey(e, false); }
-            else if (e == UIEventEnum::kMOUSE_CLICK)
-            { 
-                eo.mKey = EventDetails::CheckMouseKey(e, true);
-                if (eo.mKey != -1)
-                {
-                    eo.mAct = 5;
-                }
-                else
-                { 
-                    eo.mAct = 4; 
-                    eo.mKey = EventDetails::CheckMouseKey(e, false);
-                }
-            }
-            eo.mState = EventDetails::CheckStateKey();
-            //  处理事件
-            CallEventMessage(e, object, eo);
-        }
-        break;
-    case UIEventEnum::kEDIT_TEXT_FINISH:
-        {
-            ASSERT_LOG(dynamic_cast<UIClassTextBox *>(object) != nullptr, "");
-            EventEditText eo;
-            eo.mText = object->GetState<UIStateTextBox>()->mBuffer;
-            //  处理事件
-            CallEventMessage(e, object, eo);
-        }
-        break;
+        std::cout << GetUIData(GetState()->mData, Name) << std::endl;
     }
-}
 
-UIEventResultEnum UIClass::CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
-{
-    auto ret = OnCallEventMessage(e, object, param);
-
+    auto ret = OnCallEventMessage(e, param);
     //  _TODO
-    //  调用代理
+    //      代理接收事件
 
-    if (ret != UIEventResultEnum::kSTOP && GetParent() != nullptr)
+    if (!ret && GetParent() != nullptr) 
     {
-        ret = GetParent()->CallEventMessage(e, object, param);
+        ret = GetParent()->CallEventMessage(e, param);
     }
-
     return ret;
+}
+
+bool UIClass::PostEventMessage(UIEventEnum e, const Event & param)
+{
+    param.mObject = this;
+    return CallEventMessage(e, param);
+}
+//
+//void UIClass::PostEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
+//{
+//    switch (e)
+//    {
+//    case UIEventEnum::kKEY:
+//        {
+//            EventKey eo;
+//            for (auto key : GetUIData(object->GetState<UIState>()->mData, Hotkeys))
+//            {
+//                eo.mKey = key;
+//                eo.mAct =  -1;
+//                eo.mState = EventDetails::CheckStateKey();
+//                if      (ImGui::IsKeyDown(key))             { eo.mAct = 0; }
+//                else if (ImGui::IsKeyReleased(key))         { eo.mAct = 1; }
+//                else if (ImGui::IsKeyPressed(key, false))   { eo.mAct = 3; }
+//                else if (ImGui::IsKeyPressed(key, true))    { eo.mAct = 4; }
+//                if (eo.mAct != -1) { CallEventMessage(e, object, eo); }
+//            }
+//        }
+//        break;
+//    case UIEventEnum::kEDIT_TEXT_FINISH:
+//        {
+//            ASSERT_LOG(dynamic_cast<UIClassTextBox *>(object) != nullptr, "");
+//            EventEditText eo;
+//            eo.mText = object->GetState<UIStateTextBox>()->mBuffer;
+//            //  处理事件
+//            CallEventMessage(e, object, eo);
+//        }
+//        break;
+//    }
+//}
+
+bool UIClass::DispatchEventM(UIEventEnum e, const EventMouse & param)
+{
+    if (math_tool::IsContain(ToWorldRect(), param.mMouse))
+    {
+        auto hit = false;
+        for (auto child : GetChildren())
+        {
+            hit = child->DispatchEventM(e, param) || hit;
+        }
+        if (!hit) { PostEventMessage(e, param); }
+        return true;
+    }
+    return false;
 }
 
 void UIClass::LockPosition()
@@ -473,8 +468,8 @@ void UIClassLayout::OnLeave(bool ret)
     if (GetUIData(state->mData, IsWindow))
     {
         ImGui::PopStyleVar(2);
-        CollectEventM();
-        CollectEventK();
+        DispatchEventM();
+        DispatchEventK();
         ImGui::End();
     }
     else
@@ -559,11 +554,6 @@ void UIClassLayout::OnApplyLayout()
 
 void UIClassLayout::OnRender(float dt)
 { }
-
-UIEventResultEnum UIClassLayout::OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
-{
-    return UIEventResultEnum::kSTOP;
-}
 
 bool UIClassLayout::IsCanStretch(DirectEnum edge)
 {
@@ -717,7 +707,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.size(), 
                 ImVec2(move.z, move.w), flag))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this, 0);
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, EventEditText(state->mBuffer, this));
             }
         }
         else
@@ -728,7 +718,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.data(), 
                 state->mBuffer.size(), flag))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, this, 0);
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, EventEditText(state->mBuffer, this));
             }
             ImGui::PopItemWidth();
         }
@@ -759,14 +749,14 @@ void UIClassImageBox::OnRender(float dt)
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
+                PostEventMessage(UIEventEnum::kMOUSE_CLICK, EventMouse(3, 0, this));
             }
         }
         else
         {
             if (ImGui::Button(GetUIData(state->mData, Name).c_str(), ImVec2(move.z, move.y)))
             {
-                PostEventMessage(UIEventEnum::kMOUSE_RELEASE, this, 0);
+                PostEventMessage(UIEventEnum::kMOUSE_CLICK, EventMouse(3, 0, this));
             }
         }
     }
@@ -808,12 +798,14 @@ void UIClassComboBox::OnLeave(bool ret)
 void UIClassComboBox::OnRender(float dt)
 { }
 
-UIEventResultEnum UIClassComboBox::OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
+bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const std::any & param)
 {
     if (e == UIEventEnum::kMOUSE_CLICK)
     {
-        GetState<UIStateComboBox>()->mSelected = GetUIData(object->GetState()->mData, Name);
+        auto & object = std::any_cast<const EventMouse &>(param).mObject;
+        auto & name = GetUIData(object->GetState()->mData, Name);
+        GetState<UIStateComboBox>()->mSelected = name;
         ImGui::CloseCurrentPopup();
     }
-    return UIEventResultEnum::kPASS;
+    return false;
 }

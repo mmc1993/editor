@@ -12,8 +12,15 @@ public:
         static int CheckMouseKey(UIEventEnum e, bool repeat);
     };
 
+    struct Event {
+        mutable UIClass * mObject;
+
+        Event(UIClass * object = nullptr) : mObject(object)
+        {  }
+    };
+
     //  键盘事件
-    struct EventKey {
+    struct EventKey: Event {
         int mKey;
         int mAct;   //  0, 1, 2, 3 => 按下, 抬起, 单击, 单击延迟
         int mState; //  1, 2, 4    => alt, ctrl, shift
@@ -21,16 +28,29 @@ public:
     };
 
     //  鼠标事件
-    struct EventMouse {
-        int mKey;   //  0, 1, 2          => 左键, 右键, 中键
-        int mAct;   //  0, 1, 2, 3, 4, 5 => 悬浮, 按下, 抬起, 双击, 单击, 单击延迟
-        int mState; //  1, 2, 4          => alt, ctrl, shift
-        EventMouse() { memset(this, sizeof(EventMouse), 0); }
+    struct EventMouse: Event {
+        int mKey;           //  0, 1, 2       => 左键, 右键, 中键
+        int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
+        int mState;         //  1, 2, 4       => alt, ctrl, shift
+        glm::vec2 mMouse;   //  鼠标坐标
+        EventMouse(const int act, const int key, UIClass * object = nullptr)
+            : Event(object)
+            , mAct(act)
+            , mKey(key)
+        { 
+            mMouse.x = ImGui::GetMousePos().x;
+            mMouse.y = ImGui::GetMousePos().y;
+            mState = EventDetails::CheckStateKey();
+        }
     };
 
     //  编辑文本事件
-    struct EventEditText {
-        std::string mText;
+    struct EventEditText : Event {
+        std::string       mString;
+        EventEditText(const std::string & string, UIClass * object = nullptr)
+            : Event(object)
+            , mString(string)
+        { }
     };
 
 public:
@@ -58,6 +78,7 @@ public:
     glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0));
     glm::vec4 ToLocalCoord(const glm::vec4 & coord);
     glm::vec2 ToLocalCoord(const glm::vec2 & coord);
+    glm::vec4 ToWorldRect();
 
 protected:
     UIClass(UITypeEnum type, UIState * state) 
@@ -72,13 +93,16 @@ protected:
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
     virtual void OnRender(float dt) = 0;
+    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param) { return false; }
 
     //  事件处理
-    void                        CollectEventM();
-    void                        CollectEventK();
-    void                        PostEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
-    UIEventResultEnum           CallEventMessage(UIEventEnum e, UIClass * object, const std::any & param);
-    virtual UIEventResultEnum   OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param) { return UIEventResultEnum::kPASS; };
+    void DispatchEventM();
+    void DispatchEventK();
+    bool CallEventMessage(UIEventEnum e, const Event & param);
+    bool PostEventMessage(UIEventEnum e, const Event & param);
+
+private:
+    bool DispatchEventM(UIEventEnum e, const EventMouse & param);
 
 private:
     UITypeEnum             _type;
@@ -98,7 +122,6 @@ private:
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
     virtual void OnRender(float dt) override;
-    virtual UIEventResultEnum OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param) override;
 
     bool IsCanStretch(DirectEnum edge);
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
@@ -143,9 +166,7 @@ private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
-    virtual UIEventResultEnum OnCallEventMessage(
-        UIEventEnum e, UIClass * object,
-        const std::any & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param) override;
 };
 
 class UIClassUICanvas : public UIClass {

@@ -24,10 +24,22 @@
     <ClCompile Include="libs\gl3w\gl3w.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\atlas\atlas_mgr.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\opengl3\imgui_impl_opengl3.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\raw\raw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\raw\raw_mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\third\glm\detail\glm.cpp">
@@ -45,18 +57,6 @@
     <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\global.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\raw\raw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\raw\raw_mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\ui\ui_class\ui_class.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -66,16 +66,16 @@
     <ClCompile Include="editor\ui\ui_state\ui_state.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\ui\ui_menu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
     <ClCompile Include="editor\ui\ui_mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\atlas\atlas_mgr.cpp">
+    <ClCompile Include="editor\global.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="imgui\imgui_draw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui\ui_menu.cpp">
+    <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -107,10 +107,22 @@
     <ClInclude Include="libs\glfw\glfw3native.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\atlas\atlas_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\raw\raw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\raw\raw_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\third\glm\detail\_features.hpp">
@@ -869,21 +881,6 @@
     <ClInclude Include="editor\tools\time_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\global.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\include.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\raw\raw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\raw\raw_mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\ui\ui_class\ui_class.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -896,16 +893,19 @@
     <ClInclude Include="editor\ui\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\ui\ui_menu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
     <ClInclude Include="editor\ui\ui_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="imgui\imstb_truetype.h">
+    <ClInclude Include="editor\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\atlas\atlas_mgr.h">
+    <ClInclude Include="editor\global.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui\ui_menu.h">
+    <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
