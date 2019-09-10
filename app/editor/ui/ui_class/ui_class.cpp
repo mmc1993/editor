@@ -119,6 +119,9 @@ void UIClass::Render(float dt)
         std::for_each(_children.begin(), _children.end(),
                       std::bind(&UIClass::Render, 
                       std::placeholders::_1, dt));
+
+        CheckEventM();
+        CheckEventK();
     }
     OnLeave(ret);
 
@@ -478,8 +481,6 @@ void UIClassLayout::OnLeave(bool ret)
         ImGui::EndChild();
     }
     HandleStretch();
-    CheckEventK();
-    CheckEventM();
 }
 
 void UIClassLayout::OnResetLayout()
@@ -691,9 +692,7 @@ void UIClassTreeBox::OnLeave(bool ret)
 }
 
 void UIClassTreeBox::OnRender(float dt)
-{
-    CheckEventM();
-}
+{ }
 
 // ---
 //  UIClassTextBox
@@ -737,8 +736,6 @@ void UIClassTextBox::OnRender(float dt)
     {
         ImGui::Text(GetUIData(state->mData, Name).c_str());
     }
-
-    CheckEventM();
 }
 
 //--------------------------------------------------------------------------------
@@ -781,7 +778,6 @@ void UIClassImageBox::OnRender(float dt)
             ImVec2(move.z, move.w),
             ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
             ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
-        CheckEventM();
     }
 }
 
@@ -809,9 +805,7 @@ void UIClassComboBox::OnLeave(bool ret)
 }
 
 void UIClassComboBox::OnRender(float dt)
-{
-    CheckEventM();
-}
+{ }
 
 UIEventResultEnum UIClassComboBox::OnCallEventMessage(UIEventEnum e, UIClass * object, const std::any & param)
 {
