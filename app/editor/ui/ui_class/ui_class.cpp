@@ -493,9 +493,9 @@ void UIClassLayout::OnResetLayout()
         if (layout == this) { continue; }
         auto state  = layout->GetState<UIStateLayout>();
         auto up     = GetUIData(state->mData, Move).y;
+        auto down   = up + GetUIData(state->mData, Move).w;
         auto left   = GetUIData(state->mData, Move).x;
-        auto down   = thisUp    + GetUIData(state->mData, Move).w;
-        auto right  = thisLeft  + GetUIData(state->mData, Move).z;
+        auto right  = left + GetUIData(state->mData, Move).z;
         if ((thisUp == up || thisUp == down) && thisState->mJoin[(size_t)DirectEnum::kU].mIn.first == nullptr)
         {
             thisState->mJoin[(size_t)DirectEnum::kU].mOut.push_back(layout);
