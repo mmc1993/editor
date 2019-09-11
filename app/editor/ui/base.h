@@ -225,7 +225,6 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color0);
-
 }
 
 #define GetUIData(data, K)         __GetData##K(data)
