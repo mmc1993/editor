@@ -109,7 +109,6 @@ void UIClass::ApplyLayout()
         auto & parentData = GetParent()->GetState()->mData;
         auto & parentMoveOld = GetUIData(parentData, _Move);
         auto & parentMoveNew = GetUIData(parentData,  Move);
-
         if (!math_tool::Equal(parentMoveOld.z, parentMoveNew.z) || 
             !math_tool::Equal(parentMoveOld.w, parentMoveNew.w))
         {
