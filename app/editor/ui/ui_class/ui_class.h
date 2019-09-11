@@ -17,11 +17,19 @@ public:
 
         //  键盘事件
         struct Key : Base {
-            int mKey;
-            int mAct;   //  0, 1, 2, 3 => 按下, 抬起, 单击, 单击延迟
-            int mState; //  1, 2, 4    => alt, ctrl, shift
+            //  支持的热键响应
+            static std::vector<int> Hotkeys;
 
-            Key() { memset(this, sizeof(Key), 0); }
+            int mKey;
+            int mAct;   //  0, 1, 2 => 按下, 抬起, 单击
+            int mState; //  1, 2, 4 => alt, ctrl, shift
+
+            Key(const int act, const int key, UIClass * object = nullptr)
+                : Base(object)
+                , mKey(key)
+                , mAct(act)
+                , mState(CheckStateKey())
+            { }
         };
 
         //  鼠标事件
@@ -35,10 +43,10 @@ public:
                 : Base(object)
                 , mAct(act)
                 , mKey(key)
+                , mState(CheckStateKey())
             {
                 mMouse.x = ImGui::GetMousePos().x;
                 mMouse.y = ImGui::GetMousePos().y;
-                mState = CheckStateKey();
             }
         };
 
@@ -112,19 +120,18 @@ protected:
     void LockPosition();
     virtual bool OnEnter();
     virtual void OnLeave(bool ret);
+    virtual void OnRender(float dt);
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
-    virtual void OnRender(float dt) = 0;
-    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param) { return false; }
+    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param);
 
     //  事件处理
-    void DispatchEventM();
     void DispatchEventK();
+    bool DispatchEventK(const EventDetails::Key & param);
+    void DispatchEventM();
+    bool DispatchEventM(const EventDetails::Mouse & param);
     bool CallEventMessage(UIEventEnum e, const EventDetails::Base & param);
     bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
-
-private:
-    bool DispatchEventM(UIEventEnum e, const EventDetails::Mouse & param);
 
 private:
     UITypeEnum             _type;
@@ -143,7 +150,6 @@ private:
     virtual void OnLeave(bool ret) override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
-    virtual void OnRender(float dt) override;
 
     bool IsCanStretch(DirectEnum edge);
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
@@ -158,7 +164,6 @@ public:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
-    virtual void OnRender(float dt) override;
 };
 
 class UIClassTextBox : public UIClass {
