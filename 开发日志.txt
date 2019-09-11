@@ -1,6 +1,6 @@
-窗口菜单
-弹出菜单
-拉伸方向判断
+ok 窗口菜单
+ok 弹出菜单
+ok 拉伸方向判断
 
 
 对象
@@ -12,10 +12,3 @@
     组件0
     组件1
     组件2
-
-
-窗口菜单:
-    Menu = "Menu0/Menu0#v, Menu0/Menu1#v, Menu1/Menu0#v"
-
-BarMenu(this, params)
-PopMenu(this, params)
