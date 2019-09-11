@@ -1,6 +1,8 @@
 #include "ui_menu.h"
 #include "ui_class/ui_class.h"
 
+UIMenu::Popup UIMenu::s_popup;
+
 std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent, const std::vector<std::string> & list)
 {
     std::vector<MenuItem> result;
@@ -43,14 +45,27 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
     return std::move(result);
 }
 
-void UIMenu::BarMenu(UIClass * parent, const std::vector<std::string> & list)
+void UIMenu::BarMenu(UIClass * object, const std::vector<std::string> & list)
 {
     ImGui::BeginMenuBar();
-    RenderMenu(parent, MenuItem::Parse("", list));
+    RenderMenu(object, MenuItem::Parse("", list));
     ImGui::EndMenuBar();
 }
 
-void UIMenu::RenderMenu(UIClass * parent, const std::vector<MenuItem> & items)
+void UIMenu::PopMenu(UIClass * object, const std::vector<std::string>& list)
+{
+    s_popup.mObject = object;
+    s_popup.mMouse.x = ImGui::GetMousePos().x;
+    s_popup.mMouse.y = ImGui::GetMousePos().y;
+    s_popup.mItems = std::move(MenuItem::Parse("", list));
+}
+
+void UIMenu::RenderPopup()
+{
+
+}
+
+void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
 {
     for (auto & item : items)
     {
@@ -58,15 +73,14 @@ void UIMenu::RenderMenu(UIClass * parent, const std::vector<MenuItem> & items)
         {
             if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
             {
-                parent->PostEventMessage(UIEventEnum::kMENU, UIClass::EventDetails::Menu(item.mPath, item.mSelected));
-                std::cout << SFormat("Name: {0}, Path: {1}", item.mName, item.mPath) << std::endl;
+                object->PostEventMessage(UIEventEnum::kMENU, UIClass::EventDetails::Menu(item.mPath, item.mSelected));
             }
         }
         else
         {
             if (ImGui::BeginMenu(item.mName.c_str(), !item.mDisabled))
             {
-                RenderMenu(parent, MenuItem::Parse(item.mPath, item.mChildren));
+                RenderMenu(object, MenuItem::Parse(item.mPath, item.mChildren));
                 ImGui::EndMenu();
             }
         }
