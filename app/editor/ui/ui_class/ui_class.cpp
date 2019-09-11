@@ -355,13 +355,22 @@ bool UIClass::PostEventMessage(UIEventEnum e, const EventDetails::Base & param)
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
+
+    //  ´°¿Úflag
+    size_t flag = ImGuiWindowFlags_NoCollapse;
+    if (!GetUIData(state->mData, IsShowNav)) { flag |= ImGuiWindowFlags_NoNav; }
+    if (!GetUIData(state->mData, IsCanMove)) { flag |= ImGuiWindowFlags_NoMove; }
+    if (!GetUIData(state->mData, IsCanStretch)) { flag |= ImGuiWindowFlags_NoResize; }
+    if ( GetUIData(state->mData, IsShowMenuBar)) { flag != ImGuiWindowFlags_MenuBar; }
+    if (!GetUIData(state->mData, IsShowTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
+    if (!GetUIData(state->mData, IsShowScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+
     if (GetUIData(state->mData, IsWindow))
     {
         //  Ðü¸¡´°¿Ú
         auto & name = GetUIData(state->mData, Name);
         ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
         ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
-        size_t flag = 0;
         if (GetUIData(state->mData, IsFullScreen))
         {
             size = ImGui_ImplGlfw_GetWindowSize();
@@ -369,16 +378,7 @@ bool UIClassLayout::OnEnter()
             move.y = 0;
             flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
                 | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-                | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoNav;
-        }
-        else
-        {
-            if (!GetUIData(state->mData, IsShowNav))        { flag |= ImGuiWindowFlags_NoNav; }
-            if (!GetUIData(state->mData, IsCanMove))        { flag |= ImGuiWindowFlags_NoMove; }
-            if (!GetUIData(state->mData, IsCanStretch))     { flag |= ImGuiWindowFlags_NoResize; }
-            if (!GetUIData(state->mData, IsShowTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-            if (!GetUIData(state->mData, IsShowCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-            if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
+                | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav;
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
@@ -393,14 +393,6 @@ bool UIClassLayout::OnEnter()
     }
     else
     {
-        size_t flag = 0;
-        if (!GetUIData(state->mData, IsShowNav))        { flag |= ImGuiWindowFlags_NoNav; }
-        if (!GetUIData(state->mData, IsCanMove))        { flag |= ImGuiWindowFlags_NoMove; }
-        if (!GetUIData(state->mData, IsCanStretch))     { flag |= ImGuiWindowFlags_NoResize; }
-        if (!GetUIData(state->mData, IsShowTitleBar))   { flag |= ImGuiWindowFlags_NoTitleBar; }
-        if (!GetUIData(state->mData, IsShowCollapse))   { flag |= ImGuiWindowFlags_NoCollapse; }
-        if (!GetUIData(state->mData, IsShowScrollBar))  { flag |= ImGuiWindowFlags_NoScrollbar; }
-    
         LockPosition();
         auto & name = GetUIData(state->mData, Name);
         auto & move = GetUIData(state->mData, Move);

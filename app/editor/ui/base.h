@@ -94,6 +94,7 @@ inline glm::vec4 s2v4(const std::string & s)
     return glm::vec4(s2f(arr.at(0)), s2f(arr.at(1)), s2f(arr.at(2)), s2f(arr.at(3)));
 }
 
+//  字符串 转 数字数组
 inline std::vector<int> s2vi(const std::string & s)
 {
     std::vector<int> ret;
@@ -101,6 +102,12 @@ inline std::vector<int> s2vi(const std::string & s)
     std::transform(arr.begin(), arr.end(), std::back_inserter(ret), 
         [] (const std::string & s) { return std::stoi(s); });
     return ret;
+}
+
+//  字符串 转 字符串数组
+inline std::vector<std::string> s2vs(const std::string & s)
+{
+    return string_tool::Split(s, ",");
 }
 
 // ---
@@ -120,6 +127,7 @@ void __ParseUIData(CustomData & data, const std::string & key, const std::string
     else if constexpr (std::is_same_v<T, glm::vec3>)    { data.emplace(key, s2v3(val)); }
     else if constexpr (std::is_same_v<T, glm::vec4>)    { data.emplace(key, s2v4(val)); }
     else if constexpr (std::is_same_v<T, std::vector<int>>) { data.emplace(key, s2vi(val)); }
+    else if constexpr (std::is_same_v<T, std::vector<std::string>>) { data.emplace(key, s2vs(val)); }
     else { static_assert(false); }
 }
 
@@ -159,26 +167,21 @@ __REG_GET_UI_DATA(bool, IsVisible, true) //  可见
 __REG_SET_UI_DATA(bool, IsVisible)
 __REG_GET_UI_DATA(bool, IsShowNav, false) //  有导航栏
 __REG_SET_UI_DATA(bool, IsShowNav)
-__REG_GET_UI_DATA(bool, IsTextBox, false) //  文本框
-__REG_SET_UI_DATA(bool, IsTextBox)
 __REG_GET_UI_DATA(bool, IsEditBox, false) //  编辑框
 __REG_SET_UI_DATA(bool, IsEditBox)
 __REG_GET_UI_DATA(bool, IsCanMove, false) //  可以移动
 __REG_SET_UI_DATA(bool, IsCanMove)
-__REG_GET_UI_DATA(bool, EnabledKey, false) //  启用键盘
-__REG_SET_UI_DATA(bool, EnabledKey)
-__REG_GET_UI_DATA(bool, EnabledMouse, false) //  启用鼠标
-__REG_SET_UI_DATA(bool, EnabledMouse)
+
+__REG_GET_UI_DATA(bool, IsShowBorder, true)  //  显示边框
+__REG_SET_UI_DATA(bool, IsShowBorder)
 __REG_GET_UI_DATA(bool, IsCanStretch, false) //  可以拉伸
 __REG_SET_UI_DATA(bool, IsCanStretch)
 __REG_GET_UI_DATA(bool, IsFullScreen, false) //  铺满全屏
 __REG_SET_UI_DATA(bool, IsFullScreen)
-__REG_GET_UI_DATA(bool, IsShowBorder, true) //  显示边框
-__REG_SET_UI_DATA(bool, IsShowBorder)
+__REG_GET_UI_DATA(bool, IsShowMenuBar, false) //  菜单栏
+__REG_SET_UI_DATA(bool, IsShowMenuBar)
 __REG_GET_UI_DATA(bool, IsShowTitleBar, false) //  有标题栏
 __REG_SET_UI_DATA(bool, IsShowTitleBar)
-__REG_GET_UI_DATA(bool, IsShowCollapse, false) //  可以收缩
-__REG_SET_UI_DATA(bool, IsShowCollapse)
 __REG_GET_UI_DATA(bool, IsShowScrollBar, false) //  有滚动条
 __REG_SET_UI_DATA(bool, IsShowScrollBar)
 
@@ -191,13 +194,16 @@ __REG_SET_UI_DATA(std::string, LSkin)
 
 __REG_GET_UI_DATA(glm::vec4, Move, glm::vec4()) //  方位
 __REG_SET_UI_DATA(glm::vec4, Move)
-__REG_GET_UI_DATA(glm::vec4, Color0, glm::vec4()) //  颜色
-__REG_SET_UI_DATA(glm::vec4, Color0)
 __REG_GET_UI_DATA(glm::vec4, _Move, glm::vec4()) //  方位
 __REG_SET_UI_DATA(glm::vec4, _Move)
+__REG_GET_UI_DATA(glm::vec4, Color0, glm::vec4()) //  颜色
+__REG_SET_UI_DATA(glm::vec4, Color0)
 
 __REG_GET_UI_DATA(glm::vec2, StretchMin, glm::vec2(LAYOUT_STRETCH_BORDER * 3, LAYOUT_STRETCH_BORDER * 3)) //  可拉动最小宽度
 __REG_SET_UI_DATA(glm::vec2, StretchMin)
+
+__REG_GET_UI_DATA(std::vector<std::string>, MenuBar, std::vector<std::string>()) //  菜单栏
+__REG_SET_UI_DATA(std::vector<std::string>, MenuBar)
 
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
@@ -208,16 +214,12 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool, IsButton);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsVisible);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowNav);
-    __REG_PARSE_UI_DATA(data, key, val, bool, IsTextBox);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsEditBox);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsCanMove);
-    __REG_PARSE_UI_DATA(data, key, val, bool, EnabledKey);
-    __REG_PARSE_UI_DATA(data, key, val, bool, EnabledMouse);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsCanStretch);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsFullScreen);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowBorder);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowTitleBar);
-    __REG_PARSE_UI_DATA(data, key, val, bool, IsShowCollapse);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowScrollBar);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Name);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Tips);
@@ -225,6 +227,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color0);
+    __REG_PARSE_UI_DATA(data, key, val, std::vector<std::string>, MenuBar);
 }
 
 #define GetUIData(data, K)         __GetData##K(data)
