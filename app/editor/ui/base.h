@@ -199,9 +199,6 @@ __REG_SET_UI_DATA(glm::vec4, _Move)
 __REG_GET_UI_DATA(glm::vec2, StretchMin, glm::vec2(LAYOUT_STRETCH_BORDER * 3, LAYOUT_STRETCH_BORDER * 3)) //  可拉动最小宽度
 __REG_SET_UI_DATA(glm::vec2, StretchMin)
 
-__REG_GET_UI_DATA(std::vector<int>, Hotkeys, std::vector<int>())  //  热键响应
-__REG_SET_UI_DATA(std::vector<int>, Hotkeys)
-
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
     __REG_PARSE_UI_DATA(data, key, val, int, Align);
@@ -228,7 +225,6 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, glm::vec2, StretchMin);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Move);
     __REG_PARSE_UI_DATA(data, key, val, glm::vec4, Color0);
-    __REG_PARSE_UI_DATA(data, key, val, std::vector<int>, Hotkey);
 
 }
 
