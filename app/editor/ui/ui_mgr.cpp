@@ -1,11 +1,11 @@
 #include "ui_mgr.h"
+#include "ui_menu.h"
 #include "ui_parse/ui_parse.h"
 #include "ui_state/ui_state.h"
 #include "ui_class/ui_class.h"
 
-UIMgr::UIMgr(): _uiRoot(nullptr)
-{
-}
+UIMgr::UIMgr(): _layout(nullptr)
+{ }
 
 UIMgr::~UIMgr()
 {
@@ -14,23 +14,23 @@ UIMgr::~UIMgr()
 
 UIClass * UIMgr::GetRoot()
 {
-    return _uiRoot;
+    return _layout;
 }
 
 void UIMgr::SetRoot(UIClass * uiClass)
 {
-    SAFE_DELETE(_uiRoot);
-    _uiRoot = uiClass;
+    SAFE_DELETE(_layout);
+    _layout = uiClass;
 }
 
 void UIMgr::SetRoot(const std::string & url)
 {
      SetRoot(UIParser::Parse(url));
-     _uiRoot->ResetLayout();
+     _layout->ResetLayout();
 }
 
 void UIMgr::Update(float dt)
 {
-    _uiRoot->Render(dt);
+    _layout->Render(dt);
 }
 

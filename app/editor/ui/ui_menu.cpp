@@ -58,11 +58,26 @@ void UIMenu::PopMenu(UIClass * object, const std::vector<std::string>& list)
     s_popup.mMouse.x = ImGui::GetMousePos().x;
     s_popup.mMouse.y = ImGui::GetMousePos().y;
     s_popup.mItems = std::move(MenuItem::Parse("", list));
+    ImGui::OpenPopup(s_popup.mItems.at(0).mName.c_str());
 }
 
 void UIMenu::RenderPopup()
 {
-
+    if (s_popup.mObject != nullptr)
+    {
+        if (ImGui::BeginPopup(s_popup.mItems.at(0).mName.c_str()))
+        {
+            ImGui::SetCursorScreenPos(ImVec2(
+                s_popup.mMouse.x,
+                s_popup.mMouse.y));
+            RenderMenu(s_popup.mObject, s_popup.mItems);
+            ImGui::EndPopup();
+        }
+        else
+        {
+            s_popup.mObject = nullptr;
+        }
+    }
 }
 
 void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)

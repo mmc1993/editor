@@ -13,5 +13,5 @@ public:
     void Update(float dt);
 
 private:
-    UIClass * _uiRoot;
+    UIClass * _layout;
 };

@@ -407,6 +407,10 @@ void UIClassLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (GetUIData(state->mData, IsWindow))
     {
+        if (GetRoot() == this)
+        {
+            UIMenu::RenderPopup();
+        }
         ImGui::PopStyleVar(2);
         DispatchEventM();
         DispatchEventK();
