@@ -55,14 +55,9 @@ public:
 
 public:
     template <class T = UIState>
-    T * GetState()
-    {
-        return (T *)_state;
-    }
-
-    UITypeEnum GetType() const;
-
-    std::vector<UIClass *>   GetChildren(UITypeEnum type);
+    T * GetState() { return (T *)_state; }
+    
+    std::vector<UIClass *> GetChildren(UITypeEnum type) const;
     std::vector<UIClass *> & GetChildren();
     void AddChild(UIClass * child);
     void DelChild(UIClass * child);
@@ -74,11 +69,38 @@ public:
     void ResetLayout();
     void ApplyLayout();
 
-    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset);
-    glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0));
-    glm::vec4 ToLocalCoord(const glm::vec4 & coord);
-    glm::vec2 ToLocalCoord(const glm::vec2 & coord);
-    glm::vec4 ToWorldRect();
+    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset) const;
+    glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0)) const;
+    glm::vec4 ToLocalCoord(const glm::vec4 & coord) const;
+    glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
+    glm::vec4 ToWorldRect() const;
+
+    //  const ÷ÿ‘ÿ∞Ê±æ
+    UITypeEnum GetType() const
+    {
+        return _type;
+    }
+
+    const UIClass * GetRoot() const
+    {
+        return const_cast<UIClass *>(this)->GetRoot();
+    }
+
+    const UIClass * GetParent() const
+    {
+        return const_cast<UIClass *>(this)->GetParent();
+    }
+
+    const std::vector<UIClass *> & GetChildren() const
+    {
+        return const_cast<UIClass *>(this)->GetChildren();
+    }
+
+    template <class T = UIState>
+    const T * GetState() const
+    {
+        return const_cast<UIClass *>(this)->GetState<T>();
+    }
 
 protected:
     UIClass(UITypeEnum type, UIState * state) 

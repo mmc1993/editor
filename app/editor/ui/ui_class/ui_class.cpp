@@ -18,12 +18,7 @@ int UIClass::EventDetails::CheckStateKey()
 // ---
 //  UIClass
 // ---
-UITypeEnum UIClass::GetType() const
-{
-    return _type;
-}
-
-std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type)
+std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type) const
 {
     std::vector<UIClass *> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
@@ -178,7 +173,7 @@ void UIClass::ApplyLayout()
     OnApplyLayout();
 }
 
-glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
+glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
 {
     auto move = GetUIData(GetState()->mData, Move);
     switch (direct)
@@ -191,7 +186,7 @@ glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
     return move;
 }
 
-glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord)
+glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord) const
 {
     auto move = GetUIData(GetState()->mData, Move);
     move.x += coord.x;
@@ -207,7 +202,7 @@ glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord)
     return glm::vec2(move.x, move.y);
 }
 
-glm::vec4 UIClass::ToLocalCoord(const glm::vec4 & coord)
+glm::vec4 UIClass::ToLocalCoord(const glm::vec4 & coord) const
 {
     const auto & world = ToWorldCoord();
     return glm::vec4(coord.x - world.x,
@@ -215,14 +210,14 @@ glm::vec4 UIClass::ToLocalCoord(const glm::vec4 & coord)
                      coord.z, coord.w);
 }
 
-glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord)
+glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord) const
 {
     const auto & world = ToWorldCoord();
     return glm::vec2(coord.x - world.x,
                      coord.y - world.y);
 }
 
-glm::vec4 UIClass::ToWorldRect()
+glm::vec4 UIClass::ToWorldRect() const
 {
     auto & move = GetUIData(GetState()->mData, Move);
     return glm::vec4(ToWorldCoord(), move.z, move.w);
