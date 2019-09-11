@@ -1,6 +1,7 @@
 #include "ui_class.h"
 #include "../../atlas/atlas_mgr.h"
 #include "../ui_state/ui_state.h"
+#include "../ui_menu.h"
 #include "imgui_impl_glfw.h"
 
 // ---
@@ -361,7 +362,7 @@ bool UIClassLayout::OnEnter()
     if (!GetUIData(state->mData, IsShowNav)) { flag |= ImGuiWindowFlags_NoNav; }
     if (!GetUIData(state->mData, IsCanMove)) { flag |= ImGuiWindowFlags_NoMove; }
     if (!GetUIData(state->mData, IsCanStretch)) { flag |= ImGuiWindowFlags_NoResize; }
-    if ( GetUIData(state->mData, IsShowMenuBar)) { flag != ImGuiWindowFlags_MenuBar; }
+    if ( GetUIData(state->mData, IsShowMenuBar)) { flag |= ImGuiWindowFlags_MenuBar; }
     if (!GetUIData(state->mData, IsShowTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (!GetUIData(state->mData, IsShowScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
 
@@ -376,9 +377,9 @@ bool UIClassLayout::OnEnter()
             size = ImGui_ImplGlfw_GetWindowSize();
             move.x = 0;
             move.y = 0;
-            flag = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
-                | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-                | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav;
+            flag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
+                 | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
+                 | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav;
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
@@ -488,6 +489,14 @@ void UIClassLayout::OnApplyLayout()
             else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kL) { offset.x = move.x - thisMove.x - thisMove.z; }
             SetUIData(thisState->mData, Move, CalcStretech((DirectEnum)direct, offset));
         }
+    }
+}
+
+void UIClassLayout::OnRender(float dt)
+{
+    if (GetUIData(GetState()->mData, IsShowMenuBar))
+    {
+        UIMenu::BarMenu(this, GetUIData(GetState()->mData, MenuBar));
     }
 }
 

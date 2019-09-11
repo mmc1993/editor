@@ -6,7 +6,9 @@
 		"Align": "384",
 		"Name": "Root",
 		"IsWindow": "ok",
-		"IsFullScreen": "ok"
+        "IsFullScreen": "ok",
+        "MenuBar": "Menu/Child0/Child1,Menu/Child0/Child2,Menu/Child1/Child0,Menu/Child1/Child1",
+        "IsShowMenuBar": "ok"
 	},
 	"__Children": [
 		{

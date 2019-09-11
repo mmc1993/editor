@@ -219,6 +219,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool, IsCanStretch);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsFullScreen);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowBorder);
+    __REG_PARSE_UI_DATA(data, key, val, bool, IsShowMenuBar);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowTitleBar);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowScrollBar);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Name);

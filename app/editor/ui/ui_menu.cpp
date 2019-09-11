@@ -27,7 +27,7 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
         auto name = str.substr(0, pos);
 
         //  是否同一个父节点
-        if (result.empty() && result.back().mName != name)
+        if (result.empty() || result.back().mName != name)
         {
             result.emplace_back();
         }
@@ -36,7 +36,7 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
         item.mName = std::move(name);
         item.mSelected = selected;
         item.mDisabled = disabled;
-        item.mPath = parent.empty() ? parent : parent + '/';
+        item.mPath = !parent.empty()?parent+'/'+item.mName:item.mName;
         if (!leaf) { item.mChildren.emplace_back(str.substr(pos + 1)); }
     }
     return std::move(result);
@@ -55,14 +55,14 @@ void UIMenu::RenderMenu(UIClass * parent, const std::vector<MenuItem> & items)
     {
         if (item.mChildren.empty())
         {
-            if (ImGui::MenuItem(item.mName.c_str(), nullptr, &item.mSelected, item.mDisabled))
+            if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
             {
                 std::cout << SFormat("Name: {0}, Path: {1}", item.mName, item.mPath) << std::endl;
             }
         }
         else
         {
-            if (ImGui::BeginMenu(item.mName.c_str(), item.mDisabled))
+            if (ImGui::BeginMenu(item.mName.c_str(), !item.mDisabled))
             {
                 RenderMenu(parent, MenuItem::Parse(item.mPath, item.mChildren));
                 ImGui::EndMenu();

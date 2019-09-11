@@ -150,6 +150,7 @@ private:
     virtual void OnLeave(bool ret) override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
+    virtual void OnRender(float dt) override;
 
     bool IsCanStretch(DirectEnum edge);
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
