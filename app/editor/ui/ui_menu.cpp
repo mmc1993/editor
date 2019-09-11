@@ -1,4 +1,5 @@
 #include "ui_menu.h"
+#include "ui_class/ui_class.h"
 
 std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent, const std::vector<std::string> & list)
 {
@@ -57,6 +58,7 @@ void UIMenu::RenderMenu(UIClass * parent, const std::vector<MenuItem> & items)
         {
             if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
             {
+                parent->PostEventMessage(UIEventEnum::kMENU, UIClass::EventDetails::Menu(item.mPath, item.mSelected));
                 std::cout << SFormat("Name: {0}, Path: {1}", item.mName, item.mPath) << std::endl;
             }
         }

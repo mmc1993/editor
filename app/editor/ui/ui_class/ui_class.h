@@ -50,6 +50,17 @@ public:
             }
         };
 
+        //  菜单事件
+        struct Menu : Base {
+            bool mSelect;
+            std::string mPath;
+
+            Menu(const std::string & path, const bool select)
+                : mPath(path)
+                , mSelect(select)
+            { }
+        };
+
         //  编辑文本事件
         struct EditText : Base {
             std::string mString;
@@ -82,6 +93,8 @@ public:
     glm::vec4 ToLocalCoord(const glm::vec4 & coord) const;
     glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
     glm::vec4 ToWorldRect() const;
+
+    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
     //  const 重载版本
     UITypeEnum GetType() const
@@ -123,7 +136,7 @@ protected:
     virtual void OnRender(float dt);
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
-    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param);
+    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
     //  事件处理
     void DispatchEventK();
@@ -131,7 +144,6 @@ protected:
     void DispatchEventM();
     bool DispatchEventM(const EventDetails::Mouse & param);
     bool CallEventMessage(UIEventEnum e, const EventDetails::Base & param);
-    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
 private:
     UITypeEnum             _type;
@@ -194,7 +206,7 @@ private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
-    virtual bool OnCallEventMessage(UIEventEnum e, const std::any & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param) override;
 };
 
 class UIClassUICanvas : public UIClass {
