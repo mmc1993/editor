@@ -7,9 +7,6 @@ public:
     struct EventDetails {
         //  返回按下的状态键
         static int CheckStateKey();
-
-        //  返回鼠标键
-        static int CheckMouseKey(UIEventEnum e, bool repeat);
     };
 
     struct Event {

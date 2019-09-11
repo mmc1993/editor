@@ -15,44 +15,6 @@ int UIClass::EventDetails::CheckStateKey()
     return flag;
 }
 
-int UIClass::EventDetails::CheckMouseKey(UIEventEnum e, bool repeat)
-{
-    static const int MOUSE_KEYS[] = {0, 1, 2};
-    switch (e)
-    {
-    case UIEventEnum::kMOUSE_DOWN: 
-    case UIEventEnum::kMOUSE_RELEASE: 
-    case UIEventEnum::kMOUSE_DCLICK:
-        {
-            auto fn 
-                = e == UIEventEnum::kMOUSE_DOWN     ? &ImGui::IsMouseDown
-                : e == UIEventEnum::kMOUSE_RELEASE  ? &ImGui::IsMouseReleased 
-                : e == UIEventEnum::kMOUSE_DCLICK   ? &ImGui::IsMouseDoubleClicked
-                : nullptr;
-            ASSERT_LOG(fn != nullptr, "{0}", (int)e);
-            auto it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), fn);
-            ASSERT_LOG(it != std::end(MOUSE_KEYS), "");
-            return *it;
-        }
-    case UIEventEnum::kMOUSE_HOVERED:
-        {
-            auto it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), ImGui::IsMouseDown);
-            if (it != std::end(MOUSE_KEYS)) { return *it; }
-            it = std::find_if(std::begin(MOUSE_KEYS), std::end(MOUSE_KEYS), ImGui::IsMouseReleased);
-            if (it != std::end(MOUSE_KEYS)) { return *it; }
-            return -1;
-        }
-    case UIEventEnum::kMOUSE_CLICK:
-        {
-            auto fn = std::bind(&ImGui::IsMouseClicked, std::placeholders::_1, repeat);
-            auto it = std::find_if(std::begin(MOUSE_KEYS),std::end(MOUSE_KEYS), fn);
-            return it != std::end(MOUSE_KEYS) ? *it : -1;
-        }
-    }
-    ASSERT_LOG(false, "{0}", (int)e);
-    return -1;
-}
-
 // ---
 //  UIClass
 // ---
@@ -311,7 +273,6 @@ bool UIClass::CallEventMessage(UIEventEnum e, const Event & param)
         std::cout <<  "e: " << (int)e  << ' '
             << "Name: " << GetUIData(GetState()->mData, Name) << std::endl;
     }
-    
 
     auto ret = OnCallEventMessage(e, param);
     //  _TODO
@@ -531,10 +492,10 @@ void UIClassLayout::OnApplyLayout()
     auto thisState = GetState<UIStateLayout>();
     for (auto direct = 0; direct != (int)DirectEnum::LENGTH; ++direct)
     {
-        auto & thisMove = GetUIData(thisState->mData, Move);
-        if (thisState->mJoin[(int)direct].mIn.first != nullptr)
+        auto & thisMove   = GetUIData(thisState->mData, Move);
+        const auto & edge = thisState->mJoin[(int)direct].mIn;
+        if (edge.first != nullptr)
         {
-            const auto & edge = thisState->mJoin[(int)direct].mIn;
             const auto & move = GetUIData(edge.first->GetState()->mData, Move);
             glm::vec2 offset(0, 0);
             if      ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y; }
@@ -581,9 +542,11 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
               (edge == DirectEnum::kL || edge == DirectEnum::kR) && offset.x != 0, false);
 
     auto thisState = GetState<UIStateLayout>();
-    const auto & move = CalcStretech(edge, offset);
-    const auto & min  = GetUIData(thisState->mData, StretchMin);
-    if (move.z < min.x || move.w < min.y) { return false; }
+    const auto & newMove = CalcStretech(edge, offset);
+    const auto & oldMove = GetUIData(thisState->mData, Move);
+    const auto & minMove = GetUIData(thisState->mData, StretchMin);
+    if (newMove.z < oldMove.z && newMove.z < minMove.x ||
+        newMove.w < oldMove.w && newMove.w < minMove.y) { return false; }
 
     for (auto object : thisState->mJoin[(int)edge].mOut)
     {
