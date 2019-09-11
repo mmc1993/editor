@@ -228,12 +228,6 @@ glm::vec4 UIClass::ToWorldRect() const
     return glm::vec4(ToWorldCoord(), move.z, move.w);
 }
 
-bool UIClass::PostEventMessage(UIEventEnum e, const EventDetails::Base & param)
-{
-    param.mObject = this;
-    return CallEventMessage(e, param);
-}
-
 void UIClass::LockPosition()
 {
     auto & move = GetUIData(GetState()->mData, Move);
@@ -260,11 +254,6 @@ void UIClass::OnResetLayout()
 
 void UIClass::OnApplyLayout()
 { }
-
-bool UIClass::OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param)
-{
-    return false;
-}
 
 void UIClass::DispatchEventK()
 {
@@ -337,6 +326,11 @@ bool UIClass::DispatchEventM(const EventDetails::Mouse & param)
     return false;
 }
 
+bool UIClass::OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param)
+{
+    return false;
+}
+
 bool UIClass::CallEventMessage(UIEventEnum e, const EventDetails::Base & param)
 {
     auto ret = OnCallEventMessage(e, param);
@@ -348,6 +342,12 @@ bool UIClass::CallEventMessage(UIEventEnum e, const EventDetails::Base & param)
         ret = GetParent()->CallEventMessage(e, param);
     }
     return ret;
+}
+
+bool UIClass::PostEventMessage(UIEventEnum e, const EventDetails::Base & param)
+{
+    param.mObject = this;
+    return CallEventMessage(e, param);
 }
 
 // ---

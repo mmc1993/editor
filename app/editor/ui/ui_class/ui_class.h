@@ -94,8 +94,6 @@ public:
     glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
     glm::vec4 ToWorldRect() const;
 
-    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
-
     //  const 重载版本
     UITypeEnum GetType() const
     {
@@ -136,14 +134,18 @@ protected:
     virtual void OnRender(float dt);
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
-    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
     //  事件处理
     void DispatchEventK();
     bool DispatchEventK(const EventDetails::Key & param);
     void DispatchEventM();
     bool DispatchEventM(const EventDetails::Mouse & param);
+    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param);
+
+private:
     bool CallEventMessage(UIEventEnum e, const EventDetails::Base & param);
+public:
+    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
 private:
     UITypeEnum             _type;
