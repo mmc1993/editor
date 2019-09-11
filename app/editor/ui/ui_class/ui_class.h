@@ -7,47 +7,50 @@ public:
     struct EventDetails {
         //  返回按下的状态键
         static int CheckStateKey();
-    };
 
-    struct Event {
-        mutable UIClass * mObject;
+        struct Base {
+            mutable UIClass * mObject;
 
-        Event(UIClass * object = nullptr) : mObject(object)
-        {  }
-    };
+            Base(UIClass * object = nullptr) : mObject(object)
+            {  }
+        };
 
-    //  键盘事件
-    struct EventKey: Event {
-        int mKey;
-        int mAct;   //  0, 1, 2, 3 => 按下, 抬起, 单击, 单击延迟
-        int mState; //  1, 2, 4    => alt, ctrl, shift
-        EventKey() { memset(this, sizeof(EventKey), 0); }
-    };
+        //  键盘事件
+        struct Key : Base {
+            int mKey;
+            int mAct;   //  0, 1, 2, 3 => 按下, 抬起, 单击, 单击延迟
+            int mState; //  1, 2, 4    => alt, ctrl, shift
 
-    //  鼠标事件
-    struct EventMouse: Event {
-        int mKey;           //  0, 1, 2       => 左键, 右键, 中键
-        int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
-        int mState;         //  1, 2, 4       => alt, ctrl, shift
-        glm::vec2 mMouse;   //  鼠标坐标
-        EventMouse(const int act, const int key, UIClass * object = nullptr)
-            : Event(object)
-            , mAct(act)
-            , mKey(key)
-        { 
-            mMouse.x = ImGui::GetMousePos().x;
-            mMouse.y = ImGui::GetMousePos().y;
-            mState = EventDetails::CheckStateKey();
-        }
-    };
+            Key() { memset(this, sizeof(Key), 0); }
+        };
 
-    //  编辑文本事件
-    struct EventEditText : Event {
-        std::string       mString;
-        EventEditText(const std::string & string, UIClass * object = nullptr)
-            : Event(object)
-            , mString(string)
-        { }
+        //  鼠标事件
+        struct Mouse : Base {
+            int mKey;           //  0, 1, 2       => 左键, 右键, 中键
+            int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
+            int mState;         //  1, 2, 4       => alt, ctrl, shift
+            glm::vec2 mMouse;   //  鼠标坐标
+
+            Mouse(const int act, const int key, UIClass * object = nullptr)
+                : Base(object)
+                , mAct(act)
+                , mKey(key)
+            {
+                mMouse.x = ImGui::GetMousePos().x;
+                mMouse.y = ImGui::GetMousePos().y;
+                mState = CheckStateKey();
+            }
+        };
+
+        //  编辑文本事件
+        struct EditText : Base {
+            std::string mString;
+
+            EditText(const std::string & string, UIClass * object = nullptr)
+                : Base(object)
+                , mString(string)
+            { }
+        };
     };
 
 public:
@@ -95,11 +98,11 @@ protected:
     //  事件处理
     void DispatchEventM();
     void DispatchEventK();
-    bool CallEventMessage(UIEventEnum e, const Event & param);
-    bool PostEventMessage(UIEventEnum e, const Event & param);
+    bool CallEventMessage(UIEventEnum e, const EventDetails::Base & param);
+    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
 
 private:
-    bool DispatchEventM(UIEventEnum e, const EventMouse & param);
+    bool DispatchEventM(UIEventEnum e, const EventDetails::Mouse & param);
 
 private:
     UITypeEnum             _type;
