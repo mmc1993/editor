@@ -3,14 +3,12 @@
 void PropertyInt::OnRender(float dt)
 {
     ImGui::Columns(2, nullptr, false);
-    ImGui::Text(mTitle.c_str());
+    ImGui::Text(GetTitle().c_str());
     ImGui::NextColumn();
 
-    if (ImGui::InputInt(
-        ToImGuiID((size_t)this).c_str(),
-        GetState<PropertyState<int>>()->mValue))
+    if (ImGui::InputInt(ToImGuiID((size_t)this).c_str(), &GetValue()))
     {
-        std::cout << "aaa" << std::endl;
+        Modify();
     }
     ImGui::Columns(1);
 }

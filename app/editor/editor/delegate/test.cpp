@@ -9,7 +9,12 @@ bool UIEventDelegateTest::OnCallEventMessage(UIClass * object, UIEventEnum e, co
         if (mouse.mAct == 3)
         {
             static int n = 0;
-            auto ccc = new PropertyInt(std::to_string(n), &n);
+            auto ccc = new PropertyInt(&n, std::to_string(n), [](const int & value, const std::string & title)
+                {
+                    std::cout
+                        << "title: " << title << ' '
+                        << "value: " << value << std::endl;
+                });
             object->GetChildren({ "C_0" })->AddChild(ccc);
         }
     }
