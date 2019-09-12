@@ -85,6 +85,7 @@ public:
     template <class T = UIState>
     T * GetState() { return (T *)_state; }
     
+    UIClass * GetChildren(const std::initializer_list<std::string> & list);
     std::vector<UIClass *> GetChildren(UITypeEnum type) const;
     std::vector<UIClass *> & GetChildren();
     void AddChild(UIClass * child);
@@ -112,6 +113,12 @@ public:
         return _type;
     }
 
+    template <class T = UIState>
+    const T * GetState() const
+    {
+        return const_cast<UIClass *>(this)->GetState<T>();
+    }
+
     const UIClass * GetRoot() const
     {
         return const_cast<UIClass *>(this)->GetRoot();
@@ -127,10 +134,9 @@ public:
         return const_cast<UIClass *>(this)->GetChildren();
     }
 
-    template <class T = UIState>
-    const T * GetState() const
+    const UIClass * GetChildren(const std::initializer_list<std::string> & list) const
     {
-        return const_cast<UIClass *>(this)->GetState<T>();
+        return const_cast<UIClass *>(this)->GetChildren(list);
     }
 
 protected:

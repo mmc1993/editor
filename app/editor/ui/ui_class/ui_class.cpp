@@ -23,6 +23,27 @@ int UIClass::UIEventDetails::CheckStateKey()
 // ---
 //  UIClass
 // ---
+UIClass * UIClass::GetChildren(const std::initializer_list<std::string>& list)
+{
+    ASSERT_LOG(list.size() != 0, "");
+    auto parent = this;
+    for (auto & name : list)
+    {
+        auto it = std::find_if(
+            parent->GetChildren().begin(), 
+            parent->GetChildren().end(), 
+            [&name](UIClass * object) {
+                return GetUIData(object->GetState()->mData, Name) == name;
+            });
+        if (it == _children.end())
+        {
+            return nullptr;
+        }
+        parent = *it;
+    }
+    return parent;
+}
+
 std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type) const
 {
     std::vector<UIClass *> result;
@@ -78,9 +99,12 @@ void UIClass::Render(float dt)
     ApplyLayout();
     auto ret = OnEnter();
     if (ret) { OnRender(dt); }
-    std::for_each(_children.begin(), _children.end(),
-                    std::bind(&UIClass::Render, 
-                    std::placeholders::_1, dt));
+
+    for (auto child : _children)
+    {
+        child->Render(dt);
+    }
+
     OnLeave(ret);
 
     //  刷新备份数据
@@ -318,16 +342,14 @@ bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
 {
     if (math_tool::IsContain(ToWorldRect(), param.mMouse))
     {
-        auto hit = false;
         for (auto child : GetChildren())
         {
-            hit = child->DispatchEventM(param) || hit;
+            if (child->DispatchEventM(param))
+            {
+                return true;
+            }
         }
-        if (!hit)
-        {
-            PostEventMessage(UIEventEnum::kMOUSE, param);
-        }
-        return true;
+        return PostEventMessage(UIEventEnum::kMOUSE, param);
     }
     return false;
 }

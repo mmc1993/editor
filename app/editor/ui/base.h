@@ -235,3 +235,10 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
 
 #define GetUIData(data, K)         __GetData##K(data)
 #define SetUIData(data, K, val)    __SetData##K(data, val)
+
+//  ×ª»¯ÎªImGuiID
+template <class T>
+inline std::string ToImGuiID(const T & v)
+{
+    return "##" + std::to_string(v);
+}

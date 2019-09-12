@@ -81,6 +81,9 @@
     <ClCompile Include="editor\editor\property\property_int.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\editor\delegate\test.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">

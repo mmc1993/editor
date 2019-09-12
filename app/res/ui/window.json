@@ -8,7 +8,7 @@
 		"IsWindow": "ok",
         "IsFullScreen": "ok",
         "MenuBar": "Menu/Child0/Child1,Menu/Child0/Child2,Menu/Child1/Child0,Menu/Child1/Child1",
-        "IsShowMenuBar": "ok"
+        "EventDelegate": "editor/editor/delegate/test"
 	},
 	"__Children": [
 		{
@@ -19,7 +19,7 @@
 				"Align": "384",
 				"Name": "C_0",
 				"StretchMin": "300 720",
-				"IsCanStretch": "ok"
+                "IsCanStretch": "ok",
 			},
 			"__Children": [
 				

@@ -1,12 +1,16 @@
 #include "ui_parse.h"
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
+#include "../../editor/delegate/test.h"
 
+// ...
+//  UI事件委托映射表
+// ...
 template <class T>
-T * Create() { return new T(); }
+UIClass::UIEventDelegate * Create() { return new T(); }
 
-static std::map<std::string, std::function<UIClass::EventDelegate *()>> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/test", Create<)
+static std::map<std::string, UIClass::UIEventDelegate *(*)()> s_DelegateMap = {
+    std::make_pair("editor/editor/delegate/test", &Create<UIEventDelegateTest>)
 };
 
 UIClass * UIParser::Parse(const std::string & url)
@@ -30,7 +34,14 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * objec
     for (auto ele : json->At("__Property"))
     {
         ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
-        ParseUIData(object->GetState()->mData, ele.mKey, ele.mValue->ToString());
+        if (ele.mKey == "EventDelegate")
+        {
+            object->BindDelegate(s_DelegateMap.at(ele.mValue->ToString())());
+        }
+        else
+        {
+            ParseUIData(object->GetState()->mData, ele.mKey, ele.mValue->ToString());
+        }
     }
 }
 

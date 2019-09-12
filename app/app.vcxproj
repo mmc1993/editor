@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="editor\atlas\atlas_mgr.cpp" />
+    <ClCompile Include="editor\editor\delegate\test.cpp" />
     <ClCompile Include="editor\editor\property\property_int.cpp" />
     <ClCompile Include="editor\global.cpp" />
     <ClCompile Include="editor\main.cpp" />
