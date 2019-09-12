@@ -88,7 +88,7 @@ void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
         {
             if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
             {
-                object->PostEventMessage(UIEventEnum::kMENU, UIClass::EventDetails::Menu(item.mPath, item.mSelected));
+                object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, item.mSelected));
             }
         }
         else

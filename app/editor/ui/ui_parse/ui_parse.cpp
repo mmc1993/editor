@@ -2,6 +2,13 @@
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
 
+template <class T>
+T * Create() { return new T(); }
+
+static std::map<std::string, std::function<UIClass::EventDelegate *()>> s_DelegateMap = {
+    std::make_pair("editor/editor/delegate/test", Create<)
+};
+
 UIClass * UIParser::Parse(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);

@@ -4,7 +4,7 @@
 
 class UIClass {
 public:
-    struct EventDetails {
+    struct UIEventDetails {
         //  返回按下的状态键
         static int CheckStateKey();
 
@@ -73,9 +73,9 @@ public:
     };
 
     //  事件代理
-    class EventDelegate {
+    class UIEventDelegate {
     public:
-        virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param)
+        virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIEventDetails::Base & param)
         {
             return false;
         }
@@ -104,7 +104,7 @@ public:
     glm::vec4 ToWorldRect() const;
 
     //  绑定事件委托, 事件将被传递到委托中
-    void BindDelegate(EventDelegate * delegate);
+    void BindDelegate(UIEventDelegate * delegate);
 
     //  const 重载版本
     UITypeEnum GetType() const
@@ -150,21 +150,21 @@ protected:
 
     //  事件处理
     void DispatchEventK();
-    bool DispatchEventK(const EventDetails::Key & param);
+    bool DispatchEventK(const UIEventDetails::Key & param);
     void DispatchEventM();
-    bool DispatchEventM(const EventDetails::Mouse & param);
-    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param);
+    bool DispatchEventM(const UIEventDetails::Mouse & param);
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
 
 private:
-    bool CallEventMessage(UIEventEnum e, const EventDetails::Base & param);
+    bool CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
 public:
-    bool PostEventMessage(UIEventEnum e, const EventDetails::Base & param);
+    bool PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
 
 private:
     UITypeEnum             _type;
     UIState *              _state;
     UIClass *              _parent;
-    EventDelegate *        _delegate;
+    UIEventDelegate *      _delegate;
     std::vector<UIClass *> _children;
 };
 
@@ -222,7 +222,7 @@ private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
-    virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param) override;
 };
 
 class UIClassUICanvas : public UIClass {
