@@ -74,3 +74,47 @@ public:
     virtual void OnRender(float dt) override;
 };
 
+// ---
+//   Ù–‘ bool
+// ---
+class PropertyBool : public PropertyClass<bool> {
+public:
+    PropertyBool(
+        bool * value,
+        const std::string & title,
+        const Handler_t & handler)
+        : PropertyClass<bool>(value, title, handler)
+    { }
+
+    virtual void OnRender(float dt) override;
+};
+
+// ---
+//   Ù–‘ float
+// ---
+class PropertyFloat : public PropertyClass<float> {
+public:
+    PropertyFloat(
+        float * value,
+        const std::string & title,
+        const Handler_t & handler)
+        : PropertyClass<float>(value, title, handler)
+    { }
+
+    virtual void OnRender(float dt) override;
+};
+
+// ---
+//   Ù–‘ string
+// ---
+class PropertyString : public PropertyClass<std::string> {
+public:
+    PropertyString(
+        std::string * value,
+        const std::string & title,
+        const Handler_t & handler)
+        : PropertyClass<std::string>(value, title, handler)
+    { }
+
+    virtual void OnRender(float dt) override;
+};
