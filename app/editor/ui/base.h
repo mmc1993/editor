@@ -15,6 +15,7 @@ enum class DirectEnum {
 //  控件列表
 // ---
 enum class UITypeEnum {
+    kOTHER,                 //  其他
     kLAYOUT,                //  布局
     kTREEBOX,               //  树形框
     kTEXTBOX,               //  文本框

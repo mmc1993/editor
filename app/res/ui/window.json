@@ -1,6 +1,6 @@
 {
 	"__Property": {
-		"Type": "0",
+		"Type": "1",
 		"Skin": "PanelSkin",
 		"Move": "0 0 1280 720",
 		"Align": "384",
@@ -13,7 +13,7 @@
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "0",
+				"Type": "1",
 				"Skin": "PanelSkin",
 				"Move": "0 0 300 720",
 				"Align": "384",
@@ -27,7 +27,7 @@
 		},
 		{
 			"__Property": {
-				"Type": "0",
+				"Type": "1",
 				"Skin": "PanelSkin",
 				"Move": "300 550 980 170",
 				"Align": "384",
@@ -38,7 +38,7 @@
 			"__Children": [
 				{
 					"__Property": {
-						"Type": "0",
+						"Type": "1",
 						"Skin": "PanelSkin",
 						"Move": "0 0 980 40",
 						"Align": "26",
@@ -47,7 +47,7 @@
 					"__Children": [
 						{
 							"__Property": {
-								"Type": "2",
+								"Type": "3",
 								"Skin": "TextBox",
 								"Move": "15 12 50 15",
 								"Align": "72",
@@ -59,7 +59,7 @@
 						},
 						{
 							"__Property": {
-								"Type": "2",
+								"Type": "3",
 								"Skin": "TextBox",
 								"Move": "80 12 65 15",
 								"Align": "72",
@@ -71,7 +71,7 @@
 						},
 						{
 							"__Property": {
-								"Type": "2",
+								"Type": "3",
 								"Skin": "TextBox",
 								"Move": "690 12 225 15",
 								"Align": "80",
@@ -86,7 +86,7 @@
 				},
 				{
 					"__Property": {
-						"Type": "0",
+						"Type": "1",
 						"Skin": "PanelSkin",
 						"Move": "0 40 980 130",
 						"Align": "30",
@@ -100,7 +100,7 @@
 		},
 		{
 			"__Property": {
-				"Type": "0",
+				"Type": "1",
 				"Skin": "PanelSkin",
 				"Move": "300 0 980 550",
 				"Align": "384",

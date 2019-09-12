@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="editor\atlas\atlas_mgr.cpp" />
+    <ClCompile Include="editor\editor\property\property_int.cpp" />
     <ClCompile Include="editor\global.cpp" />
     <ClCompile Include="editor\main.cpp" />
     <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp" />
@@ -44,6 +45,9 @@
   <ItemGroup>
     <ClInclude Include="editor\atlas\atlas_mgr.h" />
     <ClInclude Include="editor\base.h" />
+    <ClInclude Include="editor\editor\editor_mgr.h" />
+    <ClInclude Include="editor\editor\include.h" />
+    <ClInclude Include="editor\editor\property\property_int.h" />
     <ClInclude Include="editor\global.h" />
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />

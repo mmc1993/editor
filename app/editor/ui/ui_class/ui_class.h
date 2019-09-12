@@ -72,6 +72,15 @@ public:
         };
     };
 
+    //  事件代理
+    class EventDelegate {
+    public:
+        virtual bool OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param)
+        {
+            return false;
+        }
+    };
+
 public:
     template <class T = UIState>
     T * GetState() { return (T *)_state; }
@@ -93,6 +102,9 @@ public:
     glm::vec4 ToLocalCoord(const glm::vec4 & coord) const;
     glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
     glm::vec4 ToWorldRect() const;
+
+    //  绑定事件委托, 事件将被传递到委托中
+    void BindDelegate(EventDelegate * delegate);
 
     //  const 重载版本
     UITypeEnum GetType() const
@@ -126,6 +138,7 @@ protected:
         : _type(type)
         , _state(state)
         , _parent(nullptr)
+        , _delegate(nullptr)
     { }
 
     void LockPosition();
@@ -151,6 +164,7 @@ private:
     UITypeEnum             _type;
     UIState *              _state;
     UIClass *              _parent;
+    EventDelegate *        _delegate;
     std::vector<UIClass *> _children;
 };
 

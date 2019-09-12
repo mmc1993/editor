@@ -78,6 +78,9 @@
     <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\editor\property\property_int.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -906,6 +909,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor\editor_mgr.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor\property\property_int.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

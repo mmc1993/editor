@@ -228,6 +228,12 @@ glm::vec4 UIClass::ToWorldRect() const
     return glm::vec4(ToWorldCoord(), move.z, move.w);
 }
 
+void UIClass::BindDelegate(EventDelegate * delegate)
+{
+    SAFE_DELETE(_delegate);
+    _delegate = delegate;
+}
+
 void UIClass::LockPosition()
 {
     auto & move = GetUIData(GetState()->mData, Move);
@@ -334,8 +340,11 @@ bool UIClass::OnCallEventMessage(UIEventEnum e, const EventDetails::Base & param
 bool UIClass::CallEventMessage(UIEventEnum e, const EventDetails::Base & param)
 {
     auto ret = OnCallEventMessage(e, param);
-    //  _TODO
-    //      代理接收事件
+
+    if (_delegate != nullptr)
+    {
+        ret = _delegate->OnCallEventMessage(e, param) || ret;
+    }
 
     if (!ret && GetParent() != nullptr)
     {
