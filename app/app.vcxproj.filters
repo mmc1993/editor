@@ -78,10 +78,10 @@
     <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor\property\property_int.cpp">
+    <ClCompile Include="editor\editor\delegate\test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor\delegate\test.cpp">
+    <ClCompile Include="editor\editor\property\property.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -917,10 +917,10 @@
     <ClInclude Include="editor\editor\editor_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\property\property_int.h">
+    <ClInclude Include="editor\editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\include.h">
+    <ClInclude Include="editor\editor\property\property.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

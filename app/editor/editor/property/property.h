@@ -117,4 +117,28 @@ public:
     { }
 
     virtual void OnRender(float dt) override;
+
+private:
+    static int OnResizeBuffer(ImGuiInputTextCallbackData * data)
+    {
+        auto value = (std::string *)data->UserData;
+        value->resize(data->BufTextLen);
+        data->Buf = value->data();
+        return value->capacity();
+    }
+};
+
+// ---
+//   Ù–‘ combo
+// ---
+class PropertyCombo : public PropertyClass<std::pair<size_t *, std::vector<std::string>>> {
+public:
+    PropertyCombo(
+        std::pair<size_t *, std::vector<std::string>> * value,
+        const std::string & title,
+        const Handler_t & handler)
+        : PropertyClass<std::pair<size_t *, std::vector<std::string>>>(value, title, handler)
+    { }
+
+    virtual void OnRender(float dt) override;
 };

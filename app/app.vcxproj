@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="editor\atlas\atlas_mgr.cpp" />
     <ClCompile Include="editor\editor\delegate\test.cpp" />
-    <ClCompile Include="editor\editor\property\property_int.cpp" />
+    <ClCompile Include="editor\editor\property\property.cpp" />
     <ClCompile Include="editor\global.cpp" />
     <ClCompile Include="editor\main.cpp" />
     <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp" />
@@ -48,7 +48,7 @@
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\editor\editor_mgr.h" />
     <ClInclude Include="editor\editor\include.h" />
-    <ClInclude Include="editor\editor\property\property_int.h" />
+    <ClInclude Include="editor\editor\property\property.h" />
     <ClInclude Include="editor\global.h" />
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />
@@ -461,7 +461,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B275AC70-3F0A-459C-8D4C-62932D5D9483}</ProjectGuid>
     <RootNamespace>app</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
