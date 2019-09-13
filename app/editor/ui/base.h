@@ -1,6 +1,60 @@
 #pragma once
 
 #include "../include.h"
+
+//  À©Õ¹ImVec
+#ifndef IM_VEC2_CLASS_EXTRA
+#define IM_VEC2_CLASS_EXTRA                                 \
+    ImVec2(const glm::vec2 & val): x(val.x), y(val.y)       \
+    { }                                                     \
+    ImVec2 & operator=(const glm::vec2 & val)               \
+    {                                                       \
+        x = val.x;                                          \
+        y = val.y;                                          \
+        return *this;                                       \
+    }                                                       \
+    operator glm::vec2() const                              \
+    {                                                       \
+        return glm::vec2(x, y);                             \
+    }                                                       
+#endif
+
+#ifndef IM_VEC4_CLASS_EXTRA
+#define IM_VEC4_CLASS_EXTRA                                 \
+    ImVec4(const glm::vec3 & val)                           \
+        : x(val.x), y(val.y)                                \
+        , z(val.z), w(0)                                    \
+    { }                                                     \
+    ImVec4(const glm::vec4 & val)                           \
+        : x(val.x), y(val.y)                                \
+        , z(val.z), w(val.w)                                \
+    { }                                                     \
+    ImVec4 & operator=(const glm::vec3 & val)               \
+    {                                                       \
+        x = val.x;                                          \
+        y = val.y;                                          \
+        z = val.z;                                          \
+        return *this;                                       \
+    }                                                       \
+    ImVec4 & operator=(const glm::vec4 & val)               \
+    {                                                       \
+        x = val.x;                                          \
+        y = val.y;                                          \
+        z = val.z;                                          \
+        w = val.w;                                          \
+        return *this;                                       \
+    }                                                       \
+    operator glm::vec3() const                              \
+    {                                                       \
+        return glm::vec3(x, y, z);                          \
+    }                                                       \
+    operator glm::vec4() const                              \
+    {                                                       \
+        return glm::vec4(x, y, z, w);                       \
+    }                                                       
+#endif
+
+
 #include "imgui.h"
 
 class UIState;

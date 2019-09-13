@@ -8,17 +8,30 @@ bool UIEventDelegateTest::OnCallEventMessage(UIClass * object, UIEventEnum e, co
         auto mouse = (const UIClass::UIEventDetails::Mouse &)param;
         if (mouse.mAct == 3)
         {
-            static size_t v = 0;
-            static std::pair<size_t *, std::vector<std::string>> n = {
-                &v, {"1", "2", "3"}
-            };
-            auto ccc = new PropertyCombo(&n, "aaa", [](const std::pair<size_t *, std::vector<std::string>>  & value, const std::string & title)
+            static int n = 0;
+
+
+            static glm::vec4 v4;
+            auto ccc3 = new PropertyColor4(v4, std::to_string(n++), [] (const std::any & value, const std::string & title, const std::any & backup)
                 {
                     std::cout
                         << "title: " << title << ' '
-                        << "value: " << *value.first << std::endl;
+                        << "value: " << std::any_cast<glm::vec4>(value).x << std::endl;
+                    return true;
                 });
-            object->GetChildren({ "C_0" })->AddChild(ccc);
+            object->GetChildren({ "C_0" })->AddChild(ccc3);
+
+
+
+            //static int i;
+            //auto ccc = new PropertyInt(i, std::to_string(n++), [](const std::any & value, const std::string & title, const std::any & backup)
+            //    {
+            //        std::cout
+            //            << "title: " << title << ' '
+            //            << "value: " << std::any_cast<int>(value) << std::endl;
+            //        return true;
+            //    });
+            //object->GetChildren({ "C_2" })->AddChild(ccc);
         }
     }
     return true;

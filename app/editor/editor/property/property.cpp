@@ -2,11 +2,9 @@
 
 void PropertyInt::OnRender(float dt)
 {
-    ImGui::Columns(2, nullptr, false);
-    ImGui::Text(GetTitle().c_str());
-    ImGui::NextColumn();
+    PropertyClass::OnRender(dt);
 
-    if (ImGui::InputInt(ToImGuiID((size_t)this).c_str(), &GetValue()))
+    if (ImGui::InputInt(ToImGuiID((size_t)this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -15,11 +13,9 @@ void PropertyInt::OnRender(float dt)
 
 void PropertyBool::OnRender(float dt)
 {
-    ImGui::Columns(2, nullptr, false);
-    ImGui::Text(GetTitle().c_str());
-    ImGui::NextColumn();
+    PropertyClass::OnRender(dt);
 
-    if (ImGui::Checkbox(ToImGuiID((size_t)this).c_str(), &GetValue()))
+    if (ImGui::Checkbox(ToImGuiID((size_t)this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -32,7 +28,7 @@ void PropertyFloat::OnRender(float dt)
     ImGui::Text(GetTitle().c_str());
     ImGui::NextColumn();
 
-    if (ImGui::InputFloat(ToImGuiID((size_t)this).c_str(), &GetValue()))
+    if (ImGui::InputFloat(ToImGuiID((size_t)this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -41,16 +37,14 @@ void PropertyFloat::OnRender(float dt)
 
 void PropertyString::OnRender(float dt)
 {
-    ImGui::Columns(2, nullptr, false);
-    ImGui::Text(GetTitle().c_str());
-    ImGui::NextColumn();
+    PropertyClass::OnRender(dt);
     
     if (ImGui::InputText(
         ToImGuiID((size_t)this).c_str(), 
-        GetValue().data(), GetValue().size(), 
+        GetBackup().data(), GetBackup().size(), 
         ImGuiInputTextFlags_CallbackResize,
         &PropertyString::OnResizeBuffer,
-        &GetValue()))
+        &GetBackup()))
     {
         Modify();
     }
@@ -59,12 +53,10 @@ void PropertyString::OnRender(float dt)
 
 void PropertyCombo::OnRender(float dt)
 {
-    ImGui::Columns(2, nullptr, false);
-    ImGui::Text(GetTitle().c_str());
-    ImGui::NextColumn();
+    PropertyClass::OnRender(dt);
 
-    auto & select = *GetValue().first;
-    auto & values = GetValue().second;
+    auto & select = GetBackup().first;
+    auto & values = GetBackup().second;
     if (ImGui::BeginCombo(
         ToImGuiID(this).c_str(),
         values.at(select).c_str()))
@@ -82,6 +74,50 @@ void PropertyCombo::OnRender(float dt)
             }
         }
         ImGui::EndCombo();
+    }
+    ImGui::Columns(1);
+}
+
+void PropertyVector2::OnRender(float dt)
+{
+    PropertyClass::OnRender(dt);
+
+    if (ImGui::InputFloat2(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    {
+        Modify();
+    }
+    ImGui::Columns(1);
+}
+
+void PropertyVector3::OnRender(float dt)
+{
+    PropertyClass::OnRender(dt);
+
+    if (ImGui::InputFloat3(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    {
+        Modify();
+    }
+    ImGui::Columns(1);
+}
+
+void PropertyVector4::OnRender(float dt)
+{
+    PropertyClass::OnRender(dt);
+
+    if (ImGui::InputFloat4(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    {
+        Modify();
+    }
+    ImGui::Columns(1);
+}
+
+void PropertyColor4::OnRender(float dt)
+{
+    PropertyClass::OnRender(dt);
+
+    if (ImGui::ColorEdit4(ToImGuiID(this).c_str(), &GetBackup().x))
+    {
+        Modify();
     }
     ImGui::Columns(1);
 }
