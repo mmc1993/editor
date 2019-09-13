@@ -46,6 +46,7 @@
   <ItemGroup>
     <ClInclude Include="editor\atlas\atlas_mgr.h" />
     <ClInclude Include="editor\base.h" />
+    <ClInclude Include="editor\editor\delegate\test.h" />
     <ClInclude Include="editor\editor\editor_mgr.h" />
     <ClInclude Include="editor\editor\include.h" />
     <ClInclude Include="editor\editor\property\property.h" />

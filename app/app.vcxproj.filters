@@ -923,6 +923,9 @@
     <ClInclude Include="editor\editor\property\property.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\editor\delegate\test.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="editor\third\glm\detail\func_common.inl">
