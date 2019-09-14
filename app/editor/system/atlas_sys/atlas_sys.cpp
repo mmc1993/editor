@@ -1,6 +1,5 @@
-#include "atlas_mgr.h"
-#include "../global.h"
-#include "../raw/raw_mgr.h"
+#include "atlas_sys.h"
+#include "../raw_sys/raw_sys.h"
 
 //  TODO
 //      图片资源允许被重复加载, 
@@ -10,7 +9,7 @@
 //  但是, 如果资源引用计数由上层管理, 会牺牲易用性
 //  所以这里考虑后续使用share_ptr管理资源, 从而避免以上问题.
 
-void AtlasMgr::Delete(const std::string & url)
+void AtlasSys::Delete(const std::string & url)
 {
     auto suffix = string_tool::QueryFileSuffix(url);
     if (suffix == ".png" || suffix == ".jpg")
@@ -23,7 +22,7 @@ void AtlasMgr::Delete(const std::string & url)
     }
 }
 
-bool AtlasMgr::Import(const std::string & url)
+bool AtlasSys::Import(const std::string & url)
 {
     auto suffix = string_tool::QueryFileSuffix(url);
     if (suffix == ".png" || suffix == ".jpg")
@@ -37,17 +36,17 @@ bool AtlasMgr::Import(const std::string & url)
     return false;
 }
 
-bool AtlasMgr::IsHasKey(const std::string & key) const
+bool AtlasSys::IsHasKey(const std::string & key) const
 {
     auto it = _resources.find(key);
     return it != _resources.end();
 }
 
-bool AtlasMgr::ImportImage(const std::string & url)
+bool AtlasSys::ImportImage(const std::string & url)
 {
     if (!IsHasKey(url))
     {
-        auto raw = (RawBitmap *)Global::Ref().mRawMgr->Import(url);
+        auto raw = (RawBitmap *)Global::Ref().mRawSys->Import(url);
         ASSERT_LOG(raw != nullptr, url.c_str());
         CHECK_RET(raw != nullptr, false);
 
@@ -63,14 +62,14 @@ bool AtlasMgr::ImportImage(const std::string & url)
     return true;
 }
 
-bool AtlasMgr::ImportAtlas(const std::string & url)
+bool AtlasSys::ImportAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
     auto dir = string_tool::QueryFileDir(url);
     dir += json->At("meta", "image")->ToString();
 
-    auto raw = (RawBitmap *)Global::Ref().mRawMgr->Import(dir);
+    auto raw = (RawBitmap *)Global::Ref().mRawSys->Import(dir);
     ASSERT_LOG(raw, url.c_str());
 
     auto w = json->At("meta", "size", "w")->ToFloat();
@@ -92,19 +91,19 @@ bool AtlasMgr::ImportAtlas(const std::string & url)
     return true;
 }
 
-void AtlasMgr::DeleteImage(const std::string & url)
+void AtlasSys::DeleteImage(const std::string & url)
 {
     _resources.erase(url);
-    Global::Ref().mRawMgr->Delete(url);
+    Global::Ref().mRawSys->Delete(url);
 }
 
-void AtlasMgr::DeleteAtlas(const std::string & url)
+void AtlasSys::DeleteAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
     auto dir = string_tool::QueryFileDir(url);
     dir += json->At("meta", "image")->ToString();
-    Global::Ref().mRawMgr->Delete(dir);
+    Global::Ref().mRawSys->Delete(dir);
     for (auto val : json->At("frames"))
     { _resources.erase(val.mKey); }
 }

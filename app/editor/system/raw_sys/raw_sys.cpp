@@ -1,6 +1,6 @@
-#include "raw_mgr.h"
+#include "raw_sys.h"
 
-Raw * RawMgr::Import(const std::string & url)
+Raw * RawSys::Import(const std::string & url)
 {
     auto it = _resources.find(url);
     CHECK_RET(it == _resources.end(), it->second);
@@ -17,7 +17,7 @@ Raw * RawMgr::Import(const std::string & url)
     return raw;
 }
 
-void RawMgr::Delete(const std::string & url)
+void RawSys::Delete(const std::string & url)
 { 
     auto it = _resources.find(url);
     if (it != _resources.end())
@@ -27,7 +27,7 @@ void RawMgr::Delete(const std::string & url)
     }
 }
 
-void RawMgr::Clear()
+void RawSys::Clear()
 {
     for (auto res : _resources)
     {

@@ -33,9 +33,9 @@
 #endif
 
 #include "global.h"
-#include "ui/ui_mgr.h"
-#include "raw/raw_mgr.h"
-#include "atlas/atlas_mgr.h"
+#include "system/ui_sys/ui_sys.h"
+#include "system/raw_sys/raw_sys.h"
+#include "system/atlas_sys/atlas_sys.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -124,13 +124,13 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     
     //  初始化UI管理器
-    Global::Ref().mUIMgr = new UIMgr();
-    Global::Ref().mUIMgr->SetRoot("res/ui/window.json");
+    Global::Ref().mUISys = new UISys();
+    Global::Ref().mUISys->SetRoot("res/ui/window.json");
     //  初始化资源管理器
-    Global::Ref().mRawMgr = new RawMgr();
+    Global::Ref().mRawSys = new RawSys();
     //  初始化图集管理器
-    Global::Ref().mAtlasMgr = new AtlasMgr();
-    Global::Ref().mAtlasMgr->Import("res/atlas/icon/atlas.json");
+    Global::Ref().mAtlasSys = new AtlasSys();
+    Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");
 
     // Main loop
     while (!glfwWindowShouldClose(window))
@@ -149,7 +149,7 @@ int main(int, char**)
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
         if (show_demo_window)
-            Global::Ref().mUIMgr->Update(0);
+            Global::Ref().mUISys->Update(0);
             //ImGui::ShowDemoWindow(&show_demo_window);
 
         // Rendering

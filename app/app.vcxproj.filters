@@ -27,19 +27,10 @@
     <ClCompile Include="imgui\imgui_draw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\atlas\atlas_mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\opengl3\imgui_impl_glfw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\opengl3\imgui_impl_opengl3.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\raw\raw.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\raw\raw_mgr.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\third\glm\detail\glm.cpp">
@@ -57,31 +48,40 @@
     <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\ui\ui_class\ui_class.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui\ui_parse\ui_parse.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui\ui_state\ui_state.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui\ui_menu.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\ui\ui_mgr.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\global.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor\delegate\test.cpp">
+    <ClCompile Include="editor\system\editor_sys\delegate\test.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\editor\property\property.cpp">
+    <ClCompile Include="editor\system\editor_sys\property\property.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\raw_sys\raw.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_class\ui_class.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_parse\ui_parse.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_state\ui_state.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_menu.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_sys.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\raw_sys\raw_sys.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\atlas_sys\atlas_sys.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,19 +116,10 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\atlas\atlas_mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\raw\raw.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\raw\raw_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\third\glm\detail\_features.hpp">
@@ -887,24 +878,6 @@
     <ClInclude Include="editor\tools\time_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\ui\ui_class\ui_class.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui\ui_parse\ui_parse.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui\ui_state\ui_state.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui\base.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui\ui_menu.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\ui\ui_mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -914,16 +887,46 @@
     <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\editor_mgr.h">
+    <ClInclude Include="editor\system\editor_sys\delegate\test.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\include.h">
+    <ClInclude Include="editor\system\editor_sys\property\property.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\property\property.h">
+    <ClInclude Include="editor\system\editor_sys\editor_mgr.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\editor\delegate\test.h">
+    <ClInclude Include="editor\system\editor_sys\include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\raw_sys\raw.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_class\ui_class.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_parse\ui_parse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_state\ui_state.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_menu.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_sys.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\raw_sys\raw_sys.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\atlas_sys\atlas_sys.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

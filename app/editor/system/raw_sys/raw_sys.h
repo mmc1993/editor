@@ -2,7 +2,7 @@
 
 #include "raw.h"
 
-class RawMgr {
+class RawSys {
 public:
     Raw* Import(const std::string & url);
     void Delete(const std::string & url);

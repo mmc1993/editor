@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../include.h"
-#include "../../ui/ui_class/ui_class.h"
-#include "../../ui/ui_state/ui_state.h"
+#include "../../ui_sys/ui_class/ui_class.h"
+#include "../../ui_sys/ui_state/ui_state.h"
 
 template <class T, class B = T>
 class PropertyState : public UIState {

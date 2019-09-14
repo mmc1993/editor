@@ -1,7 +1,7 @@
 #include "ui_class.h"
-#include "../../atlas/atlas_mgr.h"
-#include "../ui_state/ui_state.h"
 #include "../ui_menu.h"
+#include "../ui_state/ui_state.h"
+#include "../../atlas_sys/atlas_sys.h"
 #include "imgui_impl_glfw.h"
 
 // ---
@@ -721,7 +721,7 @@ void UIClassImageBox::OnRender(float dt)
     {
         if (!strSkin.empty())
         {
-            auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+            auto & imgSkin = Global::Ref().mAtlasSys->Get(strSkin);
             if (ImGui::ImageButton(
                 (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
@@ -741,7 +741,7 @@ void UIClassImageBox::OnRender(float dt)
     else
     {
         ASSERT_LOG(!strSkin.empty(), "");
-        auto & imgSkin = Global::Ref().mAtlasMgr->Get(strSkin);
+        auto & imgSkin = Global::Ref().mAtlasSys->Get(strSkin);
         ImGui::Image(
             (ImTextureID)imgSkin.mID,
             ImVec2(move.z, move.w),

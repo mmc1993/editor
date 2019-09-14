@@ -59,7 +59,7 @@
 
 class UIState;
 class UIClass;
-class UIMgr;
+class UISys;
 
 enum class DirectEnum {
     kU, kD, kL, kR, LENGTH

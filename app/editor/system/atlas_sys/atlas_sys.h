@@ -2,7 +2,7 @@
 
 #include "../include.h"
 
-class AtlasMgr {
+class AtlasSys {
 public:
     struct Image {
         glm::vec4   mQuat;

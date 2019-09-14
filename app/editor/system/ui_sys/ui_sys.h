@@ -2,10 +2,10 @@
 
 #include "base.h"
 
-class UIMgr {
+class UISys {
 public:
-    UIMgr();
-    ~UIMgr();
+    UISys();
+    ~UISys();
     UIClass * GetRoot();
     void SetRoot(UIClass * uiClass);
     void SetRoot(const std::string & url);

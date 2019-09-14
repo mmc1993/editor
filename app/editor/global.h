@@ -2,9 +2,9 @@
 
 #include "base.h"
 
-class AtlasMgr;
-class UIMgr;
-class RawMgr;
+class AtlasSys;
+class RawSys;
+class UISys;
 
 class Global {
 public:
@@ -17,9 +17,9 @@ public:
 public:
     void Free();
 
-    AtlasMgr * mAtlasMgr;
-    RawMgr * mRawMgr;
-    UIMgr * mUIMgr;
+    AtlasSys * mAtlasSys;
+    RawSys * mRawSys;
+    UISys * mUISys;
 
 private:
     Global();

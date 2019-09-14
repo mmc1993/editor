@@ -2,6 +2,6 @@
 
 #include "include.h"
 
-class EidtorMgr {
+class EidtorSys {
 
 };
