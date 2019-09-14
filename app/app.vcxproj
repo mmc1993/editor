@@ -47,7 +47,7 @@
     <ClInclude Include="editor\system\atlas_sys\atlas_sys.h" />
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\test.h" />
-    <ClInclude Include="editor\system\editor_sys\editor_mgr.h" />
+    <ClInclude Include="editor\system\editor_sys\editor_sys.h" />
     <ClInclude Include="editor\system\editor_sys\include.h" />
     <ClInclude Include="editor\system\editor_sys\property\property.h" />
     <ClInclude Include="editor\global.h" />

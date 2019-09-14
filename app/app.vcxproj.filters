@@ -893,9 +893,6 @@
     <ClInclude Include="editor\system\editor_sys\property\property.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\editor_mgr.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\editor_sys\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -927,6 +924,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\editor_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
