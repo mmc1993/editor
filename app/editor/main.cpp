@@ -35,6 +35,7 @@
 #include "global.h"
 #include "system/ui_sys/ui_sys.h"
 #include "system/raw_sys/raw_sys.h"
+#include "system/cfg_sys/cfg_sys.h"
 #include "system/atlas_sys/atlas_sys.h"
 
 static void glfw_error_callback(int error, const char* description)
@@ -128,6 +129,9 @@ int main(int, char**)
     Global::Ref().mUISys->SetRoot("res/ui/window.json");
     //  初始化资源管理器
     Global::Ref().mRawSys = new RawSys();
+    //  初始化配置管理器
+    Global::Ref().mCfgSys = new CfgSys();
+    Global::Ref().mCfgSys->Import("res/cfg/editor/component.json");
     //  初始化图集管理器
     Global::Ref().mAtlasSys = new AtlasSys();
     Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");

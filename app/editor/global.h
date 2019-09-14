@@ -4,6 +4,7 @@
 
 class AtlasSys;
 class RawSys;
+class CfgSys;
 class UISys;
 
 class Global {
@@ -19,6 +20,7 @@ public:
 
     AtlasSys * mAtlasSys;
     RawSys * mRawSys;
+    CfgSys * mCfgSys;
     UISys * mUISys;
 
 private:
