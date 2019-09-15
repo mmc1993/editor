@@ -311,8 +311,8 @@ void UIClass::LockPosition()
     else
     {
         const auto & pos = ToLocalCoordFromImGUI();
-        std::cout << GetUIData(GetState()->mData, Name) << std::endl;
-        SetUIData(GetState()->mData, Move, glm::vec4(pos.x, pos.y, move.z, move.w));
+        SetUIData(GetState()->mData, Move, 
+            glm::vec4(pos.x, pos.y, move.z, move.w));
     }
 }
 

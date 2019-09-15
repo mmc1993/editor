@@ -46,7 +46,6 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
             }
             else if (menu.mPath == "Del Object")
             {
-                std::cout << GetUIData(menu.mObject->GetState()->mData, Name) << std::endl;
                 menu.mObject->DelThis();
             }
             else
