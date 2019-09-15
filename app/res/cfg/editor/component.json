@@ -1,10 +1,10 @@
 {
-    "order": [
+    "Order": [
         "Transform",
         "Graphics/Sprite",
         "Graphics/LightSource"
     ],
-    "list": {
+    "List": {
         "Transform": {
             "Desc": "变换组件",
             "Propertys": [

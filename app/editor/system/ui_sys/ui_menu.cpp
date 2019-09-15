@@ -65,11 +65,9 @@ void UIMenu::RenderPopup()
 {
     if (s_popup.mObject != nullptr)
     {
+        ImGui::SetCursorScreenPos(ImVec2(s_popup.mMouse.x,s_popup.mMouse.y));
         if (ImGui::BeginPopup(s_popup.mItems.at(0).mName.c_str()))
         {
-            ImGui::SetCursorScreenPos(ImVec2(
-                s_popup.mMouse.x,
-                s_popup.mMouse.y));
             RenderMenu(s_popup.mObject, s_popup.mItems);
             ImGui::EndPopup();
         }

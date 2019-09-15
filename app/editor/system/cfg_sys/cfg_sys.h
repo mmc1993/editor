@@ -17,44 +17,30 @@ public:
         return _root->At(std::forward<Keys>(keys)...);
     }
 
-    void Init(const std::string & root)
-    {
-        for (auto & entry : std::experimental::filesystem::directory_iterator(root))
-        {
-            Import(entry.path().string());
-        }
-    }
-
     void Import(const std::string & url)
     {
-        auto fname = string_tool::Replace(url, "\\", "/");
-        auto value = mmc::JsonValue::FromFile(fname);
+        auto value = mmc::JsonValue::FromFile(url);
         ASSERT_LOG(value != nullptr, url.c_str());
-
-        auto key = string_tool::QueryFileName(fname);
-        _files.insert(std::make_pair(key, fname));
-        _root->Insert(value, key);
+        _root->Insert(value, url);
     }
 
-    void Save(const std::string & key)
+    void Save(const std::string & url)
     {
-        ASSERT_LOG(_root->IsHashKey(key), key.c_str());
-        auto buffer = std::to_string(_root->At(key));
-        std::ofstream ofile(_files.at(key));
+        ASSERT_LOG(_root->IsHashKey(url), url.c_str());
+        auto buffer = std::to_string(_root->At(url));
+        std::ofstream ofile(url);
         ofile.write(buffer.c_str(), buffer.size());
         ofile.close();
     }
 
     void Save()
     {
-        for (auto pair : _files)
+        for (auto pair : _root)
         {
-            Save(pair.first);
+            Save(pair.mKey);
         }
     }
 
 private:
     mmc::JsonValue::Value _root;
-
-    std::map<std::string, std::string> _files;
 };

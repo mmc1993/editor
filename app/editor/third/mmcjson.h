@@ -49,10 +49,6 @@ namespace mmc {
             kNULL,
         };
 
-        struct List {};
-        struct Hash {};
-        struct Null {};
-
     private:
         struct Parser {
             static const char * SkipSpace(const char * string)
@@ -66,7 +62,7 @@ namespace mmc {
                 childs.clear();
                 while (*string != ']')
                 {
-					auto value = FromValue();
+					auto value = Null();
                     string = Parser::Parse(string, value);
                     string = SkipSpace(string);
                     *string == ',' && ++string;
@@ -82,7 +78,7 @@ namespace mmc {
                 while (*string != '}')
                 {
                     DEBUG_CHECK((*string == '\"'), ErrorParse, DEBUG_ERROR("Parse Hash Error: ", string));
-					std::string key; auto value = FromValue();
+					std::string key; auto value = Null();
                     string = SkipSpace(Parser::ParseString(string + 1, key));
                     DEBUG_CHECK((*string == ':'), ErrorParse, DEBUG_ERROR("Parse Hash Error: ", string));
                     string = SkipSpace(Parser::Parse(string + 1, value));
@@ -180,16 +176,30 @@ namespace mmc {
 	public:
 		JsonValue() : _type(Type::kNULL), _number(0) { }
 
-        //  工厂函数
-        static Value FromValue()
+        static Value Hash()
+        {
+            auto ret = Null();
+            ret->_type = Type::kHASH;
+            return ret;
+        }
+
+        static Value List()
+        {
+            auto ret = Null();
+            ret->_type = Type::kLIST;
+            return ret;
+        }
+
+        static Value Null()
         {
             return std::make_shared<JsonValue>();
         }
 
+        //  工厂函数
 		template <class T>
 		static Value FromValue(const T & val)
 		{
-			auto value = FromValue();
+			auto value = Null();
 			value->Set(val);
 			return value;
 		}
@@ -201,14 +211,14 @@ namespace mmc {
 
 		static Value FromValue(const char * val, size_t len = 0)
 		{
-			auto value = FromValue();
+			auto value = Null();
 			value->Set(val, len);
 			return value;
 		}
 
 		static Value FromBuffer(const std::string & buffer)
 		{
-            auto value = FromValue();
+            auto value = Null();
             try
             {
                 Parser::Parse(buffer.c_str(), value);
@@ -335,23 +345,15 @@ namespace mmc {
         {
             using _Type = std::remove_const_t<std::remove_reference_t<std::remove_cv_t<T>>>;
 
-            if constexpr (std::is_arithmetic_v<_Type>)
+            if constexpr (std::is_same_v<_Type, Value>)
             {
-                _type = Type::kNUMBER;
-                _elems.clear();
-                _number = static_cast<double>(val);
+                _type = val->_type;
+                _elems = val->_elems;
+                _number = val->_number;
             }
-            else if constexpr (std::is_same_v<_Type, List>)
+            else if constexpr (std::is_arithmetic_v<_Type>)
             {
-                _type = Type::kLIST; _elems.clear();
-            }
-            else if constexpr (std::is_same_v<_Type, Hash>)
-            {
-                _type = Type::kHASH; _elems.clear();
-            }
-            else if constexpr (std::is_same_v<_Type, Null>)
-            {
-                _type = Type::kNULL; _elems.clear();
+                _type = Type::kNUMBER; _elems.clear(); _number = (double)val;
             }
             else if constexpr (std::is_same_v<_Type, bool>)
             {

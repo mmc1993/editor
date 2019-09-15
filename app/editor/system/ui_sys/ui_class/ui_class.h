@@ -90,19 +90,21 @@ public:
     std::vector<UIClass *> & GetChildren();
     void AddChild(UIClass * child);
     void DelChild(UIClass * child);
+    void DelThis();
     void ClearChild();
     UIClass * GetRoot();
     UIClass * GetParent();
 
-    void Render(float dt);
     void ResetLayout();
     void ApplyLayout();
+    void Render(float dt, bool parent = true);
 
     glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset) const;
     glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0)) const;
     glm::vec4 ToLocalCoord(const glm::vec4 & coord) const;
     glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
     glm::vec4 ToWorldRect() const;
+    glm::vec2 ToLocalCoordFromImGUI() const;
 
     //  绑定事件委托, 事件将被传递到委托中
     void BindDelegate(UIEventDelegate * delegate);
@@ -147,6 +149,7 @@ protected:
         , _delegate(nullptr)
     { }
 
+    void AdjustSize();
     void LockPosition();
     virtual bool OnEnter();
     virtual void OnLeave(bool ret);

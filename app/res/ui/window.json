@@ -7,8 +7,7 @@
 		"Name": "Root",
 		"IsWindow": "ok",
         "IsFullScreen": "ok",
-        "MenuBar": "Menu/Child0/Child1,Menu/Child0/Child2,Menu/Child1/Child0,Menu/Child1/Child1",
-        "EventDelegate": "editor/editor/delegate/test"
+        "MenuBar": "Menu/Child0/Child1,Menu/Child0/Child2,Menu/Child1/Child0,Menu/Child1/Child1"
 	},
 	"__Children": [
 		{
@@ -19,7 +18,8 @@
 				"Align": "384",
 				"Name": "C_0",
 				"StretchMin": "300 720",
-                "IsCanStretch": "ok",
+				"IsCanStretch": "ok",
+				"EventDelegate": "editor/editor/delegate/uievent_delegate_objects"
 			},
 			"__Children": [
 				

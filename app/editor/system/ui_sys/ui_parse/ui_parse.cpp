@@ -1,7 +1,7 @@
 #include "ui_parse.h"
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
-#include "../../editor_sys/delegate/test.h"
+#include "../../editor_sys/delegate/uievent_delegate_objects.h"
 
 // ...
 //  UI事件委托映射表
@@ -10,7 +10,7 @@ template <class T>
 UIClass::UIEventDelegate * Create() { return new T(); }
 
 static std::map<std::string, UIClass::UIEventDelegate *(*)()> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/test", &Create<UIEventDelegateTest>)
+    std::make_pair("editor/editor/delegate/uievent_delegate_objects", &Create<UIEventDelegateObjects>)
 };
 
 UIClass * UIParser::Parse(const std::string & url)
@@ -36,6 +36,7 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * objec
         ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
         if (ele.mKey == "EventDelegate")
         {
+            ASSERT_LOG(s_DelegateMap.count(ele.mValue->ToString()) == 1, ele.mValue->ToString().c_str());
             object->BindDelegate(s_DelegateMap.at(ele.mValue->ToString())());
         }
         else

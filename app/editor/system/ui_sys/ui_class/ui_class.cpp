@@ -70,6 +70,12 @@ void UIClass::DelChild(UIClass * child)
     if (it != _children.end()) { delete *it; _children.erase(it); }
 }
 
+void UIClass::DelThis()
+{
+    ASSERT_LOG(GetParent() != nullptr, GetUIData(GetState()->mData, Name).c_str());
+    GetParent()->DelChild(this);
+}
+
 void UIClass::ClearChild()
 {
     while (!_children.empty())
@@ -92,24 +98,6 @@ UIClass * UIClass::GetRoot()
 UIClass * UIClass::GetParent()
 {
     return _parent;
-}
-
-void UIClass::Render(float dt)
-{
-    ApplyLayout();
-    auto ret = OnEnter();
-    if (ret) { OnRender(dt); }
-
-    for (auto child : _children)
-    {
-        child->Render(dt);
-    }
-
-    OnLeave(ret);
-
-    //  刷新备份数据
-    auto & data = GetState()->mData;
-    SetUIData(data, _Move, GetUIData(data, Move));
 }
 
 void UIClass::ResetLayout()
@@ -202,6 +190,32 @@ void UIClass::ApplyLayout()
     OnApplyLayout();
 }
 
+void UIClass::Render(float dt, bool parent)
+{
+    ApplyLayout();
+
+    auto ret = false;
+    if (parent)
+    { 
+        if (ret = OnEnter())
+        {
+            OnRender(dt);
+        }
+    }
+
+    for (auto child : _children)
+    {
+        child->Render(dt, ret);
+    }
+
+    if (parent) { OnLeave(ret); }
+
+    //  刷新备份数据
+    auto & data = GetState()->mData;
+    SetUIData(data, _Move, GetUIData(data, Move));
+}
+
+
 glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
 {
     auto move = GetUIData(GetState()->mData, Move);
@@ -252,10 +266,38 @@ glm::vec4 UIClass::ToWorldRect() const
     return glm::vec4(ToWorldCoord(), move.z, move.w);
 }
 
+glm::vec2 UIClass::ToLocalCoordFromImGUI() const
+{
+    //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
+    auto pos = ImGui::GetCursorPos();
+    auto parent = GetParent();
+    while (parent->GetType() == UITypeEnum::kTEXTBOX
+        || parent->GetType() == UITypeEnum::kTREEBOX
+        || parent->GetType() == UITypeEnum::kIMAGEBOX)
+    {
+        auto & move = GetUIData(parent->GetState()->mData, Move);
+        pos.x -= move.x;
+        pos.y -= move.y;
+        parent = parent->GetParent();
+    }
+    return pos;
+}
+
 void UIClass::BindDelegate(UIEventDelegate * delegate)
 {
     SAFE_DELETE(_delegate);
     _delegate = delegate;
+}
+
+void UIClass::AdjustSize()
+{
+    auto & move = GetUIData(GetState()->mData, Move);
+    auto align = GetUIData(GetState()->mData, Align);
+    if ((UIAlignEnum)align == UIAlignEnum::kDEFAULT && (move.z == 0 || move.w == 0))
+    {
+        const auto & size = ImGui::GetItemRectSize();
+        SetUIData(GetState()->mData, Move, glm::vec4(move.x, move.y, size.x, size.y));
+    }
 }
 
 void UIClass::LockPosition()
@@ -265,6 +307,12 @@ void UIClass::LockPosition()
     if (align != (int)UIAlignEnum::kDEFAULT)
     {
         ImGui::SetCursorPos(ImVec2(move.x, move.y));
+    }
+    else
+    {
+        const auto & pos = ToLocalCoordFromImGUI();
+        std::cout << GetUIData(GetState()->mData, Name) << std::endl;
+        SetUIData(GetState()->mData, Move, glm::vec4(pos.x, pos.y, move.z, move.w));
     }
 }
 
@@ -340,15 +388,16 @@ void UIClass::DispatchEventM()
 
 bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
 {
+    for (auto child : GetChildren())
+    {
+        if (child->DispatchEventM(param))
+        {
+            return true;
+        }
+    }
+
     if (math_tool::IsContain(ToWorldRect(), param.mMouse))
     {
-        for (auto child : GetChildren())
-        {
-            if (child->DispatchEventM(param))
-            {
-                return true;
-            }
-        }
         return PostEventMessage(UIEventEnum::kMOUSE, param);
     }
     return false;
@@ -438,11 +487,11 @@ void UIClassLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (GetUIData(state->mData, IsWindow))
     {
+        ImGui::PopStyleVar(2);
         if (GetRoot() == this)
         {
             UIMenu::RenderPopup();
         }
-        ImGui::PopStyleVar(2);
         DispatchEventM();
         DispatchEventK();
         ImGui::End();
@@ -645,12 +694,7 @@ bool UIClassTreeBox::OnEnter()
     auto & move = GetUIData(state->mData, Move);
 
     ImGui::SetNextItemWidth(move.z);
-    if (ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str()))
-    {
-        ImGui::Indent(move.x + ImGui::GetStyle().IndentSpacing);
-        return true;
-    }
-    return false;
+    return ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str());
 }
 
 void UIClassTreeBox::OnLeave(bool ret)
@@ -658,10 +702,8 @@ void UIClassTreeBox::OnLeave(bool ret)
     if (ret)
     {
         ImGui::TreePop();
-        auto  state = GetState<UIStateTreeBox>();
-        auto & move = GetUIData(state->mData, Move);
-        ImGui::Unindent(move.x + ImGui::GetStyle().IndentSpacing);
     }
+    AdjustSize();
 }
 
 // ---
@@ -705,6 +747,8 @@ void UIClassTextBox::OnRender(float dt)
     {
         ImGui::Text(GetUIData(state->mData, Name).c_str());
     }
+
+    AdjustSize();
 }
 
 //--------------------------------------------------------------------------------
@@ -748,6 +792,8 @@ void UIClassImageBox::OnRender(float dt)
             ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
             ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
     }
+
+    AdjustSize();
 }
 
 // ---
@@ -771,6 +817,8 @@ bool UIClassComboBox::OnEnter()
 void UIClassComboBox::OnLeave(bool ret)
 {
     if (ret) { ImGui::EndCombo(); }
+
+    AdjustSize();
 }
 
 void UIClassComboBox::OnRender(float dt)
