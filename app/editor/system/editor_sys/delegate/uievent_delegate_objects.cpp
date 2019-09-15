@@ -16,10 +16,12 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
                 }
                 else
                 {
-                    buffer.push_back("Add Object");
-                    buffer.push_back("Del Object");
-                    buffer.push_back("Rename Object");
-                    buffer.push_back("Add Component");
+                    auto & name = GetUIData(mouse.mObject->GetState()->mData, Name);
+                    buffer.push_back(        "Add Object");
+                    buffer.push_back(        "Del Object");
+                    buffer.push_back(        "Rename Object");
+                    buffer.push_back(SFormat("Rename Object/{0}~", name));
+                    buffer.push_back(        "Add Component");
 
                     std::transform(
                         std::begin(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
@@ -48,11 +50,20 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
             {
                 menu.mObject->DelThis();
             }
+            else if (menu.mPath.at(0) == 'R' && menu.mPath.at(1) == 'e'
+                  && menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a'
+                  && menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
+            {
+                SetUIData(menu.mObject->GetState()->mData, Name, menu.mEdit);
+                //UIMenu::PopMenuInput(menu.mObject, GetUIData(menu.mObject->GetState()->mData, Name));
+            }
             else
             {
 
             }
-            std::cout << "Menu Key" << menu.mPath << std::endl;
+            std::cout 
+                << "Menu Key: " << menu.mPath << ' '
+                << "Menu Edit: " << menu.mEdit << std::endl;
         }
         break;
     }

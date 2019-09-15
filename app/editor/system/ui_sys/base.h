@@ -291,7 +291,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
 #define SetUIData(data, K, val)    __SetData##K(data, val)
 
 namespace std {
-    inline std::string to_string(void *val)
+    inline std::string to_string(void * val)
     {
         return std::to_string((size_t)val);
     }

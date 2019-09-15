@@ -53,11 +53,22 @@ public:
         //  ²Ëµ¥ÊÂ¼þ
         struct Menu : Base {
             bool mSelect;
+            std::string mEdit;
             std::string mPath;
 
             Menu(const std::string & path, const bool select)
                 : mPath(path)
                 , mSelect(select)
+            { }
+
+            Menu(const std::string & path, const char * edit)
+                : mPath(path)
+                , mEdit(edit)
+            { }
+
+            Menu(const std::string & path, const std::string & edit)
+                : mPath(path)
+                , mEdit(edit)
             { }
         };
 

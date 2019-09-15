@@ -10,6 +10,7 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
     {
         auto disabled = false;
         auto selected = false;
+        auto editing = false;
         auto leaf     = false;
 
         //  是否叶子节点, 是否已勾选, 是否已禁用
@@ -21,9 +22,12 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
             if (pos != std::string::npos) { selected = true; }
             pos = str.find_first_of('!');
             if (pos != std::string::npos) { disabled = true; }
+            pos = str.find_first_of('~');
+            if (pos != std::string::npos) { editing = true; }
 
             if (pos != std::string::npos && str.at(pos) == '!') { --pos; }
             if (pos != std::string::npos && str.at(pos) == '@') { --pos; }
+            if (pos != std::string::npos && str.at(pos) == '~') { --pos; }
             if (pos != std::string::npos) { ++pos; }
         }
 
@@ -37,9 +41,10 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
 
         auto & item  = result.back();
         item.mName = std::move(name);
+        item.mEditing = editing;
         item.mSelected = selected;
         item.mDisabled = disabled;
-        item.mPath = !parent.empty()?parent+'/'+item.mName:item.mName;
+        item.mPath = !parent.empty()?parent +'/'+ item.mName:item.mName;
         if (!leaf) { item.mChildren.emplace_back(str.substr(pos + 1)); }
     }
     return std::move(result);
@@ -84,9 +89,25 @@ void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
     {
         if (item.mChildren.empty())
         {
-            if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
+            if (item.mEditing)
             {
-                object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, item.mSelected));
+                std::string buffer = item.mName;
+                if (ImGui::InputText(("##" + item.mName).c_str(), buffer.data(), buffer.size(), 
+                    ImGuiInputTextFlags_EnterReturnsTrue | 
+                    ImGuiInputTextFlags_CallbackResize | 
+                    ImGuiInputTextFlags_AutoSelectAll,
+                    &UIMenu::OnResizeBuffer, &buffer))
+                {
+                    ImGui::CloseCurrentPopup();
+                    object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, buffer.c_str()));
+                }
+            }
+            else
+            {
+                if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
+                {
+                    object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, item.mSelected));
+                }
             }
         }
         else
@@ -98,4 +119,12 @@ void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
             }
         }
     }
+}
+
+int UIMenu::OnResizeBuffer(ImGuiInputTextCallbackData * data)
+{
+    auto value = (std::string *)data->UserData;
+    value->resize(data->BufTextLen);
+    data->Buf = value->data();
+    return value->capacity();
 }
