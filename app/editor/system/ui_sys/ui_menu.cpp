@@ -3,6 +3,8 @@
 
 UIMenu::Popup UIMenu::s_popup;
 
+//  _TODO
+//      一次全部解析
 std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent, const std::vector<std::string> & list)
 {
     std::vector<MenuItem> result;
