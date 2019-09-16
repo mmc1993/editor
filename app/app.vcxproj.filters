@@ -956,6 +956,9 @@
     <ClInclude Include="editor\system\editor_sys\component\gl_object.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\system\tools\type_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="editor\third\glm\detail\func_common.inl">

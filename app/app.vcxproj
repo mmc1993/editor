@@ -66,6 +66,7 @@
     <ClInclude Include="editor\system\include.h" />
     <ClInclude Include="editor\system\raw_sys\raw.h" />
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
+    <ClInclude Include="editor\system\tools\type_parser.h" />
     <ClInclude Include="editor\third\glm\common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_vector_relational.hpp" />
