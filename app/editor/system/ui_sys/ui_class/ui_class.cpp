@@ -298,11 +298,11 @@ void UIClass::BindDelegate(UIEventDelegate * delegate)
 
 void UIClass::AdjustSize()
 {
-    auto & move = GetUIData(GetState()->mData, Move);
     auto align = GetUIData(GetState()->mData, Align);
-    if ((UIAlignEnum)align == UIAlignEnum::kDEFAULT && (move.z == 0 || move.w == 0))
+    if ((UIAlignEnum)align == UIAlignEnum::kDEFAULT)
     {
         const auto & size = ImGui::GetItemRectSize();
+        auto & move = GetUIData(GetState()->mData, Move);
         SetUIData(GetState()->mData, Move, glm::vec4(move.x, move.y, size.x, size.y));
     }
 }
@@ -468,7 +468,6 @@ bool UIClassLayout::OnEnter()
                  | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
                  | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav;
         }
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2());
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
         if (GetUIData(state->mData, IsFullScreen) || 
@@ -494,7 +493,7 @@ void UIClassLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (GetUIData(state->mData, IsWindow))
     {
-        ImGui::PopStyleVar(2);
+        ImGui::PopStyleVar();
         if (GetRoot() == this)
         {
             UIMenu::RenderPopup();
