@@ -2,16 +2,16 @@
 
 #include "../base.h"
 
-class UIClass {
+class UIObject {
 public:
     struct UIEventDetails {
         //  返回按下的状态键
         static int CheckStateKey();
 
         struct Base {
-            mutable UIClass * mObject;
+            mutable UIObject * mObject;
 
-            Base(UIClass * object = nullptr) : mObject(object)
+            Base(UIObject * object = nullptr) : mObject(object)
             {  }
         };
 
@@ -24,7 +24,7 @@ public:
             int mAct;   //  0, 1, 2 => 按下, 抬起, 单击
             int mState; //  1, 2, 4 => alt, ctrl, shift
 
-            Key(const int act, const int key, UIClass * object = nullptr)
+            Key(const int act, const int key, UIObject * object = nullptr)
                 : Base(object)
                 , mKey(key)
                 , mAct(act)
@@ -39,7 +39,7 @@ public:
             int mState;         //  1, 2, 4       => alt, ctrl, shift
             glm::vec2 mMouse;   //  鼠标坐标
 
-            Mouse(const int act, const int key, UIClass * object = nullptr)
+            Mouse(const int act, const int key, UIObject * object = nullptr)
                 : Base(object)
                 , mAct(act)
                 , mKey(key)
@@ -76,7 +76,7 @@ public:
         struct EditText : Base {
             std::string mString;
 
-            EditText(const std::string & string, UIClass * object = nullptr)
+            EditText(const std::string & string, UIObject * object = nullptr)
                 : Base(object)
                 , mString(string)
             { }
@@ -86,7 +86,7 @@ public:
     //  事件代理
     class UIEventDelegate {
     public:
-        virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIEventDetails::Base & param)
+        virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIEventDetails::Base & param)
         {
             return false;
         }
@@ -96,15 +96,15 @@ public:
     template <class T = UIState>
     T * GetState() { return (T *)_state; }
     
-    UIClass * GetObjects(const std::initializer_list<std::string> & list);
-    std::vector<UIClass *>   GetObjects(UITypeEnum type) const;
-    std::vector<UIClass *> & GetObjects();
-    void AddObject(UIClass * child);
-    void DelObject(UIClass * child);
+    UIObject * GetObjects(const std::initializer_list<std::string> & list);
+    std::vector<UIObject *>   GetObjects(UITypeEnum type) const;
+    std::vector<UIObject *> & GetObjects();
+    void AddObject(UIObject * child);
+    void DelObject(UIObject * child);
     void DelThis();
     void ClearObjects();
-    UIClass * GetRoot();
-    UIClass * GetParent();
+    UIObject * GetRoot();
+    UIObject * GetParent();
     bool IsRender() const;
 
     void ResetLayout();
@@ -130,31 +130,31 @@ public:
     template <class T = UIState>
     const T * GetState() const
     {
-        return const_cast<UIClass *>(this)->GetState<T>();
+        return const_cast<UIObject *>(this)->GetState<T>();
     }
 
-    const UIClass * GetRoot() const
+    const UIObject * GetRoot() const
     {
-        return const_cast<UIClass *>(this)->GetRoot();
+        return const_cast<UIObject *>(this)->GetRoot();
     }
 
-    const UIClass * GetParent() const
+    const UIObject * GetParent() const
     {
-        return const_cast<UIClass *>(this)->GetParent();
+        return const_cast<UIObject *>(this)->GetParent();
     }
 
-    const std::vector<UIClass *> & GetObjects() const
+    const std::vector<UIObject *> & GetObjects() const
     {
-        return const_cast<UIClass *>(this)->GetObjects();
+        return const_cast<UIObject *>(this)->GetObjects();
     }
 
-    const UIClass * GetObjects(const std::initializer_list<std::string> & list) const
+    const UIObject * GetObjects(const std::initializer_list<std::string> & list) const
     {
-        return const_cast<UIClass *>(this)->GetObjects(list);
+        return const_cast<UIObject *>(this)->GetObjects(list);
     }
 
 protected:
-    UIClass(UITypeEnum type, UIState * state) 
+    UIObject(UITypeEnum type, UIState * state) 
         : _type(type)
         , _state(state)
         , _parent(nullptr)
@@ -184,15 +184,15 @@ public:
 private:
     UITypeEnum             _type;
     UIState *              _state;
-    UIClass *              _parent;
+    UIObject *             _parent;
     bool                   _isRender;       //  标记当前节点是否渲染
     UIEventDelegate *      _delegate;
-    std::vector<UIClass *> _children;
+    std::vector<UIObject *> _children;
 };
 
-class UIClassLayout : public UIClass {
+class UIClassLayout : public UIObject {
 public:
-    UIClassLayout(UIState * state): UIClass(UITypeEnum::kLAYOUT, state)
+    UIClassLayout(UIState * state): UIObject(UITypeEnum::kLAYOUT, state)
     { }
 
 private:
@@ -207,9 +207,9 @@ private:
     void HandleStretch();
 };
 
-class UIClassTreeBox : public UIClass {
+class UIClassTreeBox : public UIObject {
 public:
-    UIClassTreeBox(UIState * state): UIClass(UITypeEnum::kTREEBOX, state)
+    UIClassTreeBox(UIState * state): UIObject(UITypeEnum::kTREEBOX, state)
     { }
 
 private:
@@ -217,27 +217,27 @@ private:
     virtual void OnLeave(bool ret) override;
 };
 
-class UIClassTextBox : public UIClass {
+class UIClassTextBox : public UIObject {
 public:
-    UIClassTextBox(UIState * state) : UIClass(UITypeEnum::kTEXTBOX, state)
+    UIClassTextBox(UIState * state) : UIObject(UITypeEnum::kTEXTBOX, state)
     { }
 
 private:
     virtual void OnRender(float dt) override;
 };
 
-class UIClassImageBox : public UIClass {
+class UIClassImageBox : public UIObject {
 public:
-    UIClassImageBox(UIState * state): UIClass(UITypeEnum::kIMAGEBOX, state)
+    UIClassImageBox(UIState * state): UIObject(UITypeEnum::kIMAGEBOX, state)
     { }
 
 private:
     virtual void OnRender(float dt) override;
 };
 
-class UIClassComboBox : public UIClass {
+class UIClassComboBox : public UIObject {
 public:
-    UIClassComboBox(UIState * state) : UIClass(UITypeEnum::kCOMBOBOX, state)
+    UIClassComboBox(UIState * state) : UIObject(UITypeEnum::kCOMBOBOX, state)
     { }
 
 private:
@@ -247,18 +247,18 @@ private:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param) override;
 };
 
-class UIClassUICanvas : public UIClass {
+class UIClassUICanvas : public UIObject {
 public:
-    UIClassUICanvas(UIState * state) : UIClass(UITypeEnum::kUICONVAS, state)
+    UIClassUICanvas(UIState * state) : UIObject(UITypeEnum::kUICONVAS, state)
     { }
 
 private:
     virtual void OnRender(float dt) override;
 };
 
-class UIClassGLCanvas : public UIClass {
+class UIClassGLCanvas : public UIObject {
 public:
-    UIClassGLCanvas(UIState * state) : UIClass(UITypeEnum::kGLCONVAS, state)
+    UIClassGLCanvas(UIState * state) : UIObject(UITypeEnum::kGLCONVAS, state)
     { }
 
 private:

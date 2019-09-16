@@ -35,17 +35,17 @@ public:
 
     struct Popup {
         glm::vec2 mMouse;
-        UIClass * mObject;
+        UIObject * mObject;
         std::vector<MenuItem> mItems;
     };
 
 public:
-    static void BarMenu(UIClass * object, const std::vector<std::string> & list);
-    static void PopMenu(UIClass * object, const std::vector<std::string> & list);
+    static void BarMenu(UIObject * object, const std::vector<std::string> & list);
+    static void PopMenu(UIObject * object, const std::vector<std::string> & list);
     static void RenderPopup();
 
 private:
-    static void RenderMenu(UIClass * object, std::vector<MenuItem> & items);
+    static void RenderMenu(UIObject * object, std::vector<MenuItem> & items);
     static int OnResizeBuffer(ImGuiInputTextCallbackData * data);
 
 private:

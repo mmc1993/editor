@@ -1,11 +1,11 @@
 #include "test.h"
 #include "../property/property.h"
 
-bool UIEventDelegateTest::OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param)
+bool UIEventDelegateTest::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
     if (e == UIEventEnum::kMOUSE)
     {
-        auto mouse = (const UIClass::UIEventDetails::Mouse &)param;
+        auto mouse = (const UIObject::UIEventDetails::Mouse &)param;
         if (mouse.mAct == 3)
         {
             static int n = 0;

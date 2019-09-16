@@ -1,12 +1,12 @@
 #include "uievent_delegate_objects.h"
 
-bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param)
+bool UIEventDelegateObjects::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
     switch (e)
     {
     case UIEventEnum::kMOUSE:
         {
-            auto & mouse = (const UIClass::UIEventDetails::Mouse &)param;
+            auto & mouse = (const UIObject::UIEventDetails::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
                 std::vector<std::string> buffer;
@@ -34,7 +34,7 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
         break;
     case UIEventEnum::kMENU:
         {
-            auto menu = (const UIClass::UIEventDetails::Menu &)param;
+            auto menu = (const UIObject::UIEventDetails::Menu &)param;
             if (menu.mPath == "Add Object")
             {
                 static size_t count = 0;

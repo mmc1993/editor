@@ -6,12 +6,12 @@ class UISys {
 public:
     UISys();
     ~UISys();
-    UIClass * GetRoot();
-    void SetRoot(UIClass * uiClass);
+    UIObject * GetRoot();
+    void SetRoot(UIObject * object);
     void SetRoot(const std::string & url);
 
     void Update(float dt);
 
 private:
-    UIClass * _layout;
+    UIObject * _layout;
 };

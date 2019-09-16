@@ -4,22 +4,22 @@
 #include "../../property/property.h"
 #include "../../../cfg_sys/cfg_sys.h"
 
-class UIEventDelegateMainObjList : public UIClass::UIEventDelegate {
+class UIEventDelegateMainObjList : public UIObject::UIEventDelegate {
 public:
-    virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
 };
 
-class UIEventDelegateMainResList : public UIClass::UIEventDelegate {
+class UIEventDelegateMainResList : public UIObject::UIEventDelegate {
 public:
-    virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
 };
 
-class UIEventDelegateMainComList : public UIClass::UIEventDelegate {
+class UIEventDelegateMainComList : public UIObject::UIEventDelegate {
 public:
-    virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
 };
 
-class UIEventDelegateMainStage : public UIClass::UIEventDelegate {
+class UIEventDelegateMainStage : public UIObject::UIEventDelegate {
 public:
-    virtual bool OnCallEventMessage(UIClass * object, UIEventEnum e, const UIClass::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
 };

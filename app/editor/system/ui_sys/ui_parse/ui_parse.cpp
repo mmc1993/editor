@@ -8,9 +8,9 @@
 //  UI事件委托映射表
 // ...
 template <class T>
-UIClass::UIEventDelegate * Create() { return new T(); }
+UIObject::UIEventDelegate * Create() { return new T(); }
 
-static std::map<std::string, UIClass::UIEventDelegate *(*)()> s_DelegateMap = {
+static std::map<std::string, UIObject::UIEventDelegate *(*)()> s_DelegateMap = {
     std::make_pair("editor/editor/delegate/uievent_delegate_objects", &Create<UIEventDelegateObjects>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &Create<UIEventDelegateMainStage>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &Create<UIEventDelegateMainObjList>),
@@ -18,14 +18,14 @@ static std::map<std::string, UIClass::UIEventDelegate *(*)()> s_DelegateMap = {
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", &Create<UIEventDelegateMainComList>),
 };
 
-UIClass * UIParser::Parse(const std::string & url)
+UIObject * UIParser::Parse(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json, "Parse: {0}", url);
     return Parse(json);
 }
 
-UIClass * UIParser::Parse(const mmc::JsonValue::Value json)
+UIObject * UIParser::Parse(const mmc::JsonValue::Value json)
 {
     auto object = CreateObject(std::stoi(json->At("__Property", "Type")->ToString()));
     ASSERT_LOG(object != nullptr, "");
@@ -34,7 +34,7 @@ UIClass * UIParser::Parse(const mmc::JsonValue::Value json)
     return object;
 }
 
-void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * object)
+void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIObject * object)
 {
     for (auto ele : json->At("__Property"))
     {
@@ -51,7 +51,7 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIClass * objec
     }
 }
 
-void UIParser::Parse__Children(const mmc::JsonValue::Value json, UIClass * object)
+void UIParser::Parse__Children(const mmc::JsonValue::Value json, UIObject * object)
 {
     for (auto ele : json->At("__Children"))
     {
@@ -59,7 +59,7 @@ void UIParser::Parse__Children(const mmc::JsonValue::Value json, UIClass * objec
     }
 }
 
-UIClass * UIParser::CreateObject(const int type)
+UIObject * UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {

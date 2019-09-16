@@ -7,11 +7,11 @@
 // ---
 //  EventDetails
 // ---
-std::vector<int> UIClass::UIEventDetails::Key::Hotkeys = {
+std::vector<int> UIObject::UIEventDetails::Key::Hotkeys = {
     'A', 'B', 'C', 'D'
 };
 
-int UIClass::UIEventDetails::CheckStateKey()
+int UIObject::UIEventDetails::CheckStateKey()
 {
     int flag = 0;
     if (ImGui::GetIO().KeyAlt) { flag |= 1; }
@@ -21,9 +21,9 @@ int UIClass::UIEventDetails::CheckStateKey()
 }
 
 // ---
-//  UIClass
+//  UIObject
 // ---
-UIClass * UIClass::GetObjects(const std::initializer_list<std::string>& list)
+UIObject * UIObject::GetObjects(const std::initializer_list<std::string>& list)
 {
     ASSERT_LOG(list.size() != 0, "");
     auto parent = this;
@@ -32,7 +32,7 @@ UIClass * UIClass::GetObjects(const std::initializer_list<std::string>& list)
         auto it = std::find_if(
             parent->GetObjects().begin(), 
             parent->GetObjects().end(), 
-            [&name](UIClass * object) {
+            [&name](UIObject * object) {
                 return GetUIData(object->GetState()->mData, Name) == name;
             });
         if (it == _children.end())
@@ -44,39 +44,39 @@ UIClass * UIClass::GetObjects(const std::initializer_list<std::string>& list)
     return parent;
 }
 
-std::vector<UIClass*> UIClass::GetObjects(UITypeEnum type) const
+std::vector<UIObject*> UIObject::GetObjects(UITypeEnum type) const
 {
-    std::vector<UIClass *> result;
+    std::vector<UIObject *> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
-        [type](const UIClass * object) { return object->GetType() == type; });
+        [type](const UIObject * object) { return object->GetType() == type; });
     return std::move(result);
 }
 
-std::vector<UIClass*>& UIClass::GetObjects()
+std::vector<UIObject*>& UIObject::GetObjects()
 {
     return _children;
 }
 
-void UIClass::AddObject(UIClass * child)
+void UIObject::AddObject(UIObject * child)
 {
     ASSERT_LOG(child->GetParent() == nullptr, "");
     _children.push_back(child);
     child->_parent = this;
 }
 
-void UIClass::DelObject(UIClass * child)
+void UIObject::DelObject(UIObject * child)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
     if (it != _children.end()) { delete *it; _children.erase(it); }
 }
 
-void UIClass::DelThis()
+void UIObject::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetUIData(GetState()->mData, Name).c_str());
     GetParent()->DelObject(this);
 }
 
-void UIClass::ClearObjects()
+void UIObject::ClearObjects()
 {
     while (!_children.empty())
     {
@@ -85,7 +85,7 @@ void UIClass::ClearObjects()
     }
 }
 
-UIClass * UIClass::GetRoot()
+UIObject * UIObject::GetRoot()
 {
     auto ret = this;
     while (ret->GetParent() != nullptr)
@@ -95,17 +95,17 @@ UIClass * UIClass::GetRoot()
     return ret;
 }
 
-UIClass * UIClass::GetParent()
+UIObject * UIObject::GetParent()
 {
     return _parent;
 }
 
-bool UIClass::IsRender() const
+bool UIObject::IsRender() const
 {
     return _isRender;
 }
 
-void UIClass::ResetLayout()
+void UIObject::ResetLayout()
 {
     OnResetLayout();
 
@@ -114,11 +114,11 @@ void UIClass::ResetLayout()
     SetUIData(data, _Move, GetUIData(data, Move));
 
     std::for_each(_children.begin(),_children.end(),
-                    std::bind(&UIClass::ResetLayout, 
+                    std::bind(&UIObject::ResetLayout, 
                     std::placeholders::_1));
 }
 
-void UIClass::ApplyLayout()
+void UIObject::ApplyLayout()
 {
     auto & thisData = GetState()->mData;
     if (GetParent() != nullptr)
@@ -195,7 +195,7 @@ void UIClass::ApplyLayout()
     OnApplyLayout();
 }
 
-void UIClass::Render(float dt, bool parent)
+void UIObject::Render(float dt, bool parent)
 {
     _isRender = parent;
 
@@ -223,7 +223,7 @@ void UIClass::Render(float dt, bool parent)
 }
 
 
-glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
+glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
 {
     auto move = GetUIData(GetState()->mData, Move);
     switch (direct)
@@ -236,7 +236,7 @@ glm::vec4 UIClass::CalcStretech(DirectEnum direct, const glm::vec2 & offset) con
     return move;
 }
 
-glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord) const
+glm::vec2 UIObject::ToWorldCoord(const glm::vec2 & coord) const
 {
     auto move = GetUIData(GetState()->mData, Move);
     move.x += coord.x;
@@ -252,7 +252,7 @@ glm::vec2 UIClass::ToWorldCoord(const glm::vec2 & coord) const
     return glm::vec2(move.x, move.y);
 }
 
-glm::vec4 UIClass::ToLocalCoord(const glm::vec4 & coord) const
+glm::vec4 UIObject::ToLocalCoord(const glm::vec4 & coord) const
 {
     const auto & world = ToWorldCoord();
     return glm::vec4(coord.x - world.x,
@@ -260,20 +260,20 @@ glm::vec4 UIClass::ToLocalCoord(const glm::vec4 & coord) const
                      coord.z, coord.w);
 }
 
-glm::vec2 UIClass::ToLocalCoord(const glm::vec2 & coord) const
+glm::vec2 UIObject::ToLocalCoord(const glm::vec2 & coord) const
 {
     const auto & world = ToWorldCoord();
     return glm::vec2(coord.x - world.x,
                      coord.y - world.y);
 }
 
-glm::vec4 UIClass::ToWorldRect() const
+glm::vec4 UIObject::ToWorldRect() const
 {
     auto & move = GetUIData(GetState()->mData, Move);
     return glm::vec4(ToWorldCoord(), move.z, move.w);
 }
 
-glm::vec2 UIClass::ToLocalCoordFromImGUI() const
+glm::vec2 UIObject::ToLocalCoordFromImGUI() const
 {
     //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
     auto pos = ImGui::GetCursorPos();
@@ -290,13 +290,13 @@ glm::vec2 UIClass::ToLocalCoordFromImGUI() const
     return pos;
 }
 
-void UIClass::BindDelegate(UIEventDelegate * delegate)
+void UIObject::BindDelegate(UIEventDelegate * delegate)
 {
     SAFE_DELETE(_delegate);
     _delegate = delegate;
 }
 
-void UIClass::AdjustSize()
+void UIObject::AdjustSize()
 {
     auto align = GetUIData(GetState()->mData, Align);
     if ((UIAlignEnum)align == UIAlignEnum::kDEFAULT)
@@ -307,7 +307,7 @@ void UIClass::AdjustSize()
     }
 }
 
-void UIClass::LockPosition()
+void UIObject::LockPosition()
 {
     auto & move = GetUIData(GetState()->mData, Move);
     auto align = GetUIData(GetState()->mData, Align);
@@ -323,24 +323,24 @@ void UIClass::LockPosition()
     }
 }
 
-bool UIClass::OnEnter()
+bool UIObject::OnEnter()
 {
     return true;
 }
 
-void UIClass::OnLeave(bool ret)
+void UIObject::OnLeave(bool ret)
 { }
 
-void UIClass::OnRender(float dt)
+void UIObject::OnRender(float dt)
 { }
 
-void UIClass::OnResetLayout()
+void UIObject::OnResetLayout()
 { }
 
-void UIClass::OnApplyLayout()
+void UIObject::OnApplyLayout()
 { }
 
-void UIClass::DispatchEventK()
+void UIObject::DispatchEventK()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
@@ -353,9 +353,9 @@ void UIClass::DispatchEventK()
     }
 }
 
-bool UIClass::DispatchEventK(const UIEventDetails::Key & param)
+bool UIObject::DispatchEventK(const UIEventDetails::Key & param)
 {
-    std::vector<UIClass *> objects{ this };
+    std::vector<UIObject *> objects{ this };
     for (auto i = 0; objects.size() != i; ++i)
     {
         std::copy(
@@ -364,11 +364,11 @@ bool UIClass::DispatchEventK(const UIEventDetails::Key & param)
             std::back_inserter(objects));
     }
     return std::find_if(objects.rbegin(), objects.rend(), std::bind(
-        &UIClass::PostEventMessage, std::placeholders::_1,
+        &UIObject::PostEventMessage, std::placeholders::_1,
         UIEventEnum::kKEY, param)) != objects.rend();
 }
 
-void UIClass::DispatchEventM()
+void UIObject::DispatchEventM()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
@@ -393,7 +393,7 @@ void UIClass::DispatchEventM()
     }
 }
 
-bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
+bool UIObject::DispatchEventM(const UIEventDetails::Mouse & param)
 {
     for (auto child : GetObjects())
     {
@@ -410,12 +410,12 @@ bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
     return false;
 }
 
-bool UIClass::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
 {
     return false;
 }
 
-bool UIClass::CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
 {
     auto ret = OnCallEventMessage(e, param);
 
@@ -431,7 +431,7 @@ bool UIClass::CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param
     return ret;
 }
 
-bool UIClass::PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
 {
     param.mObject = this;
     return CallEventMessage(e, param);

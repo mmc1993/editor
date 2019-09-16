@@ -12,15 +12,15 @@ UISys::~UISys()
     SetRoot(nullptr);
 }
 
-UIClass * UISys::GetRoot()
+UIObject * UISys::GetRoot()
 {
     return _layout;
 }
 
-void UISys::SetRoot(UIClass * uiClass)
+void UISys::SetRoot(UIObject * object)
 {
     SAFE_DELETE(_layout);
-    _layout = uiClass;
+    _layout = object;
 }
 
 void UISys::SetRoot(const std::string & url)

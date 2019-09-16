@@ -17,13 +17,13 @@ public:
 class UIStateLayout : public UIState {
 public:
     struct Join {
-        std::vector<UIClass *>           mOut;
-        std::pair<UIClass *, DirectEnum> mIn;
+        std::vector<UIObject *>           mOut;
+        std::pair<UIObject *, DirectEnum> mIn;
         Join() {}
     } mJoin[(size_t)DirectEnum::LENGTH];
 
     struct StretchFocus {
-        UIClass *   mObject;
+        UIObject *  mObject;
         DirectEnum  mDirect;
         StretchFocus() : mObject(nullptr) {}
     } mStretchFocus;

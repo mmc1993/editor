@@ -27,7 +27,7 @@ public:
 };
 
 template <class T, class B = T>
-class PropertyClass : public UIClass {
+class PropertyClass : public UIObject {
 public:
     using Handler_t = typename PropertyState<T>::Handler_t;
 
@@ -36,7 +36,7 @@ protected:
         T & value,
         const std::string & title,
         const Handler_t & handler)
-        : UIClass(UITypeEnum::kOTHER, new PropertyState<T, B>(value, title, handler))
+        : UIObject(UITypeEnum::kOTHER, new PropertyState<T, B>(value, title, handler))
     { }
 
     const std::string & GetTitle() const
