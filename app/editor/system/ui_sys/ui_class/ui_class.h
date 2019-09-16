@@ -97,12 +97,12 @@ public:
     T * GetState() { return (T *)_state; }
     
     UIClass * GetObjects(const std::initializer_list<std::string> & list);
-    std::vector<UIClass *> GetObjects(UITypeEnum type) const;
+    std::vector<UIClass *>   GetObjects(UITypeEnum type) const;
     std::vector<UIClass *> & GetObjects();
     void AddObject(UIClass * child);
     void DelObject(UIClass * child);
     void DelThis();
-    void ClearChild();
+    void ClearObjects();
     UIClass * GetRoot();
     UIClass * GetParent();
     bool IsRender() const;

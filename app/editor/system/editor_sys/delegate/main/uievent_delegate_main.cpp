@@ -40,12 +40,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIClass * object, UIEventEnu
             auto menu = (const UIClass::UIEventDetails::Menu &)param;
             if (menu.mPath == "Add Object")
             {
-                auto object = (GLObject *)menu.mObject->GetState()->mPointer;
-                auto name = Global::Ref().mEditorSys->GenerateObjectName(object);
+                auto glObject = (GLObject *)menu.mObject->GetState()->mPointer;
+                auto name = Global::Ref().mEditorSys->GenerateObjectName(glObject);
 
                 //  Ìí¼ÓObject
                 auto newObject = new GLObject();
-                object->AddObject(newObject, name);
+                glObject->AddObject(newObject, name);
 
                 //  Ìí¼ÓUIClass
                 auto raw  = mmc::JsonValue::Hash();
@@ -60,17 +60,17 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIClass * object, UIEventEnu
             }
             else if (menu.mPath == "Del Object")
             {
-                auto object = (GLObject *)menu.mObject->GetState()->mPointer;
+                auto glObject = (GLObject *)menu.mObject->GetState()->mPointer;
                 menu.mObject->DelThis();
-                object->DelThis();
+                glObject->DelThis();
             }
             else if (
                 menu.mPath.at(0) == 'R' && menu.mPath.at(1) == 'e' && 
                 menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a' &&
                 menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
-                auto object = (GLObject *)menu.mObject->GetState()->mPointer;
-                if (Global::Ref().mEditorSys->CheckRename(object, menu.mEdit))
+                auto glObject = (GLObject *)menu.mObject->GetState()->mPointer;
+                if (Global::Ref().mEditorSys->CheckRename(glObject, menu.mEdit))
                 {
                     SetUIData(menu.mObject->GetState()->mData, Name, menu.mEdit);
                 }

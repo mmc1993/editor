@@ -76,7 +76,7 @@ void UIClass::DelThis()
     GetParent()->DelObject(this);
 }
 
-void UIClass::ClearChild()
+void UIClass::ClearObjects()
 {
     while (!_children.empty())
     {
