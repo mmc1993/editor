@@ -43,7 +43,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 auto insert = (GLObject *)menu.mObject->GetState()->mPointer;
                 auto name = Global::Ref().mEditorSys->GenerateObjectName(insert);
 
-                //  Ìí¼ÓObject
+                //  Ìí¼ÓGLObject
                 auto glObject = new GLObject();
                 insert->AddObject(glObject, name);
 

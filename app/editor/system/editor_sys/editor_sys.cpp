@@ -14,5 +14,6 @@ std::string EditorSys::GenerateObjectName(GLObject * object) const
 
 bool EditorSys::CheckRename(GLObject * object, const std::string & name) const
 {
+    if (name.empty()) { return false; }
     return object->GetParent()->GetObjectByTag(name) == nullptr;
 }
