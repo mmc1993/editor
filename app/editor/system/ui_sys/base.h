@@ -210,9 +210,6 @@ void __ParseUIData(CustomData & data, const std::string & key, const std::string
 __REG_GET_UI_DATA(int, Align, 0) //  对齐
 __REG_SET_UI_DATA(int, Align)
 
-__REG_GET_UI_DATA(float, BorderNumber, 1) //  边框宽度
-__REG_SET_UI_DATA(float, BorderNumber)
-
 __REG_GET_UI_DATA(bool, IsMulti, false) //  多行
 __REG_SET_UI_DATA(bool, IsMulti)
 __REG_GET_UI_DATA(bool, IsWindow, false) //  窗口
@@ -241,6 +238,9 @@ __REG_SET_UI_DATA(bool, IsShowTitleBar)
 __REG_GET_UI_DATA(bool, IsShowScrollBar, false) //  有滚动条
 __REG_SET_UI_DATA(bool, IsShowScrollBar)
 
+__REG_GET_UI_DATA(float, BorderNumber, 1) //  边框宽度
+__REG_SET_UI_DATA(float, BorderNumber)
+
 __REG_GET_UI_DATA(std::string, Name, std::string()) //  名字
 __REG_SET_UI_DATA(std::string, Name)
 __REG_GET_UI_DATA(std::string, Tips, std::string()) //  提示
@@ -264,7 +264,6 @@ __REG_SET_UI_DATA(std::vector<std::string>, MenuBar)
 inline void ParseUIData(CustomData & data, const std::string & key, const std::string & val)
 {
     __REG_PARSE_UI_DATA(data, key, val, int, Align);
-    __REG_PARSE_UI_DATA(data, key, val, float, BorderNumber);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsMulti);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsWindow);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsButton);
@@ -278,6 +277,7 @@ inline void ParseUIData(CustomData & data, const std::string & key, const std::s
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowMenuBar);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowTitleBar);
     __REG_PARSE_UI_DATA(data, key, val, bool, IsShowScrollBar);
+    __REG_PARSE_UI_DATA(data, key, val, float, BorderNumber);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Name);
     __REG_PARSE_UI_DATA(data, key, val, std::string, Tips);
     __REG_PARSE_UI_DATA(data, key, val, std::string, LSkin);
