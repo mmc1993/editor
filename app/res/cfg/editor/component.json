@@ -34,7 +34,7 @@
                     "Type": "String"
                 },
                 {
-                    "Name": "Quat",
+                    "Name": "Quad",
                     "Type": "Vec4"
                 }
             ]
