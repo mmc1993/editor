@@ -22,12 +22,13 @@
 class UIMenu {
 public:
     struct MenuItem {
-        std::string                 mPath;
-        std::string                 mName;
-        bool                        mEditing;
-        bool                        mSelected;
-        bool                        mDisabled;
-        std::vector<std::string>    mChildren;
+        std::string           mPath;
+        std::string           mName;
+        std::string           mBuffer;
+        bool                  mEditing;
+        bool                  mSelected;
+        bool                  mDisabled;
+        std::vector<MenuItem> mChildren;
 
         static std::vector<MenuItem> Parse(const std::string & parent, const std::vector<std::string> & list);
     };
@@ -44,7 +45,7 @@ public:
     static void RenderPopup();
 
 private:
-    static void RenderMenu(UIClass * object, const std::vector<MenuItem> & items);
+    static void RenderMenu(UIClass * object, std::vector<MenuItem> & items);
     static int OnResizeBuffer(ImGuiInputTextCallbackData * data);
 
 private:

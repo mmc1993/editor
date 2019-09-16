@@ -55,7 +55,6 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
                   && menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
                 SetUIData(menu.mObject->GetState()->mData, Name, menu.mEdit);
-                //UIMenu::PopMenuInput(menu.mObject, GetUIData(menu.mObject->GetState()->mData, Name));
             }
             else
             {

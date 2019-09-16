@@ -105,6 +105,7 @@ public:
     void ClearChild();
     UIClass * GetRoot();
     UIClass * GetParent();
+    bool IsRender() const;
 
     void ResetLayout();
     void ApplyLayout();
@@ -184,6 +185,7 @@ private:
     UITypeEnum             _type;
     UIState *              _state;
     UIClass *              _parent;
+    bool                   _isRender;       //  标记当前节点是否渲染
     UIEventDelegate *      _delegate;
     std::vector<UIClass *> _children;
 };

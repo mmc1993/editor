@@ -100,6 +100,11 @@ UIClass * UIClass::GetParent()
     return _parent;
 }
 
+bool UIClass::IsRender() const
+{
+    return _isRender;
+}
+
 void UIClass::ResetLayout()
 {
     OnResetLayout();
@@ -192,6 +197,8 @@ void UIClass::ApplyLayout()
 
 void UIClass::Render(float dt, bool parent)
 {
+    _isRender = parent;
+
     ApplyLayout();
 
     auto ret = false;
@@ -396,7 +403,7 @@ bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
         }
     }
 
-    if (math_tool::IsContain(ToWorldRect(), param.mMouse))
+    if (IsRender() && math_tool::IsContain(ToWorldRect(), param.mMouse))
     {
         return PostEventMessage(UIEventEnum::kMOUSE, param);
     }

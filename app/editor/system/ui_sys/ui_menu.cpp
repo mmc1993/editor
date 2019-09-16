@@ -7,12 +7,13 @@ UIMenu::Popup UIMenu::s_popup;
 //      一次全部解析
 std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent, const std::vector<std::string> & list)
 {
+    std::vector<std::string> children;
     std::vector<MenuItem> result;
     for (const auto & str : list)
     {
         auto disabled = false;
         auto selected = false;
-        auto editing = false;
+        auto editing  = false;
         auto leaf     = false;
 
         //  是否叶子节点, 是否已勾选, 是否已禁用
@@ -38,24 +39,33 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
         //  是否同一个父节点
         if (result.empty() || result.back().mName != name)
         {
+            if (!result.empty())
+            {
+                result.back().mChildren = std::move(Parse(result.back().mPath, children));
+            }
             result.emplace_back();
+            children.clear();
         }
 
         auto & item  = result.back();
         item.mName = std::move(name);
+        item.mBuffer = item.mName;
         item.mEditing = editing;
         item.mSelected = selected;
         item.mDisabled = disabled;
-        item.mPath = !parent.empty()?parent +'/'+ item.mName:item.mName;
-        if (!leaf) { item.mChildren.emplace_back(str.substr(pos + 1)); }
+        item.mPath = !parent.empty()
+            ? parent + '/' + item.mName
+            :                item.mName;
+        if (!leaf) { children.push_back(str.substr(pos + 1)); }
     }
     return std::move(result);
 }
 
 void UIMenu::BarMenu(UIClass * object, const std::vector<std::string> & list)
 {
+    auto items = MenuItem::Parse("", list);
     ImGui::BeginMenuBar();
-    RenderMenu(object, MenuItem::Parse("", list));
+    RenderMenu(object, items);
     ImGui::EndMenuBar();
 }
 
@@ -64,7 +74,7 @@ void UIMenu::PopMenu(UIClass * object, const std::vector<std::string>& list)
     s_popup.mObject = object;
     s_popup.mMouse.x = ImGui::GetMousePos().x;
     s_popup.mMouse.y = ImGui::GetMousePos().y;
-    s_popup.mItems = std::move(MenuItem::Parse("", list));
+    s_popup.mItems = std::move(MenuItem::Parse("",list));
     ImGui::OpenPopup(s_popup.mItems.at(0).mName.c_str());
 }
 
@@ -85,7 +95,7 @@ void UIMenu::RenderPopup()
     }
 }
 
-void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
+void UIMenu::RenderMenu(UIClass * object, std::vector<MenuItem> & items)
 {
     for (auto & item : items)
     {
@@ -93,15 +103,12 @@ void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
         {
             if (item.mEditing)
             {
-                std::string buffer = item.mName;
-                if (ImGui::InputText(("##" + item.mName).c_str(), buffer.data(), buffer.size(), 
-                    ImGuiInputTextFlags_EnterReturnsTrue | 
-                    ImGuiInputTextFlags_CallbackResize | 
-                    ImGuiInputTextFlags_AutoSelectAll,
-                    &UIMenu::OnResizeBuffer, &buffer))
+                if (ImGui::InputText(("##" + item.mName).c_str(), item.mBuffer.data(), item.mBuffer.size(),
+                    ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackResize,
+                    &UIMenu::OnResizeBuffer, &item.mBuffer))
                 {
                     ImGui::CloseCurrentPopup();
-                    object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, buffer.c_str()));
+                    object->PostEventMessage(UIEventEnum::kMENU, UIClass::UIEventDetails::Menu(item.mPath, item.mBuffer.c_str()));
                 }
             }
             else
@@ -116,7 +123,7 @@ void UIMenu::RenderMenu(UIClass * object, const std::vector<MenuItem> & items)
         {
             if (ImGui::BeginMenu(item.mName.c_str(), !item.mDisabled))
             {
-                RenderMenu(object, MenuItem::Parse(item.mPath, item.mChildren));
+                RenderMenu(object, item.mChildren);
                 ImGui::EndMenu();
             }
         }
