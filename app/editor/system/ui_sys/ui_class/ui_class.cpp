@@ -728,14 +728,17 @@ void UIClassTextBox::OnRender(float dt)
     {
         auto & move = GetUIData(state->mData, Move);
         auto flag = ImGuiInputTextFlags_EnterReturnsTrue
-                  | ImGuiInputTextFlags_AutoSelectAll;
+            | ImGuiInputTextFlags_CallbackResize
+            | ImGuiInputTextFlags_AutoSelectAll;
         if (GetUIData(state->mData, IsMulti))
         {
             if (ImGui::InputTextMultiline(
                 GetUIData(state->mData, Name).c_str(), 
                 state->mBuffer.data(), 
                 state->mBuffer.size(), 
-                ImVec2(move.z, move.w), flag))
+                ImVec2(move.z, move.w), flag, 
+                &imgui_tools::OnResizeBuffer,
+                &state->mBuffer))
             {
                 PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
             }
@@ -746,7 +749,9 @@ void UIClassTextBox::OnRender(float dt)
             if (ImGui::InputText(
                 GetUIData(state->mData, Name).c_str(), 
                 state->mBuffer.data(), 
-                state->mBuffer.size(), flag))
+                state->mBuffer.size(),  flag,
+                &imgui_tools::OnResizeBuffer,
+                &state->mBuffer))
             {
                 PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
             }

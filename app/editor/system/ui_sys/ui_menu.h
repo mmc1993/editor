@@ -46,7 +46,6 @@ public:
 
 private:
     static void RenderMenu(UIObject * object, std::vector<MenuItem> & items);
-    static int OnResizeBuffer(ImGuiInputTextCallbackData * data);
 
 private:
     static Popup s_popup;

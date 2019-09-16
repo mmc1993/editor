@@ -43,7 +43,7 @@ void PropertyString::OnRender(float dt)
         ToImGuiID((size_t)this).c_str(), 
         GetBackup().data(), GetBackup().size(), 
         ImGuiInputTextFlags_CallbackResize,
-        &PropertyString::OnResizeBuffer,
+        &imgui_tools::OnResizeBuffer,
         &GetBackup()))
     {
         Modify();

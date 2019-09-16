@@ -137,15 +137,6 @@ public:
     { }
 
     virtual void OnRender(float dt) override;
-
-private:
-    static int OnResizeBuffer(ImGuiInputTextCallbackData * data)
-    {
-        auto value = (std::string *)data->UserData;
-        value->resize(data->BufTextLen);
-        data->Buf = value->data();
-        return value->capacity();
-    }
 };
 
 // ---

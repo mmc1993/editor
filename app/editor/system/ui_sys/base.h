@@ -303,3 +303,14 @@ inline std::string ToImGuiID(const T & v)
 {
     return "##" + std::to_string(v);
 }
+
+//  ImGui ¹¤¾ßº¯Êý
+namespace imgui_tools {
+    static int OnResizeBuffer(ImGuiInputTextCallbackData * data)
+    {
+        auto value = (std::string *)data->UserData;
+        value->resize(data->BufTextLen);
+        data->Buf = value->data();
+        return value->capacity();
+    }
+}

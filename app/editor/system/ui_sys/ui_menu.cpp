@@ -105,7 +105,7 @@ void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
             {
                 if (ImGui::InputText(("##" + item.mName).c_str(), item.mBuffer.data(), item.mBuffer.size(),
                     ImGuiInputTextFlags_EnterReturnsTrue | ImGuiInputTextFlags_CallbackResize,
-                    &UIMenu::OnResizeBuffer, &item.mBuffer))
+                    &imgui_tools::OnResizeBuffer, &item.mBuffer))
                 {
                     ImGui::CloseCurrentPopup();
                     object->PostEventMessage(UIEventEnum::kMENU, UIObject::UIEventDetails::Menu(item.mPath, item.mBuffer.c_str()));
@@ -128,12 +128,4 @@ void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
             }
         }
     }
-}
-
-int UIMenu::OnResizeBuffer(ImGuiInputTextCallbackData * data)
-{
-    auto value = (std::string *)data->UserData;
-    value->resize(data->BufTextLen);
-    data->Buf = value->data();
-    return value->capacity();
 }
