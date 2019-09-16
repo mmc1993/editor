@@ -103,10 +103,24 @@
 			"__Property": {
 				"Type": "1",
 				"Skin": "PanelSkin",
-				"Move": "300 0 980 550",
+				"Move": "980 0 300 550",
 				"Align": "384",
 				"Name": "C_2",
-				"StretchMin": "980 550",
+				"StretchMin": "300 550",
+                "IsCanStretch": "ok"
+			},
+			"__Children": [
+				
+			]
+		},
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "PanelSkin",
+				"Move": "300 0 680 550",
+				"Align": "384",
+				"Name": "C_3",
+				"StretchMin": "680 550",
                 "IsCanStretch": "ok",
 				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
 			},
