@@ -2,8 +2,7 @@
 #include "component.h"
 
 Object::Object()
-    : _tag(~0)
-    , _active(true)
+    : _active(true)
     , _parent(nullptr)
 { }
 
@@ -16,7 +15,7 @@ Object::~Object()
 void Object::OnUpdate(float dt)
 { }
 
-void Object::AddChild(Object * child, size_t tag)
+void Object::AddChild(Object * child, const std::string & tag)
 {
     child->_tag = tag;
     child->_parent = this;
@@ -39,7 +38,7 @@ void Object::DelChildIdx(size_t idx, bool del)
     _children.erase(it);
 }
 
-void Object::DelChildTag(size_t tag, bool del)
+void Object::DelChildTag(const std::string & tag)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
         [tag](Object * child) { return child->_tag == tag; });
@@ -47,12 +46,6 @@ void Object::DelChildTag(size_t tag, bool del)
     {
         DelChildIdx(std::distance(_children.begin(), it), true);
     }
-}
-
-void Object::DelThis()
-{
-	if (nullptr == GetParent()) { delete this; }
-	else { GetParent()->DelChild(this); }
 }
 
 void Object::ClearChildren()
@@ -63,7 +56,13 @@ void Object::ClearChildren()
     }
 }
 
-Object * Object::GetChildTag(size_t tag)
+void Object::DelThis()
+{
+    if (nullptr == GetParent()) { delete this; }
+    else { GetParent()->DelChild(this); }
+}
+
+Object * Object::GetChildTag(const std::string & tag)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
         [tag](Object * child) { return child->_tag == tag; });
@@ -79,6 +78,39 @@ Object * Object::GetChildIdx(size_t idx)
 std::vector<Object *> & Object::GetChildren()
 {
     return _children;
+}
+
+void Object::SetActive(bool active)
+{
+    _active = active;
+}
+
+bool Object::IsActive() const
+{
+    return _active;
+}
+
+void Object::Update(float dt)
+{ }
+
+void Object::RootUpdate(float dt)
+{ }
+
+void Object::SetParent(Object * parent)
+{
+    if (nullptr != _parent)
+    {
+        _parent->DelChild(this, false);
+    }
+    if (nullptr != parent)
+    {
+        parent->AddChild(this, _tag);
+    }
+}
+
+Object * Object::GetParent()
+{
+    return _parent;
 }
 
 void Object::ClearComponent()
@@ -114,37 +146,4 @@ void Object::DelComponent(const std::type_info & type)
 std::vector<Component*>& Object::GetComponents()
 {
     return _components;
-}
-
-void Object::SetActive(bool active)
-{
-    _active = active;
-}
-
-bool Object::IsActive() const
-{
-    return _active;
-}
-
-void Object::Update(float dt)
-{ }
-
-void Object::RootUpdate(float dt)
-{ }
-
-void Object::SetParent(Object * parent)
-{
-    if (nullptr != _parent)
-    {
-        _parent->DelChild(this, false);
-    }
-    if (nullptr != parent)
-    {
-        parent->AddChild(this, _tag);
-    }
-}
-
-Object * Object::GetParent()
-{
-    return _parent;
 }

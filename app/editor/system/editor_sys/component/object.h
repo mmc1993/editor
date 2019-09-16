@@ -11,15 +11,25 @@ public:
     virtual ~Object();
     virtual void OnUpdate(float dt);
 
-    void AddChild(Object * child, size_t tag = ~0);
+    void AddChild(Object * child, const std::string & tag = "");
     void DelChild(Object * child, bool del = true);
     void DelChildIdx(size_t idx, bool del = true);
-    void DelChildTag(size_t tag, bool del = true);
-	void DelThis();
+    void DelChildTag(const std::string & tag);
     void ClearChildren();
+    void DelThis();
+
 	Object * GetChildIdx(size_t idx);
-	Object * GetChildTag(size_t tag);
+	Object * GetChildTag(const std::string & tag);
     std::vector<Object *> & GetChildren();
+
+    void SetActive(bool active);
+    bool IsActive() const;
+
+    void RootUpdate(float dt);
+    void Update(float dt);
+
+    void SetParent(Object * parent);
+    Object * GetParent();
 
 	void ClearComponent();
     void AddComponent(Component * component);
@@ -51,17 +61,8 @@ public:
         return std::move(result);
     }
 
-    void SetActive(bool active);
-    bool IsActive() const;
-
-    void RootUpdate(float dt);
-    void Update(float dt);
-
-    void SetParent(Object * parent);
-    Object * GetParent();
-
 private:
-    size_t                      _tag;
+    std::string                 _tag;
     bool                        _active;
     Object *                    _parent;
 	CompTransform *             _transform;
