@@ -483,7 +483,8 @@ bool UIClassLayout::OnEnter()
         LockPosition();
         auto & name = GetUIData(state->mData, Name);
         auto & move = GetUIData(state->mData, Move);
-        return ImGui::BeginChild(name.c_str(), ImVec2(move.z, move.w),
+        return ImGui::BeginChild(
+            name.c_str(), ImVec2(move.z, move.w),
             GetUIData(state->mData, IsShowBorder), flag);
     }
 }
@@ -796,8 +797,7 @@ void UIClassImageBox::OnRender(float dt)
         ASSERT_LOG(!strSkin.empty(), "");
         auto & imgSkin = Global::Ref().mAtlasSys->Get(strSkin);
         ImGui::Image(
-            (ImTextureID)imgSkin.mID,
-            ImVec2(move.z, move.w),
+            (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
             ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
             ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
     }
