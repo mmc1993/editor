@@ -19,7 +19,7 @@
 				"Name": "C_0",
 				"StretchMin": "300 720",
 				"IsCanStretch": "ok",
-				"EventDelegate": "editor/editor/delegate/uievent_delegate_objects"
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_obj_list"
 			},
 			"__Children": [
 				
@@ -33,7 +33,8 @@
 				"Align": "384",
 				"Name": "C_1",
 				"StretchMin": "980 170",
-				"IsCanStretch": "ok"
+                "IsCanStretch": "ok",
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_res_list"
 			},
 			"__Children": [
 				{
@@ -106,7 +107,8 @@
 				"Align": "384",
 				"Name": "C_2",
 				"StretchMin": "980 550",
-				"IsCanStretch": "ok"
+                "IsCanStretch": "ok",
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
 			},
 			"__Children": [
 				

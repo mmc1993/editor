@@ -87,6 +87,15 @@
     <ClCompile Include="editor\system\editor_sys\delegate\uievent_delegate_objects.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\editor_sys.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -936,6 +945,15 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\delegate\uievent_delegate_objects.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\component.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\gl_object.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
