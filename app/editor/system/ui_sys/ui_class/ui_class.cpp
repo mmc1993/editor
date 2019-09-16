@@ -698,9 +698,12 @@ bool UIClassTreeBox::OnEnter()
 
     auto  state = GetState<UIStateTreeBox>();
     auto & move = GetUIData(state->mData, Move);
-
     ImGui::SetNextItemWidth(move.z);
-    return ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str());
+
+    size_t flag = 0;
+    if (state->mSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
+    if (GetChildren().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
+    return ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str(), flag);
 }
 
 void UIClassTreeBox::OnLeave(bool ret)

@@ -3,7 +3,7 @@
 UIStateLayout::UIStateLayout()
 { }
 
-UIStateTreeBox::UIStateTreeBox()
+UIStateTreeBox::UIStateTreeBox(): mSelect(false)
 { }
 
 UIStateTextBox::UIStateTextBox(): mBuffer(1024, '\0')

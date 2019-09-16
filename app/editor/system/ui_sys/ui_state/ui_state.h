@@ -32,6 +32,8 @@ public:
 
 class UIStateTreeBox : public UIState {
 public:
+    bool mSelect;
+
     UIStateTreeBox();
 };
 
