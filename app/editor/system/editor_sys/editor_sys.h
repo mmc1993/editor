@@ -3,5 +3,6 @@
 #include "include.h"
 
 class EidtorSys {
+public:
 
 };
