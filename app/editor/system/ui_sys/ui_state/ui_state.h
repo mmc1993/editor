@@ -4,12 +4,13 @@
 
 class UIState {
 public:
-    UIState()
+    UIState(): mPointer(nullptr)
     { }
 
     virtual ~UIState()
     { }
 
+    void * mPointer;
     std::map<std::string, std::any> mData;
 };
 

@@ -37,6 +37,7 @@
 #include "system/raw_sys/raw_sys.h"
 #include "system/cfg_sys/cfg_sys.h"
 #include "system/atlas_sys/atlas_sys.h"
+#include "system/editor_sys/editor_sys.h"
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -135,6 +136,8 @@ int main(int, char**)
     //  初始化图集管理器
     Global::Ref().mAtlasSys = new AtlasSys();
     Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");
+    //  初始化编辑器
+    Global::Ref().mEditorSys = new EditorSys();
 
     // Main loop
     while (!glfwWindowShouldClose(window))

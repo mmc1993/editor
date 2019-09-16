@@ -23,15 +23,15 @@ int UIClass::UIEventDetails::CheckStateKey()
 // ---
 //  UIClass
 // ---
-UIClass * UIClass::GetChildren(const std::initializer_list<std::string>& list)
+UIClass * UIClass::GetObjects(const std::initializer_list<std::string>& list)
 {
     ASSERT_LOG(list.size() != 0, "");
     auto parent = this;
     for (auto & name : list)
     {
         auto it = std::find_if(
-            parent->GetChildren().begin(), 
-            parent->GetChildren().end(), 
+            parent->GetObjects().begin(), 
+            parent->GetObjects().end(), 
             [&name](UIClass * object) {
                 return GetUIData(object->GetState()->mData, Name) == name;
             });
@@ -44,7 +44,7 @@ UIClass * UIClass::GetChildren(const std::initializer_list<std::string>& list)
     return parent;
 }
 
-std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type) const
+std::vector<UIClass*> UIClass::GetObjects(UITypeEnum type) const
 {
     std::vector<UIClass *> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
@@ -52,19 +52,19 @@ std::vector<UIClass*> UIClass::GetChildren(UITypeEnum type) const
     return std::move(result);
 }
 
-std::vector<UIClass*>& UIClass::GetChildren()
+std::vector<UIClass*>& UIClass::GetObjects()
 {
     return _children;
 }
 
-void UIClass::AddChild(UIClass * child)
+void UIClass::AddObject(UIClass * child)
 {
     ASSERT_LOG(child->GetParent() == nullptr, "");
     _children.push_back(child);
     child->_parent = this;
 }
 
-void UIClass::DelChild(UIClass * child)
+void UIClass::DelObject(UIClass * child)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
     if (it != _children.end()) { delete *it; _children.erase(it); }
@@ -73,7 +73,7 @@ void UIClass::DelChild(UIClass * child)
 void UIClass::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetUIData(GetState()->mData, Name).c_str());
-    GetParent()->DelChild(this);
+    GetParent()->DelObject(this);
 }
 
 void UIClass::ClearChild()
@@ -359,8 +359,8 @@ bool UIClass::DispatchEventK(const UIEventDetails::Key & param)
     for (auto i = 0; objects.size() != i; ++i)
     {
         std::copy(
-            objects.at(i)->GetChildren().begin(),
-            objects.at(i)->GetChildren().end(),
+            objects.at(i)->GetObjects().begin(),
+            objects.at(i)->GetObjects().end(),
             std::back_inserter(objects));
     }
     return std::find_if(objects.rbegin(), objects.rend(), std::bind(
@@ -395,7 +395,7 @@ void UIClass::DispatchEventM()
 
 bool UIClass::DispatchEventM(const UIEventDetails::Mouse & param)
 {
-    for (auto child : GetChildren())
+    for (auto child : GetObjects())
     {
         if (child->DispatchEventM(param))
         {
@@ -519,7 +519,7 @@ void UIClassLayout::OnResetLayout()
     auto thisDown   = thisUp + GetUIData(thisState->mData, Move).w;
     auto thisLeft   = GetUIData(thisState->mData, Move).x;
     auto thisRight  = thisLeft + GetUIData(thisState->mData, Move).z;
-    for (auto layout : GetParent()->GetChildren(UITypeEnum::kLAYOUT))
+    for (auto layout : GetParent()->GetObjects(UITypeEnum::kLAYOUT))
     {
         if (layout == this) { continue; }
         auto state  = layout->GetState<UIStateLayout>();
@@ -703,7 +703,7 @@ bool UIClassTreeBox::OnEnter()
 
     size_t flag = 0;
     if (state->mSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
-    if (GetChildren().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
+    if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
     return ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str(), flag);
 }
 
@@ -816,9 +816,9 @@ bool UIClassComboBox::OnEnter()
     auto & move = GetUIData(state->mData, Move);
     ImGui::SetNextItemWidth(move.z);
 
-    if (state->mSelected.empty() && !GetChildren().empty())
+    if (state->mSelected.empty() && !GetObjects().empty())
     {
-        state->mSelected = GetUIData(GetChildren().at(0)->GetState()->mData, Name);
+        state->mSelected = GetUIData(GetObjects().at(0)->GetState()->mData, Name);
     }
     return ImGui::BeginCombo(GetUIData(state->mData, Name).c_str(), state->mSelected.c_str());
 }

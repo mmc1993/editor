@@ -19,7 +19,7 @@ bool UIEventDelegateTest::OnCallEventMessage(UIClass * object, UIEventEnum e, co
                         << "value: " << std::any_cast<glm::vec4>(value).x << std::endl;
                     return true;
                 });
-            object->GetChildren({ "C_0" })->AddChild(ccc3);
+            object->GetObjects({ "C_0" })->AddObject(ccc3);
 
 
 

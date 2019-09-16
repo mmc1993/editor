@@ -2,6 +2,7 @@
 
 #include "base.h"
 
+class EditorSys;
 class AtlasSys;
 class RawSys;
 class CfgSys;
@@ -18,6 +19,7 @@ public:
 public:
     void Free();
 
+    EditorSys * mEditorSys;
     AtlasSys * mAtlasSys;
     RawSys * mRawSys;
     CfgSys * mCfgSys;

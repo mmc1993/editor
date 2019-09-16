@@ -5,22 +5,24 @@
 class Component;
 class CompTransform;
 
-class Object {
+class GLObject {
 public:
-    Object();
-    virtual ~Object();
+    GLObject();
+    virtual ~GLObject();
     virtual void OnUpdate(float dt);
 
-    void AddChild(Object * child, const std::string & tag = "");
-    void DelChild(Object * child, bool del = true);
-    void DelChildIdx(size_t idx, bool del = true);
-    void DelChildTag(const std::string & tag);
-    void ClearChildren();
+    void AddObject(GLObject * child, const std::string & tag = "");
+    void DelObject(GLObject * child, bool del = true);
+    void DelObjectByIdx(size_t idx, bool del = true);
+    void DelObjectByTag(const std::string & tag);
+    void ClearObjects();
     void DelThis();
 
-	Object * GetChildIdx(size_t idx);
-	Object * GetChildTag(const std::string & tag);
-    std::vector<Object *> & GetChildren();
+	GLObject * GetObjectByIdx(size_t idx);
+	GLObject * GetObjectByTag(const std::string & tag);
+    std::vector<GLObject *> & GetObjects();
+
+    const std::string & GetTag() const;
 
     void SetActive(bool active);
     bool IsActive() const;
@@ -28,8 +30,8 @@ public:
     void RootUpdate(float dt);
     void Update(float dt);
 
-    void SetParent(Object * parent);
-    Object * GetParent();
+    void SetParent(GLObject * parent);
+    GLObject * GetParent();
 
 	void ClearComponent();
     void AddComponent(Component * component);
@@ -64,8 +66,8 @@ public:
 private:
     std::string                 _tag;
     bool                        _active;
-    Object *                    _parent;
+    GLObject *                  _parent;
 	CompTransform *             _transform;
-    std::vector<Object *>       _children;
+    std::vector<GLObject *>     _children;
     std::vector<Component *>    _components;
 };

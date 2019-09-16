@@ -2,6 +2,7 @@
 #include "../ui_state/ui_state.h"
 #include "../ui_class/ui_class.h"
 #include "../../editor_sys/delegate/uievent_delegate_objects.h"
+#include "../../editor_sys/delegate/main/uievent_delegate_main.h"
 
 // ...
 //  UI事件委托映射表
@@ -10,7 +11,11 @@ template <class T>
 UIClass::UIEventDelegate * Create() { return new T(); }
 
 static std::map<std::string, UIClass::UIEventDelegate *(*)()> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/uievent_delegate_objects", &Create<UIEventDelegateObjects>)
+    std::make_pair("editor/editor/delegate/uievent_delegate_objects", &Create<UIEventDelegateObjects>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &Create<UIEventDelegateMainStage>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &Create<UIEventDelegateMainObjList>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", &Create<UIEventDelegateMainResList>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", &Create<UIEventDelegateMainComList>),
 };
 
 UIClass * UIParser::Parse(const std::string & url)
@@ -50,7 +55,7 @@ void UIParser::Parse__Children(const mmc::JsonValue::Value json, UIClass * objec
 {
     for (auto ele : json->At("__Children"))
     {
-        object->AddChild(Parse(ele.mValue));
+        object->AddObject(Parse(ele.mValue));
     }
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "object.h"
+#include "gl_object.h"
 
 class Component {
 public:
@@ -15,10 +15,10 @@ public:
 	bool IsActive() const { return _active; }
 	void SetActive(bool active) { _active = active; }
 
-    Object * GetOwner() { return _owner; }
-	void SetOwner(Object * owner) { _owner = owner; }
+    GLObject * GetOwner() { return _owner; }
+	void SetOwner(GLObject * owner) { _owner = owner; }
 
 private:
     bool _active;
-    Object *_owner;
+    GLObject *_owner;
 };

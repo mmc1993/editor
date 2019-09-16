@@ -1,35 +1,35 @@
-#include "object.h"
+#include "gl_object.h"
 #include "component.h"
 
-Object::Object()
+GLObject::GLObject()
     : _active(true)
     , _parent(nullptr)
 { }
 
-Object::~Object()
+GLObject::~GLObject()
 {
-    ClearChildren();
+    ClearObjects();
     ClearComponent();
 }
 
-void Object::OnUpdate(float dt)
+void GLObject::OnUpdate(float dt)
 { }
 
-void Object::AddChild(Object * child, const std::string & tag)
+void GLObject::AddObject(GLObject * child, const std::string & tag)
 {
     child->_tag = tag;
     child->_parent = this;
     _children.push_back(child);
 }
 
-void Object::DelChild(Object * child, bool del)
+void GLObject::DelObject(GLObject * child, bool del)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
     ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
-    DelChildIdx(std::distance(_children.begin(), it), del);
+    DelObjectByIdx(std::distance(_children.begin(), it), del);
 }
 
-void Object::DelChildIdx(size_t idx, bool del)
+void GLObject::DelObjectByIdx(size_t idx, bool del)
 {
     ASSERT_LOG(idx < _children.size(), "Object DelChild Idx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
@@ -38,82 +38,87 @@ void Object::DelChildIdx(size_t idx, bool del)
     _children.erase(it);
 }
 
-void Object::DelChildTag(const std::string & tag)
+void GLObject::DelObjectByTag(const std::string & tag)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [tag](Object * child) { return child->_tag == tag; });
+        [tag](GLObject * child) { return child->_tag == tag; });
     if (it != _children.end())
     {
-        DelChildIdx(std::distance(_children.begin(), it), true);
+        DelObjectByIdx(std::distance(_children.begin(), it), true);
     }
 }
 
-void Object::ClearChildren()
+void GLObject::ClearObjects()
 {
     while (!_children.empty())
     {
-        DelChild(_children.back());
+        DelObject(_children.back());
     }
 }
 
-void Object::DelThis()
+void GLObject::DelThis()
 {
     if (nullptr == GetParent()) { delete this; }
-    else { GetParent()->DelChild(this); }
+    else { GetParent()->DelObject(this); }
 }
 
-Object * Object::GetChildTag(const std::string & tag)
+GLObject * GLObject::GetObjectByTag(const std::string & tag)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [tag](Object * child) { return child->_tag == tag; });
+        [tag](GLObject * child) { return child->_tag == tag; });
     return it != _children.end() ? *it : nullptr;
 }
 
-Object * Object::GetChildIdx(size_t idx)
+GLObject * GLObject::GetObjectByIdx(size_t idx)
 {
     ASSERT_LOG(idx < _children.size(), "Object GetChildIdx Idx: {0}", idx);
     return *std::next(_children.begin(), idx);
 }
 
-std::vector<Object *> & Object::GetChildren()
+std::vector<GLObject *> & GLObject::GetObjects()
 {
     return _children;
 }
 
-void Object::SetActive(bool active)
+const std::string & GLObject::GetTag() const
+{
+    return _tag;
+}
+
+void GLObject::SetActive(bool active)
 {
     _active = active;
 }
 
-bool Object::IsActive() const
+bool GLObject::IsActive() const
 {
     return _active;
 }
 
-void Object::Update(float dt)
+void GLObject::Update(float dt)
 { }
 
-void Object::RootUpdate(float dt)
+void GLObject::RootUpdate(float dt)
 { }
 
-void Object::SetParent(Object * parent)
+void GLObject::SetParent(GLObject * parent)
 {
     if (nullptr != _parent)
     {
-        _parent->DelChild(this, false);
+        _parent->DelObject(this, false);
     }
     if (nullptr != parent)
     {
-        parent->AddChild(this, _tag);
+        parent->AddObject(this, _tag);
     }
 }
 
-Object * Object::GetParent()
+GLObject * GLObject::GetParent()
 {
     return _parent;
 }
 
-void Object::ClearComponent()
+void GLObject::ClearComponent()
 {
 	while (!_components.empty())
 	{
@@ -124,14 +129,14 @@ void Object::ClearComponent()
 	}
 }
 
-void Object::AddComponent(Component * component)
+void GLObject::AddComponent(Component * component)
 {
     _components.push_back(component);
     component->SetOwner(this);
     component->OnAdd();
 }
 
-void Object::DelComponent(const std::type_info & type)
+void GLObject::DelComponent(const std::type_info & type)
 {
     auto it = std::find_if(_components.begin(), _components.end(),
         [&type](Component * component) { return typeid(*component) == type; });
@@ -143,7 +148,7 @@ void Object::DelComponent(const std::type_info & type)
     }
 }
 
-std::vector<Component*>& Object::GetComponents()
+std::vector<Component*>& GLObject::GetComponents()
 {
     return _components;
 }

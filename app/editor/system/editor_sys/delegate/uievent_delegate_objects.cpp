@@ -44,7 +44,7 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIClass * object, UIEventEnum e,
                 raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
                 raw->Insert(mmc::JsonValue::FromValue(SFormat("Object_{0}", count++)), "__Property", "Name");
-                menu.mObject->AddChild(UIParser::Parse(raw));
+                menu.mObject->AddObject(UIParser::Parse(raw));
             }
             else if (menu.mPath == "Del Object")
             {
