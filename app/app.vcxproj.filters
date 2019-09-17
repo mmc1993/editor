@@ -953,10 +953,10 @@
     <ClInclude Include="editor\system\editor_sys\component\gl_object.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\tools\type_parser.h">
+    <ClInclude Include="editor\system\ui_sys\ui_object\ui_object.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\ui_sys\ui_object\ui_object.h">
+    <ClInclude Include="editor\system\tools\parser_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
