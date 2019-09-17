@@ -105,11 +105,11 @@ public:
     void ClearObjects();
     UIObject * GetRoot();
     UIObject * GetParent();
-    bool IsRender() const;
+    bool IsVisible() const;
 
     void ResetLayout();
     void ApplyLayout();
-    void Render(float dt, bool parent = true);
+    void Render(float dt, bool visible = true);
 
     glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset) const;
     glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0)) const;
@@ -185,7 +185,7 @@ private:
     UITypeEnum              _type;
     UIState *               _state;
     UIObject *              _parent;
-    bool                    _isRender;       //  标记当前节点是否渲染
+    bool                    _visible;       //  标记当前节点是否渲染
     UIEventDelegate *       _delegate;
     std::vector<UIObject *> _children;
 };

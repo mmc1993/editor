@@ -100,9 +100,9 @@ UIObject * UIObject::GetParent()
     return _parent;
 }
 
-bool UIObject::IsRender() const
+bool UIObject::IsVisible() const
 {
-    return _isRender;
+    return _visible;
 }
 
 void UIObject::ResetLayout()
@@ -195,14 +195,14 @@ void UIObject::ApplyLayout()
     OnApplyLayout();
 }
 
-void UIObject::Render(float dt, bool parent)
+void UIObject::Render(float dt, bool visible)
 {
-    _isRender = parent;
+    _visible = visible;
 
     ApplyLayout();
 
     auto ret = false;
-    if (parent)
+    if (visible)
     { 
         if (ret = OnEnter())
         {
@@ -215,7 +215,7 @@ void UIObject::Render(float dt, bool parent)
         child->Render(dt, ret);
     }
 
-    if (parent) { OnLeave(ret); }
+    if (visible) { OnLeave(ret); }
 
     //  刷新备份数据
     auto & data = GetState()->mData;
@@ -403,7 +403,7 @@ bool UIObject::DispatchEventM(const UIEventDetails::Mouse & param)
         }
     }
 
-    if (IsRender() && tools::IsContain(ToWorldRect(), param.mMouse))
+    if (IsVisible() && tools::IsContain(ToWorldRect(), param.mMouse))
     {
         return PostEventMessage(UIEventEnum::kMOUSE, param);
     }
