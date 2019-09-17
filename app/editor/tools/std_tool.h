@@ -26,4 +26,9 @@ namespace std {
     {
         return std::distance(std::begin(arr), std::end(arr));
     }
+
+    inline std::string to_string(void * val)
+    {
+        return std::to_string((size_t)val);
+    }
 }

@@ -4,7 +4,7 @@ void PropertyInt::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::InputInt(ToImGuiID((size_t)this).c_str(), &GetBackup()))
+    if (ImGui::InputInt(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -15,7 +15,7 @@ void PropertyBool::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::Checkbox(ToImGuiID((size_t)this).c_str(), &GetBackup()))
+    if (ImGui::Checkbox(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -28,7 +28,7 @@ void PropertyFloat::OnRender(float dt)
     ImGui::Text(GetTitle().c_str());
     ImGui::NextColumn();
 
-    if (ImGui::InputFloat(ToImGuiID((size_t)this).c_str(), &GetBackup()))
+    if (ImGui::InputFloat(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
     }
@@ -40,7 +40,7 @@ void PropertyString::OnRender(float dt)
     PropertyClass::OnRender(dt);
     
     if (ImGui::InputText(
-        ToImGuiID((size_t)this).c_str(), 
+        ImID(this).c_str(), 
         GetBackup().data(), GetBackup().size(), 
         ImGuiInputTextFlags_CallbackResize,
         &imgui_tools::OnResizeBuffer,
@@ -58,7 +58,7 @@ void PropertyCombo::OnRender(float dt)
     auto & select = GetBackup().first;
     auto & values = GetBackup().second;
     if (ImGui::BeginCombo(
-        ToImGuiID(this).c_str(),
+        ImID(this).c_str(),
         values.at(select).c_str()))
     {
         for (auto i = 0; i != values.size(); ++i)
@@ -82,7 +82,7 @@ void PropertyVector2::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::InputFloat2(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat2(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
@@ -93,7 +93,7 @@ void PropertyVector3::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::InputFloat3(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat3(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
@@ -104,7 +104,7 @@ void PropertyVector4::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::InputFloat4(ToImGuiID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat4(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
@@ -115,7 +115,7 @@ void PropertyColor4::OnRender(float dt)
 {
     PropertyClass::OnRender(dt);
 
-    if (ImGui::ColorEdit4(ToImGuiID(this).c_str(), &GetBackup().x))
+    if (ImGui::ColorEdit4(ImID(this).c_str(), &GetBackup().x))
     {
         Modify();
     }

@@ -116,17 +116,9 @@ enum class UIEventEnum {
     kMENU,              //  菜单
 };
 
-
-namespace std {
-    inline std::string to_string(void * val)
-    {
-        return std::to_string((size_t)val);
-    }
-}
-
 //  转化为ImGuiID
 template <class T>
-inline std::string ToImGuiID(const T & v)
+inline std::string ImID(const T & v)
 {
     return "##" + std::to_string(v);
 }
