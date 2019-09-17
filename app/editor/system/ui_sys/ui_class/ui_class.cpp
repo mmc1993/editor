@@ -126,8 +126,8 @@ void UIObject::ApplyLayout()
         auto & parentData = GetParent()->GetState()->mData;
         auto & parentMoveOld = GetUIData(parentData, _Move);
         auto & parentMoveNew = GetUIData(parentData,  Move);
-        if (!math_tool::Equal(parentMoveOld.z, parentMoveNew.z) || 
-            !math_tool::Equal(parentMoveOld.w, parentMoveNew.w))
+        if (!tools::Equal(parentMoveOld.z, parentMoveNew.z) || 
+            !tools::Equal(parentMoveOld.w, parentMoveNew.w))
         {
             auto move    = GetUIData(thisData, Move);
             auto align   = GetUIData(thisData, Align);
@@ -403,7 +403,7 @@ bool UIObject::DispatchEventM(const UIEventDetails::Mouse & param)
         }
     }
 
-    if (IsRender() && math_tool::IsContain(ToWorldRect(), param.mMouse))
+    if (IsRender() && tools::IsContain(ToWorldRect(), param.mMouse))
     {
         return PostEventMessage(UIEventEnum::kMOUSE, param);
     }
@@ -604,10 +604,10 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge)
     const auto & parentMove = GetUIData(parent->GetState()->mData, Move);
     switch (edge)
     {
-    case DirectEnum::kU: return !math_tool::Equal(clingMove.y, 0);
-    case DirectEnum::kD: return !math_tool::Equal(clingMove.y + clingMove.w, parentMove.w);
-    case DirectEnum::kL: return !math_tool::Equal(clingMove.x, 0);
-    case DirectEnum::kR: return !math_tool::Equal(clingMove.x + clingMove.z, parentMove.z);
+    case DirectEnum::kU: return !tools::Equal(clingMove.y, 0);
+    case DirectEnum::kD: return !tools::Equal(clingMove.y + clingMove.w, parentMove.w);
+    case DirectEnum::kL: return !tools::Equal(clingMove.x, 0);
+    case DirectEnum::kR: return !tools::Equal(clingMove.x + clingMove.z, parentMove.z);
     }
     ASSERT_LOG(false, "{0}", (int)edge);
 }
@@ -647,7 +647,7 @@ void UIClassLayout::HandleStretch()
         const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
         const auto & move = GetUIData(thisState->mData, Move);
-        const auto direct = math_tool::IsOnEdge(
+        const auto direct = tools::IsOnEdge(
             glm::vec4(world.x, world.y, move.z, move.w),
             glm::vec2(mouse.x, mouse.y), LAYOUT_STRETCH_BORDER);
         if (direct != -1 && IsCanStretch((DirectEnum)direct))

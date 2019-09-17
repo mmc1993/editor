@@ -35,14 +35,14 @@ public:
             return true;
         case TypeParser::kMENU:
             {
-                auto split = string_tool::Split(buffer, ",");
+                auto split = tools::Split(buffer, ",");
                 auto value = (std::vector<std::string> *)output;
                 *value = std::move(split);
             }
             return true;
         case TypeParser::kVEC2:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (glm::vec2 *)output;
                 value->x = std::stof(split.at(0));
                 value->y = std::stof(split.at(1));
@@ -50,7 +50,7 @@ public:
             return true;
         case TypeParser::kVEC3:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (glm::vec3 *)output;
                 value->x = std::stof(split.at(0));
                 value->y = std::stof(split.at(1));
@@ -59,7 +59,7 @@ public:
             return true;
         case TypeParser::kVEC4:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (glm::vec4 *)output;
                 value->x = std::stof(split.at(0));
                 value->y = std::stof(split.at(1));
@@ -69,7 +69,7 @@ public:
             return true;
         case TypeEnum::kCOLOR:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (glm::vec4 *)output;
                 value->x = std::stof(split.at(0));
                 value->y = std::stof(split.at(1));
@@ -82,7 +82,7 @@ public:
             return true;
         case TypeParser::kINT_LIST:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (std::vector<int> *)output;
                 std::transform(
                     split.begin(), split.end(), 
@@ -93,7 +93,7 @@ public:
             return true;
         case TypeParser::kFLOAT_LIST:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (std::vector<float> *)output;
                 std::transform(
                     split.begin(), split.end(), 
@@ -104,7 +104,7 @@ public:
             return true;
         case TypeParser::kSTRING_LIST:
             {
-                auto split = string_tool::Split(buffer, " ");
+                auto split = tools::Split(buffer, " ");
                 auto value = (std::vector<std::string> *)output;
                 *value = std::move(split);
             }

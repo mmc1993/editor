@@ -1,6 +1,6 @@
 #pragma once
 
-namespace string_tool {
+namespace tools {
 	inline std::string Join(const std::vector<std::string> & vec, const std::string & str)
 	{
 		std::string  ret;

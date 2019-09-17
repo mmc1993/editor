@@ -315,7 +315,7 @@ namespace mmc {
                     strings.push_back(SFormat("\"{0}\": {1}",
                         ele.mKey, ele.mValue->Print(space)));
                 }
-                resule.append(string_tool::Join(strings, ",\n" + std::string(space, '\t')));
+                resule.append(tools::Join(strings, ",\n" + std::string(space, '\t')));
                 resule.append("\n"); resule.append(--space, '\t'); resule.append("}");
                 return std::move(resule);
             }
@@ -327,7 +327,7 @@ namespace mmc {
                 {
                     strings.push_back(ele.mValue->Print(space));
                 }
-                return "[" + string_tool::Join(strings, ", ") + "]";
+                return "[" + tools::Join(strings, ", ") + "]";
             }
             break;
             case kBOOL:

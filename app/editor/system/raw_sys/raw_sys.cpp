@@ -6,7 +6,7 @@ Raw * RawSys::Import(const std::string & url)
     CHECK_RET(it == _resources.end(), it->second);
 
     Raw * raw = nullptr;
-    if (auto suffix = string_tool::QueryFileSuffix(url); suffix == ".png" || suffix == ".jpg")
+    if (auto suffix = tools::QueryFileSuffix(url); suffix == ".png" || suffix == ".jpg")
     {
         raw = new RawBitmap();
     }

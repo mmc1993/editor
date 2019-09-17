@@ -131,21 +131,21 @@ inline float    s2f(const std::string & s) { return std::stof(s); }
 
 inline glm::vec2 s2v2(const std::string & s)
 {
-    auto arr = string_tool::Split(s, " ");
+    auto arr = tools::Split(s, " ");
     ASSERT_LOG(arr.size() == 2, "Arr Length: {0}!", arr.size());
     return glm::vec2(s2f(arr.at(0)), s2f(arr.at(1)));
 }
 
 inline glm::vec3 s2v3(const std::string & s)
 {
-    auto arr = string_tool::Split(s, " ");
+    auto arr = tools::Split(s, " ");
     ASSERT_LOG(arr.size() == 3, "Arr Length: {0}!", arr.size());
     return glm::vec3(s2f(arr.at(0)), s2f(arr.at(1)), s2f(arr.at(2)));
 }
 
 inline glm::vec4 s2v4(const std::string & s)
 {
-    auto arr = string_tool::Split(s, " ");
+    auto arr = tools::Split(s, " ");
     ASSERT_LOG(arr.size() == 4, "Arr Length: {0}!", arr.size());
     return glm::vec4(s2f(arr.at(0)), s2f(arr.at(1)), s2f(arr.at(2)), s2f(arr.at(3)));
 }
@@ -154,7 +154,7 @@ inline glm::vec4 s2v4(const std::string & s)
 inline std::vector<int> s2vi(const std::string & s)
 {
     std::vector<int> ret;
-    auto arr = string_tool::Split(s, " ");
+    auto arr = tools::Split(s, " ");
     std::transform(arr.begin(), arr.end(), std::back_inserter(ret), 
         [] (const std::string & s) { return std::stoi(s); });
     return ret;
@@ -163,7 +163,7 @@ inline std::vector<int> s2vi(const std::string & s)
 //  ×Ö·û´® ×ª ×Ö·û´®Êý×é
 inline std::vector<std::string> s2vs(const std::string & s)
 {
-    return string_tool::Split(s, ",");
+    return tools::Split(s, ",");
 }
 
 // ---

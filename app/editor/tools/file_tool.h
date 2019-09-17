@@ -1,6 +1,6 @@
 #pragma once
 
-namespace file_tool {
+namespace tools {
     inline size_t GetFileLength(std::ifstream & istream)
     {
         auto p = istream.tellg();

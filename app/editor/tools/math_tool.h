@@ -1,6 +1,6 @@
 #pragma once
 
-namespace math_tool {
+namespace tools {
     //  ÊÇ·ñ°üº¬µã
     inline bool IsContain(const glm::vec4 & rect, const glm::vec2 & point)
     {
