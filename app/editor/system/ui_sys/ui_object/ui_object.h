@@ -182,11 +182,11 @@ public:
     bool PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
 
 private:
-    UITypeEnum             _type;
-    UIState *              _state;
-    UIObject *             _parent;
-    bool                   _isRender;       //  标记当前节点是否渲染
-    UIEventDelegate *      _delegate;
+    UITypeEnum              _type;
+    UIState *               _state;
+    UIObject *              _parent;
+    bool                    _isRender;       //  标记当前节点是否渲染
+    UIEventDelegate *       _delegate;
     std::vector<UIObject *> _children;
 };
 
