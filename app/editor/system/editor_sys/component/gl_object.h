@@ -64,6 +64,8 @@ public:
         return std::move(result);
     }
 
+    CompTransform * GetTransform();
+
 private:
     std::string                 _tag;
     bool                        _active;

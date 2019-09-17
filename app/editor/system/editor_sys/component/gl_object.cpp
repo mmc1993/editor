@@ -1,5 +1,6 @@
 #include "gl_object.h"
 #include "component.h"
+#include "comp_transform.h"
 
 GLObject::GLObject()
     : _active(true)
@@ -152,4 +153,9 @@ void GLObject::DelComponent(const std::type_info & type)
 std::vector<Component*>& GLObject::GetComponents()
 {
     return _components;
+}
+
+CompTransform * GLObject::GetTransform()
+{
+    return _transform;
 }

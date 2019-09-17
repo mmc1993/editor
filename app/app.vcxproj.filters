@@ -93,6 +93,9 @@
     <ClCompile Include="editor\system\editor_sys\component\component.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_transform.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -945,6 +948,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\ui_sys\include.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
