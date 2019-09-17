@@ -20,6 +20,8 @@ public:
     GLObject * GetOwner() { return _owner; }
 	void SetOwner(GLObject * owner) { _owner = owner; }
 
+    virtual bool Parse(const std::string & key, const std::string & val) = 0;
+
 private:
     bool _active;
     GLObject *_owner;

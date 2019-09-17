@@ -1,10 +1,11 @@
 #include "comp_transform.h"
+#include "../../tools/parser_tool.h"
 
 CompTransform::CompTransform()
     : _isChange(true)
     , _angle(0)
     , _scale(1, 1)
-    , _translate(0, 0)
+    , _position(0, 0)
 { }
 
 CompTransform::~CompTransform()
@@ -21,10 +22,10 @@ void CompTransform::OnUpdate(float dt)
     UpdateMatrix();
 }
 
-void CompTransform::Translate(float x, float y)
+void CompTransform::Position(float x, float y)
 {
-    _translate.x = x;
-    _translate.y = y;
+    _position.x = x;
+    _position.y = y;
     _isChange = true;
 }
 
@@ -41,9 +42,9 @@ void CompTransform::Scale(float x, float y)
     _isChange = true;
 }
 
-CompTransform & CompTransform::AddTranslate(float x, float y)
+CompTransform & CompTransform::AddPosition(float x, float y)
 {
-    Translate(_translate.x + x, _translate.y + y);
+    Position(_position.x + x, _position.y + y);
     return *this;
 }
 
@@ -61,7 +62,7 @@ CompTransform & CompTransform::AddAngle(float r)
 
 const glm::vec2 & CompTransform::GetPosition() const
 {
-    return _translate;
+    return _position;
 }
 
 const glm::vec2 & CompTransform::GetScale() const
@@ -94,11 +95,11 @@ glm::mat3 CompTransform::GetMatrixFromRoot()
 
 glm::mat3 CompTransform::GetRotateFromRoot()
 {
-    auto matrix = GetAngleQuat();
+    auto matrix = GetAngleMatrix();
     auto parent = GetOwner()->GetParent();
     while (parent != nullptr)
     {
-        matrix = parent->GetTransform()->GetAngleQuat() * matrix;
+        matrix = parent->GetTransform()->GetAngleMatrix() * matrix;
         parent = parent->GetParent();
     }
     return (glm::mat3)matrix;
@@ -109,19 +110,27 @@ glm::vec2 CompTransform::GetWorldPosition()
     return glm::vec3(GetMatrixFromRoot() * glm::vec3(0, 0, 1));
 }
 
-glm::quat CompTransform::GetAngleQuat()
+glm::mat4 CompTransform::GetAngleMatrix()
 {
-    return glm::angleAxis(_angle, glm::vec3(0, 0, 1));
+    return glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
+}
+
+bool CompTransform::Parse(const std::string & key, const std::string & val)
+{
+    PARSER_REG_MEMBER(tools::ValueParser::kFLOAT, key, val, Angle,  _angle);
+    PARSER_REG_MEMBER(tools::ValueParser::kVEC2,  key, val, Scale,  _scale);
+    PARSER_REG_MEMBER(tools::ValueParser::kVEC2,  key, val, Position, _position);
+    return false;
 }
 
 void CompTransform::UpdateMatrix()
 {
     if (_isChange)
     {
-        auto t = glm::translate(glm::mat4(1), glm::vec3(_translate, 0));
+        auto t = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
         auto s = glm::scale(glm::mat4(1), glm::vec3(_scale, 1));
-        auto r = glm::angleAxis(_angle, glm::vec3(0, 0, 1));
-        _matrix = t * (glm::mat4)r * s;
+        auto r = GetAngleMatrix();
+        _matrix = t * r * s;
         _isChange = false;
     }
 }

@@ -10,11 +10,11 @@ public:
     virtual void OnDel() override;
     virtual void OnUpdate(float dt) override;
 
-    void Translate(float x, float y);
+    void Position(float x, float y);
     void Scale(float x, float y);
     void Angle(float r);
 
-    CompTransform & AddTranslate(float x, float y);
+    CompTransform & AddPosition(float x, float y);
     CompTransform & AddScale(float x, float y);
     CompTransform & AddAngle(float r);
 
@@ -26,7 +26,9 @@ public:
     glm::mat3 GetMatrixFromRoot();
     glm::mat3 GetRotateFromRoot();
     glm::vec2 GetWorldPosition();
-    glm::quat GetAngleQuat();
+    glm::mat4 GetAngleMatrix();
+
+    virtual bool Parse(const std::string & key, const std::string & val) override;
 
 private:
     void UpdateMatrix();
@@ -34,7 +36,7 @@ private:
 private:
     float     _angle;
     glm::vec2 _scale;
-    glm::vec2 _translate;
     glm::mat3 _matrix;
+    glm::vec2 _position;
     bool _isChange;
 };

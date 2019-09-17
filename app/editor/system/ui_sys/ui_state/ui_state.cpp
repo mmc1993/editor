@@ -1,7 +1,7 @@
 #include "ui_state.h"
 #include "../../tools/parser_tool.h"
 
-void UIState::Parse(const std::string & key, const std::string & val)
+bool UIState::Parse(const std::string & key, const std::string & val)
 {
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kINT, key, val, Align, Align);
 
@@ -29,6 +29,8 @@ void UIState::Parse(const std::string & key, const std::string & val)
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kVEC4, key, val, Move, Move);
 
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kSTRING_LIST, key, val, MenuBar, MenuBar);
+
+    return false;
 }
 
 UIStateLayout::UIStateLayout()

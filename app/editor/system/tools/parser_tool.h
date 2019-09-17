@@ -119,5 +119,5 @@ namespace tools {
 }
 
 #ifndef PARSER_REG_MEMBER
-#define PARSER_REG_MEMBER(type, key, val, K, out)  if (key == #K) { tools::ValueParser::Parse(type, val, &out); return ; }
+#define PARSER_REG_MEMBER(type, key, val, K, out)  if (key == #K) { tools::ValueParser::Parse(type, val, &out); return true; }
 #endif
