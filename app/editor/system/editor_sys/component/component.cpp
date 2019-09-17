@@ -1,7 +1,8 @@
 #include "component.h"
+#include "comp_transform.h"
 
 static const std::map<std::string, Component *(*)()> ComponentMap = {
-    //std::make_pair("Transform", &std::create<Component, )
+    std::make_pair("Transform", &std::create<Component, CompTransform>)
 };
 
 Component * Component::Create(const std::string & tag)

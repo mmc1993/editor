@@ -27,12 +27,12 @@ public:
 };
 
 template <class T, class B = T>
-class PropertyClass : public UIObject {
+class PropertyObject : public UIObject {
 public:
     using Handler_t = typename PropertyState<T>::Handler_t;
 
 protected:
-    PropertyClass(
+    PropertyObject(
         T & value,
         const std::string & title,
         const Handler_t & handler)
@@ -82,13 +82,13 @@ protected:
 // ---
 //  属性 int
 // ---
-class PropertyInt : public PropertyClass<int> {
+class PropertyInt : public PropertyObject<int> {
 public:
     PropertyInt(
         int & value, 
         const std::string & title, 
         const Handler_t & handler)
-        : PropertyClass<int>(value, title, handler)
+        : PropertyObject<int>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -97,13 +97,13 @@ public:
 // ---
 //  属性 bool
 // ---
-class PropertyBool : public PropertyClass<bool> {
+class PropertyBool : public PropertyObject<bool> {
 public:
     PropertyBool(
         bool & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<bool>(value, title, handler)
+        : PropertyObject<bool>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -112,13 +112,13 @@ public:
 // ---
 //  属性 float
 // ---
-class PropertyFloat : public PropertyClass<float> {
+class PropertyFloat : public PropertyObject<float> {
 public:
     PropertyFloat(
         float & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<float>(value, title, handler)
+        : PropertyObject<float>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -127,13 +127,13 @@ public:
 // ---
 //  属性 string
 // ---
-class PropertyString : public PropertyClass<std::string> {
+class PropertyString : public PropertyObject<std::string> {
 public:
     PropertyString(
         std::string & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<std::string>(value, title, handler)
+        : PropertyObject<std::string>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -142,7 +142,7 @@ public:
 // ---
 //  属性 combo
 // ---
-class PropertyCombo : public PropertyClass<
+class PropertyCombo : public PropertyObject<
     std::pair<
         size_t, 
         std::vector<std::string>
@@ -156,7 +156,7 @@ public:
         > & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<
+        : PropertyObject<
             std::pair<
                 size_t, 
                 std::vector<std::string>
@@ -170,13 +170,13 @@ public:
 // ---
 //  属性 vec2
 // ---
-class PropertyVector2 : public PropertyClass<glm::vec2> {
+class PropertyVector2 : public PropertyObject<glm::vec2> {
 public:
     PropertyVector2(
         glm::vec2 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<glm::vec2>(value, title, handler)
+        : PropertyObject<glm::vec2>(value, title, handler)
     { }
     
     virtual void OnRender(float dt) override;
@@ -185,13 +185,13 @@ public:
 // ---
 //  属性 vec3
 // ---
-class PropertyVector3 : public PropertyClass<glm::vec3> {
+class PropertyVector3 : public PropertyObject<glm::vec3> {
 public:
     PropertyVector3(
         glm::vec3 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<glm::vec3>(value, title, handler)
+        : PropertyObject<glm::vec3>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -200,13 +200,13 @@ public:
 // ---
 //  属性 vec4
 // ---
-class PropertyVector4 : public PropertyClass<glm::vec4> {
+class PropertyVector4 : public PropertyObject<glm::vec4> {
 public:
     PropertyVector4(
         glm::vec4 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<glm::vec4>(value, title, handler)
+        : PropertyObject<glm::vec4>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -215,13 +215,13 @@ public:
 // ---
 //  属性 color4
 // ---
-class PropertyColor4 : public PropertyClass<glm::vec4> {
+class PropertyColor4 : public PropertyObject<glm::vec4> {
 public:
     PropertyColor4(
         glm::vec4 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyClass<glm::vec4>(value, title, handler)
+        : PropertyObject<glm::vec4>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;

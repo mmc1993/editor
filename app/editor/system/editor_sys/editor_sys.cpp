@@ -1,4 +1,6 @@
 #include "editor_sys.h"
+#include "component/gl_object.h"
+#include "../ui_sys/ui_object/ui_object.h"
 
 EditorSys::EditorSys(): mRootObject(new GLObject())
 { }

@@ -2,7 +2,7 @@
 
 void PropertyInt::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::InputInt(ImID(this).c_str(), &GetBackup()))
     {
@@ -13,7 +13,7 @@ void PropertyInt::OnRender(float dt)
 
 void PropertyBool::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::Checkbox(ImID(this).c_str(), &GetBackup()))
     {
@@ -37,7 +37,7 @@ void PropertyFloat::OnRender(float dt)
 
 void PropertyString::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
     
     if (ImGui::InputText(
         ImID(this).c_str(), 
@@ -53,7 +53,7 @@ void PropertyString::OnRender(float dt)
 
 void PropertyCombo::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     auto & select = GetBackup().first;
     auto & values = GetBackup().second;
@@ -80,7 +80,7 @@ void PropertyCombo::OnRender(float dt)
 
 void PropertyVector2::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat2(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -91,7 +91,7 @@ void PropertyVector2::OnRender(float dt)
 
 void PropertyVector3::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat3(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -102,7 +102,7 @@ void PropertyVector3::OnRender(float dt)
 
 void PropertyVector4::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat4(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -113,7 +113,7 @@ void PropertyVector4::OnRender(float dt)
 
 void PropertyColor4::OnRender(float dt)
 {
-    PropertyClass::OnRender(dt);
+    PropertyObject::OnRender(dt);
 
     if (ImGui::ColorEdit4(ImID(this).c_str(), &GetBackup().x))
     {

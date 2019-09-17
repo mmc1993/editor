@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../../include.h"
-#include "component/gl_object.h"
-#include "component/component.h"
+
+class GLObject;
 
 class EditorSys {
     //  数据区
@@ -15,6 +15,8 @@ public:
     //  接口区
 public:
     EditorSys();
+
+
     //  生成名字
     std::string GenerateObjectName(GLObject * object) const;
     //  检查名字

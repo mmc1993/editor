@@ -123,6 +123,21 @@ bool CompTransform::Parse(const std::string & key, const std::string & val)
     return false;
 }
 
+std::vector<std::pair<size_t, void*>> CompTransform::CollectPropertys()
+{
+    return {
+        std::make_pair(tools::ValueParser::kVEC2,  &_position),
+        std::make_pair(tools::ValueParser::kVEC2,  &_scale),
+        std::make_pair(tools::ValueParser::kFLOAT, &_angle),
+    };
+}
+
+bool CompTransform::OnModifyProperty(const std::any & value, const std::string & title, const std::any & backup)
+{
+    std::cout << "Title " << title << std::endl;
+    return true;
+}
+
 void CompTransform::UpdateMatrix()
 {
     if (_isChange)
