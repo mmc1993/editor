@@ -33,7 +33,7 @@ UIObject * UIObject::GetObjects(const std::initializer_list<std::string>& list)
             parent->GetObjects().begin(), 
             parent->GetObjects().end(), 
             [&name](UIObject * object) {
-                return GetUIData(object->GetState()->mData, Name) == name;
+                return object->GetState()->Name == name;
             });
         if (it == _children.end())
         {
@@ -72,7 +72,7 @@ void UIObject::DelObject(UIObject * child)
 
 void UIObject::DelThis()
 {
-    ASSERT_LOG(GetParent() != nullptr, GetUIData(GetState()->mData, Name).c_str());
+    ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());
     GetParent()->DelObject(this);
 }
 
@@ -110,8 +110,8 @@ void UIObject::ResetLayout()
     OnResetLayout();
 
     //  初始化备份数据
-    auto & data = GetState()->mData;
-    SetUIData(data, _Move, GetUIData(data, Move));
+    auto state = GetState();
+    state->Move_ = state->Move;
 
     std::for_each(_children.begin(),_children.end(),
                     std::bind(&UIObject::ResetLayout, 
@@ -120,17 +120,17 @@ void UIObject::ResetLayout()
 
 void UIObject::ApplyLayout()
 {
-    auto & thisData = GetState()->mData;
+    auto thisState = GetState();
     if (GetParent() != nullptr)
     {
-        auto & parentData = GetParent()->GetState()->mData;
-        auto & parentMoveOld = GetUIData(parentData, _Move);
-        auto & parentMoveNew = GetUIData(parentData,  Move);
+        auto parentState = GetParent()->GetState();
+        const auto & parentMoveOld = parentState->Move_;
+        const auto & parentMoveNew = parentState->Move;
         if (!tools::Equal(parentMoveOld.z, parentMoveNew.z) || 
             !tools::Equal(parentMoveOld.w, parentMoveNew.w))
         {
-            auto move    = GetUIData(thisData, Move);
-            auto align   = GetUIData(thisData, Align);
+            const auto & move    = thisState->Move;
+            const auto & align   = thisState->Align;
             auto margin  = glm::vec4(move.x, move.y, move.x + move.z, move.y + move.w);
             //  上下贴边, 排斥垂直居中, 垂直拉伸
             ASSERT_LOG((align & ((int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B)) == 0
@@ -176,21 +176,18 @@ void UIObject::ApplyLayout()
                 margin.y = (margin.y / parentMoveOld.w * parentMoveNew.w);
                 margin.w = (margin.w / parentMoveOld.w * parentMoveNew.w);
             }
-            move.x = margin.x;
-            move.y = margin.y;
-            move.z = margin.z - margin.x;
-            move.w = margin.w - margin.y;
-            SetUIData(thisData, Move, move);
+            thisState->Move.x = margin.x;
+            thisState->Move.y = margin.y;
+            thisState->Move.z = margin.z - margin.x;
+            thisState->Move.w = margin.w - margin.y;
         }
     }
     else
     {
         const auto & wsize = ImGui_ImplGlfw_GetWindowSize();
-        auto & size = GetUIData(thisData, StretchMin);
-        auto   move = GetUIData(thisData, Move);
-        move.z = std::max(wsize.x, size.x);
-        move.w = std::max(wsize.y, size.y);
-        SetUIData(thisData, Move, move);
+        const auto & size = thisState->StretchMin;
+        thisState->Move.z = std::max(wsize.x, size.x);
+        thisState->Move.w = std::max(wsize.y, size.y);
     }
     OnApplyLayout();
 }
@@ -218,14 +215,14 @@ void UIObject::Render(float dt, bool visible)
     if (visible) { OnLeave(ret); }
 
     //  刷新备份数据
-    auto & data = GetState()->mData;
-    SetUIData(data, _Move, GetUIData(data, Move));
+    auto state = GetState();
+    state->Move_ = state->Move;
 }
 
 
 glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
 {
-    auto move = GetUIData(GetState()->mData, Move);
+    auto move = GetState()->Move;
     switch (direct)
     {
     case DirectEnum::kU: move.y += offset.y; move.w -= offset.y; break;
@@ -238,15 +235,15 @@ glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset) co
 
 glm::vec2 UIObject::ToWorldCoord(const glm::vec2 & coord) const
 {
-    auto move = GetUIData(GetState()->mData, Move);
+    auto move = GetState()->Move;
     move.x += coord.x;
     move.y += coord.y;
 
     auto parent = GetParent();
     while (parent != nullptr)
     {
-        move.x += GetUIData(parent->GetState()->mData, Move).x;
-        move.y += GetUIData(parent->GetState()->mData, Move).y;
+        move.x += parent->GetState()->Move.x;
+        move.y += parent->GetState()->Move.y;
         parent = parent->GetParent();
     }
     return glm::vec2(move.x, move.y);
@@ -269,8 +266,7 @@ glm::vec2 UIObject::ToLocalCoord(const glm::vec2 & coord) const
 
 glm::vec4 UIObject::ToWorldRect() const
 {
-    auto & move = GetUIData(GetState()->mData, Move);
-    return glm::vec4(ToWorldCoord(), move.z, move.w);
+    return glm::vec4(ToWorldCoord(), GetState()->Move.z, GetState()->Move.w);
 }
 
 glm::vec2 UIObject::ToLocalCoordFromImGUI() const
@@ -282,9 +278,8 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
         || parent->GetType() == UITypeEnum::kTREEBOX
         || parent->GetType() == UITypeEnum::kIMAGEBOX)
     {
-        auto & move = GetUIData(parent->GetState()->mData, Move);
-        pos.x -= move.x;
-        pos.y -= move.y;
+        pos.x -= parent->GetState()->Move.x;
+        pos.y -= parent->GetState()->Move.y;
         parent = parent->GetParent();
     }
     return pos;
@@ -298,28 +293,25 @@ void UIObject::BindDelegate(UIEventDelegate * delegate)
 
 void UIObject::AdjustSize()
 {
-    auto align = GetUIData(GetState()->mData, Align);
-    if ((UIAlignEnum)align == UIAlignEnum::kDEFAULT)
+    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDEFAULT)
     {
         const auto & size = ImGui::GetItemRectSize();
-        auto & move = GetUIData(GetState()->mData, Move);
-        SetUIData(GetState()->mData, Move, glm::vec4(move.x, move.y, size.x, size.y));
+        GetState()->Move.z = size.x;
+        GetState()->Move.w = size.y;
     }
 }
 
 void UIObject::LockPosition()
 {
-    auto & move = GetUIData(GetState()->mData, Move);
-    auto align = GetUIData(GetState()->mData, Align);
-    if (align != (int)UIAlignEnum::kDEFAULT)
+    if ((UIAlignEnum)GetState()->Align != UIAlignEnum::kDEFAULT)
     {
-        ImGui::SetCursorPos(ImVec2(move.x, move.y));
+        ImGui::SetCursorPos(ImVec2(GetState()->Move.x, GetState()->Move.y));
     }
     else
     {
         const auto & pos = ToLocalCoordFromImGUI();
-        SetUIData(GetState()->mData, Move, 
-            glm::vec4(pos.x, pos.y, move.z, move.w));
+        GetState()->Move.x = pos.x;
+        GetState()->Move.y = pos.y;
     }
 }
 
@@ -449,20 +441,20 @@ bool UIClassLayout::OnEnter()
 
     //  窗口flag
     size_t flag = ImGuiWindowFlags_NoCollapse;
-    if (!GetUIData(state->mData, IsShowNav)) { flag |= ImGuiWindowFlags_NoNav; }
-    if (!GetUIData(state->mData, IsCanMove)) { flag |= ImGuiWindowFlags_NoMove; }
-    if (!GetUIData(state->mData, IsCanStretch)) { flag |= ImGuiWindowFlags_NoResize; }
-    if ( GetUIData(state->mData, IsShowMenuBar)) { flag |= ImGuiWindowFlags_MenuBar; }
-    if (!GetUIData(state->mData, IsShowTitleBar)) { flag |= ImGuiWindowFlags_NoTitleBar; }
-    if (!GetUIData(state->mData, IsShowScrollBar)) { flag |= ImGuiWindowFlags_NoScrollbar; }
+    if (!state->IsShowNav)          { flag |= ImGuiWindowFlags_NoNav; }
+    if (!state->IsCanMove)          { flag |= ImGuiWindowFlags_NoMove; }
+    if (!state->IsCanStretch)       { flag |= ImGuiWindowFlags_NoResize; }
+    if ( state->IsShowMenuBar)      { flag |= ImGuiWindowFlags_MenuBar; }
+    if (!state->IsShowTitleBar)     { flag |= ImGuiWindowFlags_NoTitleBar; }
+    if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollbar; }
 
-    if (GetUIData(state->mData, IsWindow))
+    if (state->IsWindow)
     {
         //  悬浮窗口
-        auto & name = GetUIData(state->mData, Name);
-        ImVec2 move = ImVec2(GetUIData(state->mData, Move).x, GetUIData(state->mData, Move).y);
-        ImVec2 size = ImVec2(GetUIData(state->mData, Move).z, GetUIData(state->mData, Move).w);
-        if (GetUIData(state->mData, IsFullScreen))
+        const auto & name = state->Name;
+        ImVec2 move = ImVec2(state->Move.x, state->Move.y);
+        ImVec2 size = ImVec2(state->Move.z, state->Move.w);
+        if (state->IsFullScreen)
         {
             size = ImGui_ImplGlfw_GetWindowSize();
             move.x = 0;
@@ -473,8 +465,7 @@ bool UIClassLayout::OnEnter()
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-        if (GetUIData(state->mData, IsFullScreen) || 
-            GetUIData(state->mData, Align) != (int)UIAlignEnum::kDEFAULT)
+        if (state->IsFullScreen || (UIAlignEnum)state->Align != UIAlignEnum::kDEFAULT)
         {
             ImGui::SetNextWindowPos(move);
         }
@@ -484,18 +475,16 @@ bool UIClassLayout::OnEnter()
     else
     {
         LockPosition();
-        auto & name = GetUIData(state->mData, Name);
-        auto & move = GetUIData(state->mData, Move);
-        return ImGui::BeginChild(
-            name.c_str(), ImVec2(move.z, move.w),
-            GetUIData(state->mData, IsShowBorder), flag);
+        return ImGui::BeginChild(state->Name.c_str(), 
+            ImVec2(state->Move.z, state->Move.w), 
+            state->IsShowBorder, flag);
     }
 }
 
 void UIClassLayout::OnLeave(bool ret)
 {
     auto state = GetState<UIStateLayout>();
-    if (GetUIData(state->mData, IsWindow))
+    if (state->IsWindow)
     {
         ImGui::PopStyleVar();
         if (GetRoot() == this)
@@ -518,18 +507,18 @@ void UIClassLayout::OnResetLayout()
     if (GetParent() == nullptr) { return; }
 
     auto thisState  = GetState<UIStateLayout>();
-    auto thisUp     = GetUIData(thisState->mData, Move).y;
-    auto thisDown   = thisUp + GetUIData(thisState->mData, Move).w;
-    auto thisLeft   = GetUIData(thisState->mData, Move).x;
-    auto thisRight  = thisLeft + GetUIData(thisState->mData, Move).z;
+    auto thisUp     = thisState->Move.y;
+    auto thisDown   = thisUp + thisState->Move.w;
+    auto thisLeft   = thisState->Move.x;
+    auto thisRight  = thisLeft + thisState->Move.z;
     for (auto layout : GetParent()->GetObjects(UITypeEnum::kLAYOUT))
     {
         if (layout == this) { continue; }
         auto state  = layout->GetState<UIStateLayout>();
-        auto up     = GetUIData(state->mData, Move).y;
-        auto down   = up + GetUIData(state->mData, Move).w;
-        auto left   = GetUIData(state->mData, Move).x;
-        auto right  = left + GetUIData(state->mData, Move).z;
+        auto up     = state->Move.y;
+        auto down   = up + state->Move.w;
+        auto left   = state->Move.x;
+        auto right  = left + state->Move.z;
         if ((thisUp == up || thisUp == down) && thisState->mJoin[(size_t)DirectEnum::kU].mIn.first == nullptr)
         {
             thisState->mJoin[(size_t)DirectEnum::kU].mOut.push_back(layout);
@@ -566,31 +555,30 @@ void UIClassLayout::OnApplyLayout()
     auto thisState = GetState<UIStateLayout>();
     for (auto direct = 0; direct != (int)DirectEnum::LENGTH; ++direct)
     {
-        auto & thisMove   = GetUIData(thisState->mData, Move);
         const auto & edge = thisState->mJoin[(int)direct].mIn;
         if (edge.first != nullptr)
         {
-            const auto & move = GetUIData(edge.first->GetState()->mData, Move);
+            const auto & move = edge.first->GetState()->Move;
             glm::vec2 offset(0, 0);
-            if      ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y; }
-            else if ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisMove.y; }
-            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisMove.y - thisMove.w; }
-            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kU) { offset.y = move.y - thisMove.y - thisMove.w; }
+            if      ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kU) { offset.y = move.y - thisState->Move.y; }
+            else if ((DirectEnum)direct == DirectEnum::kU && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisState->Move.y; }
+            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kD) { offset.y = move.y + move.w - thisState->Move.y - thisState->Move.w; }
+            else if ((DirectEnum)direct == DirectEnum::kD && edge.second == DirectEnum::kU) { offset.y = move.y - thisState->Move.y - thisState->Move.w; }
 
-            if      ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kL) { offset.x = move.x - thisMove.x; }
-            else if ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisMove.x; }
-            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisMove.x - thisMove.z; }
-            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kL) { offset.x = move.x - thisMove.x - thisMove.z; }
-            SetUIData(thisState->mData, Move, CalcStretech((DirectEnum)direct, offset));
+            if      ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kL) { offset.x = move.x - thisState->Move.x; }
+            else if ((DirectEnum)direct == DirectEnum::kL && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisState->Move.x; }
+            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kR) { offset.x = move.x + move.z - thisState->Move.x - thisState->Move.z; }
+            else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kL) { offset.x = move.x - thisState->Move.x - thisState->Move.z; }
+            thisState->Move = CalcStretech((DirectEnum)direct, offset);
         }
     }
 }
 
 void UIClassLayout::OnRender(float dt)
 {
-    if (GetUIData(GetState()->mData, IsShowMenuBar))
+    if (GetState()->IsShowMenuBar)
     {
-        UIMenu::BarMenu(this, GetUIData(GetState()->mData, MenuBar));
+        UIMenu::BarMenu(this, GetState()->MenuBar);
     }
 }
 
@@ -599,12 +587,12 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge)
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
     ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
-    CHECK_RET(GetUIData(GetState()->mData, IsCanStretch), false);
+    CHECK_RET(GetState()->IsCanStretch, false);
 
     auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
                ? GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first : this;
-    const auto & clingMove  = GetUIData(cling->GetState()->mData, Move);
-    const auto & parentMove = GetUIData(parent->GetState()->mData, Move);
+    const auto & clingMove  = cling->GetState()->Move;
+    const auto & parentMove = parent->GetState()->Move;
     switch (edge)
     {
     case DirectEnum::kU: return !tools::Equal(clingMove.y, 0);
@@ -622,8 +610,8 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
 
     auto thisState = GetState<UIStateLayout>();
     const auto & newMove = CalcStretech(edge, offset);
-    const auto & oldMove = GetUIData(thisState->mData, Move);
-    const auto & minMove = GetUIData(thisState->mData, StretchMin);
+    const auto & oldMove = thisState->Move;
+    const auto & minMove = thisState->StretchMin;
     if (newMove.z < oldMove.z && newMove.z < minMove.x ||
         newMove.w < oldMove.w && newMove.w < minMove.y) { return false; }
 
@@ -649,10 +637,10 @@ void UIClassLayout::HandleStretch()
     {
         const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
-        const auto & move = GetUIData(thisState->mData, Move);
+        const auto & move = thisState->Move;
         const auto direct = tools::IsOnEdge(
             glm::vec4(world.x, world.y, move.z, move.w),
-            glm::vec2(mouse.x, mouse.y), LAYOUT_STRETCH_BORDER);
+            glm::vec2(mouse.x, mouse.y), 5);
         if (direct != -1 && IsCanStretch((DirectEnum)direct))
         {
             switch ((DirectEnum)direct)
@@ -673,17 +661,15 @@ void UIClassLayout::HandleStretch()
     if (rootState->mStretchFocus.mObject == this)
     {
         const auto & offset = ImGui::GetIO().MouseDelta;
-        auto move   = GetUIData(thisState->mData, Move);
         if (IsCanStretch(rootState->mStretchFocus.mDirect, glm::vec2(offset.x, offset.y)))
         {
             switch ((int)rootState->mStretchFocus.mDirect)
             {
-            case (int)DirectEnum::kU: move.y += offset.y; break;
-            case (int)DirectEnum::kD: move.w += offset.y; break;
-            case (int)DirectEnum::kL: move.x += offset.x; break;
-            case (int)DirectEnum::kR: move.z += offset.x; break;
+            case (int)DirectEnum::kU: thisState->Move.y += offset.y; break;
+            case (int)DirectEnum::kD: thisState->Move.w += offset.y; break;
+            case (int)DirectEnum::kL: thisState->Move.x += offset.x; break;
+            case (int)DirectEnum::kR: thisState->Move.z += offset.x; break;
             }
-            SetUIData(thisState->mData, Move, move);
         }
     }
 
@@ -704,13 +690,12 @@ bool UIClassTreeBox::OnEnter()
     LockPosition();
 
     auto  state = GetState<UIStateTreeBox>();
-    auto & move = GetUIData(state->mData, Move);
-    ImGui::SetNextItemWidth(move.z);
+    ImGui::SetNextItemWidth(state->Move.z);
 
     size_t flag = 0;
     if (state->mSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
-    return ImGui::TreeNodeEx(GetUIData(state->mData, Name).c_str(), flag);
+    return ImGui::TreeNodeEx(state->Name.c_str(), flag);
 }
 
 void UIClassTreeBox::OnLeave(bool ret)
@@ -733,34 +718,31 @@ void UIClassTextBox::OnRender(float dt)
     LockPosition();
     
     auto state = GetState<UIStateTextBox>();
-    if (GetUIData(state->mData, IsEditBox))
+    if (state->IsEditBox)
     {
-        auto & move = GetUIData(state->mData, Move);
         auto flag = ImGuiInputTextFlags_EnterReturnsTrue
             | ImGuiInputTextFlags_CallbackResize
             | ImGuiInputTextFlags_AutoSelectAll;
-        if (GetUIData(state->mData, IsMulti))
+        if (state->IsMulti)
         {
             if (ImGui::InputTextMultiline(
-                GetUIData(state->mData, Name).c_str(), 
+                state->Name.c_str(), 
                 state->mBuffer.data(), 
                 state->mBuffer.size(), 
-                ImVec2(move.z, move.w), flag, 
-                &imgui_tools::OnResizeBuffer,
-                &state->mBuffer))
+                ImVec2(state->Move.z, state->Move.w), 
+                flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
                 PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
             }
         }
         else
         {
-            ImGui::PushItemWidth(move.z);
+            ImGui::PushItemWidth(state->Move.z);
             if (ImGui::InputText(
-                GetUIData(state->mData, Name).c_str(), 
+                state->Name.c_str(), 
                 state->mBuffer.data(), 
-                state->mBuffer.size(),  flag,
-                &imgui_tools::OnResizeBuffer,
-                &state->mBuffer))
+                state->mBuffer.size(), flag,
+                &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
                 PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
             }
@@ -769,7 +751,7 @@ void UIClassTextBox::OnRender(float dt)
     }
     else
     {
-        ImGui::Text(GetUIData(state->mData, Name).c_str());
+        ImGui::Text(state->Name.c_str());
     }
 
     AdjustSize();
@@ -784,17 +766,14 @@ UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kIMAGEBOX, new UIState
 void UIClassImageBox::OnRender(float dt)
 {
     LockPosition();
-
-    auto  state    = GetState<UIStateImageBox>();
-    auto & move    = GetUIData(state->mData, Move);
-    auto & strSkin = GetUIData(state->mData, LSkin);
-    if (GetUIData(state->mData, IsButton))
+    auto state = GetState<UIStateImageBox>();
+    if (state->IsButton)
     {
-        if (!strSkin.empty())
+        if (!state->LSkin.empty())
         {
-            auto & imgSkin = Global::Ref().mAtlasSys->Get(strSkin);
+            auto & imgSkin = Global::Ref().mAtlasSys->Get(state->LSkin);
             if (ImGui::ImageButton(
-                (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
+                (ImTextureID)imgSkin.mID, ImVec2(state->Move.z, state->Move.w),
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
@@ -803,7 +782,7 @@ void UIClassImageBox::OnRender(float dt)
         }
         else
         {
-            if (ImGui::Button(GetUIData(state->mData, Name).c_str(), ImVec2(move.z, move.y)))
+            if (ImGui::Button(state->Name.c_str(), ImVec2(state->Move.z, state->Move.y)))
             {
                 PostEventMessage(UIEventEnum::kMOUSE, UIEventDetails::Mouse(3, 0, this));
             }
@@ -811,10 +790,11 @@ void UIClassImageBox::OnRender(float dt)
     }
     else
     {
-        ASSERT_LOG(!strSkin.empty(), "");
-        auto & imgSkin = Global::Ref().mAtlasSys->Get(strSkin);
+        ASSERT_LOG(!state->LSkin.empty(), "");
+        auto & imgSkin = Global::Ref().mAtlasSys->Get(state->LSkin);
         ImGui::Image(
-            (ImTextureID)imgSkin.mID, ImVec2(move.z, move.w),
+            (ImTextureID)imgSkin.mID,
+            ImVec2(state->Move.z, state->Move.w),
             ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
             ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
     }
@@ -833,14 +813,13 @@ bool UIClassComboBox::OnEnter()
     LockPosition();
 
     auto  state = GetState<UIStateComboBox>();
-    auto & move = GetUIData(state->mData, Move);
-    ImGui::SetNextItemWidth(move.z);
+    ImGui::SetNextItemWidth(state->Move.z);
 
     if (state->mSelected.empty() && !GetObjects().empty())
     {
-        state->mSelected = GetUIData(GetObjects().at(0)->GetState()->mData, Name);
+        state->mSelected = GetObjects().at(0)->GetState()->Name;
     }
-    return ImGui::BeginCombo(GetUIData(state->mData, Name).c_str(), state->mSelected.c_str());
+    return ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str());
 }
 
 void UIClassComboBox::OnLeave(bool ret)
@@ -858,8 +837,7 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Ba
     if (e == UIEventEnum::kMOUSE)
     {
         auto & object = std::any_cast<const UIEventDetails::Mouse &>(param).mObject;
-        auto & name = GetUIData(object->GetState()->mData, Name);
-        GetState<UIStateComboBox>()->mSelected = name;
+        GetState<UIStateComboBox>()->mSelected = object->GetState()->Name;
         ImGui::CloseCurrentPopup();
     }
     return false;

@@ -16,7 +16,7 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIObject * object, UIEventEnum e
                 }
                 else
                 {
-                    auto & name = GetUIData(mouse.mObject->GetState()->mData, Name);
+                    auto & name = mouse.mObject->GetState()->Name;
                     buffer.push_back(        "Add Object");
                     buffer.push_back(        "Del Object");
                     buffer.push_back(        "Rename Object");
@@ -54,7 +54,7 @@ bool UIEventDelegateObjects::OnCallEventMessage(UIObject * object, UIEventEnum e
                   && menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a'
                   && menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
-                SetUIData(menu.mObject->GetState()->mData, Name, menu.mEdit);
+                menu.mObject->GetState()->Name = menu.mEdit;
             }
             else
             {

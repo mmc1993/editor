@@ -46,7 +46,7 @@ void UIParser::Parse__Property(const mmc::JsonValue::Value json, UIObject * obje
         }
         else
         {
-            ParseUIData(object->GetState()->mData, ele.mKey, ele.mValue->ToString());
+            object->GetState()->Parse(ele.mKey, ele.mValue->ToString());
         }
     }
 }

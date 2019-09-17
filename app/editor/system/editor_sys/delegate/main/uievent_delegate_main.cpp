@@ -10,7 +10,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
             auto & mouse = (const UIObject::UIEventDetails::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
-                object->GetState()->mPointer = Global::Ref().mEditorSys->mRootObject;
+                object->GetState()->Pointer = Global::Ref().mEditorSys->mRootObject;
 
                 std::vector<std::string> buffer;
                 if (mouse.mObject == object)
@@ -19,7 +19,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 }
                 else
                 {
-                    auto & name = GetUIData(mouse.mObject->GetState()->mData, Name);
+                    auto & name = mouse.mObject->GetState()->Name;
                     buffer.push_back(        "Add Object");
                     buffer.push_back(        "Del Object");
                     buffer.push_back(        "Rename Object");
@@ -40,7 +40,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
             auto menu = (const UIObject::UIEventDetails::Menu &)param;
             if (menu.mPath == "Add Object")
             {
-                auto insert = (GLObject *)menu.mObject->GetState()->mPointer;
+                auto insert = (GLObject *)menu.mObject->GetState()->Pointer;
                 auto name = Global::Ref().mEditorSys->GenerateObjectName(insert);
 
                 //  Ìí¼ÓGLObject
@@ -55,12 +55,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
                 auto uiObject = UIParser::Parse(raw);
-                uiObject->GetState()->mPointer = glObject;
+                uiObject->GetState()->Pointer = glObject;
                 menu.mObject->AddObject(uiObject);
             }
             else if (menu.mPath == "Del Object")
             {
-                auto glObject = (GLObject *)menu.mObject->GetState()->mPointer;
+                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
                 menu.mObject->DelThis();
                 glObject->DelThis();
             }
@@ -69,10 +69,10 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a' &&
                 menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
-                auto glObject = (GLObject *)menu.mObject->GetState()->mPointer;
+                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
                 if (Global::Ref().mEditorSys->CheckRename(glObject, menu.mEdit))
                 {
-                    SetUIData(menu.mObject->GetState()->mData, Name, menu.mEdit);
+                    menu.mObject->GetState()->Name = menu.mEdit;
                 }
             }
             else
@@ -90,18 +90,18 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
-    std::cout << "Name: " << GetUIData(object->GetState()->mData, Name) << std::endl;
+    std::cout << "Name: " << object->GetState()->Name << std::endl;
     return true;
 }
 
 bool UIEventDelegateMainComList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
-    std::cout << "Name: " << GetUIData(object->GetState()->mData, Name) << std::endl;
+    std::cout << "Name: " << object->GetState()->Name << std::endl;
     return true;
 }
 
 bool UIEventDelegateMainStage::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
-    std::cout << "Name: " << GetUIData(object->GetState()->mData, Name) << std::endl;
+    std::cout << "Name: " << object->GetState()->Name << std::endl;
     return true;
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../include.h"
+
 namespace tools {
     class ValueParser {
     public:
@@ -18,41 +20,41 @@ namespace tools {
             kSTRING_LIST,
         };
 
-        virtual bool Parse(TypeEnum type, const std::string & buffer, void * output)
+        static bool Parse(TypeEnum type, const std::string & val, void * out)
         {
             switch (type)
             {
             case ValueParser::kINT:
-                *((int *)output) = std::stoi(buffer);
+                *((int *)out) = std::stoi(val);
                 return true;
             case ValueParser::kBOOL:
-                *((bool *)output) = std::stoi(buffer) != 0;
+                *((bool *)out) = val.at(0) == 'o' && val.at(1) == 'k';
                 return true;
             case ValueParser::kFLOAT:
-                *((float *)output) = std::stof(buffer);
+                *((float *)out) = std::stof(val);
                 return true;
             case ValueParser::kSTRING:
-                *((std::string *)output) = buffer;
+                *((std::string *)out) = val;
                 return true;
             case ValueParser::kMENU:
                 {
-                    auto split = tools::Split(buffer, ",");
-                    auto value = (std::vector<std::string> *)output;
+                    auto split = tools::Split(val, ",");
+                    auto value = (std::vector<std::string> *)out;
                     *value = std::move(split);
                 }
                 return true;
             case ValueParser::kVEC2:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (glm::vec2 *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (glm::vec2 *)out;
                     value->x = std::stof(split.at(0));
                     value->y = std::stof(split.at(1));
                 }
                 return true;
             case ValueParser::kVEC3:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (glm::vec3 *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (glm::vec3 *)out;
                     value->x = std::stof(split.at(0));
                     value->y = std::stof(split.at(1));
                     value->z = std::stof(split.at(2));
@@ -60,8 +62,8 @@ namespace tools {
                 return true;
             case ValueParser::kVEC4:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (glm::vec4 *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (glm::vec4 *)out;
                     value->x = std::stof(split.at(0));
                     value->y = std::stof(split.at(1));
                     value->z = std::stof(split.at(2));
@@ -70,8 +72,8 @@ namespace tools {
                 return true;
             case TypeEnum::kCOLOR:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (glm::vec4 *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (glm::vec4 *)out;
                     value->x = std::stof(split.at(0));
                     value->y = std::stof(split.at(1));
                     value->z = std::stof(split.at(2));
@@ -83,8 +85,8 @@ namespace tools {
                 return true;
             case ValueParser::kINT_LIST:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (std::vector<int> *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (std::vector<int> *)out;
                     std::transform(
                         split.begin(), split.end(),
                         std::back_inserter(*value),
@@ -94,8 +96,8 @@ namespace tools {
                 return true;
             case ValueParser::kFLOAT_LIST:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (std::vector<float> *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (std::vector<float> *)out;
                     std::transform(
                         split.begin(), split.end(),
                         std::back_inserter(*value),
@@ -105,8 +107,8 @@ namespace tools {
                 return true;
             case ValueParser::kSTRING_LIST:
                 {
-                    auto split = tools::Split(buffer, " ");
-                    auto value = (std::vector<std::string> *)output;
+                    auto split = tools::Split(val, " ");
+                    auto value = (std::vector<std::string> *)out;
                     *value = std::move(split);
                 }
                 return true;
@@ -116,3 +118,6 @@ namespace tools {
     };
 }
 
+#ifndef PARSER_REG_MEMBER
+#define PARSER_REG_MEMBER(type, key, val, K, out)  if (key == #K) { tools::ValueParser::Parse(type, val, &out); return ; }
+#endif
