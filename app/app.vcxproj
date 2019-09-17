@@ -37,7 +37,7 @@
     <ClCompile Include="editor\third\tinyxml\tinyxml.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinyxmlparser.cpp" />
-    <ClCompile Include="editor\system\ui_sys\ui_class\ui_class.cpp" />
+    <ClCompile Include="editor\system\ui_sys\ui_object\ui_object.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_menu.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_sys.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_parse\ui_parse.cpp" />
@@ -320,7 +320,7 @@
     <ClInclude Include="editor\tools\string_tool.h" />
     <ClInclude Include="editor\tools\time_tool.h" />
     <ClInclude Include="editor\system\ui_sys\base.h" />
-    <ClInclude Include="editor\system\ui_sys\ui_class\ui_class.h" />
+    <ClInclude Include="editor\system\ui_sys\ui_object\ui_object.h" />
     <ClInclude Include="editor\system\ui_sys\ui_menu.h" />
     <ClInclude Include="editor\system\ui_sys\ui_sys.h" />
     <ClInclude Include="editor\system\ui_sys\ui_parse\ui_parse.h" />

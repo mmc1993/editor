@@ -1,5 +1,5 @@
 #include "ui_menu.h"
-#include "ui_class/ui_class.h"
+#include "ui_object/ui_object.h"
 
 UIMenu::Popup UIMenu::s_popup;
 

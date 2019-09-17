@@ -1,6 +1,6 @@
 #include "ui_parse.h"
 #include "../ui_state/ui_state.h"
-#include "../ui_class/ui_class.h"
+#include "../ui_object/ui_object.h"
 #include "../../editor_sys/delegate/uievent_delegate_objects.h"
 #include "../../editor_sys/delegate/main/uievent_delegate_main.h"
 

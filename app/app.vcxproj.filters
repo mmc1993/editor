@@ -63,9 +63,6 @@
     <ClCompile Include="editor\system\raw_sys\raw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\ui_sys\ui_class\ui_class.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\system\ui_sys\ui_parse\ui_parse.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\ui_sys\ui_object\ui_object.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -911,9 +911,6 @@
     <ClInclude Include="editor\system\raw_sys\raw.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\ui_sys\ui_class\ui_class.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_parse\ui_parse.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -957,6 +954,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\tools\type_parser.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_object\ui_object.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
