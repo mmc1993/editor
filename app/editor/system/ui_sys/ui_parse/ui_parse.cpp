@@ -63,13 +63,13 @@ UIObject * UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {
-    case UITypeEnum::kLAYOUT: return new UIClassLayout(new UIStateLayout());
-    case UITypeEnum::kTREEBOX: return new UIClassTreeBox(new UIStateTreeBox());
-    case UITypeEnum::kTEXTBOX: return new UIClassTextBox(new UIStateTextBox());
-    case UITypeEnum::kIMAGEBOX: return new UIClassImageBox(new UIStateImageBox());
-    case UITypeEnum::kCOMBOBOX: return new UIClassComboBox(new UIStateComboBox());
-    case UITypeEnum::kUICONVAS: break;
-    case UITypeEnum::kGLCONVAS: break;
+    case UITypeEnum::kLAYOUT: return new UIClassLayout();
+    case UITypeEnum::kTREEBOX: return new UIClassTreeBox();
+    case UITypeEnum::kTEXTBOX: return new UIClassTextBox();
+    case UITypeEnum::kIMAGEBOX: return new UIClassImageBox();
+    case UITypeEnum::kCOMBOBOX: return new UIClassComboBox();
+    case UITypeEnum::kUICONVAS: return new UIClassUICanvas();
+    case UITypeEnum::kGLCONVAS: return new UIClassGLCanvas();
     }
     ASSERT_LOG(false, "Error Type: {0}!", type);
     return nullptr;

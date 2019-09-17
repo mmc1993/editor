@@ -440,6 +440,9 @@ bool UIObject::PostEventMessage(UIEventEnum e, const UIEventDetails::Base & para
 // ---
 //  Layout
 // ---
+UIClassLayout::UIClassLayout() : UIObject(UITypeEnum::kLAYOUT, new UIStateLayout())
+{ }
+
 bool UIClassLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
@@ -693,6 +696,9 @@ void UIClassLayout::HandleStretch()
 // ---
 //  UIClassTree
 // ---
+UIClassTreeBox::UIClassTreeBox() : UIObject(UITypeEnum::kTREEBOX, new UIStateTreeBox())
+{ }
+
 bool UIClassTreeBox::OnEnter()
 {
     LockPosition();
@@ -719,6 +725,9 @@ void UIClassTreeBox::OnLeave(bool ret)
 // ---
 //  UIClassTextBox
 // ---
+UIClassTextBox::UIClassTextBox() : UIObject(UITypeEnum::kTEXTBOX, new UIStateTextBox())
+{ }
+
 void UIClassTextBox::OnRender(float dt)
 {
     LockPosition();
@@ -766,9 +775,12 @@ void UIClassTextBox::OnRender(float dt)
     AdjustSize();
 }
 
-//--------------------------------------------------------------------------------
+// ---
 //  UIClassImage
-//--------------------------------------------------------------------------------
+//----
+UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kIMAGEBOX, new UIStateImageBox())
+{ }
+
 void UIClassImageBox::OnRender(float dt)
 {
     LockPosition();
@@ -813,6 +825,9 @@ void UIClassImageBox::OnRender(float dt)
 // ---
 //  UIClassComboBox
 // ---
+UIClassComboBox::UIClassComboBox() : UIObject(UITypeEnum::kCOMBOBOX, new UIStateComboBox())
+{ }
+
 bool UIClassComboBox::OnEnter()
 {
     LockPosition();
@@ -849,3 +864,15 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Ba
     }
     return false;
 }
+
+UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICONVAS, new UIStateUICanvas())
+{ }
+
+void UIClassUICanvas::OnRender(float dt)
+{ }
+
+UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCONVAS, new UIStateGLCanvas())
+{ }
+
+void UIClassGLCanvas::OnRender(float dt)
+{ }

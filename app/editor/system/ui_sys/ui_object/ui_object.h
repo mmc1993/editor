@@ -192,8 +192,7 @@ private:
 
 class UIClassLayout : public UIObject {
 public:
-    UIClassLayout(UIState * state): UIObject(UITypeEnum::kLAYOUT, state)
-    { }
+    UIClassLayout();
 
 private:
     virtual bool OnEnter() override;
@@ -209,8 +208,7 @@ private:
 
 class UIClassTreeBox : public UIObject {
 public:
-    UIClassTreeBox(UIState * state): UIObject(UITypeEnum::kTREEBOX, state)
-    { }
+    UIClassTreeBox();
 
 private:
     virtual bool OnEnter() override;
@@ -219,8 +217,7 @@ private:
 
 class UIClassTextBox : public UIObject {
 public:
-    UIClassTextBox(UIState * state) : UIObject(UITypeEnum::kTEXTBOX, state)
-    { }
+    UIClassTextBox();
 
 private:
     virtual void OnRender(float dt) override;
@@ -228,8 +225,7 @@ private:
 
 class UIClassImageBox : public UIObject {
 public:
-    UIClassImageBox(UIState * state): UIObject(UITypeEnum::kIMAGEBOX, state)
-    { }
+    UIClassImageBox();
 
 private:
     virtual void OnRender(float dt) override;
@@ -237,8 +233,7 @@ private:
 
 class UIClassComboBox : public UIObject {
 public:
-    UIClassComboBox(UIState * state) : UIObject(UITypeEnum::kCOMBOBOX, state)
-    { }
+    UIClassComboBox();
 
 private:
     virtual bool OnEnter() override;
@@ -249,8 +244,7 @@ private:
 
 class UIClassUICanvas : public UIObject {
 public:
-    UIClassUICanvas(UIState * state) : UIObject(UITypeEnum::kUICONVAS, state)
-    { }
+    UIClassUICanvas();
 
 private:
     virtual void OnRender(float dt) override;
@@ -258,8 +252,7 @@ private:
 
 class UIClassGLCanvas : public UIObject {
 public:
-    UIClassGLCanvas(UIState * state) : UIObject(UITypeEnum::kGLCONVAS, state)
-    { }
+    UIClassGLCanvas();
 
 private:
     virtual void OnRender(float dt) override;
