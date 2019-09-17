@@ -54,9 +54,6 @@
     <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\editor_sys\delegate\test.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\system\editor_sys\property\property.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -79,9 +76,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\system\atlas_sys\atlas_sys.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\system\editor_sys\delegate\uievent_delegate_objects.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp">
@@ -899,9 +893,6 @@
     <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\delegate\test.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\editor_sys\property\property.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -915,9 +906,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_state\ui_state.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\system\ui_sys\base.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_menu.h">
@@ -941,9 +929,6 @@
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\delegate\uievent_delegate_objects.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\component.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -957,6 +942,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\tools\parser_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

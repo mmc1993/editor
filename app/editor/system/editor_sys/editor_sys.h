@@ -1,6 +1,6 @@
 #pragma once
 
-#include "include.h"
+#include "../../include.h"
 #include "component/gl_object.h"
 #include "component/component.h"
 

@@ -1,5 +1,4 @@
 #include "uievent_delegate_main.h"
-#include "../../editor_sys.h"
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {

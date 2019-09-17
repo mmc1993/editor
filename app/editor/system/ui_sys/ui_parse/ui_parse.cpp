@@ -1,7 +1,6 @@
 #include "ui_parse.h"
 #include "../ui_state/ui_state.h"
 #include "../ui_object/ui_object.h"
-#include "../../editor_sys/delegate/uievent_delegate_objects.h"
 #include "../../editor_sys/delegate/main/uievent_delegate_main.h"
 
 // ...
@@ -11,7 +10,6 @@ template <class T>
 UIObject::UIEventDelegate * Create() { return new T(); }
 
 static std::map<std::string, UIObject::UIEventDelegate *(*)()> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/uievent_delegate_objects", &Create<UIEventDelegateObjects>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &Create<UIEventDelegateMainStage>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &Create<UIEventDelegateMainObjList>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", &Create<UIEventDelegateMainResList>),

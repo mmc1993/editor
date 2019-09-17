@@ -1,7 +1,6 @@
 #pragma once
 
-#include "../include.h"
-#include <filesystem>
+#include "../../include.h"
 
 class CfgSys {
 public:
