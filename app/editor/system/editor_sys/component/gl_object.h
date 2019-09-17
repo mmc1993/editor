@@ -11,15 +11,15 @@ public:
     virtual ~GLObject();
     virtual void OnUpdate(float dt);
 
-    void AddObject(GLObject * child, const std::string & tag = "");
-    void DelObject(GLObject * child, bool del = true);
-    void DelObjectByIdx(size_t idx, bool del = true);
+    void AddObject(GLObject * child, const std::string & tag);
+    void DelObject(GLObject * child, const bool del = true);
+    void DelObjectByIdx(size_t idx, const bool del = true);
     void DelObjectByTag(const std::string & tag);
     void ClearObjects();
     void DelThis();
 
-	GLObject * GetObjectByIdx(size_t idx);
-	GLObject * GetObjectByTag(const std::string & tag);
+    GLObject * GetObjectByTag(const std::string & tag);
+    GLObject * GetObjectByIdx(const size_t idx);
     std::vector<GLObject *> & GetObjects();
 
     const std::string & GetTag() const;
@@ -35,6 +35,7 @@ public:
 
 	void ClearComponent();
     void AddComponent(Component * component);
+    void DelComponent(Component * component);
     void DelComponent(const std::type_info & type);
     std::vector<Component *> & GetComponents();
 

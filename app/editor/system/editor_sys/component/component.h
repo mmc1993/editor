@@ -4,6 +4,8 @@
 
 class Component {
 public:
+    static Component * Create(const std::string & tag);
+
 	Component()
         : _owner(nullptr)
         , _active(true) { }
@@ -12,7 +14,7 @@ public:
     virtual void OnDel() = 0;
     virtual void OnUpdate(float dt) = 0;
 
-	bool IsActive() const { return _active; }
+    bool IsActive() const { return _active; }
 	void SetActive(bool active) { _active = active; }
 
     GLObject * GetOwner() { return _owner; }

@@ -31,4 +31,10 @@ namespace std {
     {
         return std::to_string((size_t)val);
     }
+
+    template <class R, class T>
+    R * create()
+    {
+        return new T();
+    }
 }

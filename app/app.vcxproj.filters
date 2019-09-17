@@ -90,6 +90,9 @@
     <ClCompile Include="editor\system\ui_sys\ui_object\ui_object.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\component.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -918,9 +921,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\atlas_sys\atlas_sys.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\system\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\editor_sys.h">

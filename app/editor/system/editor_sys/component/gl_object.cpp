@@ -22,14 +22,14 @@ void GLObject::AddObject(GLObject * child, const std::string & tag)
     _children.push_back(child);
 }
 
-void GLObject::DelObject(GLObject * child, bool del)
+void GLObject::DelObject(GLObject * child, const bool del)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
     ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
     DelObjectByIdx(std::distance(_children.begin(), it), del);
 }
 
-void GLObject::DelObjectByIdx(size_t idx, bool del)
+void GLObject::DelObjectByIdx(size_t idx, const bool del)
 {
     ASSERT_LOG(idx < _children.size(), "Object DelChild Idx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
@@ -69,7 +69,7 @@ GLObject * GLObject::GetObjectByTag(const std::string & tag)
     return it != _children.end() ? *it : nullptr;
 }
 
-GLObject * GLObject::GetObjectByIdx(size_t idx)
+GLObject * GLObject::GetObjectByIdx(const size_t idx)
 {
     ASSERT_LOG(idx < _children.size(), "Object GetChildIdx Idx: {0}", idx);
     return *std::next(_children.begin(), idx);
@@ -136,16 +136,17 @@ void GLObject::AddComponent(Component * component)
     component->OnAdd();
 }
 
+void GLObject::DelComponent(Component * component)
+{
+    auto it = std::find(_components.begin(), _components.end(), component);
+    if (it != _components.end()) { (*it)->OnDel(); delete *it; _components.erase(it); }
+}
+
 void GLObject::DelComponent(const std::type_info & type)
 {
     auto it = std::find_if(_components.begin(), _components.end(),
         [&type](Component * component) { return typeid(*component) == type; });
-    if (it != _components.end()) 
-    {
-        _components.erase(it);
-        (*it)->OnDel();
-        delete *it;
-    }
+    if (it != _components.end()) { (*it)->OnDel(); delete *it; _components.erase(it); }
 }
 
 std::vector<Component*>& GLObject::GetComponents()
