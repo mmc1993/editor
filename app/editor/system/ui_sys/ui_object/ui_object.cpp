@@ -287,8 +287,9 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
 
 void UIObject::BindDelegate(UIEventDelegate * delegate)
 {
-    SAFE_DELETE(_delegate);
-    _delegate = delegate;
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(this, UIEventEnum::kDELEGATE, UIEventDetails::Delegate(1)); }
+    _delegate.reset(delegate);
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(this, UIEventEnum::kDELEGATE, UIEventDetails::Delegate(0)); }
 }
 
 void UIObject::AdjustSize()
@@ -693,7 +694,7 @@ bool UIClassTreeBox::OnEnter()
     ImGui::SetNextItemWidth(state->Move.z);
 
     size_t flag = 0;
-    if (state->mSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
+    if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
     return ImGui::TreeNodeEx(state->Name.c_str(), flag);
 }

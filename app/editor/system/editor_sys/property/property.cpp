@@ -1,5 +1,10 @@
 #include "property.h"
 
+bool ComponentHeader::OnEnter()
+{
+    return ImGui::CollapsingHeader(GetState()->Name.c_str());
+}
+
 void PropertyInt::OnRender(float dt)
 {
     PropertyObject::OnRender(dt);
@@ -121,3 +126,5 @@ void PropertyColor4::OnRender(float dt)
     }
     ImGui::Columns(1);
 }
+
+

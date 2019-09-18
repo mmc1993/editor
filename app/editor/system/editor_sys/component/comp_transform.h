@@ -28,12 +28,18 @@ public:
     glm::vec2 GetWorldPosition();
     glm::mat4 GetAngleMatrix();
 
-    virtual bool Parse(const std::string & key, const std::string & val) override;
-    virtual std::vector<std::pair<size_t, void *>> CollectPropertys() override;
+    virtual const std::string & GetName() override;
+
     virtual bool OnModifyProperty(
-        const std::any    & value,
-        const std::string & title,
-        const std::any    & backup) override;
+        const std::any &    value, 
+        const std::string & title, 
+        const std::any &    backup) override;
+
+    virtual bool ParseProperty(
+        const std::string & key, 
+        const std::string & val) override;
+
+    virtual std::vector<Property> CollectProperty() override;
 
 private:
     void UpdateMatrix();

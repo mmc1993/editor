@@ -114,6 +114,7 @@ enum class UIEventEnum {
     kMOUSE,             //  鼠标
     kEDIT_TEXT_FINISH,  //  输入完成
     kMENU,              //  菜单
+    kDELEGATE,          //  代理函数初始化
 };
 
 //  转化为ImGuiID

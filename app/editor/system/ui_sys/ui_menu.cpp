@@ -58,6 +58,12 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
             :                item.mName;
         if (!leaf) { children.push_back(str.substr(pos + 1)); }
     }
+
+    if (!children.empty())
+    {
+        result.back().mChildren = std::move(Parse(result.back().mPath, children));
+    }
+
     return std::move(result);
 }
 

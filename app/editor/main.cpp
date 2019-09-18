@@ -37,6 +37,7 @@
 #include "system/raw_sys/raw_sys.h"
 #include "system/cfg_sys/cfg_sys.h"
 #include "system/atlas_sys/atlas_sys.h"
+#include "system/event_sys/event_sys.h"
 #include "system/editor_sys/editor_sys.h"
 
 static void glfw_error_callback(int error, const char* description)
@@ -124,19 +125,20 @@ int main(int, char**)
     // Our state
     bool show_demo_window = true;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-    
-    //  初始化UI管理器
-    Global::Ref().mUISys = new UISys();
-    Global::Ref().mUISys->SetRoot("res/ui/window.json");
-    //  初始化资源管理器
+    //  初始化资源系统
     Global::Ref().mRawSys = new RawSys();
-    //  初始化配置管理器
+    //  初始化配置系统
     Global::Ref().mCfgSys = new CfgSys();
     Global::Ref().mCfgSys->Import("res/cfg/editor/component.json");
-    //  初始化图集管理器
+    //  初始化事件系统
+    Global::Ref().mEventSys = new EventSys();
+    //  初始化图集系统
     Global::Ref().mAtlasSys = new AtlasSys();
     Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");
-    //  初始化编辑器
+    //  初始化UI系统
+    Global::Ref().mUISys = new UISys();
+    Global::Ref().mUISys->SetRoot("res/ui/window.json");
+    //  初始化编辑系统
     Global::Ref().mEditorSys = new EditorSys();
 
     // Main loop

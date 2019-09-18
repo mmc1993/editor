@@ -15,6 +15,7 @@ public:
     int Align               = 0;        //  对齐方式
     
     bool IsMulti            = false;    //  多行
+    bool IsSelect           = false;    //  选中
     bool IsWindow           = false;    //  窗口
     bool IsButton           = false;    //  按钮
     bool IsShowNav          = false;    //  导航
@@ -61,8 +62,6 @@ public:
 
 class UIStateTreeBox : public UIState {
 public:
-    bool mSelect;
-
     UIStateTreeBox();
 };
 

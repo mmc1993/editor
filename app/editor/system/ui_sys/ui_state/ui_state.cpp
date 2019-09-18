@@ -6,6 +6,7 @@ bool UIState::Parse(const std::string & key, const std::string & val)
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kINT, key, val, Align, Align);
 
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsMulti, IsMulti);
+    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsSelect, IsSelect);
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsWindow, IsWindow);
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsButton, IsButton);
     PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowNav, IsShowNav);
@@ -36,7 +37,7 @@ bool UIState::Parse(const std::string & key, const std::string & val)
 UIStateLayout::UIStateLayout()
 { }
 
-UIStateTreeBox::UIStateTreeBox(): mSelect(false)
+UIStateTreeBox::UIStateTreeBox()
 { }
 
 UIStateTextBox::UIStateTextBox(): mBuffer(1024, '\0')

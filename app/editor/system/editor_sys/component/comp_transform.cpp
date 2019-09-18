@@ -115,7 +115,13 @@ glm::mat4 CompTransform::GetAngleMatrix()
     return glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
 }
 
-bool CompTransform::Parse(const std::string & key, const std::string & val)
+const std::string & CompTransform::GetName()
+{
+    static const std::string name = "Transform";
+    return name;
+}
+
+bool CompTransform::ParseProperty(const std::string & key, const std::string & val)
 {
     PARSER_REG_MEMBER(tools::ValueParser::kFLOAT, key, val, Angle,  _angle);
     PARSER_REG_MEMBER(tools::ValueParser::kVEC2,  key, val, Scale,  _scale);
@@ -123,12 +129,12 @@ bool CompTransform::Parse(const std::string & key, const std::string & val)
     return false;
 }
 
-std::vector<std::pair<size_t, void*>> CompTransform::CollectPropertys()
+std::vector<Component::Property> CompTransform::CollectProperty()
 {
     return {
-        std::make_pair(tools::ValueParser::kVEC2,  &_position),
-        std::make_pair(tools::ValueParser::kVEC2,  &_scale),
-        std::make_pair(tools::ValueParser::kFLOAT, &_angle),
+        { "Poosition", tools::ValueParser::kVEC2, &_position },
+        { "Scale",     tools::ValueParser::kVEC2,  &_scale },
+        { "Angle",     tools::ValueParser::kFLOAT, &_angle }
     };
 }
 

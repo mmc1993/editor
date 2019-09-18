@@ -81,6 +81,14 @@ public:
                 , mString(string)
             { }
         };
+
+        //  事件代理
+        struct Delegate : Base {
+            int mType;      //  0 初始化, 1 销毁
+
+            Delegate(int type) : mType(type)
+            {  }
+        };
     };
 
     //  事件代理
@@ -182,12 +190,12 @@ public:
     bool PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
 
 private:
-    UITypeEnum              _type;
-    UIState *               _state;
-    UIObject *              _parent;
-    bool                    _visible;       //  标记当前节点是否渲染
-    UIEventDelegate *       _delegate;
-    std::vector<UIObject *> _children;
+    UITypeEnum                       _type;
+    UIState *                        _state;
+    UIObject *                       _parent;
+    bool                             _visible;       //  标记当前节点是否渲染
+    std::vector<UIObject *>          _children;
+    std::unique_ptr<UIEventDelegate> _delegate;
 };
 
 class UIClassLayout : public UIObject {

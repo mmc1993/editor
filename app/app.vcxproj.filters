@@ -956,10 +956,10 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_transform.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\event_sys\event_enum.h">
+    <ClInclude Include="editor\system\event_sys\event_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\event_sys\event_sys.h">
+    <ClInclude Include="editor\system\tools\event_enum.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

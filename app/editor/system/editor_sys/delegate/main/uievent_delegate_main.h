@@ -22,6 +22,13 @@ public:
 class UIEventDelegateMainComList : public UIObject::UIEventDelegate {
 public:
     virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
+
+private:
+    void OnRefreshComponent();
+
+private:
+    UIObject * _onwer;
+    Global::EventListener _listener;
 };
 
 class UIEventDelegateMainStage : public UIObject::UIEventDelegate {

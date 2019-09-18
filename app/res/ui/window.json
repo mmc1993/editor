@@ -107,7 +107,8 @@
 				"Align": "384",
 				"Name": "C_2",
 				"StretchMin": "300 550",
-                "IsCanStretch": "ok"
+				"IsCanStretch": "ok",
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_com_list"
 			},
 			"__Children": [
 				

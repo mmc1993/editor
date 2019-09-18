@@ -4,6 +4,17 @@
 #include "../../ui_sys/ui_state/ui_state.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
+class ComponentHeader : public UIObject {
+public:
+    ComponentHeader(const std::string & name): UIObject(UITypeEnum::kOTHER, new UIState())
+    {
+        GetState()->Name = name;
+    }
+
+private:
+    virtual bool OnEnter() override;
+};
+
 template <class T, class B = T>
 class PropertyState : public UIState {
 public:
