@@ -34,7 +34,7 @@
     <ClCompile Include="editor\system\raw_sys\raw.cpp" />
     <ClCompile Include="editor\system\raw_sys\raw_sys.cpp" />
     <ClCompile Include="editor\system\interface\serializer.cpp" />
-    <ClCompile Include="editor\system\ui_sys\ui_event\ui_event.cpp" />
+    <ClCompile Include="editor\system\ui_sys\ui_event.cpp" />
     <ClCompile Include="editor\third\glm\detail\glm.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinystr.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinyxml.cpp" />
@@ -69,7 +69,7 @@
     <ClInclude Include="editor\system\raw_sys\raw.h" />
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
     <ClInclude Include="editor\system\interface\serializer.h" />
-    <ClInclude Include="editor\system\ui_sys\ui_event\ui_event.h" />
+    <ClInclude Include="editor\system\ui_sys\ui_event.h" />
     <ClInclude Include="editor\third\glm\common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_vector_relational.hpp" />

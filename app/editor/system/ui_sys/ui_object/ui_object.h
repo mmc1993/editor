@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../include.h"
-#include "../ui_event/ui_event.h"
+#include "../ui_event.h"
 
 class UIObject {
 public:

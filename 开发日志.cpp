@@ -38,7 +38,7 @@ public:
 ok  //  event_enum 放进 EventSys
 ok  //  event_listen 放进 EventSys
 ok  //  parser_tool.h 放进 Serializer
-//  UIEventEnum 剥离
+ok  //  UIEventEnum 剥离
 
 
 需要序列化的对象:
