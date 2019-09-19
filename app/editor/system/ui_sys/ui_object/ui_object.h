@@ -1,105 +1,9 @@
 #pragma once
 
 #include "../include.h"
+#include "../ui_event/ui_event.h"
 
 class UIObject {
-public:
-    struct UIEventDetails {
-        //  返回按下的状态键
-        static int CheckStateKey();
-
-        struct Base {
-            mutable UIObject * mObject;
-
-            Base(UIObject * object = nullptr) : mObject(object)
-            {  }
-        };
-
-        //  键盘事件
-        struct Key : Base {
-            //  支持的热键响应
-            static std::vector<int> Hotkeys;
-
-            int mKey;
-            int mAct;   //  0, 1, 2 => 按下, 抬起, 单击
-            int mState; //  1, 2, 4 => alt, ctrl, shift
-
-            Key(const int act, const int key, UIObject * object = nullptr)
-                : Base(object)
-                , mKey(key)
-                , mAct(act)
-                , mState(CheckStateKey())
-            { }
-        };
-
-        //  鼠标事件
-        struct Mouse : Base {
-            int mKey;           //  0, 1, 2       => 左键, 右键, 中键
-            int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
-            int mState;         //  1, 2, 4       => alt, ctrl, shift
-            glm::vec2 mMouse;   //  鼠标坐标
-
-            Mouse(const int act, const int key, UIObject * object = nullptr)
-                : Base(object)
-                , mAct(act)
-                , mKey(key)
-                , mState(CheckStateKey())
-            {
-                mMouse.x = ImGui::GetMousePos().x;
-                mMouse.y = ImGui::GetMousePos().y;
-            }
-        };
-
-        //  菜单事件
-        struct Menu : Base {
-            bool mSelect;
-            std::string mEdit;
-            std::string mPath;
-
-            Menu(const std::string & path, const bool select)
-                : mPath(path)
-                , mSelect(select)
-            { }
-
-            Menu(const std::string & path, const char * edit)
-                : mPath(path)
-                , mEdit(edit)
-            { }
-
-            Menu(const std::string & path, const std::string & edit)
-                : mPath(path)
-                , mEdit(edit)
-            { }
-        };
-
-        //  编辑文本事件
-        struct EditText : Base {
-            std::string mString;
-
-            EditText(const std::string & string, UIObject * object = nullptr)
-                : Base(object)
-                , mString(string)
-            { }
-        };
-
-        //  事件代理
-        struct Delegate : Base {
-            int mType;      //  0 初始化, 1 销毁
-
-            Delegate(int type) : mType(type)
-            {  }
-        };
-    };
-
-    //  事件代理
-    class UIEventDelegate {
-    public:
-        virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIEventDetails::Base & param)
-        {
-            return false;
-        }
-    };
-
 public:
     template <class T = UIState>
     T * GetState() { return (T *)_state; }
@@ -127,7 +31,7 @@ public:
     glm::vec2 ToLocalCoordFromImGUI() const;
 
     //  绑定事件委托, 事件将被传递到委托中
-    void BindDelegate(UIEventDelegate * delegate);
+    void BindDelegate(UIEvent::DelegateHandler * delegate);
 
     //  const 重载版本
     UITypeEnum GetType() const
@@ -179,23 +83,23 @@ protected:
 
     //  事件处理
     void DispatchEventK();
-    bool DispatchEventK(const UIEventDetails::Key & param);
+    bool DispatchEventK(const UIEvent::Key & param);
     void DispatchEventM();
-    bool DispatchEventM(const UIEventDetails::Mouse & param);
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
+    bool DispatchEventM(const UIEvent::Mouse & param);
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    bool CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
+    bool CallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 public:
-    bool PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param);
+    bool PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    UITypeEnum                       _type;
-    UIState *                        _state;
-    UIObject *                       _parent;
-    bool                             _visible;       //  标记当前节点是否渲染
-    std::vector<UIObject *>          _children;
-    std::unique_ptr<UIEventDelegate> _delegate;
+    UITypeEnum                                  _type;
+    UIState *                                   _state;
+    UIObject *                                  _parent;
+    bool                                        _visible;       //  标记当前节点是否渲染
+    std::vector<UIObject *>                     _children;
+    std::unique_ptr<UIEvent::DelegateHandler>   _delegate;
 };
 
 class UIClassLayout : public UIObject {
@@ -247,7 +151,7 @@ private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnRender(float dt) override;
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 
 class UIClassUICanvas : public UIObject {

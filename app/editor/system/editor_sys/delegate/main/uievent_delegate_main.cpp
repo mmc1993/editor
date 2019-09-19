@@ -1,12 +1,12 @@
 #include "uievent_delegate_main.h"
 
-bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
+bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
     switch (e)
     {
     case UIEventEnum::kMOUSE:
         {
-            auto & mouse = (const UIObject::UIEventDetails::Mouse &)param;
+            auto & mouse = (const UIEvent::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
                 object->GetState()->Pointer = Global::Ref().mEditorSys->mRootObject;
@@ -45,7 +45,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
         break;
     case UIEventEnum::kMENU:
         {
-            auto menu = (const UIObject::UIEventDetails::Menu &)param;
+            auto menu = (const UIEvent::Menu &)param;
             if (menu.mPath == "Add Object")
             {
                 auto insert = (GLObject *)menu.mObject->GetState()->Pointer;
@@ -103,16 +103,16 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
     return true;
 }
 
-bool UIEventDelegateMainResList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
+bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
     return true;
 }
 
-bool UIEventDelegateMainComList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
+bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
     if (UIEventEnum::kDELEGATE == e)
     {
-        auto & arg = (const UIObject::UIEventDetails::Delegate &)param;
+        auto & arg = (const UIEvent::Delegate &)param;
         if (arg.mType == 0)
         {
             _onwer = object;
@@ -160,7 +160,7 @@ void UIEventDelegateMainComList::OnRefreshComponent()
     }
 }
 
-bool UIEventDelegateMainStage::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
+bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
     return true;
 }

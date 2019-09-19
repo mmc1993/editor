@@ -122,7 +122,7 @@ void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
                     &imgui_tools::OnResizeBuffer, &item.mBuffer))
                 {
                     ImGui::CloseCurrentPopup();
-                    object->PostEventMessage(UIEventEnum::kMENU, UIObject::UIEventDetails::Menu(item.mPath, item.mBuffer.c_str()));
+                    object->PostEventMessage(UIEventEnum::kMENU, UIEvent::Menu(item.mPath, item.mBuffer.c_str()));
                 }
             }
             else
@@ -130,7 +130,7 @@ void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
                 if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
                 {
                     ImGui::CloseCurrentPopup();
-                    object->PostEventMessage(UIEventEnum::kMENU, UIObject::UIEventDetails::Menu(item.mPath, item.mSelected));
+                    object->PostEventMessage(UIEventEnum::kMENU, UIEvent::Menu(item.mPath, item.mSelected));
                 }
             }
         }

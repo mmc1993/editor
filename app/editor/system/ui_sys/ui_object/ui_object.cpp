@@ -5,22 +5,6 @@
 #include "imgui_impl_glfw.h"
 
 // ---
-//  EventDetails
-// ---
-std::vector<int> UIObject::UIEventDetails::Key::Hotkeys = {
-    'A', 'B', 'C', 'D'
-};
-
-int UIObject::UIEventDetails::CheckStateKey()
-{
-    int flag = 0;
-    if (ImGui::GetIO().KeyAlt) { flag |= 1; }
-    if (ImGui::GetIO().KeyCtrl) { flag |= 2; }
-    if (ImGui::GetIO().KeyShift) { flag |= 4; }
-    return flag;
-}
-
-// ---
 //  UIObject
 // ---
 UIObject * UIObject::GetObjects(const std::initializer_list<std::string>& list)
@@ -285,11 +269,11 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
     return pos;
 }
 
-void UIObject::BindDelegate(UIEventDelegate * delegate)
+void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
 {
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(this, UIEventEnum::kDELEGATE, UIEventDetails::Delegate(1)); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDELEGATE, UIEvent::Delegate(1), this); }
     _delegate.reset(delegate);
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(this, UIEventEnum::kDELEGATE, UIEventDetails::Delegate(0)); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDELEGATE, UIEvent::Delegate(0), this); }
 }
 
 void UIObject::AdjustSize()
@@ -337,16 +321,16 @@ void UIObject::DispatchEventK()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        for (auto key : UIEventDetails::Key::Hotkeys)
+        for (auto key : UIEvent::Key::Hotkeys)
         {
-            if (ImGui::IsKeyDown(key)) { DispatchEventK(UIEventDetails::Key(0, key)); }
-            if (ImGui::IsKeyReleased(key)) { DispatchEventK(UIEventDetails::Key(1, key)); }
-            if (ImGui::IsKeyPressed(key, false)) { DispatchEventK(UIEventDetails::Key(2, key)); }
+            if (ImGui::IsKeyDown(key)) { DispatchEventK(UIEvent::Key(0, key)); }
+            if (ImGui::IsKeyReleased(key)) { DispatchEventK(UIEvent::Key(1, key)); }
+            if (ImGui::IsKeyPressed(key, false)) { DispatchEventK(UIEvent::Key(2, key)); }
         }
     }
 }
 
-bool UIObject::DispatchEventK(const UIEventDetails::Key & param)
+bool UIObject::DispatchEventK(const UIEvent::Key & param)
 {
     std::vector<UIObject *> objects{ this };
     for (auto i = 0; objects.size() != i; ++i)
@@ -366,27 +350,27 @@ void UIObject::DispatchEventM()
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        if (ImGui::IsMouseReleased(0)) { DispatchEventM(UIEventDetails::Mouse(2, 0)); }
-        if (ImGui::IsMouseReleased(1)) { DispatchEventM(UIEventDetails::Mouse(2, 1)); }
-        if (ImGui::IsMouseReleased(2)) { DispatchEventM(UIEventDetails::Mouse(2, 2)); }
+        if (ImGui::IsMouseReleased(0)) { DispatchEventM(UIEvent::Mouse(2, 0)); }
+        if (ImGui::IsMouseReleased(1)) { DispatchEventM(UIEvent::Mouse(2, 1)); }
+        if (ImGui::IsMouseReleased(2)) { DispatchEventM(UIEvent::Mouse(2, 2)); }
 
-        if (ImGui::IsMouseClicked(0)) { DispatchEventM(UIEventDetails::Mouse(3, 0)); }
-        if (ImGui::IsMouseClicked(1)) { DispatchEventM(UIEventDetails::Mouse(3, 1)); }
-        if (ImGui::IsMouseClicked(2)) { DispatchEventM(UIEventDetails::Mouse(3, 2)); }
+        if (ImGui::IsMouseClicked(0)) { DispatchEventM(UIEvent::Mouse(3, 0)); }
+        if (ImGui::IsMouseClicked(1)) { DispatchEventM(UIEvent::Mouse(3, 1)); }
+        if (ImGui::IsMouseClicked(2)) { DispatchEventM(UIEvent::Mouse(3, 2)); }
 
-        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventM(UIEventDetails::Mouse(4, 0)); }
-        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventM(UIEventDetails::Mouse(4, 1)); }
-        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventM(UIEventDetails::Mouse(4, 2)); }
+        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventM(UIEvent::Mouse(4, 0)); }
+        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventM(UIEvent::Mouse(4, 1)); }
+        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventM(UIEvent::Mouse(4, 2)); }
 
         auto hoverKey = -1;
-        if (ImGui::IsMouseDown(0)) { DispatchEventM(UIEventDetails::Mouse(1, 0)); hoverKey = 0; }
-        if (ImGui::IsMouseDown(1)) { DispatchEventM(UIEventDetails::Mouse(1, 1)); hoverKey = 1; }
-        if (ImGui::IsMouseDown(2)) { DispatchEventM(UIEventDetails::Mouse(1, 2)); hoverKey = 2; }
-        DispatchEventM(UIEventDetails::Mouse(0, hoverKey));
+        if (ImGui::IsMouseDown(0)) { DispatchEventM(UIEvent::Mouse(1, 0)); hoverKey = 0; }
+        if (ImGui::IsMouseDown(1)) { DispatchEventM(UIEvent::Mouse(1, 1)); hoverKey = 1; }
+        if (ImGui::IsMouseDown(2)) { DispatchEventM(UIEvent::Mouse(1, 2)); hoverKey = 2; }
+        DispatchEventM(UIEvent::Mouse(0, hoverKey));
     }
 }
 
-bool UIObject::DispatchEventM(const UIEventDetails::Mouse & param)
+bool UIObject::DispatchEventM(const UIEvent::Mouse & param)
 {
     for (auto child : GetObjects())
     {
@@ -403,18 +387,18 @@ bool UIObject::DispatchEventM(const UIEventDetails::Mouse & param)
     return false;
 }
 
-bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     return false;
 }
 
-bool UIObject::CallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     auto ret = OnCallEventMessage(e, param);
 
     if (_delegate != nullptr)
     {
-        ret = _delegate->OnCallEventMessage(this, e, param) || ret;
+        ret = _delegate->OnCallEventMessage(e, param, this) || ret;
     }
 
     if (!ret && GetParent() != nullptr)
@@ -424,7 +408,7 @@ bool UIObject::CallEventMessage(UIEventEnum e, const UIEventDetails::Base & para
     return ret;
 }
 
-bool UIObject::PostEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     param.mObject = this;
     return CallEventMessage(e, param);
@@ -733,7 +717,7 @@ void UIClassTextBox::OnRender(float dt)
                 ImVec2(state->Move.z, state->Move.w), 
                 flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEvent::EditText(state->mBuffer, this));
             }
         }
         else
@@ -745,7 +729,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEventDetails::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEvent::EditText(state->mBuffer, this));
             }
             ImGui::PopItemWidth();
         }
@@ -778,14 +762,14 @@ void UIClassImageBox::OnRender(float dt)
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
-                PostEventMessage(UIEventEnum::kMOUSE, UIEventDetails::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMOUSE, UIEvent::Mouse(3, 0, this));
             }
         }
         else
         {
             if (ImGui::Button(state->Name.c_str(), ImVec2(state->Move.z, state->Move.y)))
             {
-                PostEventMessage(UIEventEnum::kMOUSE, UIEventDetails::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMOUSE, UIEvent::Mouse(3, 0, this));
             }
         }
     }
@@ -833,11 +817,11 @@ void UIClassComboBox::OnLeave(bool ret)
 void UIClassComboBox::OnRender(float dt)
 { }
 
-bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEventDetails::Base & param)
+bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (e == UIEventEnum::kMOUSE)
     {
-        auto & object = std::any_cast<const UIEventDetails::Mouse &>(param).mObject;
+        auto & object = std::any_cast<const UIEvent::Mouse &>(param).mObject;
         GetState<UIStateComboBox>()->mSelected = object->GetState()->Name;
         ImGui::CloseCurrentPopup();
     }

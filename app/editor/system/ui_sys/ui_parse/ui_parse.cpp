@@ -6,11 +6,11 @@
 // ...
 //  UI事件委托映射表
 // ...
-static std::map<std::string, UIObject::UIEventDelegate *(*)()> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &std::create<UIObject::UIEventDelegate, UIEventDelegateMainStage>),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &std::create<UIObject::UIEventDelegate, UIEventDelegateMainObjList>),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", &std::create<UIObject::UIEventDelegate, UIEventDelegateMainResList>),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", &std::create<UIObject::UIEventDelegate, UIEventDelegateMainComList>),
+static std::map < std::string, UIEvent::DelegateHandler *(*)() > s_DelegateMap = {
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainStage>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainObjList>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainResList>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainComList>),
 };
 
 UIObject * UIParser::Parse(const std::string & url)

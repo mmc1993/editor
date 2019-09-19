@@ -11,19 +11,19 @@
 #include "../../../ui_sys/ui_object/ui_object.h"
 #include "../../editor_sys.h"
 
-class UIEventDelegateMainObjList : public UIObject::UIEventDelegate {
+class UIEventDelegateMainObjList : public UIEvent::DelegateHandler {
 public:
-    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 };
 
-class UIEventDelegateMainResList : public UIObject::UIEventDelegate {
+class UIEventDelegateMainResList : public UIEvent::DelegateHandler {
 public:
-    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 };
 
-class UIEventDelegateMainComList : public UIObject::UIEventDelegate {
+class UIEventDelegateMainComList : public UIEvent::DelegateHandler {
 public:
-    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 
 private:
     void OnRefreshComponent();
@@ -33,7 +33,7 @@ private:
     EventSys::Listener _listener;
 };
 
-class UIEventDelegateMainStage : public UIObject::UIEventDelegate {
+class UIEventDelegateMainStage : public UIEvent::DelegateHandler {
 public:
-    virtual bool OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 };
