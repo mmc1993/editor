@@ -13,16 +13,27 @@ ok 拉伸方向判断
     组件1
     组件2
 
+//  工程类
+class Project {
+public:
+    std::vector<GLOBject *> mGameObject;
 
-
-Project {
-    std::vector<UIOBject *> mUIObjects;
-    std::vector<GLOBject *> mGLObjects;
-    std::map<void *, size_t> mObj2Objs;
-
-    GLOBject * GetObject(const UIOBject * object);
-    UIOBject * GetObject(const GLOBject * object);
-    const std::string & GetPath() const;
-    bool Load();
+public:
+    const std::string & GetFolderPath() const;
+    const std::string & GetFilePath() const;
+    bool Load(const std::string & url);
+    bool Save(const std::string & url);
     void Free();
 }
+
+//  序列化接口
+class Serializer {
+public:
+    virtual void Encode(std::ofstream & os) = 0;
+    virtual void Decode(std::ifstream & is) = 0;
+}
+
+//  event_enum 放进 EventSys
+//  event_listen 放进 EventSys
+//  parser_tool.h 放进 Serializer
+//  UIEventEnum 剥离
