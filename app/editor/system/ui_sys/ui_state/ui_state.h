@@ -26,7 +26,7 @@ public:
     bool IsFullScreen       = false;    //  全屏
     bool IsShowMenuBar      = false;    //  显示菜单
     bool IsShowTitleBar     = false;    //  显示标题
-    bool IsShowScrollBar    = true;    //  显示滚动条
+    bool IsShowScrollBar    = false;    //  显示滚动条
 
     float BorderNumber      = 1;        //  边框宽度
 
