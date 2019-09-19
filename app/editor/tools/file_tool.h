@@ -26,9 +26,4 @@ namespace tools {
         is.close();
         return ret;
     }
-
-    inline void GenFile(const std::string & path, bool isClear)
-    {
-        std::ofstream os(path, isClear ? std::ios::out : std::ios::app); os.close();
-    }
 }
