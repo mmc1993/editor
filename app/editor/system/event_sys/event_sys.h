@@ -15,10 +15,7 @@ public:
         Event_t(size_t id, const func_t & func): mID(id), mFunc(func)
         { }
 
-        bool operator ==(size_t id) const
-        {
-            return mID == id;
-        }
+        bool operator ==(size_t id) const { return mID == id; }
     };
 
 public:

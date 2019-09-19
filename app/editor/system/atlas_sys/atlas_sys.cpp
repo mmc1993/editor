@@ -42,6 +42,13 @@ bool AtlasSys::IsHasKey(const std::string & key) const
     return it != _resources.end();
 }
 
+const AtlasSys::Image & AtlasSys::Get(const std::string & key) const
+{
+    auto it = _resources.find(key);
+    ASSERT_LOG(it != _resources.end(), "{0}", key);
+    return it->second;
+}
+
 bool AtlasSys::ImportImage(const std::string & url)
 {
     if (!IsHasKey(url))

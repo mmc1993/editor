@@ -23,9 +23,7 @@ bool RawBitmap::Init(const std::string & url)
     }
     _w = w;
     _h = h;
-    ASSERT_LOG(_id == 0, "");
     glGenTextures(1, &_id);
-    ASSERT_LOG(_id != 0, "");
     glBindTexture(GL_TEXTURE_2D, _id);
     glTexImage2D( GL_TEXTURE_2D, 0, _fmt, _w, _h, 0, _fmt, GL_UNSIGNED_BYTE, data);
     glBindTexture(GL_TEXTURE_2D, 0);

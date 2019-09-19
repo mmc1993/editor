@@ -8,9 +8,11 @@ public:
     { }
 
     virtual bool Init(const std::string & url) = 0;
+
 protected:
     Raw()
     { }
+
 };
 
 class RawBitmap : public Raw {

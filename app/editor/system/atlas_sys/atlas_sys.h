@@ -14,13 +14,7 @@ public:
     void Delete(const std::string & url);
     bool Import(const std::string & url);
     bool IsHasKey(const std::string & key) const;
-
-    const Image & Get(const std::string & key)
-    {
-        auto it = _resources.find(key);
-        ASSERT_LOG(it != _resources.end(), "{0}", key);
-        return it->second;
-    }
+    const Image & Get(const std::string & key) const;
 
 private:
     bool ImportImage(const std::string & url);

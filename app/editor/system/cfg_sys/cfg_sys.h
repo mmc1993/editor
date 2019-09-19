@@ -4,7 +4,7 @@
 
 class CfgSys {
 public:
-    CfgSys(): _root(mmc::JsonValue::FromValue(mmc::JsonValue::Hash()))
+    CfgSys(): _root(mmc::JsonValue::Hash())
     { }
 
     ~CfgSys()
@@ -26,8 +26,8 @@ public:
     void Save(const std::string & url)
     {
         ASSERT_LOG(_root->IsHashKey(url), url.c_str());
-        auto buffer = std::to_string(_root->At(url));
         std::ofstream ofile(url);
+        auto buffer = std::to_string(_root->At(url));
         ofile.write(buffer.c_str(), buffer.size());
         ofile.close();
     }
