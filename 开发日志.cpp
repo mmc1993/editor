@@ -37,5 +37,11 @@ public:
 
 ok  //  event_enum 放进 EventSys
 ok  //  event_listen 放进 EventSys
-//  parser_tool.h 放进 Serializer
+ok  //  parser_tool.h 放进 Serializer
 //  UIEventEnum 剥离
+
+
+需要序列化的对象:
+    Project
+    GLObject
+    Component

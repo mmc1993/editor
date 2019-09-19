@@ -1,13 +1,13 @@
 #include "property.h"
 
-bool ComponentHeader::OnEnter()
+bool UIComponentHeader::OnEnter()
 {
     return ImGui::CollapsingHeader(GetState()->Name.c_str());
 }
 
-void PropertyInt::OnRender(float dt)
+void UIPropertyInt::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::InputInt(ImID(this).c_str(), &GetBackup()))
     {
@@ -16,9 +16,9 @@ void PropertyInt::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyBool::OnRender(float dt)
+void UIPropertyBool::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::Checkbox(ImID(this).c_str(), &GetBackup()))
     {
@@ -27,7 +27,7 @@ void PropertyBool::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyFloat::OnRender(float dt)
+void UIPropertyFloat::OnRender(float dt)
 {
     ImGui::Columns(2, nullptr, false);
     ImGui::Text(GetTitle().c_str());
@@ -40,9 +40,9 @@ void PropertyFloat::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyString::OnRender(float dt)
+void UIPropertyString::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
     
     if (ImGui::InputText(
         ImID(this).c_str(), 
@@ -56,9 +56,9 @@ void PropertyString::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyCombo::OnRender(float dt)
+void UIPropertyCombo::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     auto & select = GetBackup().first;
     auto & values = GetBackup().second;
@@ -83,9 +83,9 @@ void PropertyCombo::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyVector2::OnRender(float dt)
+void UIPropertyVector2::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat2(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -94,9 +94,9 @@ void PropertyVector2::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyVector3::OnRender(float dt)
+void UIPropertyVector3::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat3(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -105,9 +105,9 @@ void PropertyVector3::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyVector4::OnRender(float dt)
+void UIPropertyVector4::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::InputFloat4(ImID(this).c_str(), &GetBackup().x, 3))
     {
@@ -116,9 +116,9 @@ void PropertyVector4::OnRender(float dt)
     ImGui::Columns(1);
 }
 
-void PropertyColor4::OnRender(float dt)
+void UIPropertyColor4::OnRender(float dt)
 {
-    PropertyObject::OnRender(dt);
+    UIPropertyObject::OnRender(dt);
 
     if (ImGui::ColorEdit4(ImID(this).c_str(), &GetBackup().x))
     {

@@ -133,7 +133,7 @@ void UIEventDelegateMainComList::OnRefreshComponent()
         auto glObject = Global::Ref().mEditorSys->mSelected.at(0);
         for (auto component : glObject->GetComponents())
         {
-            auto header = new ComponentHeader(component->GetName());
+            auto header = new UIComponentHeader(component->GetName());
             _onwer->AddObject(header);
 
             auto modifyfunc = std::bind(
@@ -147,10 +147,10 @@ void UIEventDelegateMainComList::OnRefreshComponent()
                 switch (property.mType)
                 {
                 case Interface::Serializer::StringValueTypeEnum::kVEC2:
-                    header->AddObject(new PropertyVector2(*(glm::vec2 *)property.mMember, property.mName, modifyfunc));
+                    header->AddObject(new UIPropertyVector2(*(glm::vec2 *)property.mMember, property.mName, modifyfunc));
                     break;
                 case Interface::Serializer::StringValueTypeEnum::kFLOAT:
-                    header->AddObject(new PropertyFloat(*(float *)property.mMember, property.mName, modifyfunc));
+                    header->AddObject(new UIPropertyFloat(*(float *)property.mMember, property.mName, modifyfunc));
                     break;
                 }
             }

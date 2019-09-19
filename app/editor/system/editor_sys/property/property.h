@@ -4,9 +4,9 @@
 #include "../../ui_sys/ui_state/ui_state.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
-class ComponentHeader : public UIObject {
+class UIComponentHeader : public UIObject {
 public:
-    ComponentHeader(const std::string & name): UIObject(UITypeEnum::kOTHER, new UIState())
+    UIComponentHeader(const std::string & name): UIObject(UITypeEnum::kOTHER, new UIState())
     {
         GetState()->Name = name;
     }
@@ -16,12 +16,12 @@ private:
 };
 
 template <class T, class B = T>
-class PropertyState : public UIState {
+class UIPropertyState : public UIState {
 public:
     using Handler_t = std::function<bool(const std::any & value, const std::string & title, const std::any & backup)>;
 
 public:
-    PropertyState(
+    UIPropertyState(
         T & value, 
         const std::string & title, 
         const Handler_t & handler)
@@ -38,41 +38,41 @@ public:
 };
 
 template <class T, class B = T>
-class PropertyObject : public UIObject {
+class UIPropertyObject : public UIObject {
 public:
-    using Handler_t = typename PropertyState<T>::Handler_t;
+    using Handler_t = typename UIPropertyState<T>::Handler_t;
 
 protected:
-    PropertyObject(
+    UIPropertyObject(
         T & value,
         const std::string & title,
         const Handler_t & handler)
-        : UIObject(UITypeEnum::kOTHER, new PropertyState<T, B>(value, title, handler))
+        : UIObject(UITypeEnum::kOTHER, new UIPropertyState<T, B>(value, title, handler))
     { }
 
     const std::string & GetTitle() const
     {
-        return GetState<PropertyState<T, B>>()->mTitle;
+        return GetState<UIPropertyState<T, B>>()->mTitle;
     }
 
     const T & GetValue() const
     {
-        return GetState<PropertyState<T, B>>()->mValue;
+        return GetState<UIPropertyState<T, B>>()->mValue;
     }
 
     T & GetValue()
     {
-        return GetState<PropertyState<T, B>>()->mValue;
+        return GetState<UIPropertyState<T, B>>()->mValue;
     }
 
     B & GetBackup()
     {
-        return GetState<PropertyState<T, B>>()->mBackup;
+        return GetState<UIPropertyState<T, B>>()->mBackup;
     }
 
     bool Modify()
     {
-        auto ret = GetState<PropertyState<T, B>>()->mHandler(GetBackup(), GetTitle(), GetValue());
+        auto ret = GetState<UIPropertyState<T, B>>()->mHandler(GetBackup(), GetTitle(), GetValue());
         if (ret) { GetValue() = GetBackup(); }
         else { GetBackup() = GetValue(); }
         return ret;
@@ -93,13 +93,13 @@ protected:
 // ---
 //  属性 int
 // ---
-class PropertyInt : public PropertyObject<int> {
+class UIPropertyInt : public UIPropertyObject<int> {
 public:
-    PropertyInt(
+    UIPropertyInt(
         int & value, 
         const std::string & title, 
         const Handler_t & handler)
-        : PropertyObject<int>(value, title, handler)
+        : UIPropertyObject<int>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -108,13 +108,13 @@ public:
 // ---
 //  属性 bool
 // ---
-class PropertyBool : public PropertyObject<bool> {
+class UIPropertyBool : public UIPropertyObject<bool> {
 public:
-    PropertyBool(
+    UIPropertyBool(
         bool & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<bool>(value, title, handler)
+        : UIPropertyObject<bool>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -123,13 +123,13 @@ public:
 // ---
 //  属性 float
 // ---
-class PropertyFloat : public PropertyObject<float> {
+class UIPropertyFloat : public UIPropertyObject<float> {
 public:
-    PropertyFloat(
+    UIPropertyFloat(
         float & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<float>(value, title, handler)
+        : UIPropertyObject<float>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -138,13 +138,13 @@ public:
 // ---
 //  属性 string
 // ---
-class PropertyString : public PropertyObject<std::string> {
+class UIPropertyString : public UIPropertyObject<std::string> {
 public:
-    PropertyString(
+    UIPropertyString(
         std::string & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<std::string>(value, title, handler)
+        : UIPropertyObject<std::string>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -153,21 +153,21 @@ public:
 // ---
 //  属性 combo
 // ---
-class PropertyCombo : public PropertyObject<
+class UIPropertyCombo : public UIPropertyObject<
     std::pair<
         size_t, 
         std::vector<std::string>
     >
 > {
 public:
-    PropertyCombo(
+    UIPropertyCombo(
         std::pair<
             size_t, 
             std::vector<std::string>
         > & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<
+        : UIPropertyObject<
             std::pair<
                 size_t, 
                 std::vector<std::string>
@@ -181,13 +181,13 @@ public:
 // ---
 //  属性 vec2
 // ---
-class PropertyVector2 : public PropertyObject<glm::vec2> {
+class UIPropertyVector2 : public UIPropertyObject<glm::vec2> {
 public:
-    PropertyVector2(
+    UIPropertyVector2(
         glm::vec2 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<glm::vec2>(value, title, handler)
+        : UIPropertyObject<glm::vec2>(value, title, handler)
     { }
     
     virtual void OnRender(float dt) override;
@@ -196,13 +196,13 @@ public:
 // ---
 //  属性 vec3
 // ---
-class PropertyVector3 : public PropertyObject<glm::vec3> {
+class UIPropertyVector3 : public UIPropertyObject<glm::vec3> {
 public:
-    PropertyVector3(
+    UIPropertyVector3(
         glm::vec3 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<glm::vec3>(value, title, handler)
+        : UIPropertyObject<glm::vec3>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -211,13 +211,13 @@ public:
 // ---
 //  属性 vec4
 // ---
-class PropertyVector4 : public PropertyObject<glm::vec4> {
+class UIPropertyVector4 : public UIPropertyObject<glm::vec4> {
 public:
-    PropertyVector4(
+    UIPropertyVector4(
         glm::vec4 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<glm::vec4>(value, title, handler)
+        : UIPropertyObject<glm::vec4>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;
@@ -226,13 +226,13 @@ public:
 // ---
 //  属性 color4
 // ---
-class PropertyColor4 : public PropertyObject<glm::vec4> {
+class UIPropertyColor4 : public UIPropertyObject<glm::vec4> {
 public:
-    PropertyColor4(
+    UIPropertyColor4(
         glm::vec4 & value,
         const std::string & title,
         const Handler_t & handler)
-        : PropertyObject<glm::vec4>(value, title, handler)
+        : UIPropertyObject<glm::vec4>(value, title, handler)
     { }
 
     virtual void OnRender(float dt) override;

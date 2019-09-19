@@ -31,7 +31,6 @@ bool UIState::FromStringParse(const std::string & key, const std::string & val)
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kVEC4, key, val, " ", "Move", Move);
     //  string list
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kSTRING_LIST, key, val, ",", "MenuBar", MenuBar);
-
     return false;
 }
 
@@ -41,7 +40,7 @@ UIStateLayout::UIStateLayout()
 UIStateTreeBox::UIStateTreeBox()
 { }
 
-UIStateTextBox::UIStateTextBox(): mBuffer(1024, '\0')
+UIStateTextBox::UIStateTextBox()
 { }
 
 UIStateImageBox::UIStateImageBox()
