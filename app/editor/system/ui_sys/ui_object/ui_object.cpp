@@ -432,6 +432,7 @@ bool UIClassLayout::OnEnter()
     if ( state->IsShowMenuBar)      { flag |= ImGuiWindowFlags_MenuBar; }
     if (!state->IsShowTitleBar)     { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollbar; }
+    if ( state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_HorizontalScrollbar; }
 
     if (state->IsWindow)
     {
@@ -680,16 +681,17 @@ bool UIClassTreeBox::OnEnter()
     size_t flag = 0;
     if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
-    return ImGui::TreeNodeEx(state->Name.c_str(), flag);
+    if (ImGui::TreeNodeEx(state->Name.c_str(), flag | ImGuiTreeNodeFlags_Framed))
+    {
+        AdjustSize();
+        return true;
+    }
+    return false;
 }
 
 void UIClassTreeBox::OnLeave(bool ret)
 {
-    if (ret)
-    {
-        ImGui::TreePop();
-    }
-    AdjustSize();
+    if (ret) { ImGui::TreePop(); }
 }
 
 // ---
@@ -804,14 +806,17 @@ bool UIClassComboBox::OnEnter()
     {
         state->mSelected = GetObjects().at(0)->GetState()->Name;
     }
-    return ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str());
+    if (ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str()))
+    {
+        AdjustSize();
+        return true;
+    }
+    return false;
 }
 
 void UIClassComboBox::OnLeave(bool ret)
 {
     if (ret) { ImGui::EndCombo(); }
-
-    AdjustSize();
 }
 
 void UIClassComboBox::OnRender(float dt)

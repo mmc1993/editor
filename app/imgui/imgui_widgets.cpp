@@ -5247,7 +5247,10 @@ bool ImGui::TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* l
         const ImU32 bg_col = GetColorU32((held && hovered) ? ImGuiCol_HeaderActive : hovered ? ImGuiCol_HeaderHovered : ImGuiCol_Header);
         RenderFrame(frame_bb.Min, frame_bb.Max, bg_col, true, style.FrameRounding);
         RenderNavHighlight(frame_bb, id, nav_highlight_flags);
-        RenderArrow(window->DrawList, frame_bb.Min + ImVec2(padding.x, text_base_offset_y), text_col, is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
+        if (!(flags & ImGuiTreeNodeFlags_Leaf))
+        {
+            RenderArrow(window->DrawList, frame_bb.Min + ImVec2(padding.x, text_base_offset_y), text_col, is_open ? ImGuiDir_Down : ImGuiDir_Right, 1.0f);
+        }
         if (flags & ImGuiTreeNodeFlags_ClipLabelForTrailingButton)
             frame_bb.Max.x -= g.FontSize + style.FramePadding.x;
         if (g.LogEnabled)
