@@ -639,7 +639,7 @@ void UIClassLayout::HandleStretch()
         const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
         const auto & move = thisState->Move;
-        const auto direct = tools::IsOnEdge(
+        const auto direct = tools::IsOnRect(
             glm::vec4(world.x, world.y, move.z, move.w),
             glm::vec2(mouse.x, mouse.y), 5);
         if (direct != -1 && IsCanStretch((DirectEnum)direct))
