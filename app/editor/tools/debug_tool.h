@@ -3,6 +3,7 @@
 #define ENABLE_DEBUG
 
 #ifdef ENABLE_DEBUG
+
 //  条件成立, 继续执行
 //  条件不成立, 打印日志, 中断程序
 #define ASSERT_LOG(cond, fmt, ...)                      \
@@ -34,8 +35,11 @@
         return __VA_ARGS__;                             \
     }                                                   \
 }
+
 #else
+
 #define ASSERT_LOG
 #define ASSERT_RET
 #define CHECK_RET
+
 #endif
