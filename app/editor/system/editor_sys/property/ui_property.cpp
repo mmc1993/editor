@@ -1,4 +1,4 @@
-#include "property.h"
+#include "ui_property.h"
 
 bool UIComponentHeader::OnEnter()
 {

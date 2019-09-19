@@ -1,7 +1,7 @@
 #pragma once
 
 #include "gl_object.h"
-#include "../property/property.h"
+#include "../property/ui_property.h"
 #include "../../interface/serializer.h"
 
 class Component {

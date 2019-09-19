@@ -54,9 +54,6 @@
     <ClCompile Include="editor\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\editor_sys\property\property.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\system\raw_sys\raw.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -100,6 +97,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="editor\system\interface\serializer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\property\ui_property.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -905,9 +905,6 @@
     <ClInclude Include="editor\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\property\property.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\editor_sys\include.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -960,6 +957,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\interface\serializer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\property\ui_property.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
