@@ -1,22 +1,39 @@
 #pragma once
 
-#include "../../include.h"
+#include "../../base.h"
 
 class EventSys {
-private:
-    static size_t s_coundID;
-
 public:
     using func_t = std::function<void(const std::any &)>;
 
-    struct Event_t {
+    //  事件枚举
+    enum class Type {
+        kSELECT_GLOBJECT,   //  选中对象
+    };
+
+    //  监听器
+    class Listener {
+    public:
+        Listener();
+        ~Listener();
+        void Add(Type id, const std::function<void(const std::any &)> & func);
+
+    private:
+        std::vector<size_t> _listens;
+    };
+
+    //  事件类型
+    struct Event {
         size_t mID;
         func_t mFunc;
-        Event_t(size_t id, const func_t & func): mID(id), mFunc(func)
+        Event(size_t id, const func_t & func): mID(id), mFunc(func)
         { }
 
         bool operator ==(size_t id) const { return mID == id; }
     };
+
+private:
+    static size_t s_coundID;
 
 public:
     EventSys()
@@ -25,9 +42,9 @@ public:
     ~EventSys()
     { }
 
-    size_t Add(size_t type, const func_t & func)
+    size_t Add(Type type, const func_t & func)
     {
-        auto insert = _events.insert(std::make_pair(type, std::vector<Event_t>()));
+        auto insert = _events.insert(std::make_pair(type, std::vector<Event>()));
         insert.first->second.emplace_back(EventSys::s_coundID, func);
         return EventSys::s_coundID++;
     }
@@ -45,7 +62,7 @@ public:
         }
     }
 
-    void Post(size_t type, std::any param)
+    void Post(Type type, std::any param)
     {
         auto it = _events.find(type);
         if (it != _events.end())
@@ -58,6 +75,6 @@ public:
     }
 
 private:
-    std::map<size_t, std::vector<Event_t>> _events;
+    std::map<Type, std::vector<Event>> _events;
 };
 

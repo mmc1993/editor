@@ -63,7 +63,6 @@
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h" />
-    <ClInclude Include="editor\system\tools\event_enum.h" />
     <ClInclude Include="editor\system\event_sys\event_sys.h" />
     <ClInclude Include="editor\system\raw_sys\raw.h" />
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />

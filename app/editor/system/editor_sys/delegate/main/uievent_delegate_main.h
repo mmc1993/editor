@@ -1,6 +1,8 @@
 #pragma once
 
 #include "../../../../include.h"
+#include "../../component/component.h"
+#include "../../../event_sys/event_sys.h"
 #include "../../../cfg_sys/cfg_sys.h"
 #include "../../../ui_sys/ui_sys.h"
 #include "../../../ui_sys/ui_menu.h"
@@ -28,7 +30,7 @@ private:
 
 private:
     UIObject * _onwer;
-    Global::EventListener _listener;
+    EventSys::Listener _listener;
 };
 
 class UIEventDelegateMainStage : public UIObject::UIEventDelegate {

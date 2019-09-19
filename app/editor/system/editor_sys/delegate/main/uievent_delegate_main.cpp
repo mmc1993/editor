@@ -1,7 +1,4 @@
 #include "uievent_delegate_main.h"
-#include "../../component/component.h"
-#include "../../../tools/event_enum.h"
-#include "../../../event_sys/event_sys.h"
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEnum e, const UIObject::UIEventDetails::Base & param)
 {
@@ -42,7 +39,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 auto glObject = (GLObject *)mouse.mObject->GetState()->Pointer;
                 Global::Ref().mEditorSys->mSelected.clear();
                 Global::Ref().mEditorSys->mSelected.push_back(glObject);
-                Global::Ref().mEventSys->Post(EventTypeEnum::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
             }
         }
         break;
@@ -77,7 +74,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
 
                 //  删除节点, 通知
                 Global::Ref().mEditorSys->mSelected.clear();
-                Global::Ref().mEventSys->Post(EventTypeEnum::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
             }
             else if (
                 menu.mPath.at(0) == 'R' && menu.mPath.at(1) == 'e' && 
@@ -95,7 +92,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 auto name = menu.mPath.substr(std::strlen("Add Component/"));
                 auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
                 glObject->AddComponent(Component::Create(name));
-                Global::Ref().mEventSys->Post(EventTypeEnum::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
             }
             std::cout
                 << "Menu Key: " << menu.mPath << ' '
@@ -120,7 +117,7 @@ bool UIEventDelegateMainComList::OnCallEventMessage(UIObject * object, UIEventEn
         {
             _onwer = object;
 
-            _listener.AddListen(EventTypeEnum::kSELECT_GLOBJECT, std::bind(&UIEventDelegateMainComList::OnRefreshComponent, this));
+            _listener.Add(EventSys::Type::kSELECT_GLOBJECT, std::bind(&UIEventDelegateMainComList::OnRefreshComponent, this));
         }
     }
     return true;

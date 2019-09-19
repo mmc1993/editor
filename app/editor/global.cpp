@@ -7,25 +7,6 @@
 #include "system/editor_sys/editor_sys.h"
 
 // ---
-//  Global::EventListener
-// ---
-Global::EventListener::EventListener()
-{ }
-
-Global::EventListener::~EventListener()
-{ 
-    for (auto listen : _listens)
-    {
-        Global::Ref().mEventSys->Del(listen);
-    }
-}
-
-void Global::EventListener::AddListen(size_t id, const std::function<void(const std::any&)> & func)
-{
-    _listens.push_back(Global::Ref().mEventSys->Add(id, func));
-}
-
-// ---
 //  Global
 // ---
 void Global::Free()
