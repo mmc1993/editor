@@ -1,5 +1,4 @@
 #include "comp_transform.h"
-#include "../../tools/parser_tool.h"
 
 CompTransform::CompTransform()
     : _isChange(true)
@@ -121,20 +120,12 @@ const std::string & CompTransform::GetName()
     return name;
 }
 
-bool CompTransform::ParseProperty(const std::string & key, const std::string & val)
-{
-    PARSER_REG_MEMBER(tools::ValueParser::kFLOAT, key, val, Angle,  _angle);
-    PARSER_REG_MEMBER(tools::ValueParser::kVEC2,  key, val, Scale,  _scale);
-    PARSER_REG_MEMBER(tools::ValueParser::kVEC2,  key, val, Position, _position);
-    return false;
-}
-
 std::vector<Component::Property> CompTransform::CollectProperty()
 {
     return {
-        { "Poosition", tools::ValueParser::kVEC2, &_position },
-        { "Scale",     tools::ValueParser::kVEC2,  &_scale },
-        { "Angle",     tools::ValueParser::kFLOAT, &_angle }
+        {   Interface::Serializer::StringValueTypeEnum::kVEC2,  "Poosition", &_position  },
+        {   Interface::Serializer::StringValueTypeEnum::kVEC2,  "Scale",     &_scale     },
+        {   Interface::Serializer::StringValueTypeEnum::kFLOAT, "Angle",     &_angle     }
     };
 }
 

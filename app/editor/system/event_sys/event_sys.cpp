@@ -14,7 +14,7 @@ EventSys::Listener::~Listener()
     }
 }
 
-void EventSys::Listener::Add(Type id, const std::function<void(const std::any&)>& func)
+void EventSys::Listener::Add(TypeEnum id, const std::function<void(const std::any&)>& func)
 {
     _listens.push_back(Global::Ref().mEventSys->Add(id, func));
 }

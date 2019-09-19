@@ -2,20 +2,24 @@
 
 #include "gl_object.h"
 #include "../property/property.h"
-#include "../../tools/parser_tool.h"
+#include "../../interface/serializer.h"
 
 class Component {
 public:
     struct Property {
-        std::string mName;
-        size_t      mType;
-        void *      mMember;
+        Interface::Serializer::StringValueTypeEnum mType;
+        std::string                                mName;
+        void *                                     mMember;
 
-        Property(): mType(0), mMember(nullptr)
+        Property()
+            : mType(Interface::Serializer::StringValueTypeEnum::kERR)
+            , mMember(nullptr)
         { }
 
-        Property(const std::string & name, size_t type, void * member)
-            : mName(name), mType(type), mMember(member)
+        Property(
+            Interface::Serializer::StringValueTypeEnum type, 
+            const std::string & name, void * member)
+            : mType(type), mName(name), mMember(member)
         { }
     };
 
@@ -44,10 +48,6 @@ public:
         const std::any &    value, 
         const std::string & title, 
         const std::any &    backup) = 0;
-    //  根据Key, Val, 初始化对应的成员变量
-    virtual bool ParseProperty(
-        const std::string & key, 
-        const std::string & val) = 0;
     //  创建Property列表, 用于界面展示修改
     virtual std::vector<Property> CollectProperty() = 0;
 

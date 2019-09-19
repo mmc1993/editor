@@ -26,6 +26,8 @@ public:
     void Free();
 }
 
+//  提供二进制序列化/反序列化
+//  提供字符串序列化/反序列化
 //  序列化接口
 class Serializer {
 public:
@@ -33,7 +35,7 @@ public:
     virtual void Decode(std::ifstream & is) = 0;
 }
 
-//  event_enum 放进 EventSys
-//  event_listen 放进 EventSys
+ok  //  event_enum 放进 EventSys
+ok  //  event_listen 放进 EventSys
 //  parser_tool.h 放进 Serializer
 //  UIEventEnum 剥离

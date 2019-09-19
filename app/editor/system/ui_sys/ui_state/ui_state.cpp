@@ -1,35 +1,36 @@
 #include "ui_state.h"
-#include "../../tools/parser_tool.h"
+#include "../../interface/serializer.h"
 
-bool UIState::Parse(const std::string & key, const std::string & val)
+bool UIState::FromStringParse(const std::string & key, const std::string & val)
 {
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kINT, key, val, Align, Align);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsMulti, IsMulti);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsSelect, IsSelect);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsWindow, IsWindow);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsButton, IsButton);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowNav, IsShowNav);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsEditBox, IsEditBox);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsCanMove, IsCanMove);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsCanStretch, IsCanStretch);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsFullScreen, IsFullScreen);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowBorder, IsShowBorder);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowMenuBar, IsShowMenuBar);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowTitleBar, IsShowTitleBar);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kBOOL, key, val, IsShowScrollBar, IsShowScrollBar);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kFLOAT, key, val, BorderNumber, BorderNumber);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kSTRING, key, val, Name, Name);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kSTRING, key, val, Tips, Tips);
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kSTRING, key, val, LSkin, LSkin);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kVEC2, key, val, StretchMin, StretchMin);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kVEC4, key, val, Move, Move);
-
-    PARSER_REG_MEMBER(tools::ValueParser::TypeEnum::kSTRING_LIST, key, val, MenuBar, MenuBar);
+    //  int
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kINT, key, val, " ", "Align", Align);
+    //  bool
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsMulti", IsMulti);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsSelect", IsSelect);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsWindow", IsWindow);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsButton", IsButton);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowNav", IsShowNav);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsEditBox", IsEditBox);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanMove", IsCanMove);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanStretch", IsCanStretch);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsFullScreen", IsFullScreen);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowBorder", IsShowBorder);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowMenuBar", IsShowMenuBar);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowTitleBar", IsShowTitleBar);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowScrollBar", IsShowScrollBar);
+    //  float
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kFLOAT, key, val, " ", "BorderNumber", BorderNumber);
+    //  string
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kSTRING, key, val, " ", "Name", Name);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kSTRING, key, val, " ", "Tips", Tips);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kSTRING, key, val, " ", "LSkin", LSkin);
+    //  vec2
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kVEC2, key, val, " ", "StretchMin", StretchMin);
+    //  vec4
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kVEC4, key, val, " ", "Move", Move);
+    //  string list
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kSTRING_LIST, key, val, ",", "MenuBar", MenuBar);
 
     return false;
 }

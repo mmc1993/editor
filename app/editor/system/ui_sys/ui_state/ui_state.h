@@ -10,7 +10,7 @@ public:
     virtual ~UIState()
     { }
 
-    bool Parse(const std::string & key, const std::string & val);
+    bool FromStringParse(const std::string & key, const std::string & val);
 
     int Align               = 0;        //  ¶ÔÆë·½Ê½
     

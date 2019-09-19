@@ -35,10 +35,6 @@ public:
         const std::string & title, 
         const std::any &    backup) override;
 
-    virtual bool ParseProperty(
-        const std::string & key, 
-        const std::string & val) override;
-
     virtual std::vector<Property> CollectProperty() override;
 
 private:

@@ -7,7 +7,7 @@ public:
     using func_t = std::function<void(const std::any &)>;
 
     //  事件枚举
-    enum class Type {
+    enum class TypeEnum {
         kSELECT_GLOBJECT,   //  选中对象
     };
 
@@ -16,7 +16,7 @@ public:
     public:
         Listener();
         ~Listener();
-        void Add(Type id, const std::function<void(const std::any &)> & func);
+        void Add(TypeEnum id, const std::function<void(const std::any &)> & func);
 
     private:
         std::vector<size_t> _listens;
@@ -42,7 +42,7 @@ public:
     ~EventSys()
     { }
 
-    size_t Add(Type type, const func_t & func)
+    size_t Add(TypeEnum type, const func_t & func)
     {
         auto insert = _events.insert(std::make_pair(type, std::vector<Event>()));
         insert.first->second.emplace_back(EventSys::s_coundID, func);
@@ -62,7 +62,7 @@ public:
         }
     }
 
-    void Post(Type type, std::any param)
+    void Post(TypeEnum type, std::any param)
     {
         auto it = _events.find(type);
         if (it != _events.end())
@@ -75,6 +75,6 @@ public:
     }
 
 private:
-    std::map<Type, std::vector<Event>> _events;
+    std::map<TypeEnum, std::vector<Event>> _events;
 };
 

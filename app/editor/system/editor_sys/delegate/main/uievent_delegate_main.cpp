@@ -39,7 +39,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 auto glObject = (GLObject *)mouse.mObject->GetState()->Pointer;
                 Global::Ref().mEditorSys->mSelected.clear();
                 Global::Ref().mEditorSys->mSelected.push_back(glObject);
-                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSELECT_GLOBJECT, nullptr);
             }
         }
         break;
@@ -74,7 +74,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
 
                 //  删除节点, 通知
                 Global::Ref().mEditorSys->mSelected.clear();
-                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSELECT_GLOBJECT, nullptr);
             }
             else if (
                 menu.mPath.at(0) == 'R' && menu.mPath.at(1) == 'e' && 
@@ -92,7 +92,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIObject * object, UIEventEn
                 auto name = menu.mPath.substr(std::strlen("Add Component/"));
                 auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
                 glObject->AddComponent(Component::Create(name));
-                Global::Ref().mEventSys->Post(EventSys::Type::kSELECT_GLOBJECT, nullptr);
+                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSELECT_GLOBJECT, nullptr);
             }
             std::cout
                 << "Menu Key: " << menu.mPath << ' '
@@ -117,7 +117,7 @@ bool UIEventDelegateMainComList::OnCallEventMessage(UIObject * object, UIEventEn
         {
             _onwer = object;
 
-            _listener.Add(EventSys::Type::kSELECT_GLOBJECT, std::bind(&UIEventDelegateMainComList::OnRefreshComponent, this));
+            _listener.Add(EventSys::TypeEnum::kSELECT_GLOBJECT, std::bind(&UIEventDelegateMainComList::OnRefreshComponent, this));
         }
     }
     return true;
@@ -146,10 +146,10 @@ void UIEventDelegateMainComList::OnRefreshComponent()
             {
                 switch (property.mType)
                 {
-                case tools::ValueParser::kVEC2:
+                case Interface::Serializer::StringValueTypeEnum::kVEC2:
                     header->AddObject(new PropertyVector2(*(glm::vec2 *)property.mMember, property.mName, modifyfunc));
                     break;
-                case tools::ValueParser::kFLOAT:
+                case Interface::Serializer::StringValueTypeEnum::kFLOAT:
                     header->AddObject(new PropertyFloat(*(float *)property.mMember, property.mName, modifyfunc));
                     break;
                 }
