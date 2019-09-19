@@ -3,13 +3,12 @@
 
 UIMenu::Popup UIMenu::s_popup;
 
-//  _TODO
-//      一次全部解析
 std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent, const std::vector<std::string> & list)
 {
-    std::vector<std::string> children;
-    std::vector<MenuItem> result;
-    for (const auto & str : list)
+    std::string markName;
+    std::vector<MenuItem>    result;
+    std::vector<std::string> backup;
+    for (const auto & info : list)
     {
         auto disabled = false;
         auto selected = false;
@@ -17,51 +16,60 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
         auto leaf     = false;
 
         //  是否叶子节点, 是否已勾选, 是否已禁用
-        auto pos = str.find_first_of('/');
+        auto pos = info.find_first_of('/');
         if (pos == std::string::npos)
         {
             leaf = true;
-            pos = str.find_first_of('@');
+            pos = info.find_first_of('@');
             if (pos != std::string::npos) { selected = true; }
-            pos = str.find_first_of('!');
+            pos = info.find_first_of('!');
             if (pos != std::string::npos) { disabled = true; }
-            pos = str.find_first_of('~');
+            pos = info.find_first_of('~');
             if (pos != std::string::npos) { editing = true; }
 
-            if (pos != std::string::npos && str.at(pos) == '!') { --pos; }
-            if (pos != std::string::npos && str.at(pos) == '@') { --pos; }
-            if (pos != std::string::npos && str.at(pos) == '~') { --pos; }
+            ASSERT_LOG(info.find('@') == std::string::npos || info.find('@') != std::string::npos && info.find('!') == info.find('~'), info.c_str());
+            ASSERT_LOG(info.find('!') == std::string::npos || info.find('!') != std::string::npos && info.find('@') == info.find('~'), info.c_str());
+            ASSERT_LOG(info.find('~') == std::string::npos || info.find('~') != std::string::npos && info.find('!') == info.find('@'), info.c_str());
+
+            if (pos != std::string::npos && info.at(pos) == '!') { --pos; }
+            if (pos != std::string::npos && info.at(pos) == '@') { --pos; }
+            if (pos != std::string::npos && info.at(pos) == '~') { --pos; }
             if (pos != std::string::npos) { ++pos; }
         }
 
-        auto name = str.substr(0, pos);
-
-        //  是否同一个父节点
-        if (result.empty() || result.back().mName != name)
+        auto name = info.substr(0, pos);
+        if (name != markName)
         {
             if (!result.empty())
             {
-                result.back().mChildren = std::move(Parse(result.back().mPath, children));
+                auto children = Parse(result.back().mPath, backup);
+                result.back().mChildren = std::move(children);
+                backup.clear();
             }
-            children.clear();
-            result.emplace_back();
+
+            MenuItem item;
+            item.mName = name;
+            item.mBuffer = name;
+            item.mEditing = editing;
+            item.mSelected = selected;
+            item.mDisabled = disabled;
+            item.mPath = !parent.empty()
+                ? parent + '/' + item.mName
+                :                item.mName;
+            result.push_back(item);
+
+            markName = name;
         }
 
-        auto & item  = result.back();
-        item.mName = std::move(name);
-        item.mBuffer = item.mName;
-        item.mEditing = editing;
-        item.mSelected = selected;
-        item.mDisabled = disabled;
-        item.mPath = !parent.empty()
-            ? parent + '/' + item.mName
-            :                item.mName;
-        if (!leaf) { children.push_back(str.substr(pos + 1)); }
+        if (!leaf)
+        {
+            backup.push_back(info.substr(pos + 1));
+        }
     }
 
-    if (!children.empty())
+    if (!backup.empty())
     {
-        result.back().mChildren = std::move(Parse(result.back().mPath, children));
+        result.back().mChildren = std::move(Parse(result.back().mPath, backup));
     }
 
     return std::move(result);

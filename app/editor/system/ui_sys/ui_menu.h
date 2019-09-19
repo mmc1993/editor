@@ -22,13 +22,18 @@
 class UIMenu {
 public:
     struct MenuItem {
-        std::string           mPath;
-        std::string           mName;
-        std::string           mBuffer;
-        bool                  mEditing;
-        bool                  mSelected;
-        bool                  mDisabled;
-        std::vector<MenuItem> mChildren;
+        std::string           mPath;        //  菜单项路径
+        std::string           mName;        //  菜单项名字
+        std::string           mBuffer;      //  菜单项缓冲
+        bool                  mEditing;     //  菜单项是否可编辑
+        bool                  mSelected;    //  菜单项是否已选中
+        bool                  mDisabled;    //  菜单项是否已禁用
+        std::vector<MenuItem> mChildren;    //  菜单项子项
+
+        //  解析单条菜单
+        static MenuItem Parse(const std::string & info);
+        //  解析一组菜单
+        static std::vector<MenuItem> Parse(const std::vector<std::string> & list);
 
         static std::vector<MenuItem> Parse(const std::string & parent, const std::vector<std::string> & list);
     };
