@@ -43,8 +43,8 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
             {
                 result.back().mChildren = std::move(Parse(result.back().mPath, children));
             }
-            result.emplace_back();
             children.clear();
+            result.emplace_back();
         }
 
         auto & item  = result.back();
@@ -121,6 +121,7 @@ void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
             {
                 if (ImGui::MenuItem(item.mName.c_str(), nullptr, item.mSelected, !item.mDisabled))
                 {
+                    ImGui::CloseCurrentPopup();
                     object->PostEventMessage(UIEventEnum::kMENU, UIObject::UIEventDetails::Menu(item.mPath, item.mSelected));
                 }
             }
