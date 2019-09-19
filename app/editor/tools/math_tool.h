@@ -11,7 +11,7 @@ namespace tools {
     }
 
     //   «∑Ò‘⁄±ﬂ…œ
-    inline int IsOnEdge(const glm::vec4 & rect, const glm::vec2 & point, float border = 0)
+    inline int IsOnRect(const glm::vec4 & rect, const glm::vec2 & point, float border = 0)
     {
         auto t = rect.y, b = rect.y + rect.w;
         auto l = rect.x, r = rect.x + rect.z;
