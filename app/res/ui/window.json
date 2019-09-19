@@ -44,7 +44,8 @@
 						"Skin": "PanelSkin",
 						"Move": "0 0 980 40",
 						"Align": "26",
-						"Name": "C_0"
+						"Name": "C_0",
+						"IsCanStretch": "no"
 					},
 					"__Children": [
 						{
