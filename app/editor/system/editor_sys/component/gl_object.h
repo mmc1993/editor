@@ -37,7 +37,7 @@ public:
     void SetParent(GLObject * parent);
     GLObject * GetParent();
 
-	void ClearComponent();
+	void ClearComponents();
     void AddComponent(Component * component);
     void DelComponent(Component * component);
     void DelComponent(const std::type_info & type);

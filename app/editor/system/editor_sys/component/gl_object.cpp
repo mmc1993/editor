@@ -10,7 +10,7 @@ GLObject::GLObject()
 GLObject::~GLObject()
 {
     ClearObjects();
-    ClearComponent();
+    ClearComponents();
 }
 
 void GLObject::OnUpdate(float dt)
@@ -66,7 +66,7 @@ void GLObject::DelThis()
 GLObject * GLObject::GetObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [name](GLObject * child) { return child->_name == name; });
+        [name](GLObject * child){return child->_name==name;});
     return it != _children.end() ? *it : nullptr;
 }
 
@@ -119,7 +119,7 @@ GLObject * GLObject::GetParent()
     return _parent;
 }
 
-void GLObject::ClearComponent()
+void GLObject::ClearComponents()
 {
 	while (!_components.empty())
 	{
