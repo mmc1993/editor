@@ -8,6 +8,7 @@
 // ...
 static std::map < std::string, UIEvent::DelegateHandler *(*)() > s_DelegateMap = {
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainStage>),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_global", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainGlobal>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainObjList>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainResList>),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", &std::create<UIEvent::DelegateHandler, UIEventDelegateMainComList>),

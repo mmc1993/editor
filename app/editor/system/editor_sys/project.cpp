@@ -1,34 +1,34 @@
 #include "project.h"
 #include "component/gl_object.h"
 
-Project::Project(): mRoot(nullptr)
+Project::Project(): _root(nullptr)
 { }
 
 Project::~Project()
 {
-    Free();
+    SAFE_DELETE(_root);
+}
+
+void Project::New(const std::string & url)
+{
+    _root = new GLObject();
+    _url  = url;
 }
 
 bool Project::Load(const std::string & url)
 {
+    ASSERT_LOG(_root == nullptr, url.c_str());
     std::ifstream is(url);
     ASSERT_LOG(is, url.c_str());
-    mRoot = new GLObject();
-    mURL  = url;
+    _root = new  GLObject();
+    _root->DecodeBinary(is);
+    _url  = url;
     return true;
 }
 
 void Project::Save(const std::string & url)
 {
-    ASSERT_LOG(mRoot != nullptr, url.c_str());
-    std::ofstream os(url.empty()? mURL: url);
-    ASSERT_LOG(os,(url.empty() ? mURL : url).c_str());
-    mRoot->EncodeBinary(os);
+    ASSERT_LOG(_root != nullptr, url.c_str());
+    std::ofstream os(url.empty()? _url : url);
+    _root->EncodeBinary(os);
 }
-
-void Project::Free()
-{
-    SAFE_DELETE(mRoot);
-}
-
-

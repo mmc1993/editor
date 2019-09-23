@@ -7,8 +7,10 @@
 		"Name": "Root",
 		"IsWindow": "ok",
 		"IsFullScreen": "ok",
-		"StretchMin": "10, 10",
-		"MenuBar": "Menu/Child0/Child1,Menu/Child0/Child2,Menu/Child1/Child0,Menu/Child1/Child1"
+        "StretchMin": "10, 10",
+        "IsShowMenuBar": "ok",
+        "MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project",
+		"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_global"
 	},
 	"__Children": [
 		{

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "gl_object.h"
-#include "../property/ui_property.h"
 #include "../../interface/serializer.h"
+
+class UIObject;
 
 class Component: public Interface::Serializer {
 public:
@@ -24,7 +25,10 @@ public:
     };
 
 public:
+    //  创建组件
     static Component * Create(const std::string & name);
+    //  创建显示属性
+    static std::vector<UIObject *> BuildUIPropertys(Component * component);
 
 public:
 	Component()

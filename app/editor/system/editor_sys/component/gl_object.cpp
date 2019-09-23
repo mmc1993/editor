@@ -108,6 +108,11 @@ std::vector<GLObject *> & GLObject::GetObjects()
     return _children;
 }
 
+void GLObject::SetName(const std::string & name)
+{
+    _name = name;
+}
+
 const std::string & GLObject::GetName() const
 {
     return _name;

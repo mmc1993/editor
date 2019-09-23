@@ -6,17 +6,17 @@ class GLObject;
 
 class Project {
 public:
-    GLObject * mRoot;
-
-public:
     Project();
     ~Project();
-    const std::string & GetURL() const { return mURL; }
-    const std::string & GetDir() const { return tools::GetFileDir(mURL); }
+    bool IsOpen() const { return _root != nullptr; }
+    const std::string & GetURL() const { return _url; }
+    const std::string & GetDir() const { return tools::GetFileDir(_url); }
+    void New(const std::string & url);
     bool Load(const std::string & url);
     void Save(const std::string & url);
-    void Free();
+    GLObject * GetRoot() { return _root; }
 
 private:
-    std::string mURL;
+    GLObject * _root;
+    std::string _url;
 };

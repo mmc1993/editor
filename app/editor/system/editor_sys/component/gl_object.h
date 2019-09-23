@@ -30,6 +30,7 @@ public:
     GLObject * GetObject(const size_t idx);
     std::vector<GLObject *> & GetObjects();
 
+    void SetName(const std::string & name);
     const std::string & GetName() const;
 
     void SetActive(bool active);

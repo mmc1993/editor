@@ -94,7 +94,22 @@ public:
     public:
         virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, UIObject * object)
         {
+            if (type == UIEventEnum::kDELEGATE)
+            {
+                auto & delegate = (const Delegate &)event;
+                if (delegate.mType == 0)
+                {
+                    _onwer = delegate.mObject;
+                }
+            }
             return false;
         }
+
+        UIObject * GetOnwer()
+        {
+            return _onwer;
+        }
+    private:
+        UIObject * _onwer;
     };
 };

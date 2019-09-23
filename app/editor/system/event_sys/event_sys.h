@@ -4,19 +4,31 @@
 
 class EventSys {
 public:
-    using func_t = std::function<void(const std::any &)>;
-
     //  事件枚举
     enum class TypeEnum {
-        kSELECT_GLOBJECT,   //  选中对象
+        //  project
+        kOpenProject,       //  {}
+        kSaveProject,       //  {}
+        kFreeProject,       //  {}
+        //  ui object
+        kSelectObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点,     bool 是否选中 }
+        kDeleteObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点 }
+        kInsertObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点,     UIObject 新增的节点,     GLObject 新增的节点  }
+        kRenameObject,    //  { UIObject 选中的节点, GLOBject 选中的节点,     string 旧名字,           string 新名字 }
+        //  component
+        kDeleteComponent,   //  { UIObject 选中的节点, GLOBject 选中的节点, Component 选中的组件 }
+        kAppendComponent,   //  { UIObject 选中的节点, GLOBject 选中的节点, Component 新增的组件 }
     };
+
+    using func_t = std::function<void(TypeEnum type, const std::any &)>;
+
 
     //  监听器
     class Listener {
     public:
         Listener();
         ~Listener();
-        void Add(TypeEnum id, const std::function<void(const std::any &)> & func);
+        void Add(TypeEnum id, const func_t & func);
 
     private:
         std::vector<size_t> _listens;
@@ -69,7 +81,7 @@ public:
         {
             for (auto & e : it->second)
             {
-                e.mFunc(param);
+                e.mFunc(type, param);
             }
         }
     }
