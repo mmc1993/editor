@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../include.h"
+#include "../../interface/serializer.h"
 
 #ifdef GetObject
 #undef GetObject
@@ -9,11 +10,14 @@
 class Component;
 class CompTransform;
 
-class GLObject {
+class GLObject : public Interface::Serializer {
 public:
     GLObject();
     virtual ~GLObject();
     virtual void OnUpdate(float dt);
+
+    virtual void EncodeBinary(std::ofstream & os) override;
+    virtual void DecodeBinary(std::ifstream & is) override;
 
     void AddObject(GLObject * child, const std::string & name);
     void DelObject(const std::string & name, bool del = true);

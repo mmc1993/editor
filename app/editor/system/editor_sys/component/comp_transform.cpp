@@ -21,6 +21,20 @@ void CompTransform::OnUpdate(float dt)
     UpdateMatrix();
 }
 
+void CompTransform::EncodeBinary(std::ofstream & os)
+{
+    tools::Serialize(os, _angle);
+    tools::Serialize(os, _scale);
+    tools::Serialize(os, _position);
+}
+
+void CompTransform::DecodeBinary(std::ifstream & is)
+{
+    tools::Deserialize(is, _angle);
+    tools::Deserialize(is, _scale);
+    tools::Deserialize(is, _position);
+}
+
 void CompTransform::Position(float x, float y)
 {
     _position.x = x;

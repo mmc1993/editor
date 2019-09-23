@@ -25,6 +25,7 @@
     <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp" />
     <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp" />
     <ClCompile Include="editor\system\editor_sys\editor_sys.cpp" />
+    <ClCompile Include="editor\system\editor_sys\project.cpp" />
     <ClCompile Include="editor\system\editor_sys\property\ui_property.cpp" />
     <ClCompile Include="editor\global.cpp" />
     <ClCompile Include="editor\main.cpp" />
@@ -60,6 +61,7 @@
     <ClInclude Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.h" />
     <ClInclude Include="editor\system\editor_sys\editor_sys.h" />
     <ClInclude Include="editor\system\editor_sys\include.h" />
+    <ClInclude Include="editor\system\editor_sys\project.h" />
     <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />
     <ClInclude Include="editor\global.h" />
     <ClInclude Include="editor\include.h" />

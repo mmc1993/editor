@@ -16,6 +16,33 @@ GLObject::~GLObject()
 void GLObject::OnUpdate(float dt)
 { }
 
+void GLObject::EncodeBinary(std::ofstream & os)
+{
+    auto count = GetComponents().size();
+    tools::Serialize(os, count);
+
+    for (auto comp : GetComponents())
+    {
+        tools::Serialize(os, comp->GetName());
+        comp->EncodeBinary(os);
+    }
+}
+
+void GLObject::DecodeBinary(std::ifstream & is)
+{
+    size_t count;
+    tools::Deserialize(is, count);
+
+    std::string name;
+    for (auto i = 0; i != count; ++i)
+    {
+        tools::Deserialize(is, name);
+        auto comp = Component::Create(name);
+        comp->DecodeBinary(is);
+        AddComponent(comp);
+    }
+}
+
 void GLObject::AddObject(GLObject * child, const std::string & name)
 {
     child->_name = name;

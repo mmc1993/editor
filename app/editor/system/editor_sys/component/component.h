@@ -4,7 +4,7 @@
 #include "../property/ui_property.h"
 #include "../../interface/serializer.h"
 
-class Component {
+class Component: public Interface::Serializer {
 public:
     struct Property {
         Interface::Serializer::StringValueTypeEnum mType;
