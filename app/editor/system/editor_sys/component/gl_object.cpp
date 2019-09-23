@@ -9,8 +9,8 @@ GLObject::GLObject()
 
 GLObject::~GLObject()
 {
-    ClearObjects();
     ClearComponents();
+    ClearObjects();
 }
 
 void GLObject::OnUpdate(float dt)
