@@ -23,6 +23,16 @@ void GLObject::AddObject(GLObject * child, const std::string & name)
     _children.push_back(child);
 }
 
+void GLObject::DelObject(const std::string & name, bool del)
+{
+    auto it = std::find_if(_children.begin(), _children.end(),
+        [name](GLObject * child){return child->_name==name;});
+    if (it != _children.end())
+    {
+        DelObject(std::distance(_children.begin(), it), del);
+    }
+}
+
 void GLObject::DelObject(GLObject * child, const bool del)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
@@ -37,16 +47,6 @@ void GLObject::DelObject(size_t idx, const bool del)
     (*it)->_parent = nullptr;
     if (del) { delete *it; }
     _children.erase(it);
-}
-
-void GLObject::DelObject(const std::string & name)
-{
-    auto it = std::find_if(_children.begin(), _children.end(),
-        [name](GLObject * child) { return child->_name == name; });
-    if (it != _children.end())
-    {
-        DelObject(std::distance(_children.begin(), it), true);
-    }
 }
 
 void GLObject::ClearObjects()

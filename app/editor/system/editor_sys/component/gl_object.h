@@ -16,9 +16,9 @@ public:
     virtual void OnUpdate(float dt);
 
     void AddObject(GLObject * child, const std::string & name);
-    void DelObject(GLObject * child, const bool del = true);
-    void DelObject(size_t idx, const bool del = true);
-    void DelObject(const std::string & name);
+    void DelObject(const std::string & name, bool del = true);
+    void DelObject(GLObject * child, bool del = true);
+    void DelObject(size_t idx, bool del = true);
     void ClearObjects();
     void DelThis();
 
