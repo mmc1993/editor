@@ -1,22 +1,28 @@
 #pragma once
 
 #include "../../include.h"
-#include "component/gl_object.h"
+
+class Project;
+class UIObject;
+class GLObject;
 
 class EditorSys {
-    //  数据区
 public:
-    //  根对象
-    GLObject * mRootObject;
-    //  当前选中对象
-    std::vector<GLObject *> mSelected;
+    Project * mProject;
 
-    //  接口区
+    //  当前选中对象
+    std::vector<UIObject *> mSelected;
+
 public:
     EditorSys();
 
+    bool OpenProjectDialog(const std::string & url);
+    bool OpenProject(const std::string & url);
+    bool SaveProject(const std::string & url);
+    void FreeProject();
+    bool IsOpenProject() const;
     //  生成名字
-    std::string GenerateObjectName(GLObject * object) const;
-    //  检查名字
-    bool CheckRename(GLObject * object, const std::string & name) const;
+    std::string ObjectName(GLObject * parent) const;
+    //  修改名字
+    bool        ObjectName(GLObject * object, const std::string & name) const;
 };

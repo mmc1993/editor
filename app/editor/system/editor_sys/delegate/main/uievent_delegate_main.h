@@ -10,6 +10,7 @@
 #include "../../../ui_sys/ui_state/ui_state.h"
 #include "../../../ui_sys/ui_object/ui_object.h"
 #include "../../editor_sys.h"
+#include "../../project.h"
 
 class UIEventDelegateMainObjList : public UIEvent::DelegateHandler {
 public:

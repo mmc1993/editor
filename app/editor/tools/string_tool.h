@@ -88,7 +88,7 @@ namespace tools {
     }
 
     //  返回目录名 带斜杆
-    inline std::string QueryFileDir(const std::string & fname)
+    inline std::string GetFileDir(const std::string & fname)
     {
         auto pos = fname.find_last_of('/');
         pos = pos != std::string::npos
@@ -97,7 +97,7 @@ namespace tools {
     }
 
     //  返回文件名 没后缀
-    inline std::string QueryFileName(const std::string & fname)
+    inline std::string GetFileName(const std::string & fname)
     {
         assert(std::string::npos == fname.find_first_of('\\'));
         auto dot = fname.find_last_of('.');
@@ -106,7 +106,7 @@ namespace tools {
     }
 
     //  返回后缀名
-    inline std::string QueryFileSuffix(const std::string & fname)
+    inline std::string GetFileSuffix(const std::string & fname)
     {
         assert(std::string::npos == fname.find_first_of('\\'));
         auto pos = fname.find_last_of('.');
@@ -116,7 +116,7 @@ namespace tools {
     }
 
     //  返回文件名 有后缀
-    inline std::string QueryFileFullName(const std::string & fname)
+    inline std::string GetFileFullName(const std::string & fname)
     {
         assert(std::string::npos == fname.find_first_of('\\'));
         auto pos = fname.find_last_of('/');

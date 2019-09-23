@@ -14,6 +14,7 @@ bool Project::Load(const std::string & url)
     std::ifstream is(url);
     ASSERT_LOG(is, url.c_str());
     mRoot = new GLObject();
+    mURL  = url;
     return true;
 }
 

@@ -135,11 +135,11 @@ int main(int, char**)
     //  初始化图集系统
     Global::Ref().mAtlasSys = new AtlasSys();
     Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");
+    //  初始化编辑系统
+    Global::Ref().mEditorSys = new EditorSys();
     //  初始化UI系统
     Global::Ref().mUISys = new UISys();
     Global::Ref().mUISys->SetRoot("res/ui/window.json");
-    //  初始化编辑系统
-    Global::Ref().mEditorSys = new EditorSys();
 
     // Main loop
     while (!glfwWindowShouldClose(window))

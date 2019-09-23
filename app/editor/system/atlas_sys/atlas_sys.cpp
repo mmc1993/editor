@@ -11,7 +11,7 @@
 
 void AtlasSys::Delete(const std::string & url)
 {
-    auto suffix = tools::QueryFileSuffix(url);
+    auto suffix = tools::GetFileSuffix(url);
     if (suffix == ".png" || suffix == ".jpg")
     {
         DeleteImage(url);
@@ -24,7 +24,7 @@ void AtlasSys::Delete(const std::string & url)
 
 bool AtlasSys::Import(const std::string & url)
 {
-    auto suffix = tools::QueryFileSuffix(url);
+    auto suffix = tools::GetFileSuffix(url);
     if (suffix == ".png" || suffix == ".jpg")
     {
         return ImportImage(url);
@@ -73,7 +73,7 @@ bool AtlasSys::ImportAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
-    auto dir = tools::QueryFileDir(url);
+    auto dir = tools::GetFileDir(url);
     dir += json->At("meta", "image")->ToString();
 
     auto raw = (RawBitmap *)Global::Ref().mRawSys->Import(dir);
@@ -108,7 +108,7 @@ void AtlasSys::DeleteAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
-    auto dir = tools::QueryFileDir(url);
+    auto dir = tools::GetFileDir(url);
     dir += json->At("meta", "image")->ToString();
     Global::Ref().mRawSys->Delete(dir);
     for (auto val : json->At("frames"))

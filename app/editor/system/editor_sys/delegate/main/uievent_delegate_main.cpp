@@ -2,6 +2,11 @@
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    if (!Global::Ref().mEditorSys->IsOpenProject())
+    {
+        return false;
+    }
+
     switch (e)
     {
     case UIEventEnum::kMOUSE:
@@ -9,7 +14,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             auto & mouse = (const UIEvent::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
-                object->GetState()->Pointer = Global::Ref().mEditorSys->mRootObject;
+                object->GetState()->Pointer = Global::Ref().mEditorSys->mProject->mRoot;
 
                 std::vector<std::string> buffer;
                 if (mouse.mObject == object)
@@ -36,9 +41,8 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 mouse.mObject != object)
             {
                 //  选中节点, 通知
-                auto glObject = (GLObject *)mouse.mObject->GetState()->Pointer;
                 Global::Ref().mEditorSys->mSelected.clear();
-                Global::Ref().mEditorSys->mSelected.push_back(glObject);
+                Global::Ref().mEditorSys->mSelected.push_back(mouse.mObject);
                 Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSELECT_GLOBJECT, nullptr);
             }
         }
@@ -48,12 +52,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             auto menu = (const UIEvent::Menu &)param;
             if (menu.mPath == "Add Object")
             {
-                auto insert = (GLObject *)menu.mObject->GetState()->Pointer;
-                auto name = Global::Ref().mEditorSys->GenerateObjectName(insert);
+                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
+                auto name = Global::Ref().mEditorSys->ObjectName(glObject);
 
                 //  添加GLObject
-                auto glObject = new GLObject();
-                insert->AddObject(glObject, name);
+                auto newGLObject = new GLObject();
+                glObject->AddObject(newGLObject, name);
 
                 //  添加UIObject
                 auto raw  = mmc::JsonValue::Hash();
@@ -62,15 +66,16 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
-                auto uiObject = UIParser::Parse(raw);
-                uiObject->GetState()->Pointer = glObject;
-                menu.mObject->AddObject(uiObject);
+                auto newUIObject = UIParser::Parse(raw);
+                menu.mObject->AddObject(newUIObject);
+                
+                newUIObject->GetState()->Pointer = newGLObject;
             }
             else if (menu.mPath == "Del Object")
             {
-                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
+                auto delGLObject = (GLObject *)menu.mObject->GetState()->Pointer;
                 menu.mObject->DelThis();
-                glObject->DelThis();
+                delGLObject->DelThis();
 
                 //  删除节点, 通知
                 Global::Ref().mEditorSys->mSelected.clear();
@@ -81,8 +86,8 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a' &&
                 menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
-                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
-                if (Global::Ref().mEditorSys->CheckRename(glObject, menu.mEdit))
+                auto renameGLObject = (GLObject *)menu.mObject->GetState()->Pointer;
+                if (Global::Ref().mEditorSys->ObjectName(renameGLObject, menu.mEdit))
                 {
                     menu.mObject->GetState()->Name = menu.mEdit;
                 }
@@ -90,8 +95,9 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             else
             {
                 auto name = menu.mPath.substr(std::strlen("Add Component/"));
-                auto glObject = (GLObject *)menu.mObject->GetState()->Pointer;
+                auto glObject = (GLObject*)menu.mObject->GetState()->Pointer;
                 glObject->AddComponent(Component::Create(name));
+
                 Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSELECT_GLOBJECT, nullptr);
             }
             std::cout
@@ -130,8 +136,9 @@ void UIEventDelegateMainComList::OnRefreshComponent()
     //  清理
     if (!Global::Ref().mEditorSys->mSelected.empty())
     {
-        auto glObject = Global::Ref().mEditorSys->mSelected.at(0);
-        for (auto component : glObject->GetComponents())
+        auto selUIObject = Global::Ref().mEditorSys->mSelected.at(0);
+        auto selGLObject = (GLObject *)selUIObject->GetState()->Pointer;
+        for (auto component : selGLObject->GetComponents())
         {
             auto header = new UIComponentHeader(component->GetName());
             _onwer->AddObject(header);
@@ -155,8 +162,6 @@ void UIEventDelegateMainComList::OnRefreshComponent()
                 }
             }
         }
-        
-        std::cout << Global::Ref().mEditorSys->mSelected.at(0)->GetName() << std::endl;
     }
 }
 
