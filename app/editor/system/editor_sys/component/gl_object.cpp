@@ -16,9 +16,9 @@ GLObject::~GLObject()
 void GLObject::OnUpdate(float dt)
 { }
 
-void GLObject::AddObject(GLObject * child, const std::string & tag)
+void GLObject::AddObject(GLObject * child, const std::string & name)
 {
-    child->_tag = tag;
+    child->_name = name;
     child->_parent = this;
     _children.push_back(child);
 }
@@ -27,10 +27,10 @@ void GLObject::DelObject(GLObject * child, const bool del)
 {
     auto it = std::find(_children.begin(), _children.end(), child);
     ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
-    DelObjectByIdx(std::distance(_children.begin(), it), del);
+    DelObject(std::distance(_children.begin(), it), del);
 }
 
-void GLObject::DelObjectByIdx(size_t idx, const bool del)
+void GLObject::DelObject(size_t idx, const bool del)
 {
     ASSERT_LOG(idx < _children.size(), "Object DelChild Idx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
@@ -39,13 +39,13 @@ void GLObject::DelObjectByIdx(size_t idx, const bool del)
     _children.erase(it);
 }
 
-void GLObject::DelObjectByTag(const std::string & tag)
+void GLObject::DelObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [tag](GLObject * child) { return child->_tag == tag; });
+        [name](GLObject * child) { return child->_name == name; });
     if (it != _children.end())
     {
-        DelObjectByIdx(std::distance(_children.begin(), it), true);
+        DelObject(std::distance(_children.begin(), it), true);
     }
 }
 
@@ -63,14 +63,14 @@ void GLObject::DelThis()
     else { GetParent()->DelObject(this); }
 }
 
-GLObject * GLObject::GetObjectByTag(const std::string & tag)
+GLObject * GLObject::GetObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [tag](GLObject * child) { return child->_tag == tag; });
+        [name](GLObject * child) { return child->_name == name; });
     return it != _children.end() ? *it : nullptr;
 }
 
-GLObject * GLObject::GetObjectByIdx(const size_t idx)
+GLObject * GLObject::GetObject(const size_t idx)
 {
     ASSERT_LOG(idx < _children.size(), "Object GetChildIdx Idx: {0}", idx);
     return *std::next(_children.begin(), idx);
@@ -81,9 +81,9 @@ std::vector<GLObject *> & GLObject::GetObjects()
     return _children;
 }
 
-const std::string & GLObject::GetTag() const
+const std::string & GLObject::GetName() const
 {
-    return _tag;
+    return _name;
 }
 
 void GLObject::SetActive(bool active)
@@ -110,7 +110,7 @@ void GLObject::SetParent(GLObject * parent)
     }
     if (nullptr != parent)
     {
-        parent->AddObject(this, _tag);
+        parent->AddObject(this, _name);
     }
 }
 

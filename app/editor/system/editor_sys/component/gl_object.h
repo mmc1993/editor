@@ -2,6 +2,10 @@
 
 #include "../../../include.h"
 
+#ifdef GetObject
+#undef GetObject
+#endif
+
 class Component;
 class CompTransform;
 
@@ -11,18 +15,18 @@ public:
     virtual ~GLObject();
     virtual void OnUpdate(float dt);
 
-    void AddObject(GLObject * child, const std::string & tag);
+    void AddObject(GLObject * child, const std::string & name);
     void DelObject(GLObject * child, const bool del = true);
-    void DelObjectByIdx(size_t idx, const bool del = true);
-    void DelObjectByTag(const std::string & tag);
+    void DelObject(size_t idx, const bool del = true);
+    void DelObject(const std::string & name);
     void ClearObjects();
     void DelThis();
 
-    GLObject * GetObjectByTag(const std::string & tag);
-    GLObject * GetObjectByIdx(const size_t idx);
+    GLObject * GetObject(const std::string & name);
+    GLObject * GetObject(const size_t idx);
     std::vector<GLObject *> & GetObjects();
 
-    const std::string & GetTag() const;
+    const std::string & GetName() const;
 
     void SetActive(bool active);
     bool IsActive() const;
@@ -67,9 +71,9 @@ public:
     CompTransform * GetTransform();
 
 private:
-    std::string                 _tag;
     bool                        _active;
     GLObject *                  _parent;
+    std::string                 _name;
 	CompTransform *             _transform;
     std::vector<GLObject *>     _children;
     std::vector<Component *>    _components;

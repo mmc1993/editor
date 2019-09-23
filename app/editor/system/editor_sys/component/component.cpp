@@ -5,9 +5,9 @@ static const std::map<std::string, Component *(*)()> ComponentMap = {
     std::make_pair("Transform", &std::create<Component, CompTransform>)
 };
 
-Component * Component::Create(const std::string & tag)
+Component * Component::Create(const std::string & name)
 {
-    auto it = ComponentMap.find(tag);
-    ASSERT_LOG(it != ComponentMap.end(), tag.c_str());
+    auto it = ComponentMap.find(name);
+    ASSERT_LOG(it != ComponentMap.end(), name.c_str());
     return it->second();
 }

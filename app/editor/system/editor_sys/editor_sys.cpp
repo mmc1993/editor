@@ -9,7 +9,7 @@ std::string EditorSys::GenerateObjectName(GLObject * object) const
 {
     size_t i = 0;
     auto name = SFormat("object_{0}", i++);
-    while (object->GetObjectByTag(name))
+    while (object->GetObject(name))
         name = SFormat("object_{0}", i++);
     return std::move(name);
 }
@@ -17,5 +17,5 @@ std::string EditorSys::GenerateObjectName(GLObject * object) const
 bool EditorSys::CheckRename(GLObject * object, const std::string & name) const
 {
     if (name.empty()) { return false; }
-    return object->GetParent()->GetObjectByTag(name) == nullptr;
+    return object->GetParent()->GetObject(name) == nullptr;
 }

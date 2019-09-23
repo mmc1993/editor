@@ -16,7 +16,7 @@ ok 拉伸方向判断
 //  工程类
 class Project {
 public:
-    std::vector<GLOBject *> mGameObject;
+    GLOBject * mRoot;
 
 public:
     const std::string & GetFolderPath() const;

@@ -156,7 +156,7 @@ void UIEventDelegateMainComList::OnRefreshComponent()
             }
         }
         
-        std::cout << Global::Ref().mEditorSys->mSelected.at(0)->GetTag() << std::endl;
+        std::cout << Global::Ref().mEditorSys->mSelected.at(0)->GetName() << std::endl;
     }
 }
 

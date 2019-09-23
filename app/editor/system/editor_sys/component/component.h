@@ -24,7 +24,7 @@ public:
     };
 
 public:
-    static Component * Create(const std::string & tag);
+    static Component * Create(const std::string & name);
 
 public:
 	Component()
