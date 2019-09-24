@@ -132,7 +132,8 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
 
 void UIEventDelegateMainObjList::OnEventOpenProject()
 {
-    auto InitObjectTree = [](UIObject * root, const std::vector<GLObject *> & objects)
+    std::function<void (UIObject * root, const std::vector<GLObject *> & objects)> InitObjectTree;
+    InitObjectTree = [&InitObjectTree](UIObject * root, const std::vector<GLObject *> & objects)
     {
         for (auto object : objects)
         {
@@ -144,8 +145,9 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
             raw->Insert(mmc::JsonValue::FromValue(object->GetName()), "__Property", "Name");
             auto newUIObject = UIParser::Parse(raw);
             root->AddObject(newUIObject);
-
             newUIObject->GetState()->Pointer = object;
+
+            InitObjectTree(newUIObject, object->GetObjects());
         }
     };
 
