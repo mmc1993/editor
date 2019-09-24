@@ -45,3 +45,12 @@ ok  //  UIEventEnum 剥离
     Project
     GLObject
     Component
+
+
+拖放参数:
+    bool IsCanDrag,
+
+    struct Drag {
+        glm::vec2 mBegWorld;
+        glm::vec2 mEndWorld;
+    }
