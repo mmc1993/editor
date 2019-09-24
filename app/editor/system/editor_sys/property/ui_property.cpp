@@ -2,7 +2,7 @@
 
 bool UIComponentHeader::OnEnter()
 {
-    return ImGui::CollapsingHeader(GetState()->Name.c_str());
+    return ImGui::CollapsingHeader(GetState()->Name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 }
 
 void UIPropertyInt::OnRender(float dt)
