@@ -111,15 +111,43 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
 void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
-
-}
-
-void UIEventDelegateMainObjList::OnEventFreeProject()
-{
+    switch (type)
+    {
+    case EventSys::TypeEnum::kOpenProject:
+        OnEventOpenProject();
+        break;
+    case EventSys::TypeEnum::kFreeProject:
+        OnEventFreeProject();
+        break;
+    }
 }
 
 void UIEventDelegateMainObjList::OnEventOpenProject()
 {
+    auto InitObjectTree = [](UIObject * root, const std::vector<GLObject *> & objects)
+    {
+        for (auto object : objects)
+        {
+            auto raw = mmc::JsonValue::Hash();
+            raw->Insert(mmc::JsonValue::List(), "__Children");
+            raw->Insert(mmc::JsonValue::Hash(), "__Property");
+            raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
+            raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
+            raw->Insert(mmc::JsonValue::FromValue(object->GetName()), "__Property", "Name");
+            auto newUIObject = UIParser::Parse(raw);
+            root->AddObject(newUIObject);
+
+            newUIObject->GetState()->Pointer = object;
+        }
+    };
+
+    auto project = Global::Ref().mEditorSys->GetProject();
+    InitObjectTree(GetOnwer(), project->GetRoot()->GetObjects());
+}
+
+void UIEventDelegateMainObjList::OnEventFreeProject()
+{
+    GetOnwer()->ClearObjects();
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
@@ -236,7 +264,7 @@ bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent:
         }
         else if (menu.mPath == "Menu/Open Project")
         {
-            Global::Ref().mEditorSys->OptMetaOpenProject("");
+            Global::Ref().mEditorSys->OptMetaOpenProject("1.proj");
         }
         else if (menu.mPath == "Menu/Save Project")
         {

@@ -27,8 +27,8 @@ private:
     //  关闭项目
     //  打开项目
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
-    void OnEventFreeProject();
     void OnEventOpenProject();
+    void OnEventFreeProject();
 };
 
 //  资源列表
