@@ -3,12 +3,16 @@
 #include "../include.h"
 #include "../ui_event.h"
 
+#ifdef GetObject
+#undef GetObject
+#endif
+
 class UIObject {
 public:
     template <class T = UIState>
     T * GetState() { return (T *)_state; }
     
-    UIObject * GetObjects(const std::initializer_list<std::string> & list);
+    UIObject * GetObject(const std::initializer_list<std::string> & list);
     std::vector<UIObject *>   GetObjects(UITypeEnum type) const;
     std::vector<UIObject *> & GetObjects();
     void AddObject(UIObject * child);

@@ -20,6 +20,7 @@ public:
     bool IsButton           = false;    //  按钮
     bool IsShowNav          = false;    //  导航
     bool IsEditBox          = false;    //  编辑
+    bool IsCanDrag          = false;    //  可拖放
     bool IsCanMove          = false;    //  可移动
     bool IsShowBorder       = true;     //  显示边框
     bool IsCanStretch       = true;     //  可拉伸
@@ -45,12 +46,22 @@ public:
 
 class UIStateLayout : public UIState {
 public:
+    //  拖放信息
+    struct Drag {
+        UIObject * mObject;
+        glm::vec2 mBegWorld;
+        glm::vec2 mEndWorld;
+        Drag(): mObject(nullptr) {}
+    } mDrag;
+
+    //  链接信息
     struct Join {
         std::vector<UIObject *>           mOut;
         std::pair<UIObject *, DirectEnum> mIn;
         Join() {}
     } mJoin[(size_t)DirectEnum::LENGTH];
 
+    //  拉伸数据
     struct StretchFocus {
         UIObject *  mObject;
         DirectEnum  mDirect;

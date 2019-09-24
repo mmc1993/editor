@@ -54,3 +54,9 @@ ok  //  UIEventEnum 剥离
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
     }
+
+    struct Drag {
+        UIObject * mObject;
+        glm::vec2 mBegWorld;
+        glm::vec2 mEndWorld;
+    }

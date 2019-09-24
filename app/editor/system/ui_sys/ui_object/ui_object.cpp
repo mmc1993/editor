@@ -7,7 +7,7 @@
 // ---
 //  UIObject
 // ---
-UIObject * UIObject::GetObjects(const std::initializer_list<std::string>& list)
+UIObject * UIObject::GetObject(const std::initializer_list<std::string>& list)
 {
     ASSERT_LOG(list.size() != 0, "");
     auto parent = this;
