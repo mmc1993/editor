@@ -58,7 +58,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 (mouse.mAct == 2 || mouse.mAct == 3) && 
                 mouse.mObject != object)
             {
-                Global::Ref().mEditorSys->OptMetaSelectObject(mouse.mObject, true);
+                Global::Ref().mEditorSys->OptSelectObject(mouse.mObject, true);
             }
         }
         break;
@@ -81,24 +81,24 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 auto newUIObject = UIParser::Parse(raw);
                 newUIObject->GetState()->Pointer = newGLObject;
 
-                Global::Ref().mEditorSys->OptMetaInsertObject(newUIObject, menu.mObject);
+                Global::Ref().mEditorSys->OptInsertObject(newUIObject, menu.mObject);
 
             }
             else if (menu.mPath == "Del Object")
             {
-                Global::Ref().mEditorSys->OptMetaDeleteObject(menu.mObject);
+                Global::Ref().mEditorSys->OptDeleteObject(menu.mObject);
             }
             else if (
                 menu.mPath.at(0) == 'R' && menu.mPath.at(1) == 'e' && 
                 menu.mPath.at(2) == 'n' && menu.mPath.at(3) == 'a' &&
                 menu.mPath.at(4) == 'm' && menu.mPath.at(5) == 'e')
             {
-                Global::Ref().mEditorSys->OptMetaRenameObject(menu.mObject, menu.mEdit);
+                Global::Ref().mEditorSys->OptRenameObject(menu.mObject, menu.mEdit);
             }
             else
             {
                 auto name = menu.mPath.substr(std::strlen("Add Component/"));
-                Global::Ref().mEditorSys->OptMetaAppendComponent(menu.mObject, Component::Create(name));
+                Global::Ref().mEditorSys->OptAppendComponent(menu.mObject, Component::Create(name));
             }
             std::cout
                 << "Menu Key: " << menu.mPath << ' '
@@ -260,19 +260,19 @@ bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent:
         auto & menu = (const UIEvent::Menu &)param;
         if (menu.mPath == "Menu/New Project")
         {
-            Global::Ref().mEditorSys->OptMetaNewProject("1.proj");
+            Global::Ref().mEditorSys->OptNewProject("1.proj");
         }
         else if (menu.mPath == "Menu/Open Project")
         {
-            Global::Ref().mEditorSys->OptMetaOpenProject("1.proj");
+            Global::Ref().mEditorSys->OptOpenProject("1.proj");
         }
         else if (menu.mPath == "Menu/Save Project")
         {
-            Global::Ref().mEditorSys->OptMetaSaveProject("");
+            Global::Ref().mEditorSys->OptSaveProject("");
         }
         else if (menu.mPath == "Menu/Free Project")
         {
-            Global::Ref().mEditorSys->OptMetaFreeProject();
+            Global::Ref().mEditorSys->OptFreeProject();
         }
         return true;
     }

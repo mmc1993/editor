@@ -13,7 +13,7 @@
 EditorSys::EditorSys(): _project(nullptr)
 { }
 
-void EditorSys::OptMetaSelectObject(UIObject * uiObject, bool select, bool multi)
+void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
 {
     auto iter = std::find(_selected.begin(), _selected.end(), uiObject);
     auto has = iter != _selected.end();
@@ -43,10 +43,10 @@ void EditorSys::OptMetaSelectObject(UIObject * uiObject, bool select, bool multi
     }
 }
 
-void EditorSys::OptMetaDeleteObject(UIObject * uiObject)
+void EditorSys::OptDeleteObject(UIObject * uiObject)
 {
     //  取消选中
-    OptMetaSelectObject(uiObject, false);
+    OptSelectObject(uiObject, false);
     
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     uiObject->DelThis();
@@ -55,7 +55,7 @@ void EditorSys::OptMetaDeleteObject(UIObject * uiObject)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(uiObject, glObject));
 }
 
-void EditorSys::OptMetaInsertObject(UIObject * uiObject, UIObject * insUIObject)
+void EditorSys::OptInsertObject(UIObject * uiObject, UIObject * insUIObject)
 {
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     auto insGLObject = (GLObject *)insUIObject->GetState()->Pointer;
@@ -66,7 +66,7 @@ void EditorSys::OptMetaInsertObject(UIObject * uiObject, UIObject * insUIObject)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kInsertObject, std::make_tuple(insUIObject, insGLObject, uiObject, glObject));
 }
 
-void EditorSys::OptMetaRenameObject(UIObject * uiObject, const std::string & name)
+void EditorSys::OptRenameObject(UIObject * uiObject, const std::string & name)
 {
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     if (ObjectName(uiObject->GetParent(), name))
@@ -78,7 +78,7 @@ void EditorSys::OptMetaRenameObject(UIObject * uiObject, const std::string & nam
     }
 }
 
-void EditorSys::OptMetaAppendComponent(UIObject * uiObject, Component * component)
+void EditorSys::OptAppendComponent(UIObject * uiObject, Component * component)
 {
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     glObject->AddComponent(component);
@@ -86,7 +86,7 @@ void EditorSys::OptMetaAppendComponent(UIObject * uiObject, Component * componen
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kAppendComponent, std::make_tuple(uiObject, glObject, component));
 }
 
-void EditorSys::OptMetaDeleteComponent(UIObject * uiObject, Component * component)
+void EditorSys::OptDeleteComponent(UIObject * uiObject, Component * component)
 {
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     glObject->DelComponent(component);
@@ -94,9 +94,9 @@ void EditorSys::OptMetaDeleteComponent(UIObject * uiObject, Component * componen
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteComponent, std::make_tuple(uiObject, glObject, component));
 }
 
-void EditorSys::OptMetaNewProject(const std::string & url)
+void EditorSys::OptNewProject(const std::string & url)
 {
-    OptMetaFreeProject();
+    OptFreeProject();
     SAFE_DELETE(_project);
     _project = new Project();
     _project->New(url);
@@ -104,9 +104,9 @@ void EditorSys::OptMetaNewProject(const std::string & url)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
 }
 
-bool EditorSys::OptMetaOpenProject(const std::string & url)
+bool EditorSys::OptOpenProject(const std::string & url)
 {
-    OptMetaFreeProject();
+    OptFreeProject();
     SAFE_DELETE(_project);
     _project = new Project();
     auto ret = _project->Load(url);
@@ -117,7 +117,7 @@ bool EditorSys::OptMetaOpenProject(const std::string & url)
     return ret;
 }
 
-bool EditorSys::OptMetaSaveProject(const std::string & url)
+bool EditorSys::OptSaveProject(const std::string & url)
 {
     if (_project != nullptr)
     {
@@ -127,13 +127,13 @@ bool EditorSys::OptMetaSaveProject(const std::string & url)
     return true;
 }
 
-void EditorSys::OptMetaFreeProject()
+void EditorSys::OptFreeProject()
 {
     if (_project != nullptr)
     {
         while (!_selected.empty())
         {
-            EditorSys::OptMetaSelectObject(_selected.back(), false);
+            EditorSys::OptSelectObject(_selected.back(), false);
         }
         SAFE_DELETE(_project);
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kFreeProject, nullptr);

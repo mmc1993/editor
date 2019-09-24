@@ -18,29 +18,29 @@ public:
 //  操作原始接口
     /// 对象
     //  选中对象
-    void OptMetaSelectObject(UIObject * uiObject, bool select, bool multi = false);
+    void OptSelectObject(UIObject * uiObject, bool select, bool multi = false);
     //  删除对象
-    void OptMetaDeleteObject(UIObject * uiObject);
+    void OptDeleteObject(UIObject * uiObject);
     //  插入对象
-    void OptMetaInsertObject(UIObject * uiObject, UIObject * insUIObject);
+    void OptInsertObject(UIObject * uiObject, UIObject * insUIObject);
     //  修改名字
-    void OptMetaRenameObject(UIObject * uiObject, const std::string & name);
+    void OptRenameObject(UIObject * uiObject, const std::string & name);
 
     /// 组件
     //  新增组件
-    void OptMetaAppendComponent(UIObject * uiObject, Component * component);
+    void OptAppendComponent(UIObject * uiObject, Component * component);
     //  删除组件
-    void OptMetaDeleteComponent(UIObject * uiObject, Component * component);
+    void OptDeleteComponent(UIObject * uiObject, Component * component);
 
     /// 项目
     //  新建项目
-    void OptMetaNewProject(const std::string & url);
+    void OptNewProject(const std::string & url);
     //  打开项目
-    bool OptMetaOpenProject(const std::string & url);
+    bool OptOpenProject(const std::string & url);
     //  保存项目
-    bool OptMetaSaveProject(const std::string & url);
+    bool OptSaveProject(const std::string & url);
     //  关闭项目
-    void OptMetaFreeProject();
+    void OptFreeProject();
 
 //  工具接口
     void OpenDialogNewProject(const std::string & url);
