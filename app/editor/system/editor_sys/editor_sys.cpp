@@ -80,9 +80,9 @@ void EditorSys::OptInsertObject(UIObject * uiObject, UIObject * insUIObject)
 
 void EditorSys::OptRenameObject(UIObject * uiObject, const std::string & name)
 {
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     if (ObjectName(uiObject->GetParent(), name))
     {
+        auto glObject = (GLObject *)uiObject->GetState()->Pointer;
         uiObject->GetState()->Name = name;
         glObject->SetName(name);
 
