@@ -684,14 +684,13 @@ bool UIClassTreeBox::OnEnter()
     ImGui::SetNextItemWidth(state->Move.z);
 
     size_t flag = 0;
+    ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0));
     if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
-    if (ImGui::TreeNodeEx(state->Name.c_str(), flag | ImGuiTreeNodeFlags_Framed))
-    {
-        AdjustSize();
-        return true;
-    }
-    return false;
+    auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag | ImGuiTreeNodeFlags_Framed);
+    ImGui::PopStyleColor();
+    AdjustSize();
+    return ret;
 }
 
 void UIClassTreeBox::OnLeave(bool ret)

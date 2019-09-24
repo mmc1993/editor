@@ -29,6 +29,7 @@ private:
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
     void OnEventOpenProject();
     void OnEventFreeProject();
+    void OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi);
 };
 
 //  资源列表

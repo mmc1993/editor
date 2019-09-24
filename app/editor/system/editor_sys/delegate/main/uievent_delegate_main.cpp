@@ -17,6 +17,10 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 &UIEventDelegateMainObjList::OnEvent, this,
                 std::placeholders::_1,
                 std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
+                &UIEventDelegateMainObjList::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
         }
     }
 
@@ -119,6 +123,10 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
     case EventSys::TypeEnum::kFreeProject:
         OnEventFreeProject();
         break;
+    case EventSys::TypeEnum::kSelectObject:
+        auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, bool, bool> &>(param);
+        OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value), std::get<3>(value));
+        break;
     }
 }
 
@@ -148,6 +156,11 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
 void UIEventDelegateMainObjList::OnEventFreeProject()
 {
     GetOnwer()->ClearObjects();
+}
+
+void UIEventDelegateMainObjList::OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi)
+{
+    uiObject->GetState()->IsSelect = select;
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)

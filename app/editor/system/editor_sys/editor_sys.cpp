@@ -21,25 +21,26 @@ void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
     {
         if (!multi)
         {
-            while (!_selected.empty())
+            auto count = _selected.size();
+            while (0 != count--)
             {
-                if (_selected.back() != uiObject)
+                auto selected = _selected.back();
+                if (selected != uiObject)
                 {
-                    auto selected = _selected.back();
                     _selected.pop_back();
-
                     Global::Ref().mEventSys->Post(
-                        EventSys::TypeEnum::kSelectObject, std::make_tuple(selected,
-                            (GLObject *)uiObject->GetState()->Pointer, false, multi));
+                        EventSys::TypeEnum::kSelectObject, 
+                        std::make_tuple(selected, (GLObject *)selected->GetState()->Pointer, false, multi));
                 }
             }
         }
+
         if (!has)
         {
             _selected.push_back(uiObject);
             Global::Ref().mEventSys->Post(
-                EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject, 
-                    (GLObject *)uiObject->GetState()->Pointer, true, multi));
+                EventSys::TypeEnum::kSelectObject, 
+                std::make_tuple(uiObject, (GLObject *)uiObject->GetState()->Pointer, true, multi));
         }
     }
     else
@@ -48,8 +49,8 @@ void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
         {
             _selected.erase(iter);
             Global::Ref().mEventSys->Post(
-                EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject,
-                    (GLObject *)uiObject->GetState()->Pointer, false, multi));
+                EventSys::TypeEnum::kSelectObject, 
+                std::make_tuple(uiObject, (GLObject *)uiObject->GetState()->Pointer, false, multi));
         }
     }
 }
