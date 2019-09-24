@@ -13,26 +13,40 @@
 EditorSys::EditorSys(): _project(nullptr)
 { }
 
-void EditorSys::OptMetaSelectObject(UIObject * uiObject)
+void EditorSys::OptMetaSelectObject(UIObject * uiObject, bool select, bool multi)
 {
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
-    auto it = std::find(_selected.begin(), _selected.end(), uiObject);
-    if (it == _selected.end())
+    auto iter = std::find(_selected.begin(), _selected.end(), uiObject);
+    auto has = iter != _selected.end();
+    if (select)
     {
+        if (!multi)
+        {
+            _selected.clear();
+        }
         _selected.push_back(uiObject);
-        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject, glObject, true));
+        if (!has)
+        {
+            Global::Ref().mEventSys->Post(
+                EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject, 
+                    (GLObject *)uiObject->GetState()->Pointer, true, multi));
+        }
     }
     else
     {
-        _selected.erase(it);
-        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject, glObject, false));
+        if (has)
+        {
+            _selected.erase(iter);
+            Global::Ref().mEventSys->Post(
+                EventSys::TypeEnum::kSelectObject, std::make_tuple(uiObject,
+                    (GLObject *)uiObject->GetState()->Pointer, false, multi));
+        }
     }
 }
 
 void EditorSys::OptMetaDeleteObject(UIObject * uiObject)
 {
-    auto it = std::find(_selected.begin(), _selected.end(), uiObject);
-    if (it != _selected.end()) { OptMetaSelectObject(uiObject); }
+    //  取消选中
+    OptMetaSelectObject(uiObject, false);
     
     auto glObject = (GLObject *)uiObject->GetState()->Pointer;
     uiObject->DelThis();
@@ -117,6 +131,10 @@ void EditorSys::OptMetaFreeProject()
 {
     if (_project != nullptr)
     {
+        while (!_selected.empty())
+        {
+            EditorSys::OptMetaSelectObject(_selected.back(), false);
+        }
         SAFE_DELETE(_project);
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kFreeProject, nullptr);
     }

@@ -18,7 +18,7 @@ public:
 //  操作原始接口
     /// 对象
     //  选中对象
-    void OptMetaSelectObject(UIObject * uiObject);
+    void OptMetaSelectObject(UIObject * uiObject, bool select, bool multi = false);
     //  删除对象
     void OptMetaDeleteObject(UIObject * uiObject);
     //  插入对象

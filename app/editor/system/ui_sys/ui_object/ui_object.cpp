@@ -54,6 +54,11 @@ void UIObject::DelObject(UIObject * child)
     if (it != _children.end()) { delete *it; _children.erase(it); }
 }
 
+void UIObject::DelObject(size_t index)
+{
+    DelObject(*(_children.begin() + index));
+}
+
 void UIObject::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());

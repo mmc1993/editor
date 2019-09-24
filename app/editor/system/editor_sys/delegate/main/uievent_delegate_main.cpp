@@ -2,6 +2,24 @@
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    UIEventDelegateMain::OnCallEventMessage(e, param, object);
+
+    if (UIEventEnum::kDELEGATE == e)
+    {
+        auto & arg = (const UIEvent::Delegate &)param;
+        if (arg.mType == 0)
+        {
+            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(
+                &UIEventDelegateMainObjList::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(
+                &UIEventDelegateMainObjList::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+        }
+    }
+
     if (!Global::Ref().mEditorSys->IsOpenProject())
     {
         return false;
@@ -9,15 +27,6 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
     switch (e)
     {
-    case UIEventEnum::kDELEGATE:
-        {
-            auto & value = (const UIEvent::Delegate &)param;
-            if (value.mType == 0)
-            {
-                _listener.Add(EventSys::TypeEnum::kFreeProject, )
-            }
-        }
-        break;
     case UIEventEnum::kMOUSE:
         {
             auto & mouse = (const UIEvent::Mouse &)param;
@@ -49,7 +58,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 (mouse.mAct == 2 || mouse.mAct == 3) && 
                 mouse.mObject != object)
             {
-                Global::Ref().mEditorSys->OptMetaSelectObject(mouse.mObject);
+                Global::Ref().mEditorSys->OptMetaSelectObject(mouse.mObject, true);
             }
         }
         break;
@@ -60,6 +69,9 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             {
                 auto name = Global::Ref().mEditorSys->ObjectName(menu.mObject);
 
+                auto newGLObject = new GLObject();
+                newGLObject->SetName(name);
+
                 auto raw = mmc::JsonValue::Hash();
                 raw->Insert(mmc::JsonValue::List(), "__Children");
                 raw->Insert(mmc::JsonValue::Hash(), "__Property");
@@ -67,7 +79,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
                 auto newUIObject = UIParser::Parse(raw);
-                newUIObject->GetState()->Pointer = new GLObject();
+                newUIObject->GetState()->Pointer = newGLObject;
 
                 Global::Ref().mEditorSys->OptMetaInsertObject(newUIObject, menu.mObject);
 
@@ -99,28 +111,27 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
 void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
-    if (UIEventEnum::kDELEGATE == e)
-    {
-        auto & arg = (const UIEvent::Delegate &)param;
-        if (arg.mType == 0)
-        {
-            _listener.Add(EventSys::TypeEnum::, std::bind(
-                &UIEventDelegateMainComList::OnEvent, this,
-                std::placeholders::_1,
-                std::placeholders::_2));
-        }
-        return true;
-    }
-    return false;
+
+}
+
+void UIEventDelegateMainObjList::OnEventFreeProject()
+{
+}
+
+void UIEventDelegateMainObjList::OnEventOpenProject()
+{
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    UIEventDelegateMain::OnCallEventMessage(e, param, object);
     return true;
 }
 
 bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    UIEventDelegateMain::OnCallEventMessage(e, param, object);
+
     if (UIEventEnum::kDELEGATE == e)
     {
         auto & arg = (const UIEvent::Delegate &)param;
@@ -130,23 +141,48 @@ bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 &UIEventDelegateMainComList::OnEvent, this, 
                 std::placeholders::_1, 
                 std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kAppendComponent, std::bind(
+                &UIEventDelegateMainComList::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kDeleteComponent, std::bind(
+                &UIEventDelegateMainComList::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
         }
-        return true;
     }
     return false;
 }
 
 void UIEventDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
-    if (type == EventSys::TypeEnum::kSelectObject)
+    switch (type)
     {
-        auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, bool> &>(param);
-        OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+    case EventSys::TypeEnum::kSelectObject:
+        {
+            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, bool, bool> &>(param);
+            OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value), std::get<3>(value));
+        }
+        break;
+    case EventSys::TypeEnum::kAppendComponent:
+        {
+            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, Component *> &>(param);
+            OnEventAppendComponent(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        }
+        break;
+    case EventSys::TypeEnum::kDeleteComponent:
+        {
+            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, Component *> &>(param);
+            OnEventDeleteComponent(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        }
+        break;
     }
 }
 
-void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select)
+void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi)
 {
+    GetOnwer()->ClearObjects();
+
     if (select)
     {
         for (auto component : glObject->GetComponents())
@@ -160,19 +196,37 @@ void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObje
             }
         }
     }
-    else
+}
+
+void UIEventDelegateMainComList::OnEventAppendComponent(UIObject * uiObject, GLObject * glObject, Component * component)
+{
+    auto header = new UIComponentHeader(component->GetName());
+    GetOnwer()->AddObject(header);
+
+    for (auto property : Component::BuildUIPropertys(component))
     {
-        GetOnwer()->ClearObjects();
+        header->AddObject(property);
     }
+}
+
+void UIEventDelegateMainComList::OnEventDeleteComponent(UIObject * uiObject, GLObject * glObject, Component * component)
+{
+    auto & components = component->GetOwner()->GetComponents();
+    auto it = std::find(components.begin(), components.end(), component);
+    GetOnwer()->DelObject(std::distance(components.begin(), it));
 }
 
 bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    UIEventDelegateMain::OnCallEventMessage(e, param, object);
+ 
     return true;
 }
 
 bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
 {
+    UIEventDelegateMain::OnCallEventMessage(e, param, object);
+    
     if (e == UIEventEnum::kMENU)
     {
         auto & menu = (const UIEvent::Menu &)param;

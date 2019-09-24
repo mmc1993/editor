@@ -24,8 +24,11 @@ public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 
 private:
+    //  关闭项目
+    //  打开项目
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
     void OnEventFreeProject();
+    void OnEventOpenProject();
 };
 
 //  资源列表
@@ -40,8 +43,12 @@ public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object) override;
 
 private:
+    //  选择对象
+    //  增加组件
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
-    void OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select);
+    void OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi);
+    void OnEventAppendComponent(UIObject * uiObject, GLObject * glObject, Component * component);
+    void OnEventDeleteComponent(UIObject * uiObject, GLObject * glObject, Component * component);
 };
 
 //  舞台

@@ -99,7 +99,7 @@ public:
                 auto & delegate = (const Delegate &)event;
                 if (delegate.mType == 0)
                 {
-                    _onwer = delegate.mObject;
+                    _onwer = object;
                 }
             }
             return false;

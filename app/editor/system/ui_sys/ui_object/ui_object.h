@@ -13,6 +13,7 @@ public:
     std::vector<UIObject *> & GetObjects();
     void AddObject(UIObject * child);
     void DelObject(UIObject * child);
+    void DelObject(size_t index);
     void DelThis();
     void ClearObjects();
     UIObject * GetRoot();

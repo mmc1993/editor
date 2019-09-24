@@ -18,28 +18,49 @@ void GLObject::OnUpdate(float dt)
 
 void GLObject::EncodeBinary(std::ofstream & os)
 {
+    //  自身
+    tools::Serialize(os, _name);
+    
+    //  组件
     auto count = GetComponents().size();
     tools::Serialize(os, count);
-
     for (auto comp : GetComponents())
     {
         tools::Serialize(os, comp->GetName());
         comp->EncodeBinary(os);
     }
+
+    //  子节点
+    count = GetObjects().size();
+    tools::Serialize(os, count);
+    for (auto obj : GetObjects())
+    {
+        obj->EncodeBinary(os);
+    }
 }
 
 void GLObject::DecodeBinary(std::ifstream & is)
 {
+    //  自身
+    tools::Deserialize(is, _name);
+    //  组件
     size_t count;
-    tools::Deserialize(is, count);
-
     std::string name;
+    tools::Deserialize(is, count);
     for (auto i = 0; i != count; ++i)
     {
         tools::Deserialize(is, name);
         auto comp = Component::Create(name);
         comp->DecodeBinary(is);
         AddComponent(comp);
+    }
+    //  子节点
+    tools::Deserialize(is, count);
+    for (auto i = 0; i != count; ++i)
+    {
+        auto object = new GLObject();
+        object->DecodeBinary(is);
+        AddObject(object, object->GetName());
     }
 }
 
