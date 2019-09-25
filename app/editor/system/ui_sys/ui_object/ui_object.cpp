@@ -322,6 +322,20 @@ void UIObject::OnResetLayout()
 void UIObject::OnApplyLayout()
 { }
 
+UIObject * UIObject::HitObject(const glm::vec2 & point)
+{
+    for (auto object : GetObjects())
+    {
+        auto hit = object->HitObject(point);
+        if (hit != nullptr) { return hit; }
+    }
+    if (tools::IsContain(ToWorldRect(), point))
+    {
+        return this;
+    }
+    return nullptr;
+}
+
 void UIObject::DispatchEventKey()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
@@ -348,30 +362,6 @@ bool UIObject::DispatchEventKey(const UIEvent::Key & param)
     return std::find_if(objects.rbegin(), objects.rend(), std::bind(
         &UIObject::PostEventMessage, std::placeholders::_1,
         UIEventEnum::kKey, param)) != objects.rend();
-}
-
-void UIObject::DispatchEventD()
-{
-    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-        ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
-    {
-        //if (ImGui::IsMouseDown(0))     { DispatchEventD(UIEvent::Drag(2, 0)); }
-        //if (ImGui::IsMouseReleased(0)) { DispatchEventD(UIEvent::Drag(2, 0)); }
-
-        //if (ImGui::IsMouseClicked(0)) { DispatchEventMouse(UIEvent::Mouse(3, 0)); }
-        //if (ImGui::IsMouseClicked(1)) { DispatchEventMouse(UIEvent::Mouse(3, 1)); }
-        //if (ImGui::IsMouseClicked(2)) { DispatchEventMouse(UIEvent::Mouse(3, 2)); }
-
-        //if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventMouse(UIEvent::Mouse(4, 0)); }
-        //if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventMouse(UIEvent::Mouse(4, 1)); }
-        //if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventMouse(UIEvent::Mouse(4, 2)); }
-
-        //auto hoverKey = -1;
-        //if (ImGui::IsMouseDown(0)) { DispatchEventMouse(UIEvent::Mouse(1, 0)); hoverKey = 0; }
-        //if (ImGui::IsMouseDown(1)) { DispatchEventMouse(UIEvent::Mouse(1, 1)); hoverKey = 1; }
-        //if (ImGui::IsMouseDown(2)) { DispatchEventMouse(UIEvent::Mouse(1, 2)); hoverKey = 2; }
-        //DispatchEventMouse(UIEvent::Mouse(0, hoverKey));
-    }
 }
 
 void UIObject::DispatchEventMouse()
