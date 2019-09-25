@@ -12,11 +12,12 @@ bool UIState::FromStringParse(const std::string & key, const std::string & val)
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsButton", IsButton);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowNav", IsShowNav);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsEditBox", IsEditBox);
-    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanDrag", IsCanDrag);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanMove", IsCanMove);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanStretch", IsCanStretch);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsFullScreen", IsFullScreen);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowBorder", IsShowBorder);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanDragMove", IsCanDragMove);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanDragFree", IsCanDragFree);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowMenuBar", IsShowMenuBar);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowTitleBar", IsShowTitleBar);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowScrollBar", IsShowScrollBar);

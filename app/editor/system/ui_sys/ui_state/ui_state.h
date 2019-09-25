@@ -20,11 +20,12 @@ public:
     bool IsButton           = false;    //  按钮
     bool IsShowNav          = false;    //  导航
     bool IsEditBox          = false;    //  编辑
-    bool IsCanDrag          = false;    //  可拖放
     bool IsCanMove          = false;    //  可移动
     bool IsShowBorder       = true;     //  显示边框
     bool IsCanStretch       = true;     //  可拉伸
     bool IsFullScreen       = false;    //  全屏
+    bool IsCanDragMove      = false;    //  可拖放移动
+    bool IsCanDragFree      = false;    //  可拖放释放
     bool IsShowMenuBar      = false;    //  显示菜单
     bool IsShowTitleBar     = false;    //  显示标题
     bool IsShowScrollBar    = false;    //  显示滚动条
@@ -48,6 +49,7 @@ class UIStateLayout : public UIState {
 public:
     //  拖放信息
     struct Drag {
+        DirectEnum mDirect;
         UIObject * mDragObj;
         UIObject * mFreeObj;
         glm::vec2 mBegWorld;

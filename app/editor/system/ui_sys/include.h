@@ -61,7 +61,7 @@ class UIState;
 class UISys;
 
 enum class DirectEnum {
-    kU, kD, kL, kR, Length
+    kU, kD, kL, kR, Length, kNone,
 };
 
 // ---

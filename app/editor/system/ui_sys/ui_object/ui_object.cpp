@@ -281,6 +281,67 @@ void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
     if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(0), this); }
 }
 
+void UIObject::RenderDrag()
+{
+    //  拖动节点
+    //  释放节点
+    //  上个节点
+
+    //  可拖动
+    //      1. IsCanDragMove
+
+    //  可释放
+    //      1. IsCanDragFree
+    //      2. CallEventFunc
+
+    //  上个节点:
+    //      1. 当节点为空, 将节点重置为释放节点
+    //      2. 当前位置距离节点超过N 像素, 置空
+
+    //  释放逻辑:
+    //      1. 当前位置处于 上个节点左|上方, 插入在前
+    //      2. 当前位置处于 上个节点右|下方, 插入在后
+
+    //  不可释放
+    //      1. 释放节点 == null
+    //      2. 上个节点 == null
+
+    static const auto LINE_COLOR_SELECT_OK = ImColor(1.0f, 1.0f, 1.0f);
+    static const auto LINE_COLOR_SELECT_NO = ImColor(1.0f, 0.0f, 0.0f);
+    static const auto DRAG_COLOR = ImColor(1.0f, 1.0f, 1.0f);
+    static const auto FREE_COLOR = ImColor(0.0f, 1.0f, 0.0f);
+    static const auto LAST_COLOR = ImColor(0.0f, 0.0f, 1.0f);
+
+    auto state = GetState<UIStateLayout>();
+    if (state->mDrag.mDragObj != nullptr)
+    {
+        auto drawList = ImGui::GetWindowDrawList();
+        //  绘制拖动节点
+        const auto & rect = state->mDrag.mDragObj->ToWorldRect();
+        drawList->AddRect(ImVec2(rect.x, rect.y), ImVec2(rect.x + rect.z, rect.y + rect.w), DRAG_COLOR, 3);
+
+        //  绘制目标节点
+        if      (state->mDrag.mFreeObj != nullptr)
+        {
+            if (state->mDrag.mDirect == DirectEnum::kNone)
+            {
+                const auto & rect = state->mDrag.mFreeObj->ToWorldRect();
+                drawList->AddRect(ImVec2(rect.x, rect.y), ImVec2(rect.x + rect.z, rect.y + rect.w), FREE_COLOR, 3);
+            }
+            else
+            {
+                const auto & rect = state->mDrag.mFreeObj->ToWorldRect();
+                drawList->AddRect(ImVec2(rect.x, rect.y), ImVec2(rect.x + rect.z, rect.y + rect.w), LAST_COLOR, 3);
+            }
+        }
+
+        auto color = state->mDrag.mFreeObj != nullptr
+            ? LINE_COLOR_SELECT_OK
+            : LINE_COLOR_SELECT_NO;
+        drawList->AddLine(state->mDrag.mBegWorld, state->mDrag.mEndWorld, color, 3);
+    }
+}
+
 void UIObject::AdjustSize()
 {
     if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault)
@@ -364,14 +425,43 @@ void UIObject::DispatchEventDrag()
             {
                 //  锁定目标
                 state->mDrag.mBegWorld = ImGui::GetMousePos();
+                state->mDrag.mEndWorld = ImGui::GetMousePos();
                 UIEvent::Drag drag(0, state->mDrag.mBegWorld);
                 state->mDrag.mDragObj = DispatchEventDrag(drag);
             }
             else
             {
                 //  拖动目标
-                UIEvent::Drag drag(1, state->mDrag.mBegWorld, state->mDrag.mDragObj);
-                state->mDrag.mFreeObj = DispatchEventDrag(drag);
+                auto hitFreeObject = DispatchEventDrag(UIEvent::Drag(1, 
+                    state->mDrag.mBegWorld,
+                    state->mDrag.mDragObj));
+
+                //  当前没有释放节点
+                //  位置在新节点内部
+                //  脱离旧释放节点
+
+                state->mDrag.mEndWorld = ImGui::GetMousePos();
+                if (state->mDrag.mFreeObj == nullptr)
+                {
+                    state->mDrag.mFreeObj = hitFreeObject;
+                }
+                else
+                {
+                    auto [distance, direct] = tools::RectInDistance(
+                        state->mDrag.mFreeObj->ToWorldRect(), 
+                        state->mDrag.mEndWorld);
+                    if (distance == 0 || distance > 10)
+                    {
+                        //  在目标内|脱离目标
+                        state->mDrag.mFreeObj = hitFreeObject;
+                        state->mDrag.mDirect = DirectEnum::kNone;
+                    }
+                    else
+                    {
+                        //  目标边缘
+                        state->mDrag.mDirect = (DirectEnum)direct;
+                    }
+                }
             }
         }
         if (ImGui::IsMouseReleased(0))
@@ -381,11 +471,13 @@ void UIObject::DispatchEventDrag()
             if (state->mDrag.mFreeObj != nullptr)
             {
                 ASSERT_LOG(state->mDrag.mDragObj != nullptr, "");
-                UIEvent::Drag drag(2, state->mDrag.mBegWorld, state->mDrag.mDragObj);
-                state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, drag);
-                state->mDrag.mFreeObj = nullptr;
-                state->mDrag.mDragObj = nullptr;
+                state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, UIEvent::Drag(2, 
+                    state->mDrag.mBegWorld, 
+                    state->mDrag.mDragObj));
             }
+            state->mDrag.mDragObj = nullptr;
+            state->mDrag.mFreeObj = nullptr;
+            state->mDrag.mDirect = DirectEnum::kNone;
         }
     }
 }
@@ -400,16 +492,15 @@ UIObject * UIObject::DispatchEventDrag(const UIEvent::Drag & param)
 
     if (IsVisible() && tools::IsContain(ToWorldRect(), param.mEndWorld))
     {
-        if (param.mAct == 0)
+        ASSERT_LOG(param.mAct == 0 || param.mAct == 1, "");
+        if (param.mAct == 0 && GetState()->IsCanDragMove)
         {
-            if (GetState()->IsCanDrag)
-            {
-                return PostEventMessage(UIEventEnum::kDrag, param);
-            }
+            return GetState()->IsCanDragMove ? this : nullptr;
         }
-        else
+        else if (param.mAct == 1)
         {
-            return PostEventMessage(UIEventEnum::kDrag, param);
+            return GetState()->IsCanDragFree ? this
+                : PostEventMessage(UIEventEnum::kDrag, param);
         }
     }
     return nullptr;
@@ -469,12 +560,11 @@ UIObject * UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & para
         was = _delegate->OnCallEventMessage(e, param, this) || was;
     }
     
-    auto ret = this;
     if (!was && GetParent() != nullptr)
     {
-        ret = GetParent()->CallEventMessage(e, param);
+        return GetParent()->CallEventMessage(e, param);
     }
-    return ret;
+    return was ? this : nullptr;
 }
 
 UIObject * UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
@@ -547,9 +637,8 @@ void UIClassLayout::OnLeave(bool ret)
         DispatchEventMouse();
         DispatchEventDrag();
         DispatchEventKey();
+        RenderDrag();
         ImGui::End();
-
-        //  绘制顶层信息
     }
     else
     {

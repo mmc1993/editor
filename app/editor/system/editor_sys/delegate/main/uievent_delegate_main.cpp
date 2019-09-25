@@ -82,7 +82,8 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 raw->Insert(mmc::JsonValue::Hash(), "__Property");
                 raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
-                raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDrag");
+                raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragMove");
+                raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragFree");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
                 auto newUIObject = UIParser::Parse(raw);
                 newUIObject->GetState()->Pointer = newGLObject;
@@ -155,7 +156,8 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
             raw->Insert(mmc::JsonValue::Hash(), "__Property");
             raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
             raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
-            raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDrag");
+            raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragMove");
+            raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragFree");
             raw->Insert(mmc::JsonValue::FromValue(object->GetName()), "__Property", "Name");
             auto newUIObject = UIParser::Parse(raw);
             root->AddObject(newUIObject);

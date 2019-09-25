@@ -78,6 +78,7 @@ protected:
         , _delegate(nullptr)
     { }
 
+    void RenderDrag();
     void AdjustSize();
     void LockPosition();
     virtual bool OnEnter();
