@@ -87,10 +87,12 @@ protected:
     virtual void OnApplyLayout();
 
     //  事件处理
-    void DispatchEventK();
-    bool DispatchEventK(const UIEvent::Key & param);
-    void DispatchEventM();
-    bool DispatchEventM(const UIEvent::Mouse & param);
+    void DispatchEventKey();
+    bool DispatchEventKey(const UIEvent::Key & param);
+    void DispatchEventD();
+    bool DispatchEventD(const UIEvent::Drag & param);
+    void DispatchEventMouse();
+    bool DispatchEventMouse(const UIEvent::Mouse & param);
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:

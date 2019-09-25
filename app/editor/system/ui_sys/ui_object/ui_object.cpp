@@ -322,20 +322,20 @@ void UIObject::OnResetLayout()
 void UIObject::OnApplyLayout()
 { }
 
-void UIObject::DispatchEventK()
+void UIObject::DispatchEventKey()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
         for (auto key : UIEvent::Key::Hotkeys)
         {
-            if (ImGui::IsKeyDown(key)) { DispatchEventK(UIEvent::Key(0, key)); }
-            if (ImGui::IsKeyReleased(key)) { DispatchEventK(UIEvent::Key(1, key)); }
-            if (ImGui::IsKeyPressed(key, false)) { DispatchEventK(UIEvent::Key(2, key)); }
+            if (ImGui::IsKeyDown(key)) { DispatchEventKey(UIEvent::Key(0, key)); }
+            if (ImGui::IsKeyReleased(key)) { DispatchEventKey(UIEvent::Key(1, key)); }
+            if (ImGui::IsKeyPressed(key, false)) { DispatchEventKey(UIEvent::Key(2, key)); }
         }
     }
 }
 
-bool UIObject::DispatchEventK(const UIEvent::Key & param)
+bool UIObject::DispatchEventKey(const UIEvent::Key & param)
 {
     std::vector<UIObject *> objects{ this };
     for (auto i = 0; objects.size() != i; ++i)
@@ -350,36 +350,60 @@ bool UIObject::DispatchEventK(const UIEvent::Key & param)
         UIEventEnum::kKey, param)) != objects.rend();
 }
 
-void UIObject::DispatchEventM()
+void UIObject::DispatchEventD()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        if (ImGui::IsMouseReleased(0)) { DispatchEventM(UIEvent::Mouse(2, 0)); }
-        if (ImGui::IsMouseReleased(1)) { DispatchEventM(UIEvent::Mouse(2, 1)); }
-        if (ImGui::IsMouseReleased(2)) { DispatchEventM(UIEvent::Mouse(2, 2)); }
+        //if (ImGui::IsMouseDown(0))     { DispatchEventD(UIEvent::Drag(2, 0)); }
+        //if (ImGui::IsMouseReleased(0)) { DispatchEventD(UIEvent::Drag(2, 0)); }
 
-        if (ImGui::IsMouseClicked(0)) { DispatchEventM(UIEvent::Mouse(3, 0)); }
-        if (ImGui::IsMouseClicked(1)) { DispatchEventM(UIEvent::Mouse(3, 1)); }
-        if (ImGui::IsMouseClicked(2)) { DispatchEventM(UIEvent::Mouse(3, 2)); }
+        //if (ImGui::IsMouseClicked(0)) { DispatchEventMouse(UIEvent::Mouse(3, 0)); }
+        //if (ImGui::IsMouseClicked(1)) { DispatchEventMouse(UIEvent::Mouse(3, 1)); }
+        //if (ImGui::IsMouseClicked(2)) { DispatchEventMouse(UIEvent::Mouse(3, 2)); }
 
-        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventM(UIEvent::Mouse(4, 0)); }
-        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventM(UIEvent::Mouse(4, 1)); }
-        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventM(UIEvent::Mouse(4, 2)); }
+        //if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventMouse(UIEvent::Mouse(4, 0)); }
+        //if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventMouse(UIEvent::Mouse(4, 1)); }
+        //if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventMouse(UIEvent::Mouse(4, 2)); }
 
-        auto hoverKey = -1;
-        if (ImGui::IsMouseDown(0)) { DispatchEventM(UIEvent::Mouse(1, 0)); hoverKey = 0; }
-        if (ImGui::IsMouseDown(1)) { DispatchEventM(UIEvent::Mouse(1, 1)); hoverKey = 1; }
-        if (ImGui::IsMouseDown(2)) { DispatchEventM(UIEvent::Mouse(1, 2)); hoverKey = 2; }
-        DispatchEventM(UIEvent::Mouse(0, hoverKey));
+        //auto hoverKey = -1;
+        //if (ImGui::IsMouseDown(0)) { DispatchEventMouse(UIEvent::Mouse(1, 0)); hoverKey = 0; }
+        //if (ImGui::IsMouseDown(1)) { DispatchEventMouse(UIEvent::Mouse(1, 1)); hoverKey = 1; }
+        //if (ImGui::IsMouseDown(2)) { DispatchEventMouse(UIEvent::Mouse(1, 2)); hoverKey = 2; }
+        //DispatchEventMouse(UIEvent::Mouse(0, hoverKey));
     }
 }
 
-bool UIObject::DispatchEventM(const UIEvent::Mouse & param)
+void UIObject::DispatchEventMouse()
+{
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+        ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
+    {
+        if (ImGui::IsMouseReleased(0)) { DispatchEventMouse(UIEvent::Mouse(2, 0)); }
+        if (ImGui::IsMouseReleased(1)) { DispatchEventMouse(UIEvent::Mouse(2, 1)); }
+        if (ImGui::IsMouseReleased(2)) { DispatchEventMouse(UIEvent::Mouse(2, 2)); }
+
+        if (ImGui::IsMouseClicked(0)) { DispatchEventMouse(UIEvent::Mouse(3, 0)); }
+        if (ImGui::IsMouseClicked(1)) { DispatchEventMouse(UIEvent::Mouse(3, 1)); }
+        if (ImGui::IsMouseClicked(2)) { DispatchEventMouse(UIEvent::Mouse(3, 2)); }
+
+        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventMouse(UIEvent::Mouse(4, 0)); }
+        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventMouse(UIEvent::Mouse(4, 1)); }
+        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventMouse(UIEvent::Mouse(4, 2)); }
+
+        auto hoverKey = -1;
+        if (ImGui::IsMouseDown(0)) { DispatchEventMouse(UIEvent::Mouse(1, 0)); hoverKey = 0; }
+        if (ImGui::IsMouseDown(1)) { DispatchEventMouse(UIEvent::Mouse(1, 1)); hoverKey = 1; }
+        if (ImGui::IsMouseDown(2)) { DispatchEventMouse(UIEvent::Mouse(1, 2)); hoverKey = 2; }
+        DispatchEventMouse(UIEvent::Mouse(0, hoverKey));
+    }
+}
+
+bool UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
 {
     for (auto child : GetObjects())
     {
-        if (child->DispatchEventM(param))
+        if (child->DispatchEventMouse(param))
         {
             return true;
         }
@@ -482,8 +506,8 @@ void UIClassLayout::OnLeave(bool ret)
         {
             UIMenu::RenderPopup();
         }
-        DispatchEventM();
-        DispatchEventK();
+        DispatchEventMouse();
+        DispatchEventKey();
         ImGui::End();
     }
     else
