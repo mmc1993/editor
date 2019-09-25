@@ -22,6 +22,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 std::placeholders::_1,
                 std::placeholders::_2));
         }
+        return true;
     }
 
     if (!Global::Ref().mEditorSys->IsOpenProject())
@@ -65,10 +66,10 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 Global::Ref().mEditorSys->OptSelectObject(mouse.mObject, true);
             }
         }
-        break;
+        return true;
     case UIEventEnum::kMenu:
         {
-            auto menu = (const UIEvent::Menu &)param;
+            auto & menu = (const UIEvent::Menu &)param;
             if (menu.mPath == "Add Object")
             {
                 auto name = Global::Ref().mEditorSys->ObjectName(menu.mObject);
@@ -81,6 +82,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 raw->Insert(mmc::JsonValue::Hash(), "__Property");
                 raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
                 raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
+                raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDrag");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
                 auto newUIObject = UIParser::Parse(raw);
                 newUIObject->GetState()->Pointer = newGLObject;
@@ -108,9 +110,20 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 << "Menu Key: " << menu.mPath << ' '
                 << "Menu Edit: " << menu.mEdit << std::endl;
         }
-        break;
+        return true;
+    case UIEventEnum::kDrag:
+        {
+            auto & drag = (const UIEvent::Drag &)param;
+            if (drag.mAct == 1 || 
+                drag.mAct == 2 && 
+                drag.mDragObj->GetParent() == GetOnwer())
+            {
+                return true;
+            }
+        }
+        return false;
     }
-    return true;
+    return false;
 }
 
 void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any & param)
@@ -142,6 +155,7 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
             raw->Insert(mmc::JsonValue::Hash(), "__Property");
             raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
             raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
+            raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDrag");
             raw->Insert(mmc::JsonValue::FromValue(object->GetName()), "__Property", "Name");
             auto newUIObject = UIParser::Parse(raw);
             root->AddObject(newUIObject);

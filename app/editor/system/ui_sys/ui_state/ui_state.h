@@ -48,10 +48,11 @@ class UIStateLayout : public UIState {
 public:
     //  拖放信息
     struct Drag {
-        UIObject * mObject;
+        UIObject * mDragObj;
+        UIObject * mFreeObj;
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
-        Drag(): mObject(nullptr) {}
+        Drag(): mDragObj(nullptr), mFreeObj(nullptr) {}
     } mDrag;
 
     //  链接信息

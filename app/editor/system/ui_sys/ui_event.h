@@ -75,9 +75,20 @@ public:
     struct Drag : Event {
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
-        Drag(UIObject * object, const glm::vec2 & beg, const glm::vec2 & end)
-            : Event(object), mBegWorld(beg), mEndWorld(end)
-        { }
+        UIObject * mDragObj;
+        int mAct;               //  0 锁定, 1 拖动, 2 释放
+
+        Drag(int act, const glm::vec2 & beg, UIObject * dragObj = nullptr) 
+            : mAct(act)
+            , mBegWorld(beg)
+            , mEndWorld(beg)
+            , mDragObj(dragObj)
+        {
+            if (mAct == 1 || mAct == 2)
+            {
+                mEndWorld = ImGui::GetMousePos();
+            }
+        }
     };
 
     //  编辑文本事件

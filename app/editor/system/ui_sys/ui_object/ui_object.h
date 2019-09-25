@@ -86,22 +86,19 @@ protected:
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
 
-    //  命中对象
-    UIObject * HitObject(const glm::vec2 & point);
-
     //  事件处理
     void DispatchEventKey();
-    bool DispatchEventKey(const UIEvent::Key & param);
-    //void DispatchEventD();
-    //bool DispatchEventD(const UIEvent::Drag & param);
+    UIObject * DispatchEventKey(const UIEvent::Key & param);
+    void DispatchEventDrag();
+    UIObject * DispatchEventDrag(const UIEvent::Drag & param);
     void DispatchEventMouse();
-    bool DispatchEventMouse(const UIEvent::Mouse & param);
+    UIObject * DispatchEventMouse(const UIEvent::Mouse & param);
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    bool CallEventMessage(UIEventEnum e, const UIEvent::Event & param);
+    UIObject * CallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 public:
-    bool PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
+    UIObject * PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
     UITypeEnum                                  _type;

@@ -322,20 +322,6 @@ void UIObject::OnResetLayout()
 void UIObject::OnApplyLayout()
 { }
 
-UIObject * UIObject::HitObject(const glm::vec2 & point)
-{
-    for (auto object : GetObjects())
-    {
-        auto hit = object->HitObject(point);
-        if (hit != nullptr) { return hit; }
-    }
-    if (tools::IsContain(ToWorldRect(), point))
-    {
-        return this;
-    }
-    return nullptr;
-}
-
 void UIObject::DispatchEventKey()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
@@ -349,7 +335,7 @@ void UIObject::DispatchEventKey()
     }
 }
 
-bool UIObject::DispatchEventKey(const UIEvent::Key & param)
+UIObject * UIObject::DispatchEventKey(const UIEvent::Key & param)
 {
     std::vector<UIObject *> objects{ this };
     for (auto i = 0; objects.size() != i; ++i)
@@ -359,9 +345,74 @@ bool UIObject::DispatchEventKey(const UIEvent::Key & param)
             objects.at(i)->GetObjects().end(),
             std::back_inserter(objects));
     }
-    return std::find_if(objects.rbegin(), objects.rend(), std::bind(
-        &UIObject::PostEventMessage, std::placeholders::_1,
-        UIEventEnum::kKey, param)) != objects.rend();
+    for (auto it = objects.rbegin(); it != objects.rend(); ++it)
+    {
+        auto result = (*it)->PostEventMessage(UIEventEnum::kKey, param);
+        if (result != nullptr) { return result; }
+    }
+    return nullptr;
+}
+
+void UIObject::DispatchEventDrag()
+{
+    if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
+    {
+        if (ImGui::IsMouseDown(0))
+        {
+            auto state = GetState<UIStateLayout>();
+            if (state->mDrag.mDragObj == nullptr)
+            {
+                //  锁定目标
+                state->mDrag.mBegWorld = ImGui::GetMousePos();
+                UIEvent::Drag drag(0, state->mDrag.mBegWorld);
+                state->mDrag.mDragObj = DispatchEventDrag(drag);
+            }
+            else
+            {
+                //  拖动目标
+                UIEvent::Drag drag(1, state->mDrag.mBegWorld, state->mDrag.mDragObj);
+                state->mDrag.mFreeObj = DispatchEventDrag(drag);
+            }
+        }
+        if (ImGui::IsMouseReleased(0))
+        {
+            //  释放目标
+            auto state = GetState<UIStateLayout>();
+            if (state->mDrag.mFreeObj != nullptr)
+            {
+                ASSERT_LOG(state->mDrag.mDragObj != nullptr, "");
+                UIEvent::Drag drag(2, state->mDrag.mBegWorld, state->mDrag.mDragObj);
+                state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, drag);
+                state->mDrag.mFreeObj = nullptr;
+                state->mDrag.mDragObj = nullptr;
+            }
+        }
+    }
+}
+
+UIObject * UIObject::DispatchEventDrag(const UIEvent::Drag & param)
+{
+    for (auto child : GetObjects())
+    {
+        auto result = child->DispatchEventDrag(param);
+        if (result != nullptr) { return result; }
+    }
+
+    if (IsVisible() && tools::IsContain(ToWorldRect(), param.mEndWorld))
+    {
+        if (param.mAct == 0)
+        {
+            if (GetState()->IsCanDrag)
+            {
+                return PostEventMessage(UIEventEnum::kDrag, param);
+            }
+        }
+        else
+        {
+            return PostEventMessage(UIEventEnum::kDrag, param);
+        }
+    }
+    return nullptr;
 }
 
 void UIObject::DispatchEventMouse()
@@ -389,21 +440,19 @@ void UIObject::DispatchEventMouse()
     }
 }
 
-bool UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
+UIObject * UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
 {
     for (auto child : GetObjects())
     {
-        if (child->DispatchEventMouse(param))
-        {
-            return true;
-        }
+        auto result = child->DispatchEventMouse(param);
+        if (result != nullptr) { return result; }
     }
 
     if (IsVisible() && tools::IsContain(ToWorldRect(), param.mMouse))
     {
         return PostEventMessage(UIEventEnum::kMouse, param);
     }
-    return false;
+    return nullptr;
 }
 
 bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
@@ -411,23 +460,24 @@ bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
     return false;
 }
 
-bool UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+UIObject * UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
-    auto ret = OnCallEventMessage(e, param);
+    auto was = OnCallEventMessage(e, param);
 
     if (_delegate != nullptr)
     {
-        ret = _delegate->OnCallEventMessage(e, param, this) || ret;
+        was = _delegate->OnCallEventMessage(e, param, this) || was;
     }
-
-    if (!ret && GetParent() != nullptr)
+    
+    auto ret = this;
+    if (!was && GetParent() != nullptr)
     {
         ret = GetParent()->CallEventMessage(e, param);
     }
     return ret;
 }
 
-bool UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
+UIObject * UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     param.mObject = this;
     return CallEventMessage(e, param);
@@ -480,9 +530,7 @@ bool UIClassLayout::OnEnter()
     else
     {
         LockPosition();
-        return ImGui::BeginChild(state->Name.c_str(), 
-            ImVec2(state->Move.z, state->Move.w), 
-            state->IsShowBorder, flag);
+        return ImGui::BeginChild(state->Name.c_str(), ImVec2(state->Move.z, state->Move.w), state->IsShowBorder, flag);
     }
 }
 
@@ -497,8 +545,11 @@ void UIClassLayout::OnLeave(bool ret)
             UIMenu::RenderPopup();
         }
         DispatchEventMouse();
+        DispatchEventDrag();
         DispatchEventKey();
         ImGui::End();
+
+        //  绘制顶层信息
     }
     else
     {

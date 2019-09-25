@@ -12,6 +12,7 @@ bool UIState::FromStringParse(const std::string & key, const std::string & val)
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsButton", IsButton);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsShowNav", IsShowNav);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsEditBox", IsEditBox);
+    FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanDrag", IsCanDrag);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanMove", IsCanMove);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsCanStretch", IsCanStretch);
     FROM_STRING_PARSE_VARIABLE(Interface::Serializer::StringValueTypeEnum::kBOOL, key, val, " ", "IsFullScreen", IsFullScreen);
