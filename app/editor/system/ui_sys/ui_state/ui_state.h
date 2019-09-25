@@ -59,7 +59,7 @@ public:
         std::vector<UIObject *>           mOut;
         std::pair<UIObject *, DirectEnum> mIn;
         Join() {}
-    } mJoin[(size_t)DirectEnum::LENGTH];
+    } mJoin[(size_t)DirectEnum::Length];
 
     //  À­ÉìÊý¾Ý
     struct StretchFocus {

@@ -6,7 +6,7 @@
 
 class UIComponentHeader : public UIObject {
 public:
-    UIComponentHeader(const std::string & name): UIObject(UITypeEnum::kOTHER, new UIState())
+    UIComponentHeader(const std::string & name): UIObject(UITypeEnum::kOther, new UIState())
     {
         GetState()->Name = name;
     }
@@ -47,7 +47,7 @@ protected:
         T & value,
         const std::string & title,
         const Handler_t & handler)
-        : UIObject(UITypeEnum::kOTHER, new UIPropertyState<T, B>(value, title, handler))
+        : UIObject(UITypeEnum::kOther, new UIPropertyState<T, B>(value, title, handler))
     { }
 
     const std::string & GetTitle() const

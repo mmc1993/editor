@@ -71,6 +71,15 @@ public:
         { }
     };
 
+    //  拖放事件
+    struct Drag : Event {
+        glm::vec2 mBegWorld;
+        glm::vec2 mEndWorld;
+        Drag(UIObject * object, const glm::vec2 & beg, const glm::vec2 & end)
+            : Event(object), mBegWorld(beg), mEndWorld(end)
+        { }
+    };
+
     //  编辑文本事件
     struct EditText : Event {
         std::string mString;
@@ -94,7 +103,7 @@ public:
     public:
         virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, UIObject * object)
         {
-            if (type == UIEventEnum::kDELEGATE)
+            if (type == UIEventEnum::kDelegate)
             {
                 auto & delegate = (const Delegate &)event;
                 if (delegate.mType == 0)

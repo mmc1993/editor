@@ -122,45 +122,45 @@ void UIObject::ApplyLayout()
             const auto & align   = thisState->Align;
             auto margin  = glm::vec4(move.x, move.y, move.x + move.z, move.y + move.w);
             //  上下贴边, 排斥垂直居中, 垂直拉伸
-            ASSERT_LOG((align & ((int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B)) == 0
-                    || (align & (int)UIAlignEnum::kCENTER_V)  == 0
-                    && (align & (int)UIAlignEnum::kSTRETCH_V) == 0, "{0}", align);
+            ASSERT_LOG((align & ((int)UIAlignEnum::kClingT | (int)UIAlignEnum::kClingB)) == 0
+                    || (align & (int)UIAlignEnum::kCenterV)  == 0
+                    && (align & (int)UIAlignEnum::kStretchV) == 0, "{0}", align);
             //  左右贴边, 排斥水平居中, 水平拉伸
-            ASSERT_LOG((align & ((int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R)) == 0
-                    || (align & (int)UIAlignEnum::kCENTER_H)  == 0
-                    && (align & (int)UIAlignEnum::kSTRETCH_H) == 0, "{0}", align);
+            ASSERT_LOG((align & ((int)UIAlignEnum::kClingL | (int)UIAlignEnum::kClingR)) == 0
+                    || (align & (int)UIAlignEnum::kCenterH)  == 0
+                    && (align & (int)UIAlignEnum::kStretchH) == 0, "{0}", align);
             //  水平居中, 排斥水平拉伸
-            ASSERT_LOG((align & (int)UIAlignEnum::kCENTER_H) == 0
-                    || (align & (int)UIAlignEnum::kSTRETCH_H) == 0, "{0}", align);
+            ASSERT_LOG((align & (int)UIAlignEnum::kCenterH) == 0
+                    || (align & (int)UIAlignEnum::kStretchH) == 0, "{0}", align);
             //  垂直居中, 排斥垂直拉伸
-            ASSERT_LOG((align & (int)UIAlignEnum::kCENTER_V) == 0
-                    || (align & (int)UIAlignEnum::kSTRETCH_V) == 0, "{0}", align);
-            if (align & (int)UIAlignEnum::kCLING_B)
+            ASSERT_LOG((align & (int)UIAlignEnum::kCenterV) == 0
+                    || (align & (int)UIAlignEnum::kStretchV) == 0, "{0}", align);
+            if (align & (int)UIAlignEnum::kClingB)
             {
                 margin.w += parentMoveNew.w - parentMoveOld.w;
-                if ((align & (int)UIAlignEnum::kCLING_T) == 0) { margin.y = margin.w - move.w; }
+                if ((align & (int)UIAlignEnum::kClingT) == 0) { margin.y = margin.w - move.w; }
             }
-            if (align & (int)UIAlignEnum::kCLING_R)
+            if (align & (int)UIAlignEnum::kClingR)
             {
                 margin.z += parentMoveNew.z - parentMoveOld.z;
-                if ((align & (int)UIAlignEnum::kCLING_L) == 0) { margin.x = margin.z - move.z; }
+                if ((align & (int)UIAlignEnum::kClingL) == 0) { margin.x = margin.z - move.z; }
             }
-            if (align & (int)UIAlignEnum::kCENTER_H)
+            if (align & (int)UIAlignEnum::kCenterH)
             {
                 margin.x = (parentMoveNew.z - (margin.z - margin.x)) * 0.5f;
                 margin.z = margin.x + move.z;
             }
-            if (align & (int)UIAlignEnum::kCENTER_V)
+            if (align & (int)UIAlignEnum::kCenterV)
             {
                 margin.y = (parentMoveNew.w - (margin.w - margin.y)) * 0.5f;
                 margin.w = margin.y + move.w;
             }
-            if (align & (int)UIAlignEnum::kSTRETCH_H)
+            if (align & (int)UIAlignEnum::kStretchH)
             {
                 margin.x = (margin.x / parentMoveOld.z * parentMoveNew.z);
                 margin.z = (margin.z / parentMoveOld.z * parentMoveNew.z);
             }
-            if (align & (int)UIAlignEnum::kSTRETCH_V)
+            if (align & (int)UIAlignEnum::kStretchV)
             {
                 margin.y = (margin.y / parentMoveOld.w * parentMoveNew.w);
                 margin.w = (margin.w / parentMoveOld.w * parentMoveNew.w);
@@ -263,9 +263,9 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
     //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
     auto pos = ImGui::GetCursorPos();
     auto parent = GetParent();
-    while (parent->GetType() == UITypeEnum::kTEXTBOX
-        || parent->GetType() == UITypeEnum::kTREEBOX
-        || parent->GetType() == UITypeEnum::kIMAGEBOX)
+    while (parent->GetType() == UITypeEnum::kTextBox
+        || parent->GetType() == UITypeEnum::kTreeBox
+        || parent->GetType() == UITypeEnum::kImageBox)
     {
         pos.x -= parent->GetState()->Move.x;
         pos.y -= parent->GetState()->Move.y;
@@ -276,14 +276,14 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
 
 void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
 {
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDELEGATE, UIEvent::Delegate(1), this); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(1), this); }
     _delegate.reset(delegate);
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDELEGATE, UIEvent::Delegate(0), this); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(0), this); }
 }
 
 void UIObject::AdjustSize()
 {
-    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDEFAULT)
+    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault)
     {
         const auto & size = ImGui::GetItemRectSize();
         GetState()->Move.z = size.x;
@@ -293,7 +293,7 @@ void UIObject::AdjustSize()
 
 void UIObject::LockPosition()
 {
-    if ((UIAlignEnum)GetState()->Align != UIAlignEnum::kDEFAULT)
+    if ((UIAlignEnum)GetState()->Align != UIAlignEnum::kDefault)
     {
         ImGui::SetCursorPos(ImVec2(GetState()->Move.x, GetState()->Move.y));
     }
@@ -347,7 +347,7 @@ bool UIObject::DispatchEventK(const UIEvent::Key & param)
     }
     return std::find_if(objects.rbegin(), objects.rend(), std::bind(
         &UIObject::PostEventMessage, std::placeholders::_1,
-        UIEventEnum::kKEY, param)) != objects.rend();
+        UIEventEnum::kKey, param)) != objects.rend();
 }
 
 void UIObject::DispatchEventM()
@@ -387,7 +387,7 @@ bool UIObject::DispatchEventM(const UIEvent::Mouse & param)
 
     if (IsVisible() && tools::IsContain(ToWorldRect(), param.mMouse))
     {
-        return PostEventMessage(UIEventEnum::kMOUSE, param);
+        return PostEventMessage(UIEventEnum::kMouse, param);
     }
     return false;
 }
@@ -422,7 +422,7 @@ bool UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
 // ---
 //  Layout
 // ---
-UIClassLayout::UIClassLayout() : UIObject(UITypeEnum::kLAYOUT, new UIStateLayout())
+UIClassLayout::UIClassLayout() : UIObject(UITypeEnum::kLayout, new UIStateLayout())
 { }
 
 bool UIClassLayout::OnEnter()
@@ -456,7 +456,7 @@ bool UIClassLayout::OnEnter()
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-        if (state->IsFullScreen || (UIAlignEnum)state->Align != UIAlignEnum::kDEFAULT)
+        if (state->IsFullScreen || (UIAlignEnum)state->Align != UIAlignEnum::kDefault)
         {
             ImGui::SetNextWindowPos(move);
         }
@@ -502,7 +502,7 @@ void UIClassLayout::OnResetLayout()
     auto thisDown   = thisUp + thisState->Move.w;
     auto thisLeft   = thisState->Move.x;
     auto thisRight  = thisLeft + thisState->Move.z;
-    for (auto layout : GetParent()->GetObjects(UITypeEnum::kLAYOUT))
+    for (auto layout : GetParent()->GetObjects(UITypeEnum::kLayout))
     {
         if (layout == this) { continue; }
         auto state  = layout->GetState<UIStateLayout>();
@@ -544,7 +544,7 @@ void UIClassLayout::OnResetLayout()
 void UIClassLayout::OnApplyLayout()
 {
     auto thisState = GetState<UIStateLayout>();
-    for (auto direct = 0; direct != (int)DirectEnum::LENGTH; ++direct)
+    for (auto direct = 0; direct != (int)DirectEnum::Length; ++direct)
     {
         const auto & edge = thisState->mJoin[(int)direct].mIn;
         if (edge.first != nullptr)
@@ -609,7 +609,7 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
     for (auto object : thisState->mJoin[(int)edge].mOut)
     {
         auto state = object->GetState<UIStateLayout>();
-        for (auto i = 0; i != (int)DirectEnum::LENGTH; ++i)
+        for (auto i = 0; i != (int)DirectEnum::Length; ++i)
         {
             if (state->mJoin[i].mIn.first  == this && 
                 state->mJoin[i].mIn.second == edge &&
@@ -673,7 +673,7 @@ void UIClassLayout::HandleStretch()
 // ---
 //  UIClassTree
 // ---
-UIClassTreeBox::UIClassTreeBox() : UIObject(UITypeEnum::kTREEBOX, new UIStateTreeBox())
+UIClassTreeBox::UIClassTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateTreeBox())
 { }
 
 bool UIClassTreeBox::OnEnter()
@@ -701,7 +701,7 @@ void UIClassTreeBox::OnLeave(bool ret)
 // ---
 //  UIClassTextBox
 // ---
-UIClassTextBox::UIClassTextBox() : UIObject(UITypeEnum::kTEXTBOX, new UIStateTextBox())
+UIClassTextBox::UIClassTextBox() : UIObject(UITypeEnum::kTextBox, new UIStateTextBox())
 { }
 
 void UIClassTextBox::OnRender(float dt)
@@ -723,7 +723,7 @@ void UIClassTextBox::OnRender(float dt)
                 ImVec2(state->Move.z, state->Move.w), 
                 flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEvent::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, this));
             }
         }
         else
@@ -735,7 +735,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEDIT_TEXT_FINISH, UIEvent::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, this));
             }
             ImGui::PopItemWidth();
         }
@@ -751,7 +751,7 @@ void UIClassTextBox::OnRender(float dt)
 // ---
 //  UIClassImage
 //----
-UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kIMAGEBOX, new UIStateImageBox())
+UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kImageBox, new UIStateImageBox())
 { }
 
 void UIClassImageBox::OnRender(float dt)
@@ -768,14 +768,14 @@ void UIClassImageBox::OnRender(float dt)
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
-                PostEventMessage(UIEventEnum::kMOUSE, UIEvent::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, this));
             }
         }
         else
         {
             if (ImGui::Button(state->Name.c_str(), ImVec2(state->Move.z, state->Move.y)))
             {
-                PostEventMessage(UIEventEnum::kMOUSE, UIEvent::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, this));
             }
         }
     }
@@ -796,7 +796,7 @@ void UIClassImageBox::OnRender(float dt)
 // ---
 //  UIClassComboBox
 // ---
-UIClassComboBox::UIClassComboBox() : UIObject(UITypeEnum::kCOMBOBOX, new UIStateComboBox())
+UIClassComboBox::UIClassComboBox() : UIObject(UITypeEnum::kComboBox, new UIStateComboBox())
 { }
 
 bool UIClassComboBox::OnEnter()
@@ -828,7 +828,7 @@ void UIClassComboBox::OnRender(float dt)
 
 bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
-    if (e == UIEventEnum::kMOUSE)
+    if (e == UIEventEnum::kMouse)
     {
         auto & object = std::any_cast<const UIEvent::Mouse &>(param).mObject;
         GetState<UIStateComboBox>()->mSelected = object->GetState()->Name;
@@ -837,13 +837,13 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & p
     return false;
 }
 
-UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICONVAS, new UIStateUICanvas())
+UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
 { }
 
 void UIClassUICanvas::OnRender(float dt)
 { }
 
-UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCONVAS, new UIStateGLCanvas())
+UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 { }
 
 void UIClassGLCanvas::OnRender(float dt)

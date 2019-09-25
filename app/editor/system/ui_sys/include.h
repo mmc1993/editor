@@ -61,60 +61,61 @@ class UIState;
 class UISys;
 
 enum class DirectEnum {
-    kU, kD, kL, kR, LENGTH
+    kU, kD, kL, kR, Length
 };
 
 // ---
 //  控件列表
 // ---
 enum class UITypeEnum {
-    kOTHER,                 //  其他
-    kLAYOUT,                //  布局
-    kTREEBOX,               //  树形框
-    kTEXTBOX,               //  文本框
-    kIMAGEBOX,              //  图片框
-    kCOMBOBOX,              //  下拉框
-    kUICONVAS,              //  UI画布
-    kGLCONVAS,              //  GL画布
+    kOther,                 //  其他
+    kLayout,                //  布局
+    kTreeBox,               //  树形框
+    kTextBox,               //  文本框
+    kImageBox,              //  图片框
+    kComboBox,              //  下拉框
+    kUICanvas,              //  UI画布
+    kGLCanvas,              //  GL画布
 };
 
 // ---
 //  控件对齐
 // ---
 enum class UIAlignEnum {
-    kDEFAULT,               //  绝对坐标
-    kCLING_T = 1 << 1,      //  靠上
-    kCLING_B = 1 << 2,      //  靠下
-    kCLING_L = 1 << 3,      //  靠左
-    kCLING_R = 1 << 4,      //  靠右
-    kCENTER_H = 1 << 5,     //  水平居中
-    kCENTER_V = 1 << 6,     //  垂直居中
-    kSTRETCH_H = 1 << 7,    //  水平拉伸
-    kSTRETCH_V = 1 << 8,    //  垂直拉伸
-    LENGTH,
+    kDefault,              //  绝对坐标
+    kClingT = 1 << 1,      //  靠上
+    kClingB = 1 << 2,      //  靠下
+    kClingL = 1 << 3,      //  靠左
+    kClingR = 1 << 4,      //  靠右
+    kCenterH = 1 << 5,     //  水平居中
+    kCenterV = 1 << 6,     //  垂直居中
+    kStretchH = 1 << 7,    //  水平拉伸
+    kStretchV = 1 << 8,    //  垂直拉伸
+    Length,
 };
 
 // ---
 //  文本对齐
 // ---
 enum class UITextAlignEnum {
-    kCLING_T = 1 << 1,      //  靠上
-    kCLING_B = 1 << 2,      //  靠下
-    kCLING_L = 1 << 3,      //  靠左
-    kCLING_R = 1 << 4,      //  靠右
-    kCENTER_H = 1 << 5,     //  水平居中
-    kCENTER_V = 1 << 6,     //  垂直居中
+    kClingT = 1 << 1,      //  靠上
+    kClingB = 1 << 2,      //  靠下
+    kClingL = 1 << 3,      //  靠左
+    kClingR = 1 << 4,      //  靠右
+    kCenterH = 1 << 5,     //  水平居中
+    kCenterV = 1 << 6,     //  垂直居中
 };
 
 // ---
 //  控件事件
 // ---
 enum class UIEventEnum {
-    kKEY,               //  按键
-    kMOUSE,             //  鼠标
-    kEDIT_TEXT_FINISH,  //  输入完成
-    kMENU,              //  菜单
-    kDELEGATE,          //  代理函数初始化
+    kKey,               //  按键
+    kMouse,             //  鼠标
+    kEditTextFinish,    //  输入完成
+    kMenu,              //  菜单
+    kDrag,              //  拖放
+    kDelegate,          //  代理函数初始化
 };
 
 //  转化为ImGuiID

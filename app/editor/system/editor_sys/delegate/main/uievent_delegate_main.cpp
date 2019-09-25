@@ -4,7 +4,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
 
-    if (UIEventEnum::kDELEGATE == e)
+    if (UIEventEnum::kDelegate == e)
     {
         auto & arg = (const UIEvent::Delegate &)param;
         if (arg.mType == 0)
@@ -31,7 +31,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
     switch (e)
     {
-    case UIEventEnum::kMOUSE:
+    case UIEventEnum::kMouse:
         {
             auto & mouse = (const UIEvent::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
@@ -66,7 +66,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             }
         }
         break;
-    case UIEventEnum::kMENU:
+    case UIEventEnum::kMenu:
         {
             auto menu = (const UIEvent::Menu &)param;
             if (menu.mPath == "Add Object")
@@ -175,7 +175,7 @@ bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
 
-    if (UIEventEnum::kDELEGATE == e)
+    if (UIEventEnum::kDelegate == e)
     {
         auto & arg = (const UIEvent::Delegate &)param;
         if (arg.mType == 0)
@@ -270,7 +270,7 @@ bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent:
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
     
-    if (e == UIEventEnum::kMENU)
+    if (e == UIEventEnum::kMenu)
     {
         auto & menu = (const UIEvent::Menu &)param;
         if (menu.mPath == "Menu/New Project")
