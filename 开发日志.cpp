@@ -60,3 +60,15 @@ ok  //  UIEventEnum 剥离
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
     }
+
+
+
+Interface::GLCanvasObject {
+public:
+    using ControlPoints = std::vector<glm::vec2>;
+public:
+    virtual const std::vector<ControlPoints> & GetControlPoints() = 0;
+    virtual bool AddControlPoint(const glm::vec2 & point) = 0;
+    virtual bool DelControlPoint(const glm::vec2 & point) = 0;
+    virtual bool ModifyControlPoint(size_t index, const glm::vec2 & offset) = 0;
+}
