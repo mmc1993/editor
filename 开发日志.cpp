@@ -62,13 +62,47 @@ ok  //  UIEventEnum 剥离
     }
 
 
+namespace Interface {
+    class GLCanvasComponent {
+    public:
+        enum FlagEnum {
+            kInsert = 1 << 0,   //  支持插入操作
+            kDelete = 1 << 1,   //  支持删除操作
+            kModify = 1 << 2,   //  支持修改操作
+        }
+    public:
+        GLCanvasComponent(size_t flag): _flag(flag) 
+        { }
 
-Interface::GLCanvasObject {
-public:
-    using ControlPoints = std::vector<glm::vec2>;
-public:
-    virtual const std::vector<ControlPoints> & GetControlPoints() = 0;
-    virtual bool AddControlPoint(const glm::vec2 & point) = 0;
-    virtual bool DelControlPoint(const glm::vec2 & point) = 0;
-    virtual bool ModifyControlPoint(size_t index, const glm::vec2 & offset) = 0;
+        virtual void InsertControlPoint(size_t index, const glm::vec2 & point) = 0;
+        virtual void ModifyControlPoint(size_t index, const glm::vec2 & point) = 0;
+        virtual void DeleteControlPoint(size_t index)  = 0;
+        bool TestFlag(size_t flag) { return _flag & flag; }
+        void AddFlag(size_t flag) { _flag |=  flag; }
+        void DelFlag(size_t flag) { _flag &= ~flag; }
+        size_t GetFlag() const { return _flag; }
+
+    private:
+        size_t _flag;
+    }
+
+    class GLCanvasObject {
+    public:
+        GLCanvasObject(UIGLCanvas * canvas): _canvas(canvas)
+        { }
+
+        virtual std::vector<GLCanvasComponent *> & GetObjects() = 0;
+        virtual void OnUpdate(float dt) = 0;
+        virtual void OnRender(float dt) = 0;
+        UIGLCanvas * GetCanvas();
+        void Update(float dt);
+
+    private:
+        UIGLCanvas * _canvas;
+    }
+
+
 }
+
+
+
