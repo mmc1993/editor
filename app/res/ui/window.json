@@ -9,7 +9,7 @@
 		"IsFullScreen": "ok",
         "StretchMin": "10, 10",
         "IsShowMenuBar": "ok",
-        "MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project",
+        "MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic",
 		"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_global"
 	},
 	"__Children": [

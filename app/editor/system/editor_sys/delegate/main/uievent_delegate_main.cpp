@@ -305,6 +305,18 @@ bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent:
         {
             Global::Ref().mEditorSys->OptFreeProject();
         }
+        else if (menu.mPath == "Style/Drak")
+        {
+            ImGui::StyleColorsDark();
+        }
+        else if (menu.mPath == "Style/Light")
+        {
+            ImGui::StyleColorsLight();
+        }
+        else if (menu.mPath == "Style/Classic")
+        {
+            ImGui::StyleColorsClassic();
+        }
         return true;
     }
     return false;

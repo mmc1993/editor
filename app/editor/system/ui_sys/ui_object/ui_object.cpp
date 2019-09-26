@@ -448,7 +448,7 @@ void UIObject::DispatchEventDrag()
                 else
                 {
                     auto [distance, direct] = tools::RectInDistance(
-                        state->mDrag.mFreeObj->ToWorldRect(), 
+                        state->mDrag.mFreeObj->ToWorldRect(),
                         state->mDrag.mEndWorld);
                     if (distance == 0 || distance > 10)
                     {
