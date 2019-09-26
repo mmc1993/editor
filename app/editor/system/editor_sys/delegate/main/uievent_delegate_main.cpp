@@ -53,7 +53,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
                     std::transform(
                         std::begin(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
-                        std::end(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
+                        std::end(  Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
                         std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mValue->ToString(); });
                 }
                 UIMenu::PopMenu(mouse.mObject, buffer);
