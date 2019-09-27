@@ -7,6 +7,13 @@ class UIObject;
 
 class Component: public Interface::Serializer {
 public:
+    enum StatusEnum {
+        kActive = 1 << 0,   //  激活
+        kInsert = 1 << 1,   //  支持插入操作
+        kDelete = 1 << 2,   //  支持删除操作
+        kModify = 1 << 3,   //  支持修改操作
+    };
+
     struct Property {
         Interface::Serializer::StringValueTypeEnum mType;
         std::string                                mName;
@@ -33,14 +40,20 @@ public:
 public:
 	Component()
         : _owner(nullptr)
-        , _active(true) { }
+        , _status(kActive) { }
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;
     virtual void OnUpdate(float dt) = 0;
 
-    bool IsActive() const { return _active; }
-	void SetActive(bool active) { _active = active; }
+    bool IsActive() const { return _status & kActive; }
+	void SetActive(bool active) 
+    {  
+        if (active)
+            _status |=  kActive;
+        else
+            _status &= ~kActive;
+    }
 
     GLObject * GetOwner() { return _owner; }
 	void SetOwner(GLObject * owner) { _owner = owner; }
@@ -56,6 +69,6 @@ public:
     virtual std::vector<Property> CollectProperty() = 0;
 
 private:
-    bool _active;
+    size_t    _status;
     GLObject *_owner;
 };

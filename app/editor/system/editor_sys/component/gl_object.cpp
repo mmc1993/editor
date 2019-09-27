@@ -3,8 +3,9 @@
 #include "comp_transform.h"
 
 GLObject::GLObject()
-    : _active(true)
+    : _status(kActive)
     , _parent(nullptr)
+    , _canvas(nullptr)
 { }
 
 GLObject::~GLObject()
@@ -139,14 +140,22 @@ const std::string & GLObject::GetName() const
     return _name;
 }
 
+UIObjectGLCanvas * GLObject::GetCanvas()
+{
+    return _canvas;
+}
+
 void GLObject::SetActive(bool active)
 {
-    _active = active;
+    if (active)
+        _status |=  kActive;
+    else
+        _status &= ~kActive;
 }
 
 bool GLObject::IsActive() const
 {
-    return _active;
+    return _status & kActive;
 }
 
 void GLObject::Update(float dt)
@@ -210,5 +219,6 @@ std::vector<Component*>& GLObject::GetComponents()
 
 CompTransform * GLObject::GetTransform()
 {
+    ASSERT_LOG(_transform != nullptr, "");
     return _transform;
 }

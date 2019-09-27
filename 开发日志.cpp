@@ -62,6 +62,23 @@ ok  //  UIEventEnum 剥离
     }
 
 
+//  GLCanvas
+//      双击 -> 进入编辑
+//      Esc -> 退出编辑
+
+//  编辑模式:
+//      绘制边框, 显示控制点
+//      左键双击边框 -> 新增控制点
+//      左键单击控制点 -> 选中控制点
+//      左键按住控制点 -> 拖动控制点
+//      右键按住控制点 -> 新增控制点
+//      Delete        -> 删除控制点
+
+//  拖动模式:
+//      绘制边框
+//      左键按住边框内 -> 拖动对象
+//      Delete        -> 删除对象
+
 namespace Interface {
     class GLCanvasComponent {
     public:
@@ -71,9 +88,7 @@ namespace Interface {
             kModify = 1 << 2,   //  支持修改操作
         }
     public:
-        GLCanvasComponent(size_t flag): _flag(flag) 
-        { }
-
+        GLCanvasComponent(size_t flag): _flag(flag) { }
         virtual void InsertControlPoint(size_t index, const glm::vec2 & point) = 0;
         virtual void ModifyControlPoint(size_t index, const glm::vec2 & point) = 0;
         virtual void DeleteControlPoint(size_t index)  = 0;
@@ -88,9 +103,7 @@ namespace Interface {
 
     class GLCanvasObject {
     public:
-        GLCanvasObject(UIGLCanvas * canvas): _canvas(canvas)
-        { }
-
+        GLCanvasObject(UIGLCanvas * canvas): _canvas(canvas) { }
         virtual std::vector<GLCanvasComponent *> & GetObjects() = 0;
         virtual void OnUpdate(float dt) = 0;
         virtual void OnRender(float dt) = 0;
@@ -100,9 +113,4 @@ namespace Interface {
     private:
         UIGLCanvas * _canvas;
     }
-
-
 }
-
-
-

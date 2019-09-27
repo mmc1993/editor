@@ -9,13 +9,18 @@
 
 class Component;
 class CompTransform;
+class UIObjectGLCanvas;
 
 class GLObject : public Interface::Serializer {
+public:
+    enum StatusEnum {
+        kActive = 1 << 0,
+    };
+
 public:
     GLObject();
     virtual ~GLObject();
     virtual void OnUpdate(float dt);
-
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
 
@@ -32,6 +37,8 @@ public:
 
     void SetName(const std::string & name);
     const std::string & GetName() const;
+
+    UIObjectGLCanvas * GetCanvas();
 
     void SetActive(bool active);
     bool IsActive() const;
@@ -76,10 +83,11 @@ public:
     CompTransform * GetTransform();
 
 private:
-    bool                        _active;
+    size_t                      _status;
     GLObject *                  _parent;
     std::string                 _name;
-	CompTransform *             _transform;
+    CompTransform *             _transform;
+    UIObjectGLCanvas *          _canvas;
     std::vector<GLObject *>     _children;
     std::vector<Component *>    _components;
 };
