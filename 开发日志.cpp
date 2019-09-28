@@ -61,6 +61,8 @@ ok  //  UIEventEnum 剥离
         glm::vec2 mEndWorld;
     }
 
+//  使用智能指针
+
 
 //  GLCanvas
 //      双击 -> 进入编辑
