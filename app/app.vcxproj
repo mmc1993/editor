@@ -72,6 +72,7 @@
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
     <ClInclude Include="editor\system\interface\serializer.h" />
     <ClInclude Include="editor\system\ui_sys\ui_event.h" />
+    <ClInclude Include="editor\system\ui_sys\ui_menu.h" />
     <ClInclude Include="editor\third\glm\common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_vector_relational.hpp" />
@@ -326,7 +327,6 @@
     <ClInclude Include="editor\tools\time_tool.h" />
     <ClInclude Include="editor\system\ui_sys\include.h" />
     <ClInclude Include="editor\system\ui_sys\ui_object\ui_object.h" />
-    <ClInclude Include="editor\system\ui_sys\ui_menu.h" />
     <ClInclude Include="editor\system\ui_sys\ui_sys.h" />
     <ClInclude Include="editor\system\ui_sys\ui_parse\ui_parse.h" />
     <ClInclude Include="editor\system\ui_sys\ui_state\ui_state.h" />

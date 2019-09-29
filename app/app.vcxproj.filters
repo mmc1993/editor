@@ -923,9 +923,6 @@
     <ClInclude Include="editor\system\ui_sys\ui_state\ui_state.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\ui_sys\ui_menu.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -972,6 +969,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\project.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_menu.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
