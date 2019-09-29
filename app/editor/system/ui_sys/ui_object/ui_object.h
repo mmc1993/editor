@@ -63,7 +63,6 @@ protected:
     void UpdateMove();
     virtual bool OnEnter();
     virtual void OnLeave(bool ret);
-    virtual void OnRender(float dt);
     virtual void OnResetLayout();
     virtual void OnApplyLayout();
 
@@ -99,7 +98,6 @@ private:
     virtual void OnLeave(bool ret) override;
     virtual void OnResetLayout() override;
     virtual void OnApplyLayout() override;
-    virtual void OnRender(float dt) override;
 
     bool IsCanStretch(DirectEnum edge);
     bool IsCanStretch(DirectEnum edge, const glm::vec2 & offset);
@@ -144,15 +142,9 @@ private:
 class UIClassUICanvas : public UIObject {
 public:
     UIClassUICanvas();
-
-private:
-    virtual void OnRender(float dt) override;
 };
 
 class UIClassGLCanvas : public UIObject {
 public:
     UIClassGLCanvas();
-
-private:
-    virtual void OnRender(float dt) override;
 };

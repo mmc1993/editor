@@ -196,7 +196,6 @@ void UIObject::Render(float dt, bool visible)
         UpdateMove();
         ret = OnEnter();
         UpdateSize();
-        if (ret) { OnRender(dt); }
     }
 
     for (auto child : _children)
@@ -378,9 +377,6 @@ bool UIObject::OnEnter()
 }
 
 void UIObject::OnLeave(bool ret)
-{ }
-
-void UIObject::OnRender(float dt)
 { }
 
 void UIObject::OnResetLayout()
@@ -630,6 +626,10 @@ bool UIClassLayout::OnEnter()
             ImVec2(state->Move.z, state->Move.w), 
             state->IsShowBorder, flag);
     }
+    if (GetState()->IsShowMenuBar)
+    {
+        UIMenu::BarMenu(shared_from_this(), GetState()->MenuBar);
+    }
     return ret;
 }
 
@@ -725,14 +725,6 @@ void UIClassLayout::OnApplyLayout()
             else if ((DirectEnum)direct == DirectEnum::kR && edge.second == DirectEnum::kL) { offset.x = move.x - thisState->Move.x - thisState->Move.z; }
             thisState->Move = CalcStretech((DirectEnum)direct, offset);
         }
-    }
-}
-
-void UIClassLayout::OnRender(float dt)
-{
-    if (GetState()->IsShowMenuBar)
-    {
-        UIMenu::BarMenu(shared_from_this(), GetState()->MenuBar);
     }
 }
 
@@ -984,11 +976,6 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & p
 UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
 { }
 
-void UIClassUICanvas::OnRender(float dt)
-{ }
-
 UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 { }
 
-void UIClassGLCanvas::OnRender(float dt)
-{ }

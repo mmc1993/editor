@@ -62,11 +62,11 @@
     <ClInclude Include="editor\system\editor_sys\editor_sys.h" />
     <ClInclude Include="editor\system\editor_sys\include.h" />
     <ClInclude Include="editor\system\editor_sys\project.h" />
-    <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />
     <ClInclude Include="editor\global.h" />
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h" />
+    <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />
     <ClInclude Include="editor\system\event_sys\event_sys.h" />
     <ClInclude Include="editor\system\raw_sys\raw.h" />
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
