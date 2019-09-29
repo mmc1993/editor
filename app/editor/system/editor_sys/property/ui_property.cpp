@@ -60,20 +60,17 @@ void UIPropertyCombo::OnRender(float dt)
 {
     UIPropertyObject::OnRender(dt);
 
-    auto & select = GetBackup().first;
-    auto & values = GetBackup().second;
-    if (ImGui::BeginCombo(
-        ImID(this).c_str(),
-        values.at(select).c_str()))
+    auto & value = GetBackup();
+    if (ImGui::BeginCombo(ImID(this).c_str(), _list.at(value).c_str()))
     {
-        for (auto i = 0; i != values.size(); ++i)
+        for (auto i = 0; i != _list.size(); ++i)
         {
-            if (ImGui::Selectable(values.at(i).c_str(), select == i))
+            if (ImGui::Selectable(_list.at(i).c_str(), value == i))
             {
-                select=i;
+                value =i;
                 Modify();
             }
-            if (select == i)
+            if (value == i)
             {
                 ImGui::SetItemDefaultFocus();
             }

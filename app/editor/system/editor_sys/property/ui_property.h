@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../../include.h"
-#include "../../ui_sys/ui_state/ui_state.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
 class UIComponentHeader : public UIObject {
@@ -18,7 +17,10 @@ private:
 template <class T, class B = T>
 class UIPropertyState : public UIState {
 public:
-    using Handler_t = std::function<bool(const std::any & value, const std::string & title, const std::any & backup)>;
+    using Handler_t = std::function<bool(
+        const std::any & value,
+        const std::any & backup,
+        const std::string & title)>;
 
 public:
     UIPropertyState(
@@ -72,7 +74,7 @@ protected:
 
     bool Modify()
     {
-        auto ret = GetState<UIPropertyState<T, B>>()->mHandler(GetBackup(), GetTitle(), GetValue());
+        auto ret = GetState<UIPropertyState<T, B>>()->mHandler(GetValue(), GetBackup(), GetTitle());
         if (ret) { GetValue() = GetBackup(); }
         else { GetBackup() = GetValue(); }
         return ret;
@@ -153,29 +155,20 @@ public:
 // ---
 //   Ù–‘ combo
 // ---
-class UIPropertyCombo : public UIPropertyObject<
-    std::pair<
-        size_t, 
-        std::vector<std::string>
-    >
-> {
+class UIPropertyCombo : public UIPropertyObject<size_t> {
 public:
     UIPropertyCombo(
-        std::pair<
-            size_t, 
-            std::vector<std::string>
-        > & value,
+        size_t & value,
         const std::string & title,
-        const Handler_t & handler)
-        : UIPropertyObject<
-            std::pair<
-                size_t, 
-                std::vector<std::string>
-            >
-        >(value, title, handler)
+        const Handler_t & handler,
+        const std::vector<std::string> & list)
+        : UIPropertyObject<size_t>(value, title, handler), _list(list)
     { }
 
     virtual void OnRender(float dt) override;
+
+private:
+    const std::vector<std::string> & _list;
 };
 
 // ---
@@ -189,7 +182,7 @@ public:
         const Handler_t & handler)
         : UIPropertyObject<glm::vec2>(value, title, handler)
     { }
-    
+
     virtual void OnRender(float dt) override;
 };
 

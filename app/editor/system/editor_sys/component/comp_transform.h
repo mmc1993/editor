@@ -34,9 +34,9 @@ public:
     virtual const std::string & GetName() override;
 
     virtual bool OnModifyProperty(
-        const std::any &    value, 
-        const std::string & title, 
-        const std::any &    backup) override;
+        const std::any & value, 
+        const std::any & backup,
+        const std::string & title) override;
 
     virtual std::vector<Property> CollectProperty() override;
 
