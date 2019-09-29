@@ -1,14 +1,6 @@
 #include "atlas_sys.h"
 #include "../raw_sys/raw_sys.h"
 
-//  TODO
-//      图片资源允许被重复加载, 
-//      当重复加载时, 会返回上一次加载的结果
-//      当重复删除时, 只有第一次删除有效, 后续删除操作都被忽略
-//  这是一个不太好的设计, 因为会导致资源混乱.
-//  但是, 如果资源引用计数由上层管理, 会牺牲易用性
-//  所以这里考虑后续使用share_ptr管理资源, 从而避免以上问题.
-
 void AtlasSys::Delete(const std::string & url)
 {
     auto suffix = tools::GetFileSuffix(url);
@@ -53,9 +45,9 @@ bool AtlasSys::ImportImage(const std::string & url)
 {
     if (!IsHasKey(url))
     {
-        auto raw = (RawBitmap *)Global::Ref().mRawSys->Import(url);
-        ASSERT_LOG(raw != nullptr, url.c_str());
-        CHECK_RET(raw != nullptr, false);
+        auto ptr = Global::Ref().mRawSys->Import(url);
+        ASSERT_LOG(ptr != nullptr, url.c_str());
+        auto raw = CastPtr<RawBitmap>(ptr);
 
         Image image;
         image.mKey = url;
@@ -76,8 +68,9 @@ bool AtlasSys::ImportAtlas(const std::string & url)
     auto dir = tools::GetFileDir(url);
     dir += json->At("meta", "image")->ToString();
 
-    auto raw = (RawBitmap *)Global::Ref().mRawSys->Import(dir);
-    ASSERT_LOG(raw, url.c_str());
+    auto ptr = Global::Ref().mRawSys->Import(dir);
+    ASSERT_LOG(ptr != nullptr, url.c_str());
+    auto raw = CastPtr<RawBitmap>(ptr);
 
     auto w = json->At("meta", "size", "w")->ToFloat();
     auto h = json->At("meta", "size", "h")->ToFloat();

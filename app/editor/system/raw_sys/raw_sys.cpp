@@ -1,19 +1,22 @@
 #include "raw_sys.h"
 
-Raw * RawSys::Import(const std::string & url)
+SharePtr<Raw> RawSys::Import(const std::string & url)
 {
     auto it = _resources.find(url);
     CHECK_RET(it == _resources.end(), it->second);
 
-    Raw * raw = nullptr;
-    if (auto suffix = tools::GetFileSuffix(url); suffix == ".png" || suffix == ".jpg")
+    SharePtr<Raw> raw;
+    auto suffix = tools::GetFileSuffix(url);
+    if (suffix == ".png" || suffix == ".jpg")
     {
-        raw = new RawBitmap();
+        raw = std::create_ptr<RawBitmap>();
     }
     auto ret = raw->Init(url);
     ASSERT_LOG(ret, "{0}", url);
-    if (ret) { _resources.insert(std::make_pair(url, raw)); }
-    else { SAFE_DELETE(raw); }
+    if (ret)
+    {
+        _resources.insert(std::make_pair(url, raw));
+    }
     return raw;
 }
 
@@ -22,16 +25,11 @@ void RawSys::Delete(const std::string & url)
     auto it = _resources.find(url);
     if (it != _resources.end())
     {
-        delete it->second;
         _resources.erase(it);
     }
 }
 
 void RawSys::Clear()
 {
-    for (auto res : _resources)
-    {
-        delete res.second;
-    }
     _resources.clear();
 }

@@ -2,7 +2,7 @@
 
 #include "../../include.h"
 
-class Raw {
+class Raw : public std::enable_shared_from_this<Raw> {
 public:
     virtual ~Raw()
     { }
@@ -12,7 +12,6 @@ public:
 protected:
     Raw()
     { }
-
 };
 
 class RawBitmap : public Raw {
