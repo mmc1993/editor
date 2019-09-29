@@ -1,7 +1,5 @@
 #include "editor_sys.h"
-#include "project.h"
 #include "component/gl_object.h"
-#include "../ui_sys/ui_state/ui_state.h"
 #include "../ui_sys/ui_object/ui_object.h"
 #include "../event_sys/event_sys.h"
 
@@ -10,10 +8,18 @@
 #include<Commdlg.h>
 #pragma comment(lib,"Shell32.lib")
 
-EditorSys::EditorSys(): _project(nullptr)
-{ }
+void EditorSys::OptInsertObject(const SharePtr<UIObject> & uiObject, const SharePtr<UIObject> & parentUIObject)
+{
+    auto glObject       = std::any_cast<SharePtr<GLObject>>(uiObject      ->GetState()->UserData);
+    auto parentGLObject = std::any_cast<SharePtr<GLObject>>(parentUIObject->GetState()->UserData);
 
-void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
+    parentUIObject->AddObject(uiObject                     );
+    parentGLObject->AddObject(glObject, glObject->GetName());
+
+    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kInsertObject, std::make_tuple(parentUIObject, parentGLObject, uiObject, glObject));
+}
+
+void EditorSys::OptSelectObject(const SharePtr<UIObject> & uiObject, bool select, bool multi)
 {
     auto iter = std::find(_selected.begin(), _selected.end(), uiObject);
     auto has = iter != _selected.end();
@@ -30,7 +36,8 @@ void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
                     _selected.pop_back();
                     Global::Ref().mEventSys->Post(
                         EventSys::TypeEnum::kSelectObject, 
-                        std::make_tuple(selected, (GLObject *)selected->GetState()->Pointer, false, multi));
+                        std::make_tuple(selected,
+                            std::any_cast<SharePtr<GLObject>>(selected->GetState()->UserData), false, multi));
                 }
             }
         }
@@ -40,7 +47,8 @@ void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
             _selected.push_back(uiObject);
             Global::Ref().mEventSys->Post(
                 EventSys::TypeEnum::kSelectObject, 
-                std::make_tuple(uiObject, (GLObject *)uiObject->GetState()->Pointer, true, multi));
+                std::make_tuple(uiObject,
+                    std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData), true, multi));
         }
     }
     else
@@ -49,40 +57,30 @@ void EditorSys::OptSelectObject(UIObject * uiObject, bool select, bool multi)
         {
             _selected.erase(iter);
             Global::Ref().mEventSys->Post(
-                EventSys::TypeEnum::kSelectObject, 
-                std::make_tuple(uiObject, (GLObject *)uiObject->GetState()->Pointer, false, multi));
+                EventSys::TypeEnum::kSelectObject,
+                std::make_tuple(uiObject, 
+                    std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData), false, multi));
         }
     }
 }
 
-void EditorSys::OptDeleteObject(UIObject * uiObject)
+void EditorSys::OptDeleteObject(const SharePtr<UIObject> & uiObject)
 {
     //  取消选中
     OptSelectObject(uiObject, false);
     
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
+    auto glObject = std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData);
     uiObject->DelThis();
     glObject->DelThis();
 
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(uiObject, glObject));
 }
 
-void EditorSys::OptInsertObject(UIObject * uiObject, UIObject * insUIObject)
-{
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
-    auto insGLObject = (GLObject *)insUIObject->GetState()->Pointer;
-
-    insUIObject->AddObject(uiObject);
-    insGLObject->AddObject(glObject, glObject->GetName());
-
-    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kInsertObject, std::make_tuple(insUIObject, insGLObject, uiObject, glObject));
-}
-
-void EditorSys::OptRenameObject(UIObject * uiObject, const std::string & name)
+void EditorSys::OptRenameObject(const SharePtr<UIObject> & uiObject, const std::string & name)
 {
     if (ObjectName(uiObject->GetParent(), name))
     {
-        auto glObject = (GLObject *)uiObject->GetState()->Pointer;
+        auto glObject = std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData);
         uiObject->GetState()->Name = name;
         glObject->SetName(name);
 
@@ -90,17 +88,17 @@ void EditorSys::OptRenameObject(UIObject * uiObject, const std::string & name)
     }
 }
 
-void EditorSys::OptAppendComponent(UIObject * uiObject, Component * component)
+void EditorSys::OptAppendComponent(const SharePtr<UIObject> & uiObject, const SharePtr<Component> & component)
 {
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
+    auto glObject = std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData);
     glObject->AddComponent(component);
 
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kAppendComponent, std::make_tuple(uiObject, glObject, component));
 }
 
-void EditorSys::OptDeleteComponent(UIObject * uiObject, Component * component)
+void EditorSys::OptDeleteComponent(const SharePtr<UIObject> & uiObject, const SharePtr<Component> & component)
 {
-    auto glObject = (GLObject *)uiObject->GetState()->Pointer;
+    auto glObject = std::any_cast<SharePtr<GLObject>>(uiObject->GetState()->UserData);
     glObject->DelComponent(component);
 
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteComponent, std::make_tuple(uiObject, glObject, component));
@@ -109,8 +107,7 @@ void EditorSys::OptDeleteComponent(UIObject * uiObject, Component * component)
 void EditorSys::OptNewProject(const std::string & url)
 {
     OptFreeProject();
-    SAFE_DELETE(_project);
-    _project = new Project();
+    _project.reset(new Project());
     _project->New(url);
 
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
@@ -119,8 +116,7 @@ void EditorSys::OptNewProject(const std::string & url)
 bool EditorSys::OptOpenProject(const std::string & url)
 {
     OptFreeProject();
-    SAFE_DELETE(_project);
-    _project = new Project();
+    _project.reset(new Project());
     auto ret = _project->Load(url);
     if (ret)
     {
@@ -147,7 +143,7 @@ void EditorSys::OptFreeProject()
         {
             EditorSys::OptSelectObject(_selected.back(), false);
         }
-        SAFE_DELETE(_project);
+        _project.reset();
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kFreeProject, nullptr);
     }
 }
@@ -169,7 +165,7 @@ bool EditorSys::IsOpenProject() const
     return _project != nullptr;
 }
 
-std::string EditorSys::ObjectName(GLObject * object) const
+std::string EditorSys::ObjectName(const SharePtr<GLObject> & object) const
 {
     size_t i = 0;
     auto name = SFormat("object_{0}", i++);
@@ -178,24 +174,26 @@ std::string EditorSys::ObjectName(GLObject * object) const
     return std::move(name);
 }
 
-std::string EditorSys::ObjectName(UIObject * parent) const
+std::string EditorSys::ObjectName(const SharePtr<UIObject> & parent) const
 {
-    return ObjectName((GLObject *)parent->GetState()->Pointer);
+    return ObjectName(std::any_cast<SharePtr<GLObject>>(parent->GetState()->UserData));
 }
 
-bool EditorSys::ObjectName(UIObject * parent, const std::string & name) const
+bool        EditorSys::ObjectName(const SharePtr<UIObject> & parent, const std::string & name) const
 {
-    if (name.empty()) { return false; }
-    auto object = parent->GetState()->Pointer;
-    return ((GLObject *)object)->GetObject(name) == nullptr;
+    if (name.empty()) 
+    {
+        return false; 
+    }
+    return nullptr == std::any_cast<SharePtr<GLObject>>(parent->GetState()->UserData)->GetObject(name);
 }
 
-const std::vector<UIObject*> & EditorSys::GetSelectedObjects() const
+const std::vector<SharePtr<UIObject>> & EditorSys::GetSelectedObjects() const
 {
     return _selected;
 }
 
-Project * EditorSys::GetProject()
+const UniquePtr<Project> & EditorSys::GetProject()
 {
     return _project;
 }
