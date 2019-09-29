@@ -11,7 +11,9 @@ class Component;
 class CompTransform;
 class UIObjectGLCanvas;
 
-class GLObject : public Interface::Serializer {
+class GLObject 
+    : public Interface::Serializer
+    , public std::enable_shared_from_this<GLObject> {
 public:
     enum StatusEnum {
         kActive = 1 << 0,
@@ -24,16 +26,16 @@ public:
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
 
-    void AddObject(GLObject * child, const std::string & name);
-    void DelObject(const std::string & name, bool del = true);
-    void DelObject(GLObject * child, bool del = true);
-    void DelObject(size_t idx, bool del = true);
+    void AddObject(const SharePtr<GLObject> & object, const std::string & name);
+    void DelObject(const SharePtr<GLObject> & object);
+    void DelObject(const std::string & name);
+    void DelObject(size_t idx);
     void ClearObjects();
     void DelThis();
 
-    GLObject * GetObject(const std::string & name);
-    GLObject * GetObject(const size_t idx);
-    std::vector<GLObject *> & GetObjects();
+    SharePtr<GLObject> GetObject(const std::string & name);
+    SharePtr<GLObject> GetObject(const size_t idx);
+    std::vector<SharePtr<GLObject>> & GetObjects();
 
     void SetName(const std::string & name);
     const std::string & GetName() const;
@@ -43,36 +45,36 @@ public:
     void SetActive(bool active);
     bool IsActive() const;
 
-    void RootUpdate(float dt);
     void Update(float dt);
 
-    void SetParent(GLObject * parent);
-    GLObject * GetParent();
+    void SetParent(const SharePtr<GLObject> & parent);
+    SharePtr<GLObject> GetParent();
 
 	void ClearComponents();
-    void AddComponent(Component * component);
-    void DelComponent(Component * component);
+    void AddComponent(const SharePtr<Component> & component);
+    void DelComponent(const SharePtr<Component> & component);
     void DelComponent(const std::type_info & type);
-    std::vector<Component *> & GetComponents();
+    std::vector<SharePtr<Component>> & GetComponents();
 
     template <class T>
-    T * GetComponent()
+    SharePtr<T> GetComponent()
     {
         auto iter = std::find_if(_components.begin(), _components.end(),
-           [](Component * component) { return typeid(*component) == typeid(T); });
-        return reinterpret_cast<T *>(iter != _components.end() ? *iter : nullptr);
+           [](const SharePtr<Component> & component) 
+           { return typeid(*component) == typeid(T); });
+        return CastPtr<T>(iter != _components.end() ? *iter : nullptr);
     }
 
     template <class T>
-    std::vector<T *> GetComponentsInChildren()
+    std::vector<SharePtr<T>> GetComponentsInChildren()
     {
-        std::vector<T *> result{};
+        std::vector<SharePtr<T>> result{};
         auto self = GetComponent<T>();
         if (self != nullptr)
         {
             result.push_back(self);
         }
-        for (auto v : _children)
+        for (const auto & v : _children)
         {
             auto ret = std::move(v->GetComponentsInChildren<T>());
             result.insert(result.end(), ret.begin(), ret.end());
@@ -80,14 +82,14 @@ public:
         return std::move(result);
     }
 
-    CompTransform * GetTransform();
+    SharePtr<CompTransform> GetTransform();
 
 private:
-    size_t                      _status;
-    GLObject *                  _parent;
-    std::string                 _name;
-    CompTransform *             _transform;
-    UIObjectGLCanvas *          _canvas;
-    std::vector<GLObject *>     _children;
-    std::vector<Component *>    _components;
+    std::string                         _name;
+    size_t                              _status;
+    WeakPtr<GLObject>                   _parent;
+    UIObjectGLCanvas *                  _canvas;
+    SharePtr<CompTransform>             _transform;
+    std::vector<SharePtr<GLObject>>     _children;
+    std::vector<SharePtr<Component>>    _components;
 };

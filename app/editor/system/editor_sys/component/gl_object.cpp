@@ -4,14 +4,13 @@
 
 GLObject::GLObject()
     : _status(kActive)
-    , _parent(nullptr)
     , _canvas(nullptr)
 { }
 
 GLObject::~GLObject()
 {
-    ClearComponents();
     ClearObjects();
+    ClearComponents();
 }
 
 void GLObject::OnUpdate(float dt)
@@ -25,7 +24,7 @@ void GLObject::EncodeBinary(std::ofstream & os)
     //  组件
     auto count = GetComponents().size();
     tools::Serialize(os, count);
-    for (auto comp : GetComponents())
+    for (const auto & comp : GetComponents())
     {
         tools::Serialize(os, comp->GetName());
         comp->EncodeBinary(os);
@@ -34,7 +33,7 @@ void GLObject::EncodeBinary(std::ofstream & os)
     //  子节点
     count = GetObjects().size();
     tools::Serialize(os, count);
-    for (auto obj : GetObjects())
+    for (const auto & obj : GetObjects())
     {
         obj->EncodeBinary(os);
     }
@@ -59,42 +58,43 @@ void GLObject::DecodeBinary(std::ifstream & is)
     tools::Deserialize(is, count);
     for (auto i = 0; i != count; ++i)
     {
-        auto object = new GLObject();
+        auto object = std::create_ptr<GLObject>();
         object->DecodeBinary(is);
         AddObject(object, object->GetName());
     }
 }
 
-void GLObject::AddObject(GLObject * child, const std::string & name)
+void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & name)
 {
-    child->_name = name;
-    child->_parent = this;
-    _children.push_back(child);
+    ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
+    object->_name = name;
+    object->_parent = shared_from_this();
+    _children.push_back(object);
 }
 
-void GLObject::DelObject(const std::string & name, bool del)
+void GLObject::DelObject(const SharePtr<GLObject> & object)
+{
+    auto it = std::find(_children.begin(), _children.end(), object);
+    ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
+    DelObject(std::distance(_children.begin(), it));
+}
+
+void GLObject::DelObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [name](GLObject * child){return child->_name==name;});
+        [name] (const SharePtr<GLObject> & object) 
+        { return object->_name == name; });
     if (it != _children.end())
     {
-        DelObject(std::distance(_children.begin(), it), del);
+        DelObject(std::distance(_children.begin(), it));
     }
 }
 
-void GLObject::DelObject(GLObject * child, const bool del)
+void GLObject::DelObject(size_t idx)
 {
-    auto it = std::find(_children.begin(), _children.end(), child);
-    ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
-    DelObject(std::distance(_children.begin(), it), del);
-}
-
-void GLObject::DelObject(size_t idx, const bool del)
-{
-    ASSERT_LOG(idx < _children.size(), "Object DelChild Idx: {0}", idx);
+    ASSERT_LOG(idx < _children.size(), "Object DelChildIdx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
-    (*it)->_parent = nullptr;
-    if (del) { delete *it; }
+    (*it)->_parent.reset();
     _children.erase(it);
 }
 
@@ -108,26 +108,35 @@ void GLObject::ClearObjects()
 
 void GLObject::DelThis()
 {
-    if (nullptr == GetParent()) { delete this; }
-    else { GetParent()->DelObject(this); }
+    ASSERT_LOG(GetParent() != nullptr, "");
+    GetParent()->DelObject(shared_from_this());
 }
 
-GLObject * GLObject::GetObject(const std::string & name)
+SharePtr<GLObject> GLObject::GetObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
-        [name](GLObject * child){return child->_name==name;});
+        [name] (const SharePtr<GLObject> & object)
+        { return object->_name == name; });
     return it != _children.end() ? *it : nullptr;
 }
 
-GLObject * GLObject::GetObject(const size_t idx)
+SharePtr<GLObject> GLObject::GetObject(const size_t idx)
 {
-    ASSERT_LOG(idx < _children.size(), "Object GetChildIdx Idx: {0}", idx);
+    ASSERT_LOG(idx < _children.size(), "Object GetChildIdx: {0}", idx);
     return *std::next(_children.begin(), idx);
 }
 
-std::vector<GLObject *> & GLObject::GetObjects()
+std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 {
     return _children;
+}
+
+bool GLObject::HasObject(const std::string & name)
+{
+    auto it = std::find_if(_children.begin(), _children.end(),
+        [name](const SharePtr<GLObject> & object)
+        { return object->_name == name; });
+    return it != _children.end();
 }
 
 void GLObject::SetName(const std::string & name)
@@ -161,24 +170,21 @@ bool GLObject::IsActive() const
 void GLObject::Update(float dt)
 { }
 
-void GLObject::RootUpdate(float dt)
-{ }
-
-void GLObject::SetParent(GLObject * parent)
+void GLObject::SetParent(const SharePtr<GLObject> & parent)
 {
-    if (nullptr != _parent)
+    if (GetParent() != nullptr)
     {
-        _parent->DelObject(this, false);
+        GetParent()->DelObject(shared_from_this());
     }
-    if (nullptr != parent)
+    if (parent != nullptr)
     {
-        parent->AddObject(this, _name);
+        parent->AddObject(shared_from_this(), _name);
     }
 }
 
-GLObject * GLObject::GetParent()
+SharePtr<GLObject> GLObject::GetParent()
 {
-    return _parent;
+    return _parent.expired() ? nullptr : _parent.lock();
 }
 
 void GLObject::ClearComponents()
@@ -187,37 +193,37 @@ void GLObject::ClearComponents()
 	{
         _components.back()->OnDel();
         _components.back()->SetOwner(nullptr);
-		delete _components.back();
 		_components.pop_back();
 	}
 }
 
-void GLObject::AddComponent(Component * component)
+void GLObject::AddComponent(const SharePtr<Component> & component)
 {
     _components.push_back(component);
-    component->SetOwner(this);
+    component->SetOwner(shared_from_this());
     component->OnAdd();
 }
 
-void GLObject::DelComponent(Component * component)
+void GLObject::DelComponent(const SharePtr<Component> & component)
 {
     auto it = std::find(_components.begin(), _components.end(), component);
-    if (it != _components.end()) { (*it)->OnDel(); delete *it; _components.erase(it); }
+    if (it != _components.end()) { (*it)->OnDel(); _components.erase(it); }
 }
 
 void GLObject::DelComponent(const std::type_info & type)
 {
     auto it = std::find_if(_components.begin(), _components.end(),
-        [&type](Component * component) { return typeid(*component) == type; });
-    if (it != _components.end()) { (*it)->OnDel(); delete *it; _components.erase(it); }
+        [&type](const SharePtr<Component> & component) 
+        { return typeid(*component) == type; });
+    if (it != _components.end()) { (*it)->OnDel(); _components.erase(it); }
 }
 
-std::vector<Component*>& GLObject::GetComponents()
+std::vector<SharePtr<Component>> & GLObject::GetComponents()
 {
     return _components;
 }
 
-CompTransform * GLObject::GetTransform()
+SharePtr<CompTransform> GLObject::GetTransform()
 {
     ASSERT_LOG(_transform != nullptr, "");
     return _transform;
