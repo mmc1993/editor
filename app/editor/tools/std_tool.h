@@ -32,9 +32,9 @@ namespace std {
         return std::to_string((size_t)val);
     }
 
-    template <class R, class T>
-    R * create()
+    template <class T, class ...ARGS>
+    std::shared_ptr<T> create_ptr(ARGS && ...args)
     {
-        return new T();
+        return std::make_shared<T>(std::forward<ARGS>(args)...);
     }
 }
