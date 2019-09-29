@@ -1,57 +1,60 @@
 #include "ui_object.h"
 #include "../ui_menu.h"
-#include "../ui_state/ui_state.h"
 #include "../../atlas_sys/atlas_sys.h"
 #include "imgui_impl_glfw.h"
 
 // ---
 //  UIObject
 // ---
-UIObject * UIObject::GetObject(const std::initializer_list<std::string>& list)
+SharePtr<UIObject> UIObject::GetObject(const std::initializer_list<std::string> & list)
 {
     ASSERT_LOG(list.size() != 0, "");
-    auto parent = this;
+    auto query = shared_from_this();
     for (auto & name : list)
     {
         auto it = std::find_if(
-            parent->GetObjects().begin(), 
-            parent->GetObjects().end(), 
-            [&name](UIObject * object) {
+            query->GetObjects().begin(), 
+            query->GetObjects().end(), 
+            [&name](const SharePtr<UIObject> & object) {
                 return object->GetState()->Name == name;
             });
         if (it == _children.end())
         {
             return nullptr;
         }
-        parent = *it;
+        query = *it;
     }
-    return parent;
+    return query;
 }
 
-std::vector<UIObject*> UIObject::GetObjects(UITypeEnum type) const
+std::vector<SharePtr<UIObject>> UIObject::GetObjects(UITypeEnum type) const
 {
-    std::vector<UIObject *> result;
+    std::vector<SharePtr<UIObject>> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
-        [type](const UIObject * object) { return object->GetType() == type; });
+        [type](const SharePtr<UIObject> & object) 
+        { return object->GetType() == type; });
     return std::move(result);
 }
 
-std::vector<UIObject*>& UIObject::GetObjects()
+std::vector<SharePtr<UIObject>> & UIObject::GetObjects()
 {
     return _children;
 }
 
-void UIObject::AddObject(UIObject * child)
+void UIObject::AddObject(const SharePtr<UIObject> & object)
 {
-    ASSERT_LOG(child->GetParent() == nullptr, "");
-    _children.push_back(child);
-    child->_parent = this;
+    ASSERT_LOG(object->GetParent() == nullptr, "");
+    object->_parent = shared_from_this();
+    _children.push_back(object);
 }
 
-void UIObject::DelObject(UIObject * child)
+void UIObject::DelObject(const SharePtr<UIObject> & object)
 {
-    auto it = std::find(_children.begin(), _children.end(), child);
-    if (it != _children.end()) { delete *it; _children.erase(it); }
+    auto it = std::find(_children.begin(), _children.end(), object);
+    if (it != _children.end()) 
+    { 
+        _children.erase(it); 
+    }
 }
 
 void UIObject::DelObject(size_t index)
@@ -62,31 +65,31 @@ void UIObject::DelObject(size_t index)
 void UIObject::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());
-    GetParent()->DelObject(this);
+    GetParent()->DelObject(shared_from_this());
 }
 
 void UIObject::ClearObjects()
 {
-    while (!_children.empty())
-    {
-        delete _children.back();
-        _children.pop_back();
-    }
+    _children.clear();
 }
 
-UIObject * UIObject::GetRoot()
+SharePtr<UIObject> UIObject::GetRoot()
 {
-    auto ret = this;
-    while (ret->GetParent() != nullptr)
+    auto ret = shared_from_this();
+    while (ret->GetParent())
     {
         ret = ret->GetParent();
     }
     return ret;
 }
 
-UIObject * UIObject::GetParent()
+SharePtr<UIObject> UIObject::GetParent()
 {
-    return _parent;
+    if (_parent.expired())
+    {
+        return nullptr;
+    }
+    return _parent.lock();
 }
 
 bool UIObject::IsVisible() const
@@ -276,9 +279,9 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
 
 void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
 {
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(1), this); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(1), shared_from_this()); }
     _delegate.reset(delegate);
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(0), this); }
+    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(0), shared_from_this()); }
 }
 
 void UIObject::RenderDrag()
@@ -396,9 +399,9 @@ void UIObject::DispatchEventKey()
     }
 }
 
-UIObject * UIObject::DispatchEventKey(const UIEvent::Key & param)
+SharePtr<UIObject> UIObject::DispatchEventKey(const UIEvent::Key & param)
 {
-    std::vector<UIObject *> objects{ this };
+    std::vector<SharePtr<UIObject>> objects{ shared_from_this() };
     for (auto i = 0; objects.size() != i; ++i)
     {
         std::copy(
@@ -427,14 +430,14 @@ void UIObject::DispatchEventDrag()
                 state->mDrag.mBegWorld = ImGui::GetMousePos();
                 state->mDrag.mEndWorld = ImGui::GetMousePos();
                 UIEvent::Drag drag(0, state->mDrag.mBegWorld);
-                state->mDrag.mDragObj = DispatchEventDrag(drag);
+                state->mDrag.mDragObj = DispatchEventDrag(drag).get();
             }
             else
             {
                 //  拖动目标
-                auto hitFreeObject = DispatchEventDrag(UIEvent::Drag(1, 
-                    state->mDrag.mBegWorld,
-                    state->mDrag.mDragObj));
+                auto hitFreeObject = DispatchEventDrag(
+                    UIEvent::Drag(1, state->mDrag.mBegWorld, 
+                    state->mDrag.mDragObj->shared_from_this()));
 
                 //  当前没有释放节点
                 //  位置在新节点内部
@@ -443,7 +446,7 @@ void UIObject::DispatchEventDrag()
                 state->mDrag.mEndWorld = ImGui::GetMousePos();
                 if (state->mDrag.mFreeObj == nullptr)
                 {
-                    state->mDrag.mFreeObj = hitFreeObject;
+                    state->mDrag.mFreeObj = hitFreeObject.get();
                 }
                 else
                 {
@@ -453,7 +456,7 @@ void UIObject::DispatchEventDrag()
                     if (distance == 0 || distance > 10)
                     {
                         //  在目标内|脱离目标
-                        state->mDrag.mFreeObj = hitFreeObject;
+                        state->mDrag.mFreeObj = hitFreeObject.get();
                         state->mDrag.mDirect = DirectEnum::kNone;
                     }
                     else
@@ -471,9 +474,9 @@ void UIObject::DispatchEventDrag()
             if (state->mDrag.mFreeObj != nullptr)
             {
                 ASSERT_LOG(state->mDrag.mDragObj != nullptr, "");
-                state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, UIEvent::Drag(2, 
-                    state->mDrag.mBegWorld, 
-                    state->mDrag.mDragObj));
+                state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, 
+                    UIEvent::Drag(2, state->mDrag.mBegWorld, 
+                    state->mDrag.mDragObj->shared_from_this()));
             }
             state->mDrag.mDragObj = nullptr;
             state->mDrag.mFreeObj = nullptr;
@@ -482,7 +485,7 @@ void UIObject::DispatchEventDrag()
     }
 }
 
-UIObject * UIObject::DispatchEventDrag(const UIEvent::Drag & param)
+SharePtr<UIObject> UIObject::DispatchEventDrag(const UIEvent::Drag & param)
 {
     for (auto child : GetObjects())
     {
@@ -495,11 +498,11 @@ UIObject * UIObject::DispatchEventDrag(const UIEvent::Drag & param)
         ASSERT_LOG(param.mAct == 0 || param.mAct == 1, "");
         if (param.mAct == 0 && GetState()->IsCanDragMove)
         {
-            return GetState()->IsCanDragMove ? this : nullptr;
+            return GetState()->IsCanDragMove ? shared_from_this() : nullptr;
         }
         else if (param.mAct == 1)
         {
-            return GetState()->IsCanDragFree ? this
+            return GetState()->IsCanDragFree ? shared_from_this()
                 : PostEventMessage(UIEventEnum::kDrag, param);
         }
     }
@@ -531,7 +534,7 @@ void UIObject::DispatchEventMouse()
     }
 }
 
-UIObject * UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
+SharePtr<UIObject> UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
 {
     for (auto child : GetObjects())
     {
@@ -551,25 +554,25 @@ bool UIObject::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
     return false;
 }
 
-UIObject * UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+SharePtr<UIObject> UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     auto was = OnCallEventMessage(e, param);
 
     if (_delegate != nullptr)
     {
-        was = _delegate->OnCallEventMessage(e, param, this) || was;
+        was = _delegate->OnCallEventMessage(e, param, shared_from_this()) || was;
     }
     
     if (!was && GetParent() != nullptr)
     {
         return GetParent()->CallEventMessage(e, param);
     }
-    return was ? this : nullptr;
+    return was ? shared_from_this() : nullptr;
 }
 
-UIObject * UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
+SharePtr<UIObject> UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
-    param.mObject = this;
+    param.mObject = shared_from_this();
     return CallEventMessage(e, param);
 }
 
@@ -630,7 +633,7 @@ void UIClassLayout::OnLeave(bool ret)
     if (state->IsWindow)
     {
         ImGui::PopStyleVar();
-        if (GetRoot() == this)
+        if (GetRoot().get() == this)
         {
             UIMenu::RenderPopup();
         }
@@ -658,7 +661,7 @@ void UIClassLayout::OnResetLayout()
     auto thisRight  = thisLeft + thisState->Move.z;
     for (auto layout : GetParent()->GetObjects(UITypeEnum::kLayout))
     {
-        if (layout == this) { continue; }
+        if (layout.get() == this) { continue; }
         auto state  = layout->GetState<UIStateLayout>();
         auto up     = state->Move.y;
         auto down   = up + state->Move.w;
@@ -666,28 +669,28 @@ void UIClassLayout::OnResetLayout()
         auto right  = left + state->Move.z;
         if ((thisUp == up || thisUp == down) && thisState->mJoin[(size_t)DirectEnum::kU].mIn.first == nullptr)
         {
-            thisState->mJoin[(size_t)DirectEnum::kU].mOut.push_back(layout);
+            thisState->mJoin[(size_t)DirectEnum::kU].mOut.push_back(layout.get());
             auto dir = thisUp == up ? DirectEnum::kU : DirectEnum::kD;
             state->mJoin[(size_t)dir].mIn.second = DirectEnum::kU;
             state->mJoin[(size_t)dir].mIn.first = this;
         }
         if ((thisDown == down || thisDown == up) && thisState->mJoin[(size_t)DirectEnum::kD].mIn.first == nullptr)
         {
-            thisState->mJoin[(size_t)DirectEnum::kD].mOut.push_back(layout);
+            thisState->mJoin[(size_t)DirectEnum::kD].mOut.push_back(layout.get());
             auto dir = thisDown == down ? DirectEnum::kD : DirectEnum::kU;
             state->mJoin[(size_t)dir].mIn.second = DirectEnum::kD;
             state->mJoin[(size_t)dir].mIn.first = this;
         }
         if ((thisLeft == left || thisLeft == right) && thisState->mJoin[(size_t)DirectEnum::kL].mIn.first == nullptr)
         {
-            thisState->mJoin[(size_t)DirectEnum::kL].mOut.push_back(layout);
+            thisState->mJoin[(size_t)DirectEnum::kL].mOut.push_back(layout.get());
             auto dir = thisLeft == left ? DirectEnum::kL : DirectEnum::kR;
             state->mJoin[(size_t)dir].mIn.second = DirectEnum::kL;
             state->mJoin[(size_t)dir].mIn.first = this;
         }
         if ((thisRight == right || thisRight == left) && thisState->mJoin[(size_t)DirectEnum::kR].mIn.first == nullptr)
         {
-            thisState->mJoin[(size_t)DirectEnum::kR].mOut.push_back(layout);
+            thisState->mJoin[(size_t)DirectEnum::kR].mOut.push_back(layout.get());
             auto dir = thisRight == right ? DirectEnum::kR : DirectEnum::kL;
             state->mJoin[(size_t)dir].mIn.second = DirectEnum::kR;
             state->mJoin[(size_t)dir].mIn.first = this;
@@ -723,7 +726,7 @@ void UIClassLayout::OnRender(float dt)
 {
     if (GetState()->IsShowMenuBar)
     {
-        UIMenu::BarMenu(this, GetState()->MenuBar);
+        UIMenu::BarMenu(shared_from_this(), GetState()->MenuBar);
     }
 }
 
@@ -731,7 +734,7 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge)
 {
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
-    ASSERT_LOG(dynamic_cast<UIClassLayout *>(parent) != nullptr, "");
+    ASSERT_LOG(std::dynamic_pointer_cast<UIClassLayout>(parent) != nullptr, "");
     CHECK_RET(GetState()->IsCanStretch, false);
 
     auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
@@ -877,7 +880,7 @@ void UIClassTextBox::OnRender(float dt)
                 ImVec2(state->Move.z, state->Move.w), 
                 flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, shared_from_this()));
             }
         }
         else
@@ -889,7 +892,7 @@ void UIClassTextBox::OnRender(float dt)
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, this));
+                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, shared_from_this()));
             }
             ImGui::PopItemWidth();
         }
@@ -922,14 +925,14 @@ void UIClassImageBox::OnRender(float dt)
                 ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
                 ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
             {
-                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, shared_from_this()));
             }
         }
         else
         {
             if (ImGui::Button(state->Name.c_str(), ImVec2(state->Move.z, state->Move.y)))
             {
-                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, this));
+                PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, shared_from_this()));
             }
         }
     }

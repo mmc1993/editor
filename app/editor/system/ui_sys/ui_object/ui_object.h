@@ -2,26 +2,27 @@
 
 #include "../include.h"
 #include "../ui_event.h"
+#include "../ui_state/ui_state.h"
 
 #ifdef GetObject
 #undef GetObject
 #endif
 
-class UIObject {
+class UIObject: public std::enable_shared_from_this<UIObject> {
 public:
     template <class T = UIState>
-    T * GetState() { return (T *)_state; }
+    T * GetState() { return (T *)_state.get(); }
     
-    UIObject * GetObject(const std::initializer_list<std::string> & list);
-    std::vector<UIObject *>   GetObjects(UITypeEnum type) const;
-    std::vector<UIObject *> & GetObjects();
-    void AddObject(UIObject * child);
-    void DelObject(UIObject * child);
+    SharePtr<UIObject> GetObject(const std::initializer_list<std::string> & list);
+    std::vector<SharePtr<UIObject>>   GetObjects(UITypeEnum type) const;
+    std::vector<SharePtr<UIObject>> & GetObjects();
+    void AddObject(const SharePtr<UIObject> & object);
+    void DelObject(const SharePtr<UIObject> & object);
     void DelObject(size_t index);
     void DelThis();
     void ClearObjects();
-    UIObject * GetRoot();
-    UIObject * GetParent();
+    SharePtr<UIObject> GetParent();
+    SharePtr<UIObject> GetRoot();
     bool IsVisible() const;
 
     void ResetLayout();
@@ -38,44 +39,23 @@ public:
     //  绑定事件委托, 事件将被传递到委托中
     void BindDelegate(UIEvent::DelegateHandler * delegate);
 
+    //  TODO 干掉
     //  const 重载版本
-    UITypeEnum GetType() const
-    {
-        return _type;
-    }
-
+    UITypeEnum GetType() const { return _type; }
+    const auto GetRoot() const { return const_cast<UIObject *>(this)->GetRoot(); }
     template <class T = UIState>
-    const T * GetState() const
-    {
-        return const_cast<UIObject *>(this)->GetState<T>();
-    }
-
-    const UIObject * GetRoot() const
-    {
-        return const_cast<UIObject *>(this)->GetRoot();
-    }
-
-    const UIObject * GetParent() const
-    {
-        return const_cast<UIObject *>(this)->GetParent();
-    }
-
-    const std::vector<UIObject *> & GetObjects() const
-    {
-        return const_cast<UIObject *>(this)->GetObjects();
-    }
-
-    const UIObject * GetObjects(const std::initializer_list<std::string> & list) const
-    {
-        return const_cast<UIObject *>(this)->GetObjects(list);
-    }
+    const T * GetState() const { return const_cast<UIObject *>(this)->GetState<T>(); }
+    const auto GetParent() const { return const_cast<UIObject *>(this)->GetParent(); }
+    const auto & GetObjects() const { return const_cast<UIObject *>(this)->GetObjects(); }
+    const auto GetObject(const std::initializer_list<std::string> & list) const { return const_cast<UIObject *>(this)->GetObject(list); }
 
 protected:
     UIObject(UITypeEnum type, UIState * state) 
         : _type(type)
         , _state(state)
-        , _parent(nullptr)
-        , _delegate(nullptr)
+    { }
+
+    virtual ~UIObject()
     { }
 
     void RenderDrag();
@@ -89,25 +69,25 @@ protected:
 
     //  事件处理
     void DispatchEventKey();
-    UIObject * DispatchEventKey(const UIEvent::Key & param);
+    SharePtr<UIObject> DispatchEventKey(const UIEvent::Key & param);
     void DispatchEventDrag();
-    UIObject * DispatchEventDrag(const UIEvent::Drag & param);
+    SharePtr<UIObject> DispatchEventDrag(const UIEvent::Drag & param);
     void DispatchEventMouse();
-    UIObject * DispatchEventMouse(const UIEvent::Mouse & param);
+    SharePtr<UIObject> DispatchEventMouse(const UIEvent::Mouse & param);
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    UIObject * CallEventMessage(UIEventEnum e, const UIEvent::Event & param);
+    SharePtr<UIObject> CallEventMessage(UIEventEnum e, const UIEvent::Event & param);
 public:
-    UIObject * PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
+    SharePtr<UIObject> PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    UITypeEnum                                  _type;
-    UIState *                                   _state;
-    UIObject *                                  _parent;
-    bool                                        _visible;       //  标记当前节点是否渲染
-    std::vector<UIObject *>                     _children;
-    std::unique_ptr<UIEvent::DelegateHandler>   _delegate;
+    bool                                _visible;       //  标记当前节点是否渲染
+    UITypeEnum                          _type;
+    WeakPtr<UIObject>                   _parent;
+    UniquePtr<UIState>                  _state;
+    std::vector<SharePtr<UIObject>>     _children;
+    UniquePtr<UIEvent::DelegateHandler> _delegate;
 };
 
 class UIClassLayout : public UIObject {
