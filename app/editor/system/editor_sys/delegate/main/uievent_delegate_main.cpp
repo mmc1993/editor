@@ -1,6 +1,6 @@
 #include "uievent_delegate_main.h"
 
-bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
+bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
 
@@ -37,7 +37,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             auto & mouse = (const UIEvent::Mouse &)param;
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
-                object->GetState()->Pointer = Global::Ref().mEditorSys->GetProject()->GetRoot();
+                object->GetState()->UserData = Global::Ref().mEditorSys->GetProject()->GetRoot();
 
                 std::vector<std::string> buffer;
                 if (mouse.mObject == object)
@@ -74,7 +74,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             {
                 auto name = Global::Ref().mEditorSys->ObjectName(menu.mObject);
 
-                auto newGLObject = new GLObject();
+                auto newGLObject = std::create_ptr<GLObject>();
                 newGLObject->SetName(name);
 
                 auto raw = mmc::JsonValue::Hash();
@@ -86,7 +86,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragFree");
                 raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
                 auto newUIObject = UIParser::Parse(raw);
-                newUIObject->GetState()->Pointer = newGLObject;
+                newUIObject->GetState()->UserData = newGLObject;
 
                 Global::Ref().mEditorSys->OptInsertObject(newUIObject, menu.mObject);
 
@@ -138,7 +138,7 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
         OnEventFreeProject();
         break;
     case EventSys::TypeEnum::kSelectObject:
-        auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, bool, bool> &>(param);
+        auto & value = std::any_cast<const std::tuple<SharePtr<UIObject>, SharePtr<GLObject>, bool, bool> &>(param);
         OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value), std::get<3>(value));
         break;
     }
@@ -146,8 +146,8 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
 
 void UIEventDelegateMainObjList::OnEventOpenProject()
 {
-    std::function<void (UIObject * root, const std::vector<GLObject *> & objects)> InitObjectTree;
-    InitObjectTree = [&InitObjectTree](UIObject * root, const std::vector<GLObject *> & objects)
+    std::function<void (SharePtr<UIObject> root, const std::vector<SharePtr<GLObject>> & objects)> InitObjectTree;
+    InitObjectTree = [&InitObjectTree](SharePtr<UIObject> root, const std::vector<SharePtr<GLObject>> & objects)
     {
         for (auto object : objects)
         {
@@ -161,13 +161,13 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
             raw->Insert(mmc::JsonValue::FromValue(object->GetName()), "__Property", "Name");
             auto newUIObject = UIParser::Parse(raw);
             root->AddObject(newUIObject);
-            newUIObject->GetState()->Pointer = object;
+            newUIObject->GetState()->UserData = object;
 
             InitObjectTree(newUIObject, object->GetObjects());
         }
     };
 
-    auto project = Global::Ref().mEditorSys->GetProject();
+    auto & project = Global::Ref().mEditorSys->GetProject();
     InitObjectTree(GetOnwer(), project->GetRoot()->GetObjects());
 }
 
@@ -176,18 +176,18 @@ void UIEventDelegateMainObjList::OnEventFreeProject()
     GetOnwer()->ClearObjects();
 }
 
-void UIEventDelegateMainObjList::OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi)
+void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi)
 {
     uiObject->GetState()->IsSelect = select;
 }
 
-bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
+bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
     return true;
 }
 
-bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
+bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
 
@@ -219,26 +219,26 @@ void UIEventDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any
     {
     case EventSys::TypeEnum::kSelectObject:
         {
-            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, bool, bool> &>(param);
+            auto & value = std::any_cast<const std::tuple<SharePtr<UIObject>, SharePtr<GLObject>, bool, bool> &>(param);
             OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value), std::get<3>(value));
         }
         break;
     case EventSys::TypeEnum::kAppendComponent:
         {
-            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, Component *> &>(param);
+            auto & value = std::any_cast<const std::tuple<SharePtr<UIObject>, SharePtr<GLObject>, SharePtr<Component>> &>(param);
             OnEventAppendComponent(std::get<0>(value), std::get<1>(value), std::get<2>(value));
         }
         break;
     case EventSys::TypeEnum::kDeleteComponent:
         {
-            auto & value = std::any_cast<const std::tuple<UIObject *, GLObject *, Component *> &>(param);
+            auto & value = std::any_cast<const std::tuple<SharePtr<UIObject>, SharePtr<GLObject>, SharePtr<Component>> &>(param);
             OnEventDeleteComponent(std::get<0>(value), std::get<1>(value), std::get<2>(value));
         }
         break;
     }
 }
 
-void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObject * glObject, bool select, bool multi)
+void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi)
 {
     GetOnwer()->ClearObjects();
 
@@ -246,10 +246,10 @@ void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObje
     {
         for (auto component : glObject->GetComponents())
         {
-            auto header = new UIComponentHeader(component->GetName());
+            auto header = std::create_ptr<UIComponentHeader>(component->GetName());
             GetOnwer()->AddObject(header);
 
-            for (auto property : Component::BuildUIPropertys(component))
+            for (auto property : component->CreateUIPropertys())
             {
                 header->AddObject(property);
             }
@@ -257,32 +257,32 @@ void UIEventDelegateMainComList::OnEventSelectObject(UIObject * uiObject, GLObje
     }
 }
 
-void UIEventDelegateMainComList::OnEventAppendComponent(UIObject * uiObject, GLObject * glObject, Component * component)
+void UIEventDelegateMainComList::OnEventAppendComponent(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, const SharePtr<Component> & component)
 {
-    auto header = new UIComponentHeader(component->GetName());
+    auto header = std::create_ptr<UIComponentHeader>(component->GetName());
     GetOnwer()->AddObject(header);
 
-    for (auto property : Component::BuildUIPropertys(component))
+    for (auto property : component->CreateUIPropertys())
     {
         header->AddObject(property);
     }
 }
 
-void UIEventDelegateMainComList::OnEventDeleteComponent(UIObject * uiObject, GLObject * glObject, Component * component)
+void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, const SharePtr<Component> & component)
 {
     auto & components = component->GetOwner()->GetComponents();
     auto it = std::find(components.begin(), components.end(), component);
     GetOnwer()->DelObject(std::distance(components.begin(), it));
 }
 
-bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
+bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
  
     return true;
 }
 
-bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, UIObject * object)
+bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
     
