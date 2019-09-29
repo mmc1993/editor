@@ -131,14 +131,6 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
     return _children;
 }
 
-bool GLObject::HasObject(const std::string & name)
-{
-    auto it = std::find_if(_children.begin(), _children.end(),
-        [name](const SharePtr<GLObject> & object)
-        { return object->_name == name; });
-    return it != _children.end();
-}
-
 void GLObject::SetName(const std::string & name)
 {
     _name = name;
