@@ -75,7 +75,7 @@ std::vector<UIMenu::MenuItem> UIMenu::MenuItem::Parse(const std::string & parent
     return std::move(result);
 }
 
-void UIMenu::BarMenu(UIObject * object, const std::vector<std::string> & list)
+void UIMenu::BarMenu(const SharePtr<UIObject> & object, const std::vector<std::string> & list)
 {
     auto items = MenuItem::Parse("", list);
     ImGui::BeginMenuBar();
@@ -83,7 +83,7 @@ void UIMenu::BarMenu(UIObject * object, const std::vector<std::string> & list)
     ImGui::EndMenuBar();
 }
 
-void UIMenu::PopMenu(UIObject * object, const std::vector<std::string>& list)
+void UIMenu::PopMenu(const SharePtr<UIObject> & object, const std::vector<std::string>& list)
 {
     s_popup.mObject = object;
     s_popup.mMouse.x = ImGui::GetMousePos().x;
@@ -109,7 +109,7 @@ void UIMenu::RenderPopup()
     }
 }
 
-void UIMenu::RenderMenu(UIObject * object, std::vector<MenuItem> & items)
+void UIMenu::RenderMenu(const SharePtr<UIObject> & object, std::vector<MenuItem> & items)
 {
     for (auto & item : items)
     {

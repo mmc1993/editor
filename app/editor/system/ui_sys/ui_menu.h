@@ -30,27 +30,22 @@ public:
         bool                  mDisabled;    //  菜单项是否已禁用
         std::vector<MenuItem> mChildren;    //  菜单项子项
 
-        //  解析单条菜单
-        static MenuItem Parse(const std::string & info);
-        //  解析一组菜单
-        static std::vector<MenuItem> Parse(const std::vector<std::string> & list);
-
         static std::vector<MenuItem> Parse(const std::string & parent, const std::vector<std::string> & list);
     };
 
     struct Popup {
         glm::vec2 mMouse;
-        UIObject * mObject;
+        SharePtr<UIObject> mObject;
         std::vector<MenuItem> mItems;
     };
 
 public:
-    static void BarMenu(UIObject * object, const std::vector<std::string> & list);
-    static void PopMenu(UIObject * object, const std::vector<std::string> & list);
+    static void BarMenu(const SharePtr<UIObject> & object, const std::vector<std::string> & list);
+    static void PopMenu(const SharePtr<UIObject> & object, const std::vector<std::string> & list);
     static void RenderPopup();
 
 private:
-    static void RenderMenu(UIObject * object, std::vector<MenuItem> & items);
+    static void RenderMenu(const SharePtr<UIObject> & object, std::vector<MenuItem> & items);
 
 private:
     static Popup s_popup;
