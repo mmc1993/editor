@@ -80,7 +80,7 @@ protected:
         return ret;
     }
 
-    virtual void OnRender(float dt) override
+    virtual bool OnEnter() override
     {
         auto width = ImGui::GetWindowWidth();
         ImGui::Columns(2, nullptr, false);
@@ -89,6 +89,7 @@ protected:
 
         ImGui::Text(GetTitle().c_str());
         ImGui::NextColumn();
+        return true;
     }
 };
 
@@ -104,7 +105,7 @@ public:
         : UIPropertyObject<int>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -119,7 +120,7 @@ public:
         : UIPropertyObject<bool>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -134,7 +135,7 @@ public:
         : UIPropertyObject<float>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -149,7 +150,7 @@ public:
         : UIPropertyObject<std::string>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -165,7 +166,7 @@ public:
         : UIPropertyObject<size_t>(value, title, handler), _list(list)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 
 private:
     const std::vector<std::string> & _list;
@@ -183,7 +184,7 @@ public:
         : UIPropertyObject<glm::vec2>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -198,7 +199,7 @@ public:
         : UIPropertyObject<glm::vec3>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -213,7 +214,7 @@ public:
         : UIPropertyObject<glm::vec4>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 // ---
@@ -228,5 +229,5 @@ public:
         : UIPropertyObject<glm::vec4>(value, title, handler)
     { }
 
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };

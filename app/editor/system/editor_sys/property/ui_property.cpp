@@ -5,30 +5,34 @@ bool UIComponentHeader::OnEnter()
     return ImGui::CollapsingHeader(GetState()->Name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
 }
 
-void UIPropertyInt::OnRender(float dt)
+bool UIPropertyInt::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::InputInt(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyBool::OnRender(float dt)
+bool UIPropertyBool::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::Checkbox(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyFloat::OnRender(float dt)
+bool UIPropertyFloat::OnEnter()
 {
+    UIPropertyObject::OnEnter();
+
     ImGui::Columns(2, nullptr, false);
     ImGui::Text(GetTitle().c_str());
     ImGui::NextColumn();
@@ -38,11 +42,12 @@ void UIPropertyFloat::OnRender(float dt)
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyString::OnRender(float dt)
+bool UIPropertyString::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
     
     if (ImGui::InputText(
         ImID(this).c_str(), 
@@ -54,11 +59,12 @@ void UIPropertyString::OnRender(float dt)
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyCombo::OnRender(float dt)
+bool UIPropertyCombo::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     auto & value = GetBackup();
     if (ImGui::BeginCombo(ImID(this).c_str(), _list.at(value).c_str()))
@@ -78,50 +84,55 @@ void UIPropertyCombo::OnRender(float dt)
         ImGui::EndCombo();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyVector2::OnRender(float dt)
+bool UIPropertyVector2::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::InputFloat2(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyVector3::OnRender(float dt)
+bool UIPropertyVector3::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::InputFloat3(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyVector4::OnRender(float dt)
+bool UIPropertyVector4::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::InputFloat4(ImID(this).c_str(), &GetBackup().x, 3))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
-void UIPropertyColor4::OnRender(float dt)
+bool UIPropertyColor4::OnEnter()
 {
-    UIPropertyObject::OnRender(dt);
+    UIPropertyObject::OnEnter();
 
     if (ImGui::ColorEdit4(ImID(this).c_str(), &GetBackup().x))
     {
         Modify();
     }
     ImGui::Columns(1);
+    return true;
 }
 
 
