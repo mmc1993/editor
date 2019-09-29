@@ -59,8 +59,8 @@ protected:
     { }
 
     void RenderDrag();
-    void AdjustSize();
-    void LockPosition();
+    void UpdateSize();
+    void UpdateMove();
     virtual bool OnEnter();
     virtual void OnLeave(bool ret);
     virtual void OnRender(float dt);
@@ -120,7 +120,7 @@ public:
     UIClassTextBox();
 
 private:
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 class UIClassImageBox : public UIObject {
@@ -128,7 +128,7 @@ public:
     UIClassImageBox();
 
 private:
-    virtual void OnRender(float dt) override;
+    virtual bool OnEnter() override;
 };
 
 class UIClassComboBox : public UIObject {
@@ -138,7 +138,6 @@ public:
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
-    virtual void OnRender(float dt) override;
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 

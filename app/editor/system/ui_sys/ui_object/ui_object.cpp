@@ -193,10 +193,10 @@ void UIObject::Render(float dt, bool visible)
     auto ret = false;
     if (visible)
     { 
-        if (ret = OnEnter())
-        {
-            OnRender(dt);
-        }
+        UpdateMove();
+        ret = OnEnter();
+        UpdateSize();
+        if (ret) { OnRender(dt); }
     }
 
     for (auto child : _children)
@@ -345,7 +345,7 @@ void UIObject::RenderDrag()
     }
 }
 
-void UIObject::AdjustSize()
+void UIObject::UpdateSize()
 {
     if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault)
     {
@@ -355,17 +355,20 @@ void UIObject::AdjustSize()
     }
 }
 
-void UIObject::LockPosition()
+void UIObject::UpdateMove()
 {
-    if ((UIAlignEnum)GetState()->Align != UIAlignEnum::kDefault)
+    if (!GetState()->IsWindow)
     {
-        ImGui::SetCursorPos(ImVec2(GetState()->Move.x, GetState()->Move.y));
-    }
-    else
-    {
-        const auto & pos = ToLocalCoordFromImGUI();
-        GetState()->Move.x = pos.x;
-        GetState()->Move.y = pos.y;
+        if ((UIAlignEnum)GetState()->Align != UIAlignEnum::kDefault)
+        {
+            ImGui::SetCursorPos(ImVec2(GetState()->Move.x, GetState()->Move.y));
+        }
+        else
+        {
+            const auto & pos = ToLocalCoordFromImGUI();
+            GetState()->Move.x = pos.x;
+            GetState()->Move.y = pos.y;
+        }
     }
 }
 
@@ -596,6 +599,7 @@ bool UIClassLayout::OnEnter()
     if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollbar; }
     if ( state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_HorizontalScrollbar; }
 
+    auto ret = false;
     if (state->IsWindow)
     {
         //  Ðü¸¡´°¿Ú
@@ -618,13 +622,15 @@ bool UIClassLayout::OnEnter()
             ImGui::SetNextWindowPos(move);
         }
         ImGui::SetNextWindowSize(size);
-        return ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
+        ret = ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
     }
     else
     {
-        LockPosition();
-        return ImGui::BeginChild(state->Name.c_str(), ImVec2(state->Move.z, state->Move.w), state->IsShowBorder, flag);
+        ret = ImGui::BeginChild(state->Name.c_str(), 
+            ImVec2(state->Move.z, state->Move.w), 
+            state->IsShowBorder, flag);
     }
+    return ret;
 }
 
 void UIClassLayout::OnLeave(bool ret)
@@ -835,8 +841,6 @@ UIClassTreeBox::UIClassTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateTre
 
 bool UIClassTreeBox::OnEnter()
 {
-    LockPosition();
-
     auto  state = GetState<UIStateTreeBox>();
     ImGui::SetNextItemWidth(state->Move.z);
 
@@ -846,7 +850,6 @@ bool UIClassTreeBox::OnEnter()
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
     auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag | ImGuiTreeNodeFlags_Framed);
     ImGui::PopStyleColor();
-    AdjustSize();
     return ret;
 }
 
@@ -861,23 +864,21 @@ void UIClassTreeBox::OnLeave(bool ret)
 UIClassTextBox::UIClassTextBox() : UIObject(UITypeEnum::kTextBox, new UIStateTextBox())
 { }
 
-void UIClassTextBox::OnRender(float dt)
+bool UIClassTextBox::OnEnter()
 {
-    LockPosition();
-    
     auto state = GetState<UIStateTextBox>();
     if (state->IsEditBox)
     {
         auto flag = ImGuiInputTextFlags_EnterReturnsTrue
-            | ImGuiInputTextFlags_CallbackResize
-            | ImGuiInputTextFlags_AutoSelectAll;
+                  | ImGuiInputTextFlags_CallbackResize
+                  | ImGuiInputTextFlags_AutoSelectAll;
         if (state->IsMulti)
         {
             if (ImGui::InputTextMultiline(
-                state->Name.c_str(), 
-                state->mBuffer.data(), 
-                state->mBuffer.size(), 
-                ImVec2(state->Move.z, state->Move.w), 
+                state->Name.c_str(),
+                state->mBuffer.data(),
+                state->mBuffer.size(),
+                ImVec2(state->Move.z, state->Move.w),
                 flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
                 PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, shared_from_this()));
@@ -887,8 +888,8 @@ void UIClassTextBox::OnRender(float dt)
         {
             ImGui::PushItemWidth(state->Move.z);
             if (ImGui::InputText(
-                state->Name.c_str(), 
-                state->mBuffer.data(), 
+                state->Name.c_str(),
+                state->mBuffer.data(),
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
@@ -901,8 +902,7 @@ void UIClassTextBox::OnRender(float dt)
     {
         ImGui::Text(state->Name.c_str());
     }
-
-    AdjustSize();
+    return true;
 }
 
 // ---
@@ -911,9 +911,8 @@ void UIClassTextBox::OnRender(float dt)
 UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kImageBox, new UIStateImageBox())
 { }
 
-void UIClassImageBox::OnRender(float dt)
+bool UIClassImageBox::OnEnter()
 {
-    LockPosition();
     auto state = GetState<UIStateImageBox>();
     if (state->IsButton)
     {
@@ -940,14 +939,12 @@ void UIClassImageBox::OnRender(float dt)
     {
         ASSERT_LOG(!state->LSkin.empty(), "");
         auto & imgSkin = Global::Ref().mAtlasSys->Get(state->LSkin);
-        ImGui::Image(
-            (ImTextureID)imgSkin.mID,
+        ImGui::Image((ImTextureID)imgSkin.mID,
             ImVec2(state->Move.z, state->Move.w),
             ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
             ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
     }
-
-    AdjustSize();
+    return true;
 }
 
 // ---
@@ -958,8 +955,6 @@ UIClassComboBox::UIClassComboBox() : UIObject(UITypeEnum::kComboBox, new UIState
 
 bool UIClassComboBox::OnEnter()
 {
-    LockPosition();
-
     auto  state = GetState<UIStateComboBox>();
     ImGui::SetNextItemWidth(state->Move.z);
 
@@ -967,21 +962,13 @@ bool UIClassComboBox::OnEnter()
     {
         state->mSelected = GetObjects().at(0)->GetState()->Name;
     }
-    if (ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str()))
-    {
-        AdjustSize();
-        return true;
-    }
-    return false;
+    return ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str());
 }
 
 void UIClassComboBox::OnLeave(bool ret)
 {
     if (ret) { ImGui::EndCombo(); }
 }
-
-void UIClassComboBox::OnRender(float dt)
-{ }
 
 bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
