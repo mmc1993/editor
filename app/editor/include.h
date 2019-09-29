@@ -13,7 +13,7 @@ template <class T>
 using WeakPtr = std::weak_ptr<T>;
 
 template <class T, class U>
-SharePtr<T> CastPtr(U & ptr)
+SharePtr<T> CastPtr(const U & ptr)
 {
     return std::reinterpret_pointer_cast<T>(ptr);
 }

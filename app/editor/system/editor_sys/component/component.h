@@ -5,7 +5,9 @@
 
 class UIObject;
 
-class Component: public Interface::Serializer {
+class Component
+    : public Interface::Serializer 
+    , public std::enable_shared_from_this<Component> {
 public:
     enum StatusEnum {
         kActive = 1 << 0,   //  激活
@@ -33,14 +35,10 @@ public:
 
 public:
     //  创建组件
-    static Component * Create(const std::string & name);
-    //  创建显示属性
-    static std::vector<UIObject *> BuildUIPropertys(Component * component);
+    static SharePtr<Component> Create(const std::string & name);
 
 public:
-	Component()
-        : _owner(nullptr)
-        , _status(kActive) { }
+	Component(): _status(kActive) { }
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;
@@ -55,8 +53,11 @@ public:
             _status &= ~kActive;
     }
 
-    GLObject * GetOwner() { return _owner; }
-	void SetOwner(GLObject * owner) { _owner = owner; }
+    SharePtr<GLObject> GetOwner() 
+    { 
+        return _owner.expired() ? nullptr : _owner.lock(); 
+    }
+	void SetOwner(SharePtr<GLObject> owner) { _owner = owner; }
 
     //  组件名字
     virtual const std::string & GetName() = 0;
@@ -67,8 +68,9 @@ public:
         const std::any &    backup) = 0;
     //  创建Property列表, 用于界面展示修改
     virtual std::vector<Property> CollectProperty() = 0;
+    std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
 private:
-    size_t    _status;
-    GLObject *_owner;
+    size_t              _status;
+    WeakPtr<GLObject>   _owner;
 };
