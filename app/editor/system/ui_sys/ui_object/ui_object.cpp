@@ -27,7 +27,7 @@ SharePtr<UIObject> UIObject::GetObject(const std::initializer_list<std::string> 
     return query;
 }
 
-std::vector<SharePtr<UIObject>> UIObject::GetObjects(UITypeEnum type) const
+std::vector<SharePtr<UIObject>> UIObject::GetObjects(UITypeEnum type)
 {
     std::vector<SharePtr<UIObject>> result;
     std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
@@ -73,6 +73,15 @@ void UIObject::ClearObjects()
     _children.clear();
 }
 
+SharePtr<UIObject> UIObject::GetParent()
+{
+    if (_parent.expired())
+    {
+        return nullptr;
+    }
+    return _parent.lock();
+}
+
 SharePtr<UIObject> UIObject::GetRoot()
 {
     auto ret = shared_from_this();
@@ -83,16 +92,12 @@ SharePtr<UIObject> UIObject::GetRoot()
     return ret;
 }
 
-SharePtr<UIObject> UIObject::GetParent()
+UITypeEnum UIObject::GetType()
 {
-    if (_parent.expired())
-    {
-        return nullptr;
-    }
-    return _parent.lock();
+    return _type;
 }
 
-bool UIObject::IsVisible() const
+bool UIObject::IsVisible()
 {
     return _visible;
 }
@@ -211,7 +216,7 @@ void UIObject::Render(float dt, bool visible)
 }
 
 
-glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset) const
+glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
 {
     auto move = GetState()->Move;
     switch (direct)
@@ -224,7 +229,7 @@ glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset) co
     return move;
 }
 
-glm::vec2 UIObject::ToWorldCoord(const glm::vec2 & coord) const
+glm::vec2 UIObject::ToWorldCoord(const glm::vec2 & coord)
 {
     auto move = GetState()->Move;
     move.x += coord.x;
@@ -240,7 +245,7 @@ glm::vec2 UIObject::ToWorldCoord(const glm::vec2 & coord) const
     return glm::vec2(move.x, move.y);
 }
 
-glm::vec4 UIObject::ToLocalCoord(const glm::vec4 & coord) const
+glm::vec4 UIObject::ToLocalCoord(const glm::vec4 & coord)
 {
     const auto & world = ToWorldCoord();
     return glm::vec4(coord.x - world.x,
@@ -248,19 +253,14 @@ glm::vec4 UIObject::ToLocalCoord(const glm::vec4 & coord) const
                      coord.z, coord.w);
 }
 
-glm::vec2 UIObject::ToLocalCoord(const glm::vec2 & coord) const
+glm::vec2 UIObject::ToLocalCoord(const glm::vec2 & coord)
 {
     const auto & world = ToWorldCoord();
     return glm::vec2(coord.x - world.x,
                      coord.y - world.y);
 }
 
-glm::vec4 UIObject::ToWorldRect() const
-{
-    return glm::vec4(ToWorldCoord(), GetState()->Move.z, GetState()->Move.w);
-}
-
-glm::vec2 UIObject::ToLocalCoordFromImGUI() const
+glm::vec2 UIObject::ToLocalCoordFromImGUI()
 {
     //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
     auto pos = ImGui::GetCursorPos();
@@ -274,6 +274,11 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI() const
         parent = parent->GetParent();
     }
     return pos;
+}
+
+glm::vec4 UIObject::ToWorldRect()
+{
+    return glm::vec4(ToWorldCoord(), GetState()->Move.z, GetState()->Move.w);
 }
 
 void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)

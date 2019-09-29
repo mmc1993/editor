@@ -52,14 +52,9 @@ protected:
         : UIObject(UITypeEnum::kOther, new UIPropertyState<T, B>(value, title, handler))
     { }
 
-    const std::string & GetTitle() const
+    const std::string & GetTitle()
     {
         return GetState<UIPropertyState<T, B>>()->mTitle;
-    }
-
-    const T & GetValue() const
-    {
-        return GetState<UIPropertyState<T, B>>()->mValue;
     }
 
     T & GetValue()

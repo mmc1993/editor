@@ -14,7 +14,7 @@ public:
     T * GetState() { return (T *)_state.get(); }
     
     SharePtr<UIObject> GetObject(const std::initializer_list<std::string> & list);
-    std::vector<SharePtr<UIObject>>   GetObjects(UITypeEnum type) const;
+    std::vector<SharePtr<UIObject>>   GetObjects(UITypeEnum type);
     std::vector<SharePtr<UIObject>> & GetObjects();
     void AddObject(const SharePtr<UIObject> & object);
     void DelObject(const SharePtr<UIObject> & object);
@@ -23,31 +23,22 @@ public:
     void ClearObjects();
     SharePtr<UIObject> GetParent();
     SharePtr<UIObject> GetRoot();
-    bool IsVisible() const;
+    UITypeEnum GetType();
+    bool IsVisible();
 
     void ResetLayout();
     void ApplyLayout();
     void Render(float dt, bool visible = true);
 
-    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset) const;
-    glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0)) const;
-    glm::vec4 ToLocalCoord(const glm::vec4 & coord) const;
-    glm::vec2 ToLocalCoord(const glm::vec2 & coord) const;
-    glm::vec4 ToWorldRect() const;
-    glm::vec2 ToLocalCoordFromImGUI() const;
+    glm::vec4 CalcStretech(DirectEnum direct, const glm::vec2 & offset);
+    glm::vec2 ToWorldCoord(const glm::vec2 & coord = glm::vec2(0));
+    glm::vec4 ToLocalCoord(const glm::vec4 & coord);
+    glm::vec2 ToLocalCoord(const glm::vec2 & coord);
+    glm::vec2 ToLocalCoordFromImGUI();
+    glm::vec4 ToWorldRect();
 
     //  绑定事件委托, 事件将被传递到委托中
     void BindDelegate(UIEvent::DelegateHandler * delegate);
-
-    //  TODO 干掉
-    //  const 重载版本
-    UITypeEnum GetType() const { return _type; }
-    const auto GetRoot() const { return const_cast<UIObject *>(this)->GetRoot(); }
-    template <class T = UIState>
-    const T * GetState() const { return const_cast<UIObject *>(this)->GetState<T>(); }
-    const auto GetParent() const { return const_cast<UIObject *>(this)->GetParent(); }
-    const auto & GetObjects() const { return const_cast<UIObject *>(this)->GetObjects(); }
-    const auto GetObject(const std::initializer_list<std::string> & list) const { return const_cast<UIObject *>(this)->GetObject(list); }
 
 protected:
     UIObject(UITypeEnum type, UIState * state) 
