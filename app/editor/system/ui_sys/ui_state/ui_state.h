@@ -4,9 +4,6 @@
 
 class UIState {
 public:
-    UIState(): Pointer(nullptr)
-    { }
-
     virtual ~UIState()
     { }
 
@@ -42,7 +39,7 @@ public:
 
     std::vector<std::string> MenuBar;   //  菜单栏
 
-    void * Pointer;                     //  用户数据
+    std::any UserData;                  //  用户数据
 };
 
 class UIStateLayout : public UIState {
@@ -50,11 +47,10 @@ public:
     //  拖放信息
     struct Drag {
         DirectEnum mDirect;
-        UIObject * mDragObj;
-        UIObject * mFreeObj;
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
-        Drag(): mDragObj(nullptr), mFreeObj(nullptr) {}
+        UIObject * mDragObj;
+        UIObject * mFreeObj;
     } mDrag;
 
     //  链接信息
