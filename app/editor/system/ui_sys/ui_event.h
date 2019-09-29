@@ -8,10 +8,9 @@ public:
     static int CheckStateKey();
 
     struct Event {
-        mutable UIObject * mObject;
+        mutable SharePtr<UIObject> mObject;
 
-        Event(UIObject * object = nullptr) : mObject(object)
-        {  }
+        Event(const SharePtr<UIObject> & object = nullptr) : mObject(object) { }
     };
 
     //  键盘事件
@@ -23,7 +22,7 @@ public:
         int mAct;   //  0, 1, 2 => 按下, 抬起, 单击
         int mState; //  1, 2, 4 => alt, ctrl, shift
 
-        Key(const int act, const int key, UIObject * object = nullptr)
+        Key(const int act, const int key, const SharePtr<UIObject> & object = nullptr)
             : Event(object)
             , mKey(key)
             , mAct(act)
@@ -38,7 +37,7 @@ public:
         int mState;         //  1, 2, 4       => alt, ctrl, shift
         glm::vec2 mMouse;   //  鼠标坐标
 
-        Mouse(const int act, const int key, UIObject * object = nullptr)
+        Mouse(const int act, const int key, const SharePtr<UIObject> & object = nullptr)
             : Event(object)
             , mAct(act)
             , mKey(key)
@@ -73,12 +72,12 @@ public:
 
     //  拖放事件
     struct Drag : Event {
+        SharePtr<UIObject> mDragObj;
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
-        UIObject * mDragObj;
         int mAct;               //  0 锁定, 1 拖动, 2 释放
 
-        Drag(int act, const glm::vec2 & beg, UIObject * dragObj = nullptr) 
+        Drag(int act, const glm::vec2 & beg, const SharePtr<UIObject> & dragObj = nullptr) 
             : mAct(act)
             , mBegWorld(beg)
             , mEndWorld(beg)
@@ -95,7 +94,7 @@ public:
     struct EditText : Event {
         std::string mString;
 
-        EditText(const std::string & string, UIObject * object = nullptr)
+        EditText(const std::string & string, const SharePtr<UIObject> & object = nullptr)
             : Event(object)
             , mString(string)
         { }
@@ -112,7 +111,7 @@ public:
     //  事件代理
     class DelegateHandler {
     public:
-        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, UIObject * object)
+        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, const SharePtr<UIObject> & object)
         {
             if (type == UIEventEnum::kDelegate)
             {
@@ -125,11 +124,12 @@ public:
             return false;
         }
 
-        UIObject * GetOnwer()
+        SharePtr<UIObject> GetOnwer()
         {
-            return _onwer;
+            ASSERT_LOG(!_onwer.expired(), "");
+            return _onwer.lock();
         }
     private:
-        UIObject * _onwer;
+        WeakPtr<UIObject> _onwer;
     };
 };
