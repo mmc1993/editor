@@ -7,9 +7,13 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
 
     SharePtr<Raw> raw;
     auto suffix = tools::GetFileSuffix(url);
-    if (suffix == ".png" || suffix == ".jpg")
+    if (suffix == ".obj")
     {
-        raw = std::create_ptr<RawBitmap>();
+        raw = std::create_ptr<GLMesh>();
+    }
+    else if (suffix == ".png" || suffix == ".jpg")
+    {
+        raw = std::create_ptr<GLTexture>();
     }
     auto ret = raw->Init(url);
     ASSERT_LOG(ret, "{0}", url);

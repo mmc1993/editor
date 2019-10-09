@@ -101,5 +101,54 @@ public:
 
 class UIStateGLCanvas : public UIState {
 public:
+    ////  矩阵栈
+    //enum class MatrixTypeEnum {
+    //    kModel,
+    //    kView,
+    //    kProj,
+    //    Length,
+    //};
+    //std::stack<glm::mat4> mMatrixStack[(size_t)MatrixTypeEnum::Length];
+
+    ////  命令队列
+    //enum class CommandTypeEnum {
+    //    kPreProcess,    //  前置处理
+    //    kPostProcess,   //  后置处理
+    //};
+
+    //enum class PostModeEnum {
+    //    kOverlay,       //  叠加
+    //    kSwap,          //  交换
+    //};
+
+    //struct Command {
+    //    using Callback = std::function<void(const Command &)>;
+    //    Callback    mCallback;
+    //    CommandTypeEnum mType;
+    //    Command(CommandTypeEnum type) : mType(type) {}
+    //    void Call() {if (mCallback) mCallback(*this);}
+    //};
+
+    //struct PreCommand : public Command {
+    //    PreCommand() : Command(CommandTypeEnum::kPreProcess)
+    //    { }
+
+    //    SharePtr<GLMaterial> mMaterial;     //  材质
+    //    glm::mat4 mTransform;               //  矩阵
+    //};
+
+    //struct PostCommand : public Command {
+    //    PostCommand() : Command(CommandTypeEnum::kPostProcess)
+    //    { }
+
+    //    SharePtr<GLProgram> mProgram;       //  着色器
+    //    SharePtr<GLMesh> mMesh;             //  网格
+    //    glm::mat4 mTransform;               //  矩阵
+    //    PostModeEnum mMode;
+    //};
+
+    //GLuint mRenderTarget;
+    //GLuint mRenderTextures[2];
+
     UIStateGLCanvas();
 };

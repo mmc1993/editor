@@ -46,3 +46,6 @@
 #include "tools/std_tool.h"
 
 #include "third/mmcjson.h"
+
+using iint = int;
+using uint = unsigned int;

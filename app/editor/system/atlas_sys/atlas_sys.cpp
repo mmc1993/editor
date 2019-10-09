@@ -47,7 +47,7 @@ bool AtlasSys::ImportImage(const std::string & url)
     {
         auto ptr = Global::Ref().mRawSys->Import(url);
         ASSERT_LOG(ptr != nullptr, url.c_str());
-        auto raw = CastPtr<RawBitmap>(ptr);
+        auto raw = CastPtr<GLTexture>(ptr);
 
         Image image;
         image.mKey = url;
@@ -70,7 +70,7 @@ bool AtlasSys::ImportAtlas(const std::string & url)
 
     auto ptr = Global::Ref().mRawSys->Import(dir);
     ASSERT_LOG(ptr != nullptr, url.c_str());
-    auto raw = CastPtr<RawBitmap>(ptr);
+    auto raw = CastPtr<GLTexture>(ptr);
 
     auto w = json->At("meta", "size", "w")->ToFloat();
     auto h = json->At("meta", "size", "h")->ToFloat();
