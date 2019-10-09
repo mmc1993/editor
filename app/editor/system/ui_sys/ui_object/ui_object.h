@@ -137,5 +137,20 @@ public:
 
 class UIClassGLCanvas : public UIObject {
 public:
+    void Post(const UIStateGLCanvas::PreCommand & cmd);
+    void Post(const UIStateGLCanvas::PostCommand & cmd);
+    glm::mat4 GetMatrixMVP();
+    const glm::mat4 & GetMatrixView();
+    const glm::mat4 & GetMatrixProj();
+    const glm::mat4 & GetMatrixModel();
+
+    virtual bool OnEnter() override;
+
     UIClassGLCanvas();
+
+private:
+    void HandlePostCommands();
+    void HandlePreCommands();
+    void CollectCommands();
+    void HandleCommands();
 };

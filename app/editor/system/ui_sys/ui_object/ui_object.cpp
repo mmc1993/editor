@@ -984,3 +984,49 @@ UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIState
 UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 { }
 
+void UIClassGLCanvas::HandlePostCommands()
+{ }
+
+void UIClassGLCanvas::HandlePreCommands()
+{ }
+
+void UIClassGLCanvas::Post(const UIStateGLCanvas::PreCommand & cmd)
+{
+    GetState<UIStateGLCanvas>()->mPreCommands.push_back(cmd);
+}
+
+void UIClassGLCanvas::Post(const UIStateGLCanvas::PostCommand & cmd)
+{ 
+    GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
+}
+
+glm::mat4 UIClassGLCanvas::GetMatrixMVP()
+{
+    return GetMatrixProj()
+         * GetMatrixView()
+         * GetMatrixModel();
+}
+
+const glm::mat4 & UIClassGLCanvas::GetMatrixView()
+{
+    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
+}
+
+const glm::mat4 & UIClassGLCanvas::GetMatrixProj()
+{
+    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
+}
+
+const glm::mat4 & UIClassGLCanvas::GetMatrixModel()
+{
+    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].top();
+}
+
+void UIClassGLCanvas::HandleCommands()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    HandlePreCommands();
+    state->mPreCommands.clear();
+    HandlePostCommands();
+    state->mPostCommands.clear();
+}
