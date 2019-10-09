@@ -974,6 +974,9 @@
     <ClInclude Include="editor\system\editor_sys\property\ui_property.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\tools\glsl_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="editor\third\glm\detail\func_common.inl">

@@ -1,5 +1,8 @@
 #pragma once
 
+using iint = int;
+using uint = unsigned int;
+
 #include <cassert>
 #include <iostream>
 #include <vector>
@@ -43,9 +46,8 @@
 #include "tools/time_tool.h"
 #include "tools/file_tool.h"
 #include "tools/math_tool.h"
+#include "tools/glsl_tool.h"
 #include "tools/std_tool.h"
 
 #include "third/mmcjson.h"
 
-using iint = int;
-using uint = unsigned int;
