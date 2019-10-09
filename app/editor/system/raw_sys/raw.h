@@ -235,7 +235,10 @@ public:
         std::string         mKey;
         SharePtr<GLTexture> mTex;
 
-        Texture(const std::string & key, const SharePtr<GLTexture> & tex): mKey(key), mTex(tex)
+        Texture(
+            const std::string & key = std::string(), 
+            const SharePtr<GLTexture> & tex = nullptr)
+            : mKey(key), mTex(tex)
         { }
 
         bool operator==(const std::string & key) const
