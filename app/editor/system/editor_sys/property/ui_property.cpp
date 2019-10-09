@@ -33,10 +33,6 @@ bool UIPropertyFloat::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    ImGui::Columns(2, nullptr, false);
-    ImGui::Text(GetTitle().c_str());
-    ImGui::NextColumn();
-
     if (ImGui::InputFloat(ImID(this).c_str(), &GetBackup()))
     {
         Modify();
