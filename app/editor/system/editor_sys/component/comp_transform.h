@@ -8,7 +8,7 @@ public:
     ~CompTransform();
     virtual void OnAdd() override;
     virtual void OnDel() override;
-    virtual void OnUpdate(float dt) override;
+    virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;

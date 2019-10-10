@@ -16,7 +16,7 @@ void CompTransform::OnAdd()
 void CompTransform::OnDel()
 { }
 
-void CompTransform::OnUpdate(float dt)
+void CompTransform::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     UpdateMatrix();
 }

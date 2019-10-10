@@ -1057,7 +1057,7 @@ void UIObjectGLCanvas::CollectCommands()
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(glm::identity<glm::mat4>());
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(view);
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(proj);
-    state->mRoot->Update(0.0f);
+    state->mRoot->Update(this, 0.0f);
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].pop();
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].pop();
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();

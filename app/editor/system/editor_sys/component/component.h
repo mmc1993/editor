@@ -4,6 +4,7 @@
 #include "../../interface/serializer.h"
 
 class UIObject;
+class UIObjectGLCanvas;
 
 class Component
     : public Interface::Serializer 
@@ -42,7 +43,7 @@ public:
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;
-    virtual void OnUpdate(float dt) = 0;
+    virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
 
     bool IsActive() const { return _status & kActive; }
 	void SetActive(bool active) 

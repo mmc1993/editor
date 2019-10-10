@@ -37,15 +37,13 @@ public:
     SharePtr<GLObject> GetObject(const size_t idx);
     std::vector<SharePtr<GLObject>> & GetObjects();
 
+    void Update(UIObjectGLCanvas * canvas, float dt);
+
     void SetName(const std::string & name);
     const std::string & GetName() const;
 
-    UIObjectGLCanvas * GetCanvas();
-
     void SetActive(bool active);
     bool IsActive() const;
-
-    void Update(float dt);
 
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();
@@ -88,7 +86,6 @@ private:
     std::string                         _name;
     size_t                              _status;
     GLObject *                          _parent;
-    UIObjectGLCanvas *                  _canvas;
     SharePtr<CompTransform>             _transform;
     std::vector<SharePtr<GLObject>>     _children;
     std::vector<SharePtr<Component>>    _components;

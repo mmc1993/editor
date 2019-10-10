@@ -5,7 +5,6 @@
 
 GLObject::GLObject()
     : _status(kActive)
-    , _canvas(nullptr)
     , _parent(nullptr)
 {
     _transform = std::create_ptr<CompTransform>();
@@ -136,6 +135,31 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
     return _children;
 }
 
+void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
+{
+    canvas->PushMatrixModel(GetTransform()->GetMatrix());
+
+    OnUpdate(dt);
+
+    for (auto component : _components)
+    {
+        if (component->IsActive())
+        {
+            component->OnUpdate(canvas, dt);
+        }
+    }
+
+    for (auto object : _children)
+    {
+        if (object->IsActive())
+        {
+            object->Update(canvas, dt);
+        }
+    }
+
+    canvas->PopMatrixModel();
+}
+
 void GLObject::SetName(const std::string & name)
 {
     _name = name;
@@ -144,11 +168,6 @@ void GLObject::SetName(const std::string & name)
 const std::string & GLObject::GetName() const
 {
     return _name;
-}
-
-UIObjectGLCanvas * GLObject::GetCanvas()
-{
-    return _canvas;
 }
 
 void GLObject::SetActive(bool active)
@@ -162,31 +181,6 @@ void GLObject::SetActive(bool active)
 bool GLObject::IsActive() const
 {
     return _status & kActive;
-}
-
-void GLObject::Update(float dt)
-{
-    GetCanvas()->PushMatrixModel(GetTransform()->GetMatrix());
-    
-    OnUpdate(dt);
-
-    for (auto component : _components)
-    {
-        if (component->IsActive())
-        {
-            component->OnUpdate(dt);
-        }
-    }
-
-    for (auto object : _children)
-    {
-        if (object->IsActive())
-        {
-            object->Update(dt);
-        }
-    }
-
-    GetCanvas()->PopMatrixModel();
 }
 
 void GLObject::SetParent(GLObject * parent)
