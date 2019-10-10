@@ -70,7 +70,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
 
 void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & name)
 {
-    ASSERT_LOG(object->_parent == nullptr, name.c_str());
+    ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
     _children.push_back(object);
     object->_parent = this;
     object->_name = name;
@@ -112,7 +112,7 @@ void GLObject::ClearObjects()
 
 void GLObject::DelThis()
 {
-    ASSERT_LOG(_parent != nullptr, "");
+    ASSERT_LOG(GetParent() != nullptr, "");
     GetParent()->DelObject(shared_from_this());
 }
 
@@ -182,7 +182,9 @@ void GLObject::SetParent(GLObject * parent)
 
 SharePtr<GLObject> GLObject::GetParent()
 {
-    return _parent->shared_from_this();
+    return _parent != nullptr
+        ? _parent->shared_from_this()
+        : nullptr;
 }
 
 void GLObject::ClearComponents()
