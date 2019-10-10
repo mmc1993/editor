@@ -14,7 +14,7 @@ bool Project::Load(const std::string & url)
     ASSERT_LOG(is, url.c_str());
     _root.reset(new GLObject());
     _root->DecodeBinary(is);
-    _url  = url;
+    _url = url;
     is.close();
     return true;
 }

@@ -5,7 +5,10 @@
 GLObject::GLObject()
     : _status(kActive)
     , _canvas(nullptr)
-{ }
+{
+    _transform = std::create_ptr<CompTransform>();
+    AddComponent(_transform);
+}
 
 GLObject::~GLObject()
 {
@@ -26,7 +29,7 @@ void GLObject::EncodeBinary(std::ofstream & os)
     tools::Serialize(os, count);
     for (const auto & comp : GetComponents())
     {
-        tools::Serialize(os, comp->GetName());
+        tools::Serialize(os,comp->GetName());
         comp->EncodeBinary(os);
     }
 
@@ -160,7 +163,9 @@ bool GLObject::IsActive() const
 }
 
 void GLObject::Update(float dt)
-{ }
+{
+    
+}
 
 void GLObject::SetParent(const SharePtr<GLObject> & parent)
 {

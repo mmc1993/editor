@@ -139,7 +139,7 @@ public:
 public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
-    SharePtr<GLObject> mRoot;
+    SharePtr<GLObject>  mRoot;
     std::vector<SharePtr<PreCommand>> mPreCommands;
     std::vector<SharePtr<PostCommand>> mPostCommands;
     std::stack<glm::mat4> mMatrixStack[(size_t)MatrixTypeEnum::Length];

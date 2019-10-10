@@ -321,10 +321,12 @@ void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any &
 
 void UIEventDelegateMainStage::OnEventOpenProject()
 {
+    CastPtr<UIObjectGLCanvas>(GetOnwer())->BindRoot(Global::Ref().mEditorSys->GetProject()->GetRoot());
 }
 
 void UIEventDelegateMainStage::OnEventFreeProject()
 {
+    CastPtr<UIObjectGLCanvas>(GetOnwer())->BindRoot(nullptr);
 }
 
 void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<UIObject>& uiObject, const SharePtr<GLObject>& glObject, bool select, bool multi)

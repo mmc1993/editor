@@ -1053,13 +1053,31 @@ void UIObjectGLCanvas::HandlePreCommands()
 void UIObjectGLCanvas::CollectCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
+    const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
+                                 state->Move.z *  0.5f, state->Move.w *  0.5f);
+    const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(glm::identity<glm::mat4>());
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(glm::identity<glm::mat4>());
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(glm::identity<glm::mat4>());
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(view);
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(proj);
     state->mRoot->Update(0.0f);
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].pop();
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].pop();
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();
+}
+
+void UIObjectGLCanvas::HandleCommands()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (!state->mPreCommands.empty())
+    {
+        HandlePreCommands();
+        state->mPreCommands.clear();
+    }
+    if (!state->mPostCommands.empty())
+    {
+        HandlePostCommands();
+        state->mPostCommands.clear();
+    }
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd)
@@ -1097,33 +1115,17 @@ glm::mat4 UIObjectGLCanvas::GetMatrixMVP()
     return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
 }
 
-void UIObjectGLCanvas::HandleCommands()
-{
-    auto state = GetState<UIStateGLCanvas>();
-    if (!state->mPreCommands.empty())
-    {
-        HandlePreCommands();
-        state->mPreCommands.clear();
-    }
-    if (!state->mPostCommands.empty())
-    {
-        HandlePostCommands();
-        state->mPostCommands.clear();
-    }
-}
-
 void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
-    const auto & matrixM = transform;
     const auto & matrixV = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
     const auto & matrixP = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
-    const auto & matrixMV = matrixV * matrixM;
+    const auto & matrixMV = matrixV * transform;
     const auto & matrixVP = matrixP * matrixV;
     const auto & matrixMVP = matrixP * matrixMV;
 
     //  ¾ØÕó
-    program->BindUniformMatrix("UNIFORM_MATRIX_M", matrixM);
+    program->BindUniformMatrix("UNIFORM_MATRIX_M", transform);
     program->BindUniformMatrix("UNIFORM_MATRIX_V", matrixV);
     program->BindUniformMatrix("UNIFORM_MATRIX_P", matrixP);
     program->BindUniformMatrix("UNIFORM_MATRIX_MV", matrixMV);
@@ -1142,10 +1144,10 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
 
 bool UIObjectGLCanvas::OnEnter()
 {
-    auto state = GetState<UIStateGLCanvas>();
-    if (state->mRoot != nullptr)
+    if (Global::Ref().mEditorSys->IsOpenProject())
     {
-        ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+        auto state = GetState<UIStateGLCanvas>();
+        ASSERT_LOG(state->mRoot != nullptr, "");
         CollectCommands();
         HandleCommands();
         return true;
