@@ -139,10 +139,11 @@ class UIClassGLCanvas : public UIObject {
 public:
     void Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd);
     void Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd);
-    glm::mat4 GetMatrixMVP();
+    void BindRoot(const SharePtr<GLObject> & root);
     const glm::mat4 & GetMatrixView();
     const glm::mat4 & GetMatrixProj();
     const glm::mat4 & GetMatrixModel();
+    glm::mat4 GetMatrixMVP();
 
     UIClassGLCanvas();
 

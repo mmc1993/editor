@@ -988,12 +988,12 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & p
 UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
 { }
 
-UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
-{ }
-
 // ---
 //  UIClassGLCanvas
 // ---
+UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
+{ }
+
 void UIClassGLCanvas::HandlePostCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
@@ -1072,9 +1072,9 @@ void UIClassGLCanvas::Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd)
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
-glm::mat4 UIClassGLCanvas::GetMatrixMVP()
+void UIClassGLCanvas::BindRoot(const SharePtr<GLObject>& root)
 {
-    return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
+    GetState<UIStateGLCanvas>()->mRoot = root;
 }
 
 const glm::mat4 & UIClassGLCanvas::GetMatrixView()
@@ -1092,13 +1092,24 @@ const glm::mat4 & UIClassGLCanvas::GetMatrixModel()
     return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].top();
 }
 
+glm::mat4 UIClassGLCanvas::GetMatrixMVP()
+{
+    return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
+}
+
 void UIClassGLCanvas::HandleCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    HandlePreCommands();
-    state->mPreCommands.clear();
-    HandlePostCommands();
-    state->mPostCommands.clear();
+    if (!state->mPreCommands.empty())
+    {
+        HandlePreCommands();
+        state->mPreCommands.clear();
+    }
+    if (!state->mPostCommands.empty())
+    {
+        HandlePostCommands();
+        state->mPostCommands.clear();
+    }
 }
 
 void UIClassGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
@@ -1131,9 +1142,15 @@ void UIClassGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 
 
 bool UIClassGLCanvas::OnEnter()
 {
-    CollectCommands();
-    HandleCommands();
-    return true;
+    auto state = GetState<UIStateGLCanvas>();
+    if (state->mRoot != nullptr)
+    {
+        ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+        CollectCommands();
+        HandleCommands();
+        return true;
+    }
+    return false;
 }
 
 void UIClassGLCanvas::OnLeave(bool ret)
