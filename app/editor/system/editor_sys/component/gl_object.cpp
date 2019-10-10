@@ -1,6 +1,7 @@
 #include "gl_object.h"
 #include "component.h"
 #include "comp_transform.h"
+#include "../../ui_sys/ui_object/ui_object.h"
 
 GLObject::GLObject()
     : _status(kActive)
@@ -165,7 +166,27 @@ bool GLObject::IsActive() const
 
 void GLObject::Update(float dt)
 {
+    GetCanvas()->PushMatrixModel(GetTransform()->GetMatrix());
     
+    OnUpdate(dt);
+
+    for (auto component : _components)
+    {
+        if (component->IsActive())
+        {
+            component->OnUpdate(dt);
+        }
+    }
+
+    for (auto object : _children)
+    {
+        if (object->IsActive())
+        {
+            object->Update(dt);
+        }
+    }
+
+    GetCanvas()->PopMatrixModel();
 }
 
 void GLObject::SetParent(GLObject * parent)
@@ -182,9 +203,7 @@ void GLObject::SetParent(GLObject * parent)
 
 SharePtr<GLObject> GLObject::GetParent()
 {
-    return _parent != nullptr
-        ? _parent->shared_from_this()
-        : nullptr;
+    return _parent != nullptr? _parent->shared_from_this(): nullptr;
 }
 
 void GLObject::ClearComponents()

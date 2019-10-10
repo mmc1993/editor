@@ -145,6 +145,12 @@ public:
     const glm::mat4 & GetMatrixProj();
     const glm::mat4 & GetMatrixModel();
     glm::mat4 GetMatrixMVP();
+    void PushMatrixView(const glm::mat4 & m);
+    void PushMatrixProj(const glm::mat4 & m);
+    void PushMatrixModel(const glm::mat4 & m);
+    void PopMatrixView();
+    void PopMatrixProj();
+    void PopMatrixModel();
 
     UIObjectGLCanvas();
 
