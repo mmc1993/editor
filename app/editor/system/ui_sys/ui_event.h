@@ -118,18 +118,18 @@ public:
                 auto & delegate = (const Delegate &)event;
                 if (delegate.mType == 0)
                 {
-                    _onwer = object;
+                    _owner = object;
                 }
             }
             return false;
         }
 
-        SharePtr<UIObject> GetOnwer()
+        SharePtr<UIObject> GetOwner()
         {
-            ASSERT_LOG(!_onwer.expired(), "");
-            return _onwer.lock();
+            ASSERT_LOG(!_owner.expired(), "");
+            return _owner.lock();
         }
     private:
-        WeakPtr<UIObject> _onwer;
+        WeakPtr<UIObject> _owner;
     };
 };

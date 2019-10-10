@@ -117,7 +117,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             auto & drag = (const UIEvent::Drag &)param;
             if (drag.mAct == 1 || 
                 drag.mAct == 2 && 
-                drag.mDragObj->GetParent() == GetOnwer())
+                drag.mDragObj->GetParent() == GetOwner())
             {
                 return true;
             }
@@ -168,12 +168,12 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
     };
 
     auto & project = Global::Ref().mEditorSys->GetProject();
-    InitObjectTree(GetOnwer(), project->GetRoot()->GetObjects());
+    InitObjectTree(GetOwner(), project->GetRoot()->GetObjects());
 }
 
 void UIEventDelegateMainObjList::OnEventFreeProject()
 {
-    GetOnwer()->ClearObjects();
+    GetOwner()->ClearObjects();
 }
 
 void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi)
@@ -240,14 +240,14 @@ void UIEventDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any
 
 void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi)
 {
-    GetOnwer()->ClearObjects();
+    GetOwner()->ClearObjects();
 
     if (select)
     {
         for (auto component : glObject->GetComponents())
         {
             auto header = std::create_ptr<UIComponentHeader>(component->GetName());
-            GetOnwer()->AddObject(header);
+            GetOwner()->AddObject(header);
 
             for (auto property : component->CreateUIPropertys())
             {
@@ -260,7 +260,7 @@ void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<UIObject> & 
 void UIEventDelegateMainComList::OnEventAppendComponent(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, const SharePtr<Component> & component)
 {
     auto header = std::create_ptr<UIComponentHeader>(component->GetName());
-    GetOnwer()->AddObject(header);
+    GetOwner()->AddObject(header);
 
     for (auto property : component->CreateUIPropertys())
     {
@@ -272,7 +272,7 @@ void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<UIObject>
 {
     auto & components = component->GetOwner()->GetComponents();
     auto it = std::find(components.begin(), components.end(), component);
-    GetOnwer()->DelObject(std::distance(components.begin(), it));
+    GetOwner()->DelObject(std::distance(components.begin(), it));
 }
 
 bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
@@ -321,12 +321,12 @@ void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any &
 
 void UIEventDelegateMainStage::OnEventOpenProject()
 {
-    CastPtr<UIObjectGLCanvas>(GetOnwer())->BindRoot(Global::Ref().mEditorSys->GetProject()->GetRoot());
+    CastPtr<UIObjectGLCanvas>(GetOwner())->BindRoot(Global::Ref().mEditorSys->GetProject()->GetRoot());
 }
 
 void UIEventDelegateMainStage::OnEventFreeProject()
 {
-    CastPtr<UIObjectGLCanvas>(GetOnwer())->BindRoot(nullptr);
+    CastPtr<UIObjectGLCanvas>(GetOwner())->BindRoot(nullptr);
 }
 
 void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<UIObject>& uiObject, const SharePtr<GLObject>& glObject, bool select, bool multi)

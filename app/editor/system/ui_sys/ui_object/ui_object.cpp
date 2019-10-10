@@ -47,9 +47,9 @@ std::vector<SharePtr<UIObject>> & UIObject::GetObjects()
 
 void UIObject::AddObject(const SharePtr<UIObject> & object)
 {
-    ASSERT_LOG(object->GetParent() == nullptr, "");
-    object->_parent = shared_from_this();
+    ASSERT_LOG(object->_parent == nullptr, "");
     _children.push_back(object);
+    object->_parent = this;
 }
 
 void UIObject::DelObject(const SharePtr<UIObject> & object)
@@ -68,7 +68,7 @@ void UIObject::DelObject(size_t index)
 
 void UIObject::DelThis()
 {
-    ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());
+    ASSERT_LOG(_parent != nullptr, GetState()->Name.c_str());
     GetParent()->DelObject(shared_from_this());
 }
 

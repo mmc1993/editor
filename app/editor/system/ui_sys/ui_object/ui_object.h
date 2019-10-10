@@ -44,6 +44,7 @@ protected:
     UIObject(UITypeEnum type, UIState * state) 
         : _type(type)
         , _state(state)
+        , _parent(nullptr)
     { }
 
     virtual ~UIObject()

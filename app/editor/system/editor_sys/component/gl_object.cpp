@@ -5,6 +5,7 @@
 GLObject::GLObject()
     : _status(kActive)
     , _canvas(nullptr)
+    , _parent(nullptr)
 {
     _transform = std::create_ptr<CompTransform>();
     AddComponent(_transform);
@@ -69,10 +70,10 @@ void GLObject::DecodeBinary(std::ifstream & is)
 
 void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & name)
 {
-    ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
-    object->_name = name;
-    object->_parent = this;
+    ASSERT_LOG(object->_parent == nullptr, name.c_str());
     _children.push_back(object);
+    object->_parent = this;
+    object->_name = name;
 }
 
 void GLObject::DelObject(const SharePtr<GLObject> & object)
@@ -111,7 +112,7 @@ void GLObject::ClearObjects()
 
 void GLObject::DelThis()
 {
-    ASSERT_LOG(GetParent() != nullptr, "");
+    ASSERT_LOG(_parent != nullptr, "");
     GetParent()->DelObject(shared_from_this());
 }
 

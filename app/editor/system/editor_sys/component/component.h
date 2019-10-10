@@ -38,7 +38,7 @@ public:
     static SharePtr<Component> Create(const std::string & name);
 
 public:
-	Component(): _status(kActive) { }
+	Component(): _owner(nullptr), _status(kActive) { }
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;
