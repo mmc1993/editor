@@ -17,13 +17,13 @@ SharePtr<UIObject> UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {
-    case UITypeEnum::kLayout: return std::create_ptr<UIClassLayout>();
-    case UITypeEnum::kTreeBox: return std::create_ptr<UIClassTreeBox>();
-    case UITypeEnum::kTextBox: return std::create_ptr<UIClassTextBox>();
-    case UITypeEnum::kImageBox: return std::create_ptr<UIClassImageBox>();
-    case UITypeEnum::kComboBox: return std::create_ptr<UIClassComboBox>();
-    case UITypeEnum::kUICanvas: return std::create_ptr<UIClassUICanvas>();
-    case UITypeEnum::kGLCanvas: return std::create_ptr<UIClassGLCanvas>();
+    case UITypeEnum::kLayout: return std::create_ptr<UIObjectLayout>();
+    case UITypeEnum::kTreeBox: return std::create_ptr<UIObjectTreeBox>();
+    case UITypeEnum::kTextBox: return std::create_ptr<UIObjectTextBox>();
+    case UITypeEnum::kImageBox: return std::create_ptr<UIObjectImageBox>();
+    case UITypeEnum::kComboBox: return std::create_ptr<UIObjectComboBox>();
+    case UITypeEnum::kUICanvas: return std::create_ptr<UIObjectUICanvas>();
+    case UITypeEnum::kGLCanvas: return std::create_ptr<UIObjectGLCanvas>();
     }
     ASSERT_LOG(false, "Error Type: {0}!", type);
     return nullptr;

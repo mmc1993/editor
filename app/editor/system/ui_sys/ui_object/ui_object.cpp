@@ -587,10 +587,10 @@ SharePtr<UIObject> UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Even
 // ---
 //  Layout
 // ---
-UIClassLayout::UIClassLayout() : UIObject(UITypeEnum::kLayout, new UIStateLayout())
+UIObjectLayout::UIObjectLayout() : UIObject(UITypeEnum::kLayout, new UIStateLayout())
 { }
 
-bool UIClassLayout::OnEnter()
+bool UIObjectLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
 
@@ -642,7 +642,7 @@ bool UIClassLayout::OnEnter()
     return ret;
 }
 
-void UIClassLayout::OnLeave(bool ret)
+void UIObjectLayout::OnLeave(bool ret)
 {
     auto state = GetState<UIStateLayout>();
     if (state->IsWindow)
@@ -665,7 +665,7 @@ void UIClassLayout::OnLeave(bool ret)
     HandleStretch();
 }
 
-void UIClassLayout::OnResetLayout()
+void UIObjectLayout::OnResetLayout()
 {
     if (GetParent() == nullptr) { return; }
 
@@ -713,7 +713,7 @@ void UIClassLayout::OnResetLayout()
     }
 }
 
-void UIClassLayout::OnApplyLayout()
+void UIObjectLayout::OnApplyLayout()
 {
     auto thisState = GetState<UIStateLayout>();
     for (auto direct = 0; direct != (int)DirectEnum::Length; ++direct)
@@ -737,11 +737,11 @@ void UIClassLayout::OnApplyLayout()
     }
 }
 
-bool UIClassLayout::IsCanStretch(DirectEnum edge)
+bool UIObjectLayout::IsCanStretch(DirectEnum edge)
 {
     auto parent = GetParent();
     CHECK_RET(parent != nullptr, false);
-    ASSERT_LOG(std::dynamic_pointer_cast<UIClassLayout>(parent) != nullptr, "");
+    ASSERT_LOG(std::dynamic_pointer_cast<UIObjectLayout>(parent) != nullptr, "");
     CHECK_RET(GetState()->IsCanStretch, false);
 
     auto cling = GetState<UIStateLayout>()->mJoin[(int)edge].mIn.first != nullptr
@@ -758,7 +758,7 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge)
     ASSERT_LOG(false, "{0}", (int)edge);
 }
 
-bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
+bool UIObjectLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
 {
     CHECK_RET((edge == DirectEnum::kU || edge == DirectEnum::kD) && offset.y != 0 ||
               (edge == DirectEnum::kL || edge == DirectEnum::kR) && offset.x != 0, false);
@@ -777,14 +777,14 @@ bool UIClassLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
         {
             if (state->mJoin[i].mIn.first  == this && 
                 state->mJoin[i].mIn.second == edge &&
-                !((UIClassLayout *)object)->IsCanStretch((DirectEnum)i, offset))
+                !((UIObjectLayout *)object)->IsCanStretch((DirectEnum)i, offset))
             { return false; }
         }
     }
     return true;
 }
 
-void UIClassLayout::HandleStretch()
+void UIObjectLayout::HandleStretch()
 {
     auto thisState =            GetState<UIStateLayout>();
     auto rootState = GetRoot()->GetState<UIStateLayout>();
@@ -837,10 +837,10 @@ void UIClassLayout::HandleStretch()
 // ---
 //  UIClassTree
 // ---
-UIClassTreeBox::UIClassTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateTreeBox())
+UIObjectTreeBox::UIObjectTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateTreeBox())
 { }
 
-bool UIClassTreeBox::OnEnter()
+bool UIObjectTreeBox::OnEnter()
 {
     auto  state = GetState<UIStateTreeBox>();
     ImGui::SetNextItemWidth(state->Move.z);
@@ -854,18 +854,18 @@ bool UIClassTreeBox::OnEnter()
     return ret;
 }
 
-void UIClassTreeBox::OnLeave(bool ret)
+void UIObjectTreeBox::OnLeave(bool ret)
 {
     if (ret) { ImGui::TreePop(); }
 }
 
 // ---
-//  UIClassTextBox
+//  UIObjectTextBox
 // ---
-UIClassTextBox::UIClassTextBox() : UIObject(UITypeEnum::kTextBox, new UIStateTextBox())
+UIObjectTextBox::UIObjectTextBox() : UIObject(UITypeEnum::kTextBox, new UIStateTextBox())
 { }
 
-bool UIClassTextBox::OnEnter()
+bool UIObjectTextBox::OnEnter()
 {
     auto state = GetState<UIStateTextBox>();
     if (state->IsEditBox)
@@ -909,10 +909,10 @@ bool UIClassTextBox::OnEnter()
 // ---
 //  UIClassImage
 //----
-UIClassImageBox::UIClassImageBox() : UIObject(UITypeEnum::kImageBox, new UIStateImageBox())
+UIObjectImageBox::UIObjectImageBox() : UIObject(UITypeEnum::kImageBox, new UIStateImageBox())
 { }
 
-bool UIClassImageBox::OnEnter()
+bool UIObjectImageBox::OnEnter()
 {
     auto state = GetState<UIStateImageBox>();
     if (state->IsButton)
@@ -949,12 +949,12 @@ bool UIClassImageBox::OnEnter()
 }
 
 // ---
-//  UIClassComboBox
+//  UIObjectComboBox
 // ---
-UIClassComboBox::UIClassComboBox() : UIObject(UITypeEnum::kComboBox, new UIStateComboBox())
+UIObjectComboBox::UIObjectComboBox() : UIObject(UITypeEnum::kComboBox, new UIStateComboBox())
 { }
 
-bool UIClassComboBox::OnEnter()
+bool UIObjectComboBox::OnEnter()
 {
     auto  state = GetState<UIStateComboBox>();
     ImGui::SetNextItemWidth(state->Move.z);
@@ -966,12 +966,12 @@ bool UIClassComboBox::OnEnter()
     return ImGui::BeginCombo(state->Name.c_str(), state->mSelected.c_str());
 }
 
-void UIClassComboBox::OnLeave(bool ret)
+void UIObjectComboBox::OnLeave(bool ret)
 {
     if (ret) { ImGui::EndCombo(); }
 }
 
-bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIObjectComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (e == UIEventEnum::kMouse)
     {
@@ -983,18 +983,18 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & p
 }
 
 // ---
-//  UIClassUICanvas
+//  UIObjectUICanvas
 // ---
-UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
+UIObjectUICanvas::UIObjectUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
 { }
 
 // ---
-//  UIClassGLCanvas
+//  UIObjectGLCanvas
 // ---
-UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
+UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 { }
 
-void UIClassGLCanvas::HandlePostCommands()
+void UIObjectGLCanvas::HandlePostCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
@@ -1023,7 +1023,7 @@ void UIClassGLCanvas::HandlePostCommands()
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
-void UIClassGLCanvas::HandlePreCommands()
+void UIObjectGLCanvas::HandlePreCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     tools::RenderTargetBind(state->mRenderTarget, GL_DRAW_FRAMEBUFFER);
@@ -1050,7 +1050,7 @@ void UIClassGLCanvas::HandlePreCommands()
     tools::RenderTargetBind(0, GL_DRAW_FRAMEBUFFER);
 }
 
-void UIClassGLCanvas::CollectCommands()
+void UIObjectGLCanvas::CollectCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(glm::identity<glm::mat4>());
@@ -1062,42 +1062,42 @@ void UIClassGLCanvas::CollectCommands()
     state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();
 }
 
-void UIClassGLCanvas::Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd)
 {
     GetState<UIStateGLCanvas>()->mPreCommands.push_back(cmd);
 }
 
-void UIClassGLCanvas::Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd)
 { 
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
-void UIClassGLCanvas::BindRoot(const SharePtr<GLObject>& root)
+void UIObjectGLCanvas::BindRoot(const SharePtr<GLObject>& root)
 {
     GetState<UIStateGLCanvas>()->mRoot = root;
 }
 
-const glm::mat4 & UIClassGLCanvas::GetMatrixView()
+const glm::mat4 & UIObjectGLCanvas::GetMatrixView()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
 }
 
-const glm::mat4 & UIClassGLCanvas::GetMatrixProj()
+const glm::mat4 & UIObjectGLCanvas::GetMatrixProj()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
 }
 
-const glm::mat4 & UIClassGLCanvas::GetMatrixModel()
+const glm::mat4 & UIObjectGLCanvas::GetMatrixModel()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].top();
 }
 
-glm::mat4 UIClassGLCanvas::GetMatrixMVP()
+glm::mat4 UIObjectGLCanvas::GetMatrixMVP()
 {
     return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
 }
 
-void UIClassGLCanvas::HandleCommands()
+void UIObjectGLCanvas::HandleCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     if (!state->mPreCommands.empty())
@@ -1112,7 +1112,7 @@ void UIClassGLCanvas::HandleCommands()
     }
 }
 
-void UIClassGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
+void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
     const auto & matrixM = transform;
@@ -1140,7 +1140,7 @@ void UIClassGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 
     program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
 }
 
-bool UIClassGLCanvas::OnEnter()
+bool UIObjectGLCanvas::OnEnter()
 {
     auto state = GetState<UIStateGLCanvas>();
     if (state->mRoot != nullptr)
@@ -1153,7 +1153,7 @@ bool UIClassGLCanvas::OnEnter()
     return false;
 }
 
-void UIClassGLCanvas::OnLeave(bool ret)
+void UIObjectGLCanvas::OnLeave(bool ret)
 {
     if (ret)
     {
@@ -1163,7 +1163,7 @@ void UIClassGLCanvas::OnLeave(bool ret)
     }
 }
 
-void UIClassGLCanvas::OnApplyLayout()
+void UIObjectGLCanvas::OnApplyLayout()
 {
     auto state = GetState<UIStateGLCanvas>();
     if (state->Move_.z != state->Move.z || state->Move_.w != state->Move.w)
@@ -1184,7 +1184,7 @@ void UIClassGLCanvas::OnApplyLayout()
     }
 }
 
-void UIClassGLCanvas::OnResetLayout()
+void UIObjectGLCanvas::OnResetLayout()
 {
     OnApplyLayout();
 }

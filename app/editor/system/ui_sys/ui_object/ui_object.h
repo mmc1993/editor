@@ -80,9 +80,9 @@ private:
     UniquePtr<UIEvent::DelegateHandler> _delegate;
 };
 
-class UIClassLayout : public UIObject {
+class UIObjectLayout : public UIObject {
 public:
-    UIClassLayout();
+    UIObjectLayout();
 
 private:
     virtual bool OnEnter() override;
@@ -95,34 +95,34 @@ private:
     void HandleStretch();
 };
 
-class UIClassTreeBox : public UIObject {
+class UIObjectTreeBox : public UIObject {
 public:
-    UIClassTreeBox();
+    UIObjectTreeBox();
 
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
 };
 
-class UIClassTextBox : public UIObject {
+class UIObjectTextBox : public UIObject {
 public:
-    UIClassTextBox();
+    UIObjectTextBox();
 
 private:
     virtual bool OnEnter() override;
 };
 
-class UIClassImageBox : public UIObject {
+class UIObjectImageBox : public UIObject {
 public:
-    UIClassImageBox();
+    UIObjectImageBox();
 
 private:
     virtual bool OnEnter() override;
 };
 
-class UIClassComboBox : public UIObject {
+class UIObjectComboBox : public UIObject {
 public:
-    UIClassComboBox();
+    UIObjectComboBox();
 
 private:
     virtual bool OnEnter() override;
@@ -130,12 +130,12 @@ private:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 
-class UIClassUICanvas : public UIObject {
+class UIObjectUICanvas : public UIObject {
 public:
-    UIClassUICanvas();
+    UIObjectUICanvas();
 };
 
-class UIClassGLCanvas : public UIObject {
+class UIObjectGLCanvas : public UIObject {
 public:
     void Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd);
     void Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd);
@@ -145,7 +145,7 @@ public:
     const glm::mat4 & GetMatrixModel();
     glm::mat4 GetMatrixMVP();
 
-    UIClassGLCanvas();
+    UIObjectGLCanvas();
 
 private:
     void HandlePostCommands();
