@@ -79,11 +79,7 @@ void UIObject::ClearObjects()
 
 SharePtr<UIObject> UIObject::GetParent()
 {
-    if (_parent.expired())
-    {
-        return nullptr;
-    }
-    return _parent.lock();
+    return _parent->shared_from_this();
 }
 
 SharePtr<UIObject> UIObject::GetRoot()

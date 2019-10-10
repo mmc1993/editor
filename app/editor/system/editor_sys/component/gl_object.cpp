@@ -71,7 +71,7 @@ void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & 
 {
     ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
     object->_name = name;
-    object->_parent = shared_from_this();
+    object->_parent = this;
     _children.push_back(object);
 }
 
@@ -97,7 +97,7 @@ void GLObject::DelObject(size_t idx)
 {
     ASSERT_LOG(idx < _children.size(), "Object DelChildIdx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
-    (*it)->_parent.reset();
+    (*it)->_parent = nullptr;
     _children.erase(it);
 }
 
@@ -167,7 +167,7 @@ void GLObject::Update(float dt)
     
 }
 
-void GLObject::SetParent(const SharePtr<GLObject> & parent)
+void GLObject::SetParent(GLObject * parent)
 {
     if (GetParent() != nullptr)
     {
@@ -181,7 +181,7 @@ void GLObject::SetParent(const SharePtr<GLObject> & parent)
 
 SharePtr<GLObject> GLObject::GetParent()
 {
-    return _parent.expired() ? nullptr : _parent.lock();
+    return _parent->shared_from_this();
 }
 
 void GLObject::ClearComponents()
@@ -197,7 +197,7 @@ void GLObject::ClearComponents()
 void GLObject::AddComponent(const SharePtr<Component> & component)
 {
     _components.push_back(component);
-    component->SetOwner(shared_from_this());
+    component->SetOwner(this);
     component->OnAdd();
 }
 

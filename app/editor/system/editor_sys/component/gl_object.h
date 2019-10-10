@@ -47,7 +47,7 @@ public:
 
     void Update(float dt);
 
-    void SetParent(const SharePtr<GLObject> & parent);
+    void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();
 
 	void ClearComponents();
@@ -87,7 +87,7 @@ public:
 private:
     std::string                         _name;
     size_t                              _status;
-    WeakPtr<GLObject>                   _parent;
+    GLObject *                          _parent;
     UIObjectGLCanvas *                  _canvas;
     SharePtr<CompTransform>             _transform;
     std::vector<SharePtr<GLObject>>     _children;

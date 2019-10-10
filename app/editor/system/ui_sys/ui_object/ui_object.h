@@ -74,7 +74,7 @@ public:
 private:
     bool                                _visible;       //  标记当前节点是否渲染
     UITypeEnum                          _type;
-    WeakPtr<UIObject>                   _parent;
+    UIObject *                          _parent;
     UniquePtr<UIState>                  _state;
     std::vector<SharePtr<UIObject>>     _children;
     UniquePtr<UIEvent::DelegateHandler> _delegate;

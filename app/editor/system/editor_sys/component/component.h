@@ -53,11 +53,8 @@ public:
             _status &= ~kActive;
     }
 
-    SharePtr<GLObject> GetOwner() 
-    { 
-        return _owner.expired() ? nullptr : _owner.lock(); 
-    }
-	void SetOwner(SharePtr<GLObject> owner) { _owner = owner; }
+    SharePtr<GLObject> GetOwner() { return _owner->shared_from_this(); }
+	void SetOwner(GLObject * owner) { _owner = owner; }
 
     //  ×é¼þÃû×Ö
     virtual const std::string & GetName() = 0;
@@ -72,5 +69,5 @@ public:
 
 private:
     size_t              _status;
-    WeakPtr<GLObject>   _owner;
+    GLObject *          _owner;
 };
