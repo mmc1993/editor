@@ -1,6 +1,10 @@
 #include "ui_object.h"
 #include "../ui_menu.h"
+#include "../../raw_sys/raw.h"
 #include "../../atlas_sys/atlas_sys.h"
+#include "../../editor_sys/editor_sys.h"
+#include "../../editor_sys/component/gl_object.h"
+#include "../../editor_sys/component/component.h"
 #include "imgui_impl_glfw.h"
 
 // ---
@@ -978,33 +982,99 @@ bool UIClassComboBox::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & p
     return false;
 }
 
+// ---
+//  UIClassUICanvas
+// ---
 UIClassUICanvas::UIClassUICanvas() : UIObject(UITypeEnum::kUICanvas, new UIStateUICanvas())
 { }
 
 UIClassGLCanvas::UIClassGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 { }
 
+// ---
+//  UIClassGLCanvas
+// ---
 void UIClassGLCanvas::HandlePostCommands()
-{ }
+{
+    auto state = GetState<UIStateGLCanvas>();
+    tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
+    tools::RenderTargetAttachment(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[0]);
+    tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[1]);
+    glBlitFramebuffer(0, 0, (iint)state->Move.z, (iint)state->Move.w, 0, 0, (iint)state->Move.z, (iint)state->Move.w, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    for (auto & command : state->mPostCommands)
+    {
+        for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
+        {
+            if (command->mType == UIStateGLCanvas::PostCommand::kSwap)
+            {
+                std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+            }
+            command->mProgram->UsePass(i);
+            tools::RenderTargetAttachment(
+                GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                GL_TEXTURE_2D, state->mRenderTextures[0]);
+            command->mProgram->BindUniformTex2D("UNIFORM_SCREEN", state->mRenderTextures[1], 0);
+            command->Call();
+            Post(command->mProgram,command->mTransform);
+            glBindVertexArray(command->mMesh->GetVAO());
+            glDrawElements(GL_TRIANGLES, command->mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
+        }
+    }
+    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
+}
 
 void UIClassGLCanvas::HandlePreCommands()
-{ }
+{
+    auto state = GetState<UIStateGLCanvas>();
+    tools::RenderTargetBind(state->mRenderTarget, GL_DRAW_FRAMEBUFFER);
+    tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                  GL_TEXTURE_2D, state->mRenderTextures[0]);
+    for (auto & command : state->mPreCommands)
+    {
+        auto & material = command->mMaterial;
+        for (auto i = 0; i != material->GetProgram()->GetPassCount(); ++i)
+        {
+            auto texNum = 0;
+            material->GetProgram()->UsePass(i);
+            for (auto & texture : material->GetTextures())
+            {
+                material->GetProgram()->BindUniformTex2D(
+                    texture.mKey.c_str(), texture.mTex->GetID(), texNum++);
+            }
+            command->Call();
+            Post(material->GetProgram(),command->mTransform);
+            glBindVertexArray(material->GetMesh()->GetVAO());
+            glDrawElements(GL_TRIANGLES, material->GetMesh()->GetECount(), GL_UNSIGNED_INT, nullptr);
+        }
+    }
+    tools::RenderTargetBind(0, GL_DRAW_FRAMEBUFFER);
+}
 
-void UIClassGLCanvas::Post(const UIStateGLCanvas::PreCommand & cmd)
+void UIClassGLCanvas::CollectCommands()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(glm::identity<glm::mat4>());
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(glm::identity<glm::mat4>());
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(glm::identity<glm::mat4>());
+    state->mRoot->Update(0.0f);
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].pop();
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].pop();
+    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();
+}
+
+void UIClassGLCanvas::Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd)
 {
     GetState<UIStateGLCanvas>()->mPreCommands.push_back(cmd);
 }
 
-void UIClassGLCanvas::Post(const UIStateGLCanvas::PostCommand & cmd)
+void UIClassGLCanvas::Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd)
 { 
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
 glm::mat4 UIClassGLCanvas::GetMatrixMVP()
 {
-    return GetMatrixProj()
-         * GetMatrixView()
-         * GetMatrixModel();
+    return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
 }
 
 const glm::mat4 & UIClassGLCanvas::GetMatrixView()
@@ -1029,4 +1099,70 @@ void UIClassGLCanvas::HandleCommands()
     state->mPreCommands.clear();
     HandlePostCommands();
     state->mPostCommands.clear();
+}
+
+void UIClassGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    const auto & matrixM = transform;
+    const auto & matrixV = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
+    const auto & matrixP = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
+    const auto & matrixMV = matrixV * matrixM;
+    const auto & matrixVP = matrixP * matrixV;
+    const auto & matrixMVP = matrixP * matrixMV;
+
+    //  矩阵
+    program->BindUniformMatrix("UNIFORM_MATRIX_M", matrixM);
+    program->BindUniformMatrix("UNIFORM_MATRIX_V", matrixV);
+    program->BindUniformMatrix("UNIFORM_MATRIX_P", matrixP);
+    program->BindUniformMatrix("UNIFORM_MATRIX_MV", matrixMV);
+    program->BindUniformMatrix("UNIFORM_MATRIX_VP", matrixVP);
+    program->BindUniformMatrix("UNIFORM_MATRIX_MVP", matrixMVP);
+
+    //  逆矩阵
+    program->BindUniformMatrix("UNIFORM_MATRIX_V_INV", glm::inverse(matrixV));
+    program->BindUniformMatrix("UNIFORM_MATRIX_P_INV", glm::inverse(matrixP));
+    program->BindUniformMatrix("UNIFORM_MATRIX_MV_INV", glm::inverse(matrixMV));
+    program->BindUniformMatrix("UNIFORM_MATRIX_VP_INV", glm::inverse(matrixVP));
+
+    //  其他参数
+    program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
+}
+
+bool UIClassGLCanvas::OnEnter()
+{
+    CollectCommands();
+    HandleCommands();
+    return true;
+}
+
+void UIClassGLCanvas::OnLeave(bool ret)
+{
+    if (ret)
+    {
+        auto state = GetState<UIStateGLCanvas>();
+        ImGui::Image((ImTextureID)state->mRenderTextures[0], 
+                      ImVec2(state->Move.z, state->Move.w));
+    }
+}
+
+void UIClassGLCanvas::OnApplyLayout()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (state->Move_.z != state->Move.z || state->Move_.w != state->Move.w)
+    {
+        glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[0]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[1]);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
 }

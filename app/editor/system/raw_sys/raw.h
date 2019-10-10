@@ -192,14 +192,9 @@ public:
     virtual bool Init(const std::string & url) override;
 
     uint GetUse();
-    bool UsePass(uint i, bool force = false);
-
-    const Pass & GetPass(uint i);
-    const std::vector<Pass> & GetPasss();
-    void AddPass(const Pass & pass,
-        const char * vString, uint vLength,
-        const char * fString, uint fLength);
-
+    uint GetPassCount();
+    void UsePass(uint i);
+    void AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength);
     void BindUniformNumber(const char * const key, double val) const { glUniform1f(glGetUniformLocation(_use, key), static_cast<float>(val)); }
     void BindUniformVector(const char * const key, const glm::vec2 & val) const { glUniform2f(glGetUniformLocation(_use, key), val.x, val.y); }
     void BindUniformVector(const char * const key, const glm::vec3 & val) const { glUniform3f(glGetUniformLocation(_use, key), val.x, val.y, val.z); }

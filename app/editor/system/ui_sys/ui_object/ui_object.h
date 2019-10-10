@@ -137,14 +137,12 @@ public:
 
 class UIClassGLCanvas : public UIObject {
 public:
-    void Post(const UIStateGLCanvas::PreCommand & cmd);
-    void Post(const UIStateGLCanvas::PostCommand & cmd);
+    void Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd);
+    void Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd);
     glm::mat4 GetMatrixMVP();
     const glm::mat4 & GetMatrixView();
     const glm::mat4 & GetMatrixProj();
     const glm::mat4 & GetMatrixModel();
-
-    virtual bool OnEnter() override;
 
     UIClassGLCanvas();
 
@@ -153,4 +151,12 @@ private:
     void HandlePreCommands();
     void CollectCommands();
     void HandleCommands();
+    void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
+
+    virtual bool OnEnter() override;
+    virtual void OnLeave(bool ret) override;
+    virtual void OnApplyLayout()   override;
+
+private:
+
 };

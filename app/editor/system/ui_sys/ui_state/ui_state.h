@@ -100,6 +100,7 @@ public:
 };
 
 class GLMesh;
+class GLObject;
 class GLProgram;
 class GLTexture;
 class GLMaterial;
@@ -114,50 +115,36 @@ public:
         Length,
     };
 
-    //  命令队列
-    enum class CommandTypeEnum {
-        kPreProcess,    //  前置处理
-        kPostProcess,   //  后置处理
-    };
-
-    enum class PostModeEnum {
-        kOverlay,       //  叠加
-        kSwap,          //  交换
-    };
-
     struct Command {
-        using Callback = std::function<void(const Command &)>;
-        Callback    mCallback;
-        CommandTypeEnum mType;
-        Command(CommandTypeEnum type) : mType(type) {}
+        std::function<void(const Command&)> mCallback;
         void Call() {if (mCallback) mCallback(*this);}
     };
 
     struct PreCommand : public Command {
-        PreCommand() : Command(CommandTypeEnum::kPreProcess)
-        { }
-
         SharePtr<GLMaterial> mMaterial;     //  材质
         glm::mat4 mTransform;               //  矩阵
     };
 
     struct PostCommand : public Command {
-        PostCommand() : Command(CommandTypeEnum::kPostProcess)
-        { }
-
+        enum TypeEnum {
+            kOverlay,       //  叠加
+            kSwap,          //  交换
+        };
         SharePtr<GLProgram> mProgram;       //  着色器
         SharePtr<GLMesh> mMesh;             //  网格
         glm::mat4 mTransform;               //  矩阵
-        PostModeEnum mMode;
+        TypeEnum mType;
     };
 
 public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
-    std::vector<PreCommand> mPreCommands;
-    std::vector<PostCommand> mPostCommands;
+    SharePtr<GLObject> mRoot;
+    std::vector<SharePtr<PreCommand>> mPreCommands;
+    std::vector<SharePtr<PostCommand>> mPostCommands;
     std::stack<glm::mat4> mMatrixStack[(size_t)MatrixTypeEnum::Length];
 
 public:
     UIStateGLCanvas();
+    ~UIStateGLCanvas();
 };

@@ -314,14 +314,14 @@ uint GLProgram::GetUse()
     return _use;
 }
 
-bool GLProgram::UsePass(uint i, bool force)
+uint GLProgram::GetPassCount()
+{
+    return (uint)_passs.size();
+}
+
+void GLProgram::UsePass(uint i)
 {
     const auto & pass = _passs.at(i);
-    if (pass.mID == _use && !force)
-    {
-        return false;
-    }
-
     //  ¿ªÆô»ìºÏ
     if (pass.mBlendSrc != 0 && pass.mBlendDst != 0)
     {
@@ -347,17 +347,6 @@ bool GLProgram::UsePass(uint i, bool force)
     }
     glUseProgram(pass.mID);
     _use = pass.mID;
-    return true;
-}
-
-const GLProgram::Pass & GLProgram::GetPass(uint i)
-{
-    return _passs.at(i);
-}
-
-const std::vector<GLProgram::Pass>& GLProgram::GetPasss()
-{
-    return _passs;
 }
 
 void GLProgram::AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength)
@@ -449,7 +438,7 @@ const std::vector<GLMaterial::Texture> & GLMaterial::GetTextures()
 void GLMaterial::SetTexture(const std::string & key, const SharePtr<GLTexture> & tex)
 {
     auto it = std::find(_textures.begin(), _textures.end(), key);
-    if (it != _textures.end()) { it->mKey = key; it->mTex = tex; }
+    if (it != _textures.end()) { it->mKey = key;it->mTex = tex; }
     else { _textures.emplace_back(key, tex); }
 }
 
