@@ -156,7 +156,8 @@ private:
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
-    virtual void OnApplyLayout()   override;
+    virtual void OnApplyLayout() override;
+    virtual void OnResetLayout() override;
 
 private:
 

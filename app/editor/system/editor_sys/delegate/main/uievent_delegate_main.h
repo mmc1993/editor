@@ -55,6 +55,12 @@ private:
 class UIEventDelegateMainStage : public UIEventDelegateMain {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+
+private:
+    void OnEvent(EventSys::TypeEnum type, const std::any & param);
+    void OnEventOpenProject();
+    void OnEventFreeProject();
+    void OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi);
 };
 
 //  È«¾Ö

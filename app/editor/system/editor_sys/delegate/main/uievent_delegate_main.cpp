@@ -278,8 +278,57 @@ void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<UIObject>
 bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
     UIEventDelegateMain::OnCallEventMessage(e, param, object);
- 
-    return true;
+
+    if (UIEventEnum::kDelegate == e)
+    {
+        auto & arg = (const UIEvent::Delegate &)param;
+        if (arg.mType == 0)
+        {
+            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(
+                &UIEventDelegateMainStage::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(
+                &UIEventDelegateMainStage::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
+                &UIEventDelegateMainStage::OnEvent, this,
+                std::placeholders::_1,
+                std::placeholders::_2));
+        }
+        return true;
+    }
+    return false;
+}
+
+void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any & param)
+{
+    switch (type)
+    {
+    case EventSys::TypeEnum::kOpenProject:
+        OnEventOpenProject();
+        break;
+    case EventSys::TypeEnum::kFreeProject:
+        OnEventFreeProject();
+        break;
+    case EventSys::TypeEnum::kSelectObject:
+        auto & value = std::any_cast<const std::tuple<SharePtr<UIObject>, SharePtr<GLObject>, bool, bool> &>(param);
+        OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value), std::get<3>(value));
+        break;
+    }
+}
+
+void UIEventDelegateMainStage::OnEventOpenProject()
+{
+}
+
+void UIEventDelegateMainStage::OnEventFreeProject()
+{
+}
+
+void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<UIObject>& uiObject, const SharePtr<GLObject>& glObject, bool select, bool multi)
+{
 }
 
 bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

@@ -172,6 +172,8 @@ int main(int, char**)
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
         glfwSwapBuffers(window);
+
+        std::cout << "GL Error: " << glGetError() << std::endl;
     }
 
     // Cleanup
