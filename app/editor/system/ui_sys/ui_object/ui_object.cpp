@@ -835,7 +835,7 @@ void UIObjectLayout::HandleStretch()
 }
 
 // ---
-//  UIClassTree
+//  UIObjectTreeBox
 // ---
 UIObjectTreeBox::UIObjectTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateTreeBox())
 { }
@@ -907,7 +907,7 @@ bool UIObjectTextBox::OnEnter()
 }
 
 // ---
-//  UIClassImage
+//  UIObjectImageBox
 //----
 UIObjectImageBox::UIObjectImageBox() : UIObject(UITypeEnum::kImageBox, new UIStateImageBox())
 { }
