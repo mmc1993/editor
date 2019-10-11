@@ -61,6 +61,16 @@ void GLMesh::Init(const Vertex * points, const uint pointsLength, const uint * i
     glBindVertexArray(0);
 }
 
+void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> & indexs)
+{
+    glBindBuffer(GL_ARRAY_BUFFER,         _vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+    glBufferSubData(GL_ARRAY_BUFFER,         0, sizeof(Vertex) * points.size(), points.data());
+    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, sizeof(uint)   * indexs.size(), indexs.data());
+    glBindBuffer(GL_ARRAY_BUFFER,         0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
 // ---
 //  GLTexture
 // ---
