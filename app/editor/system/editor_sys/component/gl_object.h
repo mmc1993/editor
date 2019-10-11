@@ -15,7 +15,7 @@ class GLObject
     : public Interface::Serializer
     , public std::enable_shared_from_this<GLObject> {
 public:
-    enum StatusEnum {
+    enum StateEnum {
         kActive = 1 << 0,
     };
 

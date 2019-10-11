@@ -10,7 +10,7 @@ class Component
     : public Interface::Serializer 
     , public std::enable_shared_from_this<Component> {
 public:
-    enum StatusEnum {
+    enum StateEnum {
         kActive = 1 << 0,   //  激活
         kInsert = 1 << 1,   //  支持插入操作
         kDelete = 1 << 2,   //  支持删除操作
