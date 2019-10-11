@@ -141,17 +141,7 @@ public:
     void Post(const SharePtr<Interface::FowardCommand> & cmd);
     void Post(const SharePtr<Interface::PostCommand>   & cmd);
     void BindRoot(const SharePtr<GLObject> & root);
-    const glm::mat4 & GetMatrixView();
-    const glm::mat4 & GetMatrixProj();
-    const glm::mat4 & GetMatrixModel();
-    glm::mat4 GetMatrixMVP();
-    void PushMatrixView(const glm::mat4 & m);
-    void PushMatrixProj(const glm::mat4 & m);
-    void PushMatrixModel(const glm::mat4 & m);
-    void PopMatrixView();
-    void PopMatrixProj();
-    void PopMatrixModel();
-
+    Interface::MatrixStack & GetMatrixStack();
     UIObjectGLCanvas();
 
 private:

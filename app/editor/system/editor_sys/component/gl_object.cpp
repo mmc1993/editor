@@ -137,7 +137,7 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 
 void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
-    canvas->PushMatrixModel(GetTransform()->GetMatrix());
+    canvas->GetMatrixStack().Mul(Interface::MatrixStack::kModel, GetTransform()->GetMatrix());
 
     OnUpdate(dt);
 
@@ -157,7 +157,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
         }
     }
 
-    canvas->PopMatrixModel();
+    canvas->GetMatrixStack().Pop(Interface::MatrixStack::kModel);
 }
 
 void GLObject::SetName(const std::string & name)

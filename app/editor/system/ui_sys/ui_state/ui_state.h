@@ -120,9 +120,9 @@ public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
     SharePtr<GLObject>  mRoot;
+    Interface::MatrixStack mMatrixStack;
     std::vector<SharePtr<Interface::PostCommand>>   mPostCommands;
     std::vector<SharePtr<Interface::FowardCommand>> mFowardCommands;
-    std::stack<glm::mat4> mMatrixStack[(size_t)MatrixTypeEnum::Length];
 
 public:
     UIStateGLCanvas();

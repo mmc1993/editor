@@ -1054,13 +1054,13 @@ void UIObjectGLCanvas::CollectCommands()
     const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
                                  state->Move.z *  0.5f, state->Move.w *  0.5f);
     const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(glm::identity<glm::mat4>());
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(view);
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(proj);
+    state->mMatrixStack.Identity(Interface::MatrixStack::kModel);
+    state->mMatrixStack.Identity(Interface::MatrixStack::kView, view);
+    state->mMatrixStack.Identity(Interface::MatrixStack::kProj, proj);
     state->mRoot->Update(this, 0.0f);
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].pop();
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].pop();
-    state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();
+    state->mMatrixStack.Pop(Interface::MatrixStack::kModel);
+    state->mMatrixStack.Pop(Interface::MatrixStack::kView);
+    state->mMatrixStack.Pop(Interface::MatrixStack::kProj);
 }
 
 void UIObjectGLCanvas::HandleCommands()
@@ -1093,61 +1093,16 @@ void UIObjectGLCanvas::BindRoot(const SharePtr<GLObject>& root)
     GetState<UIStateGLCanvas>()->mRoot = root;
 }
 
-const glm::mat4 & UIObjectGLCanvas::GetMatrixView()
+Interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
-    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
-}
-
-const glm::mat4 & UIObjectGLCanvas::GetMatrixProj()
-{
-    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
-}
-
-const glm::mat4 & UIObjectGLCanvas::GetMatrixModel()
-{
-    return GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].top();
-}
-
-glm::mat4 UIObjectGLCanvas::GetMatrixMVP()
-{
-    return GetMatrixProj() * GetMatrixView() * GetMatrixModel();
-}
-
-void UIObjectGLCanvas::PushMatrixView(const glm::mat4 & m)
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].push(m * GetMatrixView());
-}
-
-void UIObjectGLCanvas::PushMatrixProj(const glm::mat4 & m)
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].push(m * GetMatrixProj());
-}
-
-void UIObjectGLCanvas::PushMatrixModel(const glm::mat4 & m)
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].push(m * GetMatrixModel());
-}
-
-void UIObjectGLCanvas::PopMatrixView()
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].pop();
-}
-
-void UIObjectGLCanvas::PopMatrixProj()
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].pop();
-}
-
-void UIObjectGLCanvas::PopMatrixModel()
-{
-    GetState<UIStateGLCanvas>()->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kModel].pop();
+    return GetState<UIStateGLCanvas>()->mMatrixStack;
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
-    const auto & matrixV = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kView].top();
-    const auto & matrixP = state->mMatrixStack[(size_t)UIStateGLCanvas::MatrixTypeEnum::kProj].top();
+    const auto & matrixV = GetMatrixStack().Top(Interface::MatrixStack::kView);
+    const auto & matrixP = GetMatrixStack().Top(Interface::MatrixStack::kProj);
     const auto & matrixMV = matrixV * transform;
     const auto & matrixVP = matrixP * matrixV;
     const auto & matrixMVP = matrixP * matrixMV;
