@@ -138,8 +138,8 @@ public:
 
 class UIObjectGLCanvas : public UIObject {
 public:
-    void Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd);
-    void Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd);
+    void Post(const SharePtr<Interface::FowardCommand> & cmd);
+    void Post(const SharePtr<Interface::PostCommand>   & cmd);
     void BindRoot(const SharePtr<GLObject> & root);
     const glm::mat4 & GetMatrixView();
     const glm::mat4 & GetMatrixProj();
@@ -155,8 +155,8 @@ public:
     UIObjectGLCanvas();
 
 private:
+    void HandleFowardCommands();
     void HandlePostCommands();
-    void HandlePreCommands();
     void CollectCommands();
     void HandleCommands();
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);

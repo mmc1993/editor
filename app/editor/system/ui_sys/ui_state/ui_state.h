@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../include.h"
+#include "../../interface/render.h"
 
 class UIState {
 public:
@@ -115,33 +116,12 @@ public:
         Length,
     };
 
-    struct Command {
-        std::function<void(const Command&)> mCallback;
-        void Call() {if (mCallback) mCallback(*this);}
-    };
-
-    struct PreCommand : public Command {
-        SharePtr<GLMaterial> mMaterial;     //  材质
-        glm::mat4 mTransform;               //  矩阵
-    };
-
-    struct PostCommand : public Command {
-        enum TypeEnum {
-            kOverlay,       //  叠加
-            kSwap,          //  交换
-        };
-        SharePtr<GLProgram> mProgram;       //  着色器
-        SharePtr<GLMesh> mMesh;             //  网格
-        glm::mat4 mTransform;               //  矩阵
-        TypeEnum mType;
-    };
-
 public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
     SharePtr<GLObject>  mRoot;
-    std::vector<SharePtr<PreCommand>> mPreCommands;
-    std::vector<SharePtr<PostCommand>> mPostCommands;
+    std::vector<SharePtr<Interface::PostCommand>>   mPostCommands;
+    std::vector<SharePtr<Interface::FowardCommand>> mFowardCommands;
     std::stack<glm::mat4> mMatrixStack[(size_t)MatrixTypeEnum::Length];
 
 public:

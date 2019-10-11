@@ -1003,7 +1003,7 @@ void UIObjectGLCanvas::HandlePostCommands()
     {
         for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
         {
-            if (command->mType == UIStateGLCanvas::PostCommand::kSwap)
+            if (command->mType == Interface::PostCommand::kSwap)
             {
                 std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
             }
@@ -1021,13 +1021,13 @@ void UIObjectGLCanvas::HandlePostCommands()
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
-void UIObjectGLCanvas::HandlePreCommands()
+void UIObjectGLCanvas::HandleFowardCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     tools::RenderTargetBind(state->mRenderTarget, GL_DRAW_FRAMEBUFFER);
     tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
-    for (auto & command : state->mPreCommands)
+    for (auto & command : state->mFowardCommands)
     {
         auto & material = command->mMaterial;
         for (auto i = 0; i != material->GetProgram()->GetPassCount(); ++i)
@@ -1066,10 +1066,10 @@ void UIObjectGLCanvas::CollectCommands()
 void UIObjectGLCanvas::HandleCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (!state->mPreCommands.empty())
+    if (!state->mFowardCommands.empty())
     {
-        HandlePreCommands();
-        state->mPreCommands.clear();
+        HandleFowardCommands();
+        state->mFowardCommands.clear();
     }
     if (!state->mPostCommands.empty())
     {
@@ -1078,12 +1078,12 @@ void UIObjectGLCanvas::HandleCommands()
     }
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<UIStateGLCanvas::PreCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<Interface::FowardCommand> & cmd)
 {
-    GetState<UIStateGLCanvas>()->mPreCommands.push_back(cmd);
+    GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<UIStateGLCanvas::PostCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<Interface::PostCommand> & cmd)
 { 
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }

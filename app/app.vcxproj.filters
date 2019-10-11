@@ -108,6 +108,9 @@
     <ClCompile Include="editor\system\editor_sys\project.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_sprite.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -975,6 +978,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\tools\glsl_tool.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_sprite.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\interface\render.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
