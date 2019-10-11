@@ -38,6 +38,7 @@ public:
         const std::any & backup,
         const std::string & title) override;
 
+protected:
     virtual std::vector<Property> CollectProperty() override;
 
 private:

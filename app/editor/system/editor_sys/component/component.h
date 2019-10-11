@@ -12,9 +12,9 @@ class Component
 public:
     enum StateEnum {
         kActive = 1 << 0,   //  激活
-        kInsert = 1 << 1,   //  支持插入操作
-        kDelete = 1 << 2,   //  支持删除操作
-        kModify = 1 << 3,   //  支持修改操作
+        kInsertCP = 1 << 1,   //  支持插入控制点
+        kDeleteCP = 1 << 2,   //  支持删除控制点
+        kModifyCP = 1 << 3,   //  支持修改控制点
     };
 
     struct Property {
@@ -44,13 +44,13 @@ public:
     virtual void OnDel() = 0;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
 
-    bool IsActive() const { return _state & kActive; }
-	void SetActive(bool active) 
-    {  
-        if (active)
-            _state |=  kActive;
-        else
-            _state &= ~kActive;
+    bool IsActive() { return _state & kActive; }
+	void SetActive(bool active) { ModifyState(kActive, active); }
+
+    void ModifyState(StateEnum state, bool add)
+    {
+        if (add) _state |=  state;
+        else     _state &= ~state;
     }
 
     SharePtr<GLObject> GetOwner() { return _owner->shared_from_this(); }
@@ -59,13 +59,21 @@ public:
     //  组件名字
     virtual const std::string & GetName() = 0;
     //  Property修改时被调用
-    virtual bool OnModifyProperty(
-        const std::any & value, 
-        const std::any & backup,
-        const std::string & title) = 0;
-    //  创建Property列表, 用于界面展示修改
-    virtual std::vector<Property> CollectProperty() = 0;
+    virtual bool OnModifyProperty(const std::any & value, 
+                                  const std::any & backup,
+                                  const std::string & title) = 0;
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
+
+    const std::vector<glm::vec2> & GetControlPoints();
+    void ModifyControlPoint(const size_t index, const glm::vec2 & point);
+    void InsertControlPoint(const size_t index, const glm::vec2 & point);
+    void DeleteControlPoint(const size_t index, const glm::vec2 & point);
+
+protected:
+    virtual std::vector<Property> CollectProperty() = 0;
+    virtual void OnModifyControlPoint(const size_t index, const glm::vec2 & point) {};
+    virtual void OnInsertControlPoint(const size_t index, const glm::vec2 & point) {};
+    virtual void OnDeleteControlPoint(const size_t index, const glm::vec2 & point) {};
 
 protected:
     size_t              _state;

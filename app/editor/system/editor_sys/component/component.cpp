@@ -44,3 +44,35 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
     }
     return std::move(result);
 }
+
+const std::vector<glm::vec2> & Component::GetControlPoints()
+{
+    return _controlPoints;
+}
+
+void Component::ModifyControlPoint(const size_t index, const glm::vec2 & point) 
+{ 
+    if (_state & kModifyCP)
+    {
+        _controlPoints.at(index) = point;
+        OnModifyControlPoint(index, point);
+    }
+}
+
+void Component::InsertControlPoint(const size_t index, const glm::vec2 & point) 
+{
+    if (_state & kInsertCP)
+    {
+        _controlPoints.insert(_controlPoints.begin() + index, point);
+        OnInsertControlPoint(index, point);
+    }
+}
+
+void Component::DeleteControlPoint(const size_t index, const glm::vec2 & point) 
+{
+    if (_state & kDeleteCP) 
+    { 
+        _controlPoints.erase(_controlPoints.begin() + index);
+        OnDeleteControlPoint(index, point);
+    }
+}
