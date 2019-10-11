@@ -38,20 +38,19 @@ public:
     //  创建组件
     static SharePtr<Component> Create(const std::string & name);
 
-public:
-	Component(): _owner(nullptr), _status(kActive) { }
+	Component(): _owner(nullptr), _state(kActive) { }
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
 
-    bool IsActive() const { return _status & kActive; }
+    bool IsActive() const { return _state & kActive; }
 	void SetActive(bool active) 
     {  
         if (active)
-            _status |=  kActive;
+            _state |=  kActive;
         else
-            _status &= ~kActive;
+            _state &= ~kActive;
     }
 
     SharePtr<GLObject> GetOwner() { return _owner->shared_from_this(); }
@@ -68,7 +67,8 @@ public:
     virtual std::vector<Property> CollectProperty() = 0;
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
-private:
-    size_t              _status;
+protected:
+    size_t              _state;
     GLObject *          _owner;
+    std::vector<glm::vec2> _controlPoints;
 };

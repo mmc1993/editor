@@ -4,7 +4,7 @@
 #include "../../ui_sys/ui_object/ui_object.h"
 
 GLObject::GLObject()
-    : _status(kActive)
+    : _state(kActive)
     , _parent(nullptr)
 {
     _transform = std::create_ptr<CompTransform>();
@@ -173,14 +173,14 @@ const std::string & GLObject::GetName() const
 void GLObject::SetActive(bool active)
 {
     if (active)
-        _status |=  kActive;
+        _state |=  kActive;
     else
-        _status &= ~kActive;
+        _state &= ~kActive;
 }
 
 bool GLObject::IsActive() const
 {
-    return _status & kActive;
+    return _state & kActive;
 }
 
 void GLObject::SetParent(GLObject * parent)

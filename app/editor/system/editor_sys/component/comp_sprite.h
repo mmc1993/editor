@@ -1,6 +1,7 @@
 #pragma once
 
 #include "component.h"
+#include "../../interface/render.h"
 
 class CompSprite : public Component {
 public:
@@ -23,4 +24,5 @@ private:
     std::string _url;
     glm::vec2 _size;
     glm::vec2 _anchor;
+    SharePtr<Interface::FowardCommand> _command;
 };

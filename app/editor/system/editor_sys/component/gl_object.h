@@ -84,7 +84,7 @@ public:
 
 private:
     std::string                         _name;
-    size_t                              _status;
+    size_t                              _state;
     GLObject *                          _parent;
     SharePtr<CompTransform>             _transform;
     std::vector<SharePtr<GLObject>>     _children;
