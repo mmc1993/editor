@@ -1076,13 +1076,13 @@ void UIObjectGLCanvas::HandleCommands()
         tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, state->mRenderTextures[0]);
-        DrawStrokeObjects();
-        DrawTrackPoints();
+        DrawOutlineObjects();
+        DrawTrackingPoints();
         tools::RenderTargetBind(0, GL_FRAMEBUFFER);
     }
 }
 
-void UIObjectGLCanvas::DrawStrokeObjects()
+void UIObjectGLCanvas::DrawOutlineObjects()
 {
     for (auto & object : GetState<UIStateGLCanvas>()->mOperation.mSelectObjects)
     {
@@ -1112,7 +1112,7 @@ void UIObjectGLCanvas::DrawStrokeObjects()
     }
 }
 
-void UIObjectGLCanvas::DrawTrackPoints()
+void UIObjectGLCanvas::DrawTrackingPoints()
 {
 }
 

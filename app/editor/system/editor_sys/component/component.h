@@ -12,9 +12,9 @@ class Component
 public:
     enum StateEnum {
         kActive = 1 << 0,   //  激活
-        kInsertCP = 1 << 1,   //  支持插入控制点
-        kDeleteCP = 1 << 2,   //  支持删除控制点
-        kModifyCP = 1 << 3,   //  支持修改控制点
+        kInsertTrackPoint = 1 << 1,   //  支持插入控制点
+        kDeleteTrackPoint = 1 << 2,   //  支持删除控制点
+        kModifyTrackPoint = 1 << 3,   //  支持修改控制点
     };
 
     struct Property {

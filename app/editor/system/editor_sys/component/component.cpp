@@ -52,7 +52,7 @@ const std::vector<glm::vec2> & Component::GetTrackPoints()
 
 void Component::ModifyTrackPoint(const size_t index, const glm::vec2 & point) 
 { 
-    if (_state & kModifyCP)
+    if (_state & kModifyTrackPoint)
     {
         _trackPoints.at(index) = point;
         OnModifyTrackPoint(index, point);
@@ -61,18 +61,18 @@ void Component::ModifyTrackPoint(const size_t index, const glm::vec2 & point)
 
 void Component::InsertTrackPoint(const size_t index, const glm::vec2 & point) 
 {
-    if (_state & kInsertCP)
+    if (_state & kInsertTrackPoint)
     {
-        _trackPoints.insert(_trackPoints.begin() + index, point);
+        _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
         OnInsertTrackPoint(index, point);
     }
 }
 
 void Component::DeleteTrackPoint(const size_t index, const glm::vec2 & point) 
 {
-    if (_state & kDeleteCP) 
+    if (_state & kDeleteTrackPoint) 
     { 
-        _trackPoints.erase(_trackPoints.begin() + index);
+        _trackPoints.erase(std::next(_trackPoints.begin(), index));
         OnDeleteTrackPoint(index, point);
     }
 }

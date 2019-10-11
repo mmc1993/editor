@@ -137,6 +137,10 @@ public:
         Operation(): mOpMode(OpModeEnum::kDrag) { }
     } mOperation;
 
+    std::vector<SharePtr<GLMesh>> mMeshBuffer;
+    SharePtr<GLProgram> mGLProgramStroke;
+    SharePtr<GLProgram> mGLProgramTrack;
+
 public:
     UIStateGLCanvas();
     ~UIStateGLCanvas();
