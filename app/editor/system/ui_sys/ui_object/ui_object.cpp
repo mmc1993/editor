@@ -444,11 +444,6 @@ void UIObject::DispatchEventDrag()
                 auto hitFreeObject = DispatchEventDrag(
                     UIEvent::Drag(1, state->mDrag.mBegWorld, 
                     state->mDrag.mDragObj->shared_from_this()));
-
-                //  当前没有释放节点
-                //  位置在新节点内部
-                //  脱离旧释放节点
-
                 state->mDrag.mEndWorld = ImGui::GetMousePos();
                 if (state->mDrag.mFreeObj == nullptr)
                 {
@@ -1024,8 +1019,8 @@ void UIObjectGLCanvas::HandlePostCommands()
 void UIObjectGLCanvas::HandleFowardCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetBind(state->mRenderTarget, GL_DRAW_FRAMEBUFFER);
-    tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+    tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
+    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
     for (auto & command : state->mFowardCommands)
     {
@@ -1045,7 +1040,7 @@ void UIObjectGLCanvas::HandleFowardCommands()
             glDrawElements(GL_TRIANGLES, material->GetMesh()->GetECount(), GL_UNSIGNED_INT, nullptr);
         }
     }
-    tools::RenderTargetBind(0, GL_DRAW_FRAMEBUFFER);
+    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
 void UIObjectGLCanvas::CollectCommands()
@@ -1076,6 +1071,44 @@ void UIObjectGLCanvas::HandleCommands()
         HandlePostCommands();
         state->mPostCommands.clear();
     }
+    if (!state->mOperation.mSelectObjects.empty())
+    {
+        tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
+        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                      GL_TEXTURE_2D, state->mRenderTextures[0]);
+        DrawBorderObjects();
+        DrawControlPoints();
+        tools::RenderTargetBind(0, GL_FRAMEBUFFER);
+    }
+}
+
+void UIObjectGLCanvas::DrawBorderObjects()
+{
+    std::vector<GLMesh::Vertex> points;
+    std::vector<uint>           indexs;
+    auto state = GetState<UIStateGLCanvas>();
+    for (auto & object : state->mOperation.mSelectObjects)
+    {
+        uint value = 255;
+        for (auto & component : object->GetComponents())
+        {
+            value *= 2;
+            glm::vec4 color(
+                (value & 0xff)     / 255.0f, 
+                (value & 0xff00)   / 255.0f, 
+                (value & 0xff0000) / 255.0f, 1.0f);
+            auto & cps = component->GetControlPoints();
+            for (auto i = 0; i != cps.size(); ++i)
+            {
+                points.emplace_back(cps.at(i)                   , color);
+                points.emplace_back(cps.at((i + 1) % cps.size()), color);
+            }
+        }
+    }
+}
+
+void UIObjectGLCanvas::DrawControlPoints()
+{
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<Interface::PostCommand> & cmd)

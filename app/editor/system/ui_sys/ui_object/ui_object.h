@@ -3,6 +3,7 @@
 #include "../include.h"
 #include "../ui_event.h"
 #include "../ui_state/ui_state.h"
+#include "../../raw_sys/raw.h"
 
 #ifdef GetObject
 #undef GetObject
@@ -150,6 +151,9 @@ private:
     void HandlePostCommands();
     void CollectCommands();
     void HandleCommands();
+
+    void DrawBorderObjects();
+    void DrawControlPoints();
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
