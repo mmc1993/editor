@@ -1076,13 +1076,13 @@ void UIObjectGLCanvas::HandleCommands()
         tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, state->mRenderTextures[0]);
-        DrawBorderObjects();
-        DrawControlPoints();
+        DrawStrokeObjects();
+        DrawTrackPoints();
         tools::RenderTargetBind(0, GL_FRAMEBUFFER);
     }
 }
 
-void UIObjectGLCanvas::DrawBorderObjects()
+void UIObjectGLCanvas::DrawStrokeObjects()
 {
     for (auto & object : GetState<UIStateGLCanvas>()->mOperation.mSelectObjects)
     {
@@ -1095,20 +1095,24 @@ void UIObjectGLCanvas::DrawBorderObjects()
             glm::vec4 color((value & 0xff)     / 255.0f, 
                             (value & 0xff00)   / 255.0f, 
                             (value & 0xff0000) / 255.0f, 1.0f);
-            auto & ctrlPoints = component->GetControlPoints();
-            for (auto i = 0; i != ctrlPoints.size(); ++i)
+            auto & trackPoints = component->GetTrackPoints();
+            for (auto i = 0; i != trackPoints.size(); ++i)
             {
-                points.emplace_back(ctrlPoints.at(i)                          , color);
-                points.emplace_back(ctrlPoints.at((i + 1) % ctrlPoints.size()), color);
+                points.emplace_back(trackPoints.at(i)                           , color);
+                points.emplace_back(trackPoints.at((i + 1) % trackPoints.size()), color);
             }
             //GLMesh mesh;
             //mesh.Init(points, indexs, GLMesh::Vertex::EnableEnum::kV | GLMesh::Vertex::EnableEnum::kV);
             //  ∞Û∂®Shader
+
+            //  √Ë±ﬂ, √Ëµ„
+            //  GLMesh
+            //  GLProgram
         }
     }
 }
 
-void UIObjectGLCanvas::DrawControlPoints()
+void UIObjectGLCanvas::DrawTrackPoints()
 {
 }
 

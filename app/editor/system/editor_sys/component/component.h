@@ -64,19 +64,19 @@ public:
                                   const std::string & title) = 0;
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
-    const std::vector<glm::vec2> & GetControlPoints();
-    void ModifyControlPoint(const size_t index, const glm::vec2 & point);
-    void InsertControlPoint(const size_t index, const glm::vec2 & point);
-    void DeleteControlPoint(const size_t index, const glm::vec2 & point);
+    const std::vector<glm::vec2> & GetTrackPoints();
+    void ModifyTrackPoint(const size_t index, const glm::vec2 & point);
+    void InsertTrackPoint(const size_t index, const glm::vec2 & point);
+    void DeleteTrackPoint(const size_t index, const glm::vec2 & point);
 
 protected:
     virtual std::vector<Property> CollectProperty() = 0;
-    virtual void OnModifyControlPoint(const size_t index, const glm::vec2 & point) {};
-    virtual void OnInsertControlPoint(const size_t index, const glm::vec2 & point) {};
-    virtual void OnDeleteControlPoint(const size_t index, const glm::vec2 & point) {};
+    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) {};
+    virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) {};
+    virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) {};
 
 protected:
     size_t              _state;
     GLObject *          _owner;
-    std::vector<glm::vec2> _controlPoints;
+    std::vector<glm::vec2> _trackPoints;
 };

@@ -126,7 +126,7 @@ public:
         OpModeEnum mOpMode;
 
         //  激活的对象
-        size_t mCompControlIndex;
+        size_t mCompTrackPointIndex;
         SharePtr<GLObject> mActiveObject;
         SharePtr<Component>  mActiveComp;
 

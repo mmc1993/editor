@@ -45,34 +45,34 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
     return std::move(result);
 }
 
-const std::vector<glm::vec2> & Component::GetControlPoints()
+const std::vector<glm::vec2> & Component::GetTrackPoints()
 {
-    return _controlPoints;
+    return _trackPoints;
 }
 
-void Component::ModifyControlPoint(const size_t index, const glm::vec2 & point) 
+void Component::ModifyTrackPoint(const size_t index, const glm::vec2 & point) 
 { 
     if (_state & kModifyCP)
     {
-        _controlPoints.at(index) = point;
-        OnModifyControlPoint(index, point);
+        _trackPoints.at(index) = point;
+        OnModifyTrackPoint(index, point);
     }
 }
 
-void Component::InsertControlPoint(const size_t index, const glm::vec2 & point) 
+void Component::InsertTrackPoint(const size_t index, const glm::vec2 & point) 
 {
     if (_state & kInsertCP)
     {
-        _controlPoints.insert(_controlPoints.begin() + index, point);
-        OnInsertControlPoint(index, point);
+        _trackPoints.insert(_trackPoints.begin() + index, point);
+        OnInsertTrackPoint(index, point);
     }
 }
 
-void Component::DeleteControlPoint(const size_t index, const glm::vec2 & point) 
+void Component::DeleteTrackPoint(const size_t index, const glm::vec2 & point) 
 {
     if (_state & kDeleteCP) 
     { 
-        _controlPoints.erase(_controlPoints.begin() + index);
-        OnDeleteControlPoint(index, point);
+        _trackPoints.erase(_trackPoints.begin() + index);
+        OnDeleteTrackPoint(index, point);
     }
 }

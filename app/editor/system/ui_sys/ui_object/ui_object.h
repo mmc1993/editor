@@ -152,8 +152,8 @@ private:
     void CollectCommands();
     void HandleCommands();
 
-    void DrawBorderObjects();
-    void DrawControlPoints();
+    void DrawStrokeObjects();
+    void DrawTrackPoints();
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
