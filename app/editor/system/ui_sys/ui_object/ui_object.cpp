@@ -1084,25 +1084,26 @@ void UIObjectGLCanvas::HandleCommands()
 
 void UIObjectGLCanvas::DrawBorderObjects()
 {
-    std::vector<GLMesh::Vertex> points;
-    std::vector<uint>           indexs;
-    auto state = GetState<UIStateGLCanvas>();
-    for (auto & object : state->mOperation.mSelectObjects)
+    for (auto & object : GetState<UIStateGLCanvas>()->mOperation.mSelectObjects)
     {
         uint value = 255;
         for (auto & component : object->GetComponents())
         {
             value *= 2;
-            glm::vec4 color(
-                (value & 0xff)     / 255.0f, 
-                (value & 0xff00)   / 255.0f, 
-                (value & 0xff0000) / 255.0f, 1.0f);
-            auto & cps = component->GetControlPoints();
-            for (auto i = 0; i != cps.size(); ++i)
+            std::vector<uint>           indexs;
+            std::vector<GLMesh::Vertex> points;
+            glm::vec4 color((value & 0xff)     / 255.0f, 
+                            (value & 0xff00)   / 255.0f, 
+                            (value & 0xff0000) / 255.0f, 1.0f);
+            auto & ctrlPoints = component->GetControlPoints();
+            for (auto i = 0; i != ctrlPoints.size(); ++i)
             {
-                points.emplace_back(cps.at(i)                   , color);
-                points.emplace_back(cps.at((i + 1) % cps.size()), color);
+                points.emplace_back(ctrlPoints.at(i)                          , color);
+                points.emplace_back(ctrlPoints.at((i + 1) % ctrlPoints.size()), color);
             }
+            //GLMesh mesh;
+            //mesh.Init(points, indexs, GLMesh::Vertex::EnableEnum::kV | GLMesh::Vertex::EnableEnum::kV);
+            //  °ó¶¨Shader
         }
     }
 }

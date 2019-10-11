@@ -82,10 +82,13 @@ public:
 
     SharePtr<CompTransform> GetTransform();
 
+    glm::mat4 GetWorldMatrix();
+
 private:
     std::string                         _name;
     size_t                              _state;
-    GLObject *                          _parent;
+    GLObject*                           _parent;
+    glm::mat4                           _worldMat;
     SharePtr<CompTransform>             _transform;
     std::vector<SharePtr<GLObject>>     _children;
     std::vector<SharePtr<Component>>    _components;

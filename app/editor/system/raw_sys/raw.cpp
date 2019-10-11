@@ -21,22 +21,22 @@ bool GLMesh::Init(const std::string & url)
     return true;
 }
 
-void GLMesh::Init(const std::vector<Vertex>& vertexs, const std::vector<uint>& indexs, uint enabled, uint vUsage, uint eUsage)
+void GLMesh::Init(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint enabled, uint vUsage, uint eUsage)
 {
-    Init(vertexs.data(), (uint)vertexs.size(), indexs.data(), (uint)indexs.size(), enabled, vUsage, eUsage);
+    Init(points.data(), (uint)points.size(), indexs.data(), (uint)indexs.size(), enabled, vUsage, eUsage);
 }
 
-void GLMesh::Init(const Vertex * vertexs, const uint vertexLength, const uint * indexs, const uint indexLength, uint enabled, uint vUsage, uint eUsage)
+void GLMesh::Init(const Vertex * points, const uint pointsLength, const uint * indexs, const uint indexsLength, uint enabled, uint vUsage, uint eUsage)
 {
-    _vCount = vertexLength;
-    _eCount = indexLength;
+    _vCount = pointsLength;
+    _eCount = indexsLength;
 
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
 
     glGenBuffers(1, &_vbo);
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vCount, vertexs, vUsage);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vCount, points, vUsage);
 
     glGenBuffers(1, &_ebo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);

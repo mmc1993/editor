@@ -60,14 +60,17 @@ public:
 
     //  ÍêÈ«Ìî³ä
     void Init(
-        const std::vector<Vertex> & vertexs, 
+        const std::vector<Vertex> & points, 
         const std::vector<uint> &   indexs, 
         uint enabled, uint vUsage = GL_STATIC_DRAW, uint eUsage = GL_STATIC_DRAW);
 
     void Init(
-        const Vertex * vertexs, const uint vertexLength, 
-        const uint *    indexs, const uint indexLength, 
+        const Vertex * points, const uint pointsLength, 
+        const uint *   indexs, const uint indexsLength, 
         uint enabled, uint vUsage = GL_STATIC_DRAW, uint eUsage = GL_STATIC_DRAW);
+
+    void Update(const std::vector<Vertex> & points,
+                const std::vector<uint> &   indexs);
 
     uint GetVAO() const { return _vao; }
     uint GetVBO() const { return _vbo; }

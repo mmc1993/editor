@@ -138,6 +138,8 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
     canvas->GetMatrixStack().Mul(Interface::MatrixStack::kModel, GetTransform()->GetMatrix());
+    //  记录世界坐标系中的矩阵
+    _worldMat = canvas->GetMatrixStack().GetM();
 
     OnUpdate(dt);
 
@@ -240,4 +242,9 @@ SharePtr<CompTransform> GLObject::GetTransform()
 {
     ASSERT_LOG(_transform != nullptr, "");
     return _transform;
+}
+
+glm::mat4 GLObject::GetWorldMatrix()
+{
+    return _worldMat;
 }
