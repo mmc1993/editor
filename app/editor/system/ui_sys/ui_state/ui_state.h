@@ -102,20 +102,12 @@ public:
 
 class GLMesh;
 class GLObject;
+class Component;
 class GLProgram;
 class GLTexture;
 class GLMaterial;
 
 class UIStateGLCanvas : public UIState {
-public:
-    //  矩阵栈
-    enum class MatrixTypeEnum {
-        kModel,
-        kView,
-        kProj,
-        Length,
-    };
-
 public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
@@ -123,6 +115,27 @@ public:
     Interface::MatrixStack mMatrixStack;
     std::vector<SharePtr<Interface::PostCommand>>   mPostCommands;
     std::vector<SharePtr<Interface::FowardCommand>> mFowardCommands;
+
+    //  编辑功能相关
+    struct Operation {
+        enum class OpModeEnum {
+            kDrag,
+            kEdit,
+        };
+        //  操作模式
+        OpModeEnum mOpMode;
+
+        //  激活的对象
+        size_t mCompControlIndex;
+        SharePtr<GLObject> mActiveObject;
+        SharePtr<Component>  mActiveComp;
+
+        //  选中的对象
+        std::vector<SharePtr<GLObject>> mSelectObjects;
+
+        //  初始化
+        Operation(): mOpMode(OpModeEnum::kDrag) { }
+    } mOperation;
 
 public:
     UIStateGLCanvas();

@@ -1078,24 +1078,14 @@ void UIObjectGLCanvas::HandleCommands()
     }
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<Interface::FowardCommand> & cmd)
-{
-    GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
-}
-
 void UIObjectGLCanvas::Post(const SharePtr<Interface::PostCommand> & cmd)
-{ 
+{
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
-void UIObjectGLCanvas::BindRoot(const SharePtr<GLObject>& root)
+void UIObjectGLCanvas::Post(const SharePtr<Interface::FowardCommand> & cmd)
 {
-    GetState<UIStateGLCanvas>()->mRoot = root;
-}
-
-Interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
-{
-    return GetState<UIStateGLCanvas>()->mMatrixStack;
+    GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
@@ -1123,6 +1113,16 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
 
     //  其他参数
     program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
+}
+
+Interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
+{
+    return GetState<UIStateGLCanvas>()->mMatrixStack;
+}
+
+void UIObjectGLCanvas::BindRoot(const SharePtr<GLObject>& root)
+{
+    GetState<UIStateGLCanvas>()->mRoot = root;
 }
 
 bool UIObjectGLCanvas::OnEnter()

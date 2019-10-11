@@ -138,24 +138,21 @@ public:
 
 class UIObjectGLCanvas : public UIObject {
 public:
-    void Post(const SharePtr<Interface::FowardCommand> & cmd);
-    void Post(const SharePtr<Interface::PostCommand>   & cmd);
-    void BindRoot(const SharePtr<GLObject> & root);
-    Interface::MatrixStack & GetMatrixStack();
     UIObjectGLCanvas();
+    Interface::MatrixStack & GetMatrixStack();
+    void BindRoot(const SharePtr<GLObject> & root);
+    void Post(const SharePtr<Interface::PostCommand>   & cmd);
+    void Post(const SharePtr<Interface::FowardCommand> & cmd);
+    void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
 private:
     void HandleFowardCommands();
     void HandlePostCommands();
     void CollectCommands();
     void HandleCommands();
-    void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnApplyLayout() override;
     virtual void OnResetLayout() override;
-
-private:
-
 };
