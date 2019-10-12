@@ -1120,7 +1120,7 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             ASSERT_LOG(glGetError() == 0, "");
             glBindVertexArray(mesh->GetVAO());
             ASSERT_LOG(glGetError() == 0, "");
-            glDrawArrays(GL_LINES, 0, mesh->GetVCount());
+            glDrawArrays(GL_TRIANGLES, 0, mesh->GetVCount());
             ASSERT_LOG(glGetError() == 0, "");
         }
     }
@@ -1245,18 +1245,20 @@ void UIObjectGLCanvas::OnApplyLayout()
     if (state->Move_.z != state->Move.z || state->Move_.w != state->Move.w)
     {
         glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[0]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
         glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[1]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 
