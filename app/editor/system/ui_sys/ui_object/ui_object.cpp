@@ -1010,7 +1010,7 @@ void UIObjectGLCanvas::HandlePostCommands()
             tools::RenderTargetAttachment(
                 GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, state->mRenderTextures[0]);
-            command->mProgram->BindUniformTex2D("UNIFORM_SCREEN", state->mRenderTextures[1], 0);
+            command->mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
             command->Call();
             Post(command->mProgram,command->mTransform);
             glBindVertexArray(command->mMesh->GetVAO());
@@ -1055,6 +1055,19 @@ void UIObjectGLCanvas::CollCommands()
 void UIObjectGLCanvas::CallCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
+
+    tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
+    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                  GL_TEXTURE_2D, state->mRenderTextures[0]);
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    iint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+    glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
+
+    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
+
     if (!state->mFowardCommands.empty())
     {
         HandleFowardCommands();
@@ -1076,10 +1089,12 @@ void UIObjectGLCanvas::CallCommands()
         DrawTrackingPoints();
         tools::RenderTargetBind(0, GL_FRAMEBUFFER);
     }
+    glViewport(0, 0, viewport[2], viewport[3]);
 }
 
 void UIObjectGLCanvas::DrawOutlineObjects()
 {
+    glLineWidth(2);
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
@@ -1089,8 +1104,8 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             value *= 2;
             std::vector<GLMesh::Vertex> points;
             glm::vec4 color((value & 0xff)     / 255.0f,
-                            (value & 0xff00)   / 255.0f, 
-                            (value & 0xff0000) / 255.0f, 1.0f);
+                            (value & 0xff00)   / 255.0f,
+                            (value & 0xff0000) / 255.0f,1.0f);
             auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
             for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
@@ -1120,7 +1135,7 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             ASSERT_LOG(glGetError() == 0, "");
             glBindVertexArray(mesh->GetVAO());
             ASSERT_LOG(glGetError() == 0, "");
-            glDrawArrays(GL_TRIANGLES, 0, mesh->GetVCount());
+            glDrawArrays(GL_LINES, 0, mesh->GetVCount());
             ASSERT_LOG(glGetError() == 0, "");
         }
     }
@@ -1128,6 +1143,50 @@ void UIObjectGLCanvas::DrawOutlineObjects()
 
 void UIObjectGLCanvas::DrawTrackingPoints()
 {
+    //auto state = GetState<UIStateGLCanvas>();
+    //for (auto & object : state->mOperation.m)
+    //{
+    //    uint value = 255;
+    //    for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
+    //    {
+    //        value *= 2;
+    //        std::vector<GLMesh::Vertex> points;
+    //        glm::vec4 color((value & 0xff)     / 255.0f,
+    //                        (value & 0xff00)   / 255.0f,
+    //                        (value & 0xff0000) / 255.0f,1.0f);
+    //        auto & component = object->GetComponents().at(i0);
+    //        auto & trackPoints = component->GetTrackPoints();
+    //        for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
+    //        {
+    //            points.emplace_back(trackPoints.at(i1)                           , color);
+    //            points.emplace_back(trackPoints.at((i1 + 1) % trackPoints.size()), color);
+    //        }
+
+    //        //  初始化 Mesh
+    //        if (i0 == state->mMeshBuffer.size())
+    //        {
+    //            auto mesh = std::create_ptr<GLMesh>();
+    //            mesh->Init(points,std::vector<uint>(), 
+    //                GLMesh::Vertex::kV | GLMesh::Vertex::kC);
+    //            state->mMeshBuffer.push_back(mesh);
+    //        }
+    //        else
+    //        {
+    //            state->mMeshBuffer.back()->Update(points, std::vector<uint>());
+    //        }
+
+    //        auto &mesh = state->mMeshBuffer.back();
+    //        state->mGLProgramSolidFill->UsePass(0);
+    //        ASSERT_LOG(glGetError() == 0, "");
+    //        Post(  state->mGLProgramSolidFill,
+    //                object->GetWorldMatrix());
+    //        ASSERT_LOG(glGetError() == 0, "");
+    //        glBindVertexArray(mesh->GetVAO());
+    //        ASSERT_LOG(glGetError() == 0, "");
+    //        glDrawArrays(GL_LINES, 0, mesh->GetVCount());
+    //        ASSERT_LOG(glGetError() == 0, "");
+    //    }
+    //}
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<interface::PostCommand> & cmd)
@@ -1150,21 +1209,21 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     const auto & matrixMVP = matrixP * matrixMV;
 
     //  矩阵
-    program->BindUniformMatrix("UNIFORM_MATRIX_M", transform);
-    program->BindUniformMatrix("UNIFORM_MATRIX_V", matrixV);
-    program->BindUniformMatrix("UNIFORM_MATRIX_P", matrixP);
-    program->BindUniformMatrix("UNIFORM_MATRIX_MV", matrixMV);
-    program->BindUniformMatrix("UNIFORM_MATRIX_VP", matrixVP);
-    program->BindUniformMatrix("UNIFORM_MATRIX_MVP", matrixMVP);
+    program->BindUniformMatrix("uniform_matrix_m", transform);
+    program->BindUniformMatrix("uniform_matrix_v", matrixV);
+    program->BindUniformMatrix("uniform_matrix_p", matrixP);
+    program->BindUniformMatrix("uniform_matrix_mv", matrixMV);
+    program->BindUniformMatrix("uniform_matrix_vp", matrixVP);
+    program->BindUniformMatrix("uniform_matrix_mvp", matrixMVP);
 
     //  逆矩阵
-    program->BindUniformMatrix("UNIFORM_MATRIX_V_INV", glm::inverse(matrixV));
-    program->BindUniformMatrix("UNIFORM_MATRIX_P_INV", glm::inverse(matrixP));
-    program->BindUniformMatrix("UNIFORM_MATRIX_MV_INV", glm::inverse(matrixMV));
-    program->BindUniformMatrix("UNIFORM_MATRIX_VP_INV", glm::inverse(matrixVP));
+    program->BindUniformMatrix("uniform_matrix_v_inv", glm::inverse(matrixV));
+    program->BindUniformMatrix("uniform_matrix_p_inv", glm::inverse(matrixP));
+    program->BindUniformMatrix("uniform_matrix_mv_inv", glm::inverse(matrixMV));
+    program->BindUniformMatrix("uniform_matrix_vp_inv", glm::inverse(matrixVP));
 
     //  其他参数
-    program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
+    program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
 void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
@@ -1213,9 +1272,9 @@ bool UIObjectGLCanvas::OnEnter()
     {
         auto state = GetState<UIStateGLCanvas>();
         ASSERT_LOG(state->mRoot != nullptr, "");
-        const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
-                                     state->Move.z *  0.5f, state->Move.w *  0.5f);
-        const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f,
+                                     state->Move.w * -0.5f, state->Move.w * 0.5f);
+        const auto view = glm::lookAt(glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
         state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
         state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
