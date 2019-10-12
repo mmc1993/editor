@@ -140,10 +140,10 @@ public:
 class UIObjectGLCanvas : public UIObject {
 public:
     UIObjectGLCanvas();
-    Interface::MatrixStack & GetMatrixStack();
+    interface::MatrixStack & GetMatrixStack();
     void BindRoot(const SharePtr<GLObject> & root);
-    void Post(const SharePtr<Interface::PostCommand>   & cmd);
-    void Post(const SharePtr<Interface::FowardCommand> & cmd);
+    void Post(const SharePtr<interface::PostCommand>   & cmd);
+    void Post(const SharePtr<interface::FowardCommand> & cmd);
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
 private:

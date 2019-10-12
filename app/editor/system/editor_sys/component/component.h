@@ -7,7 +7,7 @@ class UIObject;
 class UIObjectGLCanvas;
 
 class Component
-    : public Interface::Serializer 
+    : public interface::Serializer 
     , public std::enable_shared_from_this<Component> {
 public:
     enum StateEnum {
@@ -18,17 +18,17 @@ public:
     };
 
     struct Property {
-        Interface::Serializer::StringValueTypeEnum mType;
+        interface::Serializer::StringValueTypeEnum mType;
         std::string                                mName;
         void *                                     mMember;
 
         Property()
-            : mType(Interface::Serializer::StringValueTypeEnum::kERR)
+            : mType(interface::Serializer::StringValueTypeEnum::kERR)
             , mMember(nullptr)
         { }
 
         Property(
-            Interface::Serializer::StringValueTypeEnum type, 
+            interface::Serializer::StringValueTypeEnum type, 
             const std::string & name, void * member)
             : mType(type), mName(name), mMember(member)
         { }

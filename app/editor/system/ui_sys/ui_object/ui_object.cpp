@@ -998,7 +998,7 @@ void UIObjectGLCanvas::HandlePostCommands()
     {
         for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
         {
-            if (command->mType == Interface::PostCommand::kSwap)
+            if (command->mType == interface::PostCommand::kSwap)
             {
                 std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
             }
@@ -1049,13 +1049,13 @@ void UIObjectGLCanvas::CollectCommands()
     const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
                                  state->Move.z *  0.5f, state->Move.w *  0.5f);
     const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    state->mMatrixStack.Identity(Interface::MatrixStack::kModel);
-    state->mMatrixStack.Identity(Interface::MatrixStack::kView, view);
-    state->mMatrixStack.Identity(Interface::MatrixStack::kProj, proj);
+    state->mMatrixStack.Identity(interface::MatrixStack::kModel);
+    state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
+    state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
     state->mRoot->Update(this, 0.0f);
-    state->mMatrixStack.Pop(Interface::MatrixStack::kModel);
-    state->mMatrixStack.Pop(Interface::MatrixStack::kView);
-    state->mMatrixStack.Pop(Interface::MatrixStack::kProj);
+    state->mMatrixStack.Pop(interface::MatrixStack::kModel);
+    state->mMatrixStack.Pop(interface::MatrixStack::kView);
+    state->mMatrixStack.Pop(interface::MatrixStack::kProj);
 }
 
 void UIObjectGLCanvas::HandleCommands()
@@ -1084,23 +1084,40 @@ void UIObjectGLCanvas::HandleCommands()
 
 void UIObjectGLCanvas::DrawOutlineObjects()
 {
-    for (auto & object : GetState<UIStateGLCanvas>()->mOperation.mSelectObjects)
+    auto state = GetState<UIStateGLCanvas>();
+    for (auto & object : state->mOperation.mSelectObjects)
     {
         uint value = 255;
-        for (auto & component : object->GetComponents())
+        for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
             value *= 2;
-            std::vector<uint>           indexs;
             std::vector<GLMesh::Vertex> points;
-            glm::vec4 color((value & 0xff)     / 255.0f, 
+            glm::vec4 color((value & 0xff)     / 255.0f,
                             (value & 0xff00)   / 255.0f, 
                             (value & 0xff0000) / 255.0f, 1.0f);
+            auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
-            for (auto i = 0; i != trackPoints.size(); ++i)
+            for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
             {
-                points.emplace_back(trackPoints.at(i)                           , color);
-                points.emplace_back(trackPoints.at((i + 1) % trackPoints.size()), color);
+                points.emplace_back(trackPoints.at(i1)                           , color);
+                points.emplace_back(trackPoints.at((i1 + 1) % trackPoints.size()), color);
             }
+
+            //  ³õÊ¼»¯ Mesh
+            if (i0 == state->mMeshBuffer.size())
+            {
+                auto mesh = std::create_ptr<GLMesh>();
+                mesh->Init(points,std::vector<uint>(), 
+                    GLMesh::Vertex::kV | GLMesh::Vertex::kC);
+                state->mMeshBuffer.push_back(mesh);
+            }
+            else
+            {
+                state->mMeshBuffer.back()->Update(points, std::vector<uint>());
+            }
+
+
+
             //GLMesh mesh;
             //mesh.Init(points, indexs, GLMesh::Vertex::EnableEnum::kV | GLMesh::Vertex::EnableEnum::kV);
             //  °ó¶¨Shader
@@ -1116,12 +1133,12 @@ void UIObjectGLCanvas::DrawTrackingPoints()
 {
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<Interface::PostCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<interface::PostCommand> & cmd)
 {
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<Interface::FowardCommand> & cmd)
+void UIObjectGLCanvas::Post(const SharePtr<interface::FowardCommand> & cmd)
 {
     GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
 }
@@ -1129,8 +1146,8 @@ void UIObjectGLCanvas::Post(const SharePtr<Interface::FowardCommand> & cmd)
 void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
-    const auto & matrixV = GetMatrixStack().Top(Interface::MatrixStack::kView);
-    const auto & matrixP = GetMatrixStack().Top(Interface::MatrixStack::kProj);
+    const auto & matrixV = GetMatrixStack().Top(interface::MatrixStack::kView);
+    const auto & matrixP = GetMatrixStack().Top(interface::MatrixStack::kProj);
     const auto & matrixMV = matrixV * transform;
     const auto & matrixVP = matrixP * matrixV;
     const auto & matrixMVP = matrixP * matrixMV;
@@ -1153,7 +1170,7 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
 }
 
-Interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
+interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack;
 }

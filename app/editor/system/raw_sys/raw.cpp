@@ -63,6 +63,8 @@ void GLMesh::Init(const Vertex * points, const uint pointsLength, const uint * i
 
 void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint vUsage, uint eUsage)
 {
+    _vCount = points.size();
+    _eCount = indexs.size();
     glBindBuffer(GL_ARRAY_BUFFER,         _vbo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
     glBufferData(GL_ARRAY_BUFFER,         sizeof(Vertex) * points.size(), points.data(), vUsage);

@@ -8,7 +8,7 @@ class GLProgram;
 class GLTexture;
 class GLMaterial;
 
-namespace Interface {
+namespace interface {
     struct RenderCommand {
         std::function<void(const RenderCommand &)> mCallback;
         void Call() { if (mCallback) mCallback(*this); }

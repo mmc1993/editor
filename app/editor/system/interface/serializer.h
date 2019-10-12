@@ -2,7 +2,7 @@
 
 #include "../../include.h"
 
-namespace Interface {
+namespace interface {
 
 //  提供序列化操作抽象类
 class Serializer {
@@ -33,6 +33,6 @@ public:
     virtual void DecodeBinary(std::ifstream & is) = 0;
 };
 
-#define FROM_STRING_PARSE_VARIABLE(type, key, val, sep, K, out) if (key == K) return Interface::Serializer::FromStringParse(type, val, sep, &out)
+#define FROM_STRING_PARSE_VARIABLE(type, key, val, sep, K, out) if (key == K) return interface::Serializer::FromStringParse(type, val, sep, &out)
 
 }

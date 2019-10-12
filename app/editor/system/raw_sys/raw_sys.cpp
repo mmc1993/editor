@@ -11,9 +11,17 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
     {
         raw = std::create_ptr<GLMesh>();
     }
-    else if (suffix == ".png" || suffix == ".jpg")
+    else if (suffix == ".png")
     {
         raw = std::create_ptr<GLTexture>();
+    }
+    else if (suffix == ".program")
+    {
+        raw = std::create_ptr<GLProgram>();
+    }
+    else if (suffix == ".material")
+    {
+        raw = std::create_ptr<GLMaterial>();
     }
     auto ret = raw->Init(url);
     ASSERT_LOG(ret, "{0}", url);

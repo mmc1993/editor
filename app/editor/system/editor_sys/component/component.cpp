@@ -26,19 +26,19 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
     {
         switch (property.mType)
         {
-        case Interface::Serializer::StringValueTypeEnum::kINT:
+        case interface::Serializer::StringValueTypeEnum::kINT:
             result.push_back(std::create_ptr<UIPropertyInt>(*(int *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kBOOL:
+        case interface::Serializer::StringValueTypeEnum::kBOOL:
             result.push_back(std::create_ptr<UIPropertyBool>(*(bool *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kFLOAT:
+        case interface::Serializer::StringValueTypeEnum::kFLOAT:
             result.push_back(std::create_ptr<UIPropertyFloat>(*(float *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kSTRING:
+        case interface::Serializer::StringValueTypeEnum::kSTRING:
             result.push_back(std::create_ptr<UIPropertyString>(*(std::string *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kVEC2:
+        case interface::Serializer::StringValueTypeEnum::kVEC2:
             result.push_back(std::create_ptr<UIPropertyVector2>(*(glm::vec2 *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kVEC3:
+        case interface::Serializer::StringValueTypeEnum::kVEC3:
             result.push_back(std::create_ptr<UIPropertyVector3>(*(glm::vec3 *)property.mMember, property.mName, modifyfunc)); break;
-        case Interface::Serializer::StringValueTypeEnum::kVEC4:
+        case interface::Serializer::StringValueTypeEnum::kVEC4:
             result.push_back(std::create_ptr<UIPropertyVector4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
         }
     }

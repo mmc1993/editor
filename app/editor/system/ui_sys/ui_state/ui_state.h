@@ -112,9 +112,9 @@ public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
     SharePtr<GLObject>  mRoot;
-    Interface::MatrixStack mMatrixStack;
-    std::vector<SharePtr<Interface::PostCommand>>   mPostCommands;
-    std::vector<SharePtr<Interface::FowardCommand>> mFowardCommands;
+    interface::MatrixStack mMatrixStack;
+    std::vector<SharePtr<interface::PostCommand>>   mPostCommands;
+    std::vector<SharePtr<interface::FowardCommand>> mFowardCommands;
 
     //  编辑功能相关
     struct Operation {

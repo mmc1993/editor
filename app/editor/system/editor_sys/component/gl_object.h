@@ -12,7 +12,7 @@ class CompTransform;
 class UIObjectGLCanvas;
 
 class GLObject 
-    : public Interface::Serializer
+    : public interface::Serializer
     , public std::enable_shared_from_this<GLObject> {
 public:
     enum StateEnum {
