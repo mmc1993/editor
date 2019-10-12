@@ -13,7 +13,7 @@ public:
     {
         auto it = _resources.find(url);
         ASSERT_LOG(it != _resources.end(), "{0}", url);
-        return (T *)it->second;
+        return CastPtr<T>(it->second);
     }
 private:
     std::map<std::string, SharePtr<Raw>> _resources;

@@ -71,4 +71,7 @@ namespace tools {
     {
         glFramebufferTexture2D(type, attachment, textureType, texture, 0);
     }
+
+    //  Ô¤ÖÃ×ÅÉ«Æ÷
+    const char * const GL_PROGRAM_SOLID_FILL = "res/program/solid_fill.program";
 }

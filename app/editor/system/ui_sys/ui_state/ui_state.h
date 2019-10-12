@@ -138,8 +138,7 @@ public:
     } mOperation;
 
     std::vector<SharePtr<GLMesh>> mMeshBuffer;
-    SharePtr<GLProgram> mGLProgramStroke;
-    SharePtr<GLProgram> mGLProgramTrack;
+    SharePtr<GLProgram> mGLProgramSolidFill;
 
 public:
     UIStateGLCanvas();

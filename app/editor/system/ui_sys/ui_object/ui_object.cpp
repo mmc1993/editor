@@ -1,6 +1,7 @@
 #include "ui_object.h"
 #include "../ui_menu.h"
 #include "../../raw_sys/raw.h"
+#include "../../raw_sys/raw_sys.h"
 #include "../../atlas_sys/atlas_sys.h"
 #include "../../editor_sys/editor_sys.h"
 #include "../../editor_sys/component/gl_object.h"
@@ -985,7 +986,10 @@ UIObjectUICanvas::UIObjectUICanvas() : UIObject(UITypeEnum::kUICanvas, new UISta
 //  UIObjectGLCanvas
 // ---
 UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
-{ }
+{
+    auto state = GetState<UIStateGLCanvas>();
+    state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_SOLID_FILL);
+}
 
 void UIObjectGLCanvas::HandlePostCommands()
 {
@@ -1116,15 +1120,12 @@ void UIObjectGLCanvas::DrawOutlineObjects()
                 state->mMeshBuffer.back()->Update(points, std::vector<uint>());
             }
 
-
-
-            //GLMesh mesh;
-            //mesh.Init(points, indexs, GLMesh::Vertex::EnableEnum::kV | GLMesh::Vertex::EnableEnum::kV);
-            //  °ó¶¨Shader
-
-            //  Ãè±ß, Ãèµã
-            //  GLMesh
-            //  GLProgram
+            auto &mesh = state->mMeshBuffer.back();
+            state->mGLProgramSolidFill->UsePass(0);
+            Post(  state->mGLProgramSolidFill,
+                    object->GetWorldMatrix());
+            glBindVertexArray(mesh->GetVAO());
+            glDrawArrays(GL_LINE, 0, mesh->GetVCount());
         }
     }
 }

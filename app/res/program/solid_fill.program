@@ -1,0 +1,24 @@
+Pass Beg
+    VShader Beg
+        #version 330 core
+        layout(location = 0) in vec2 a_v_;
+        layout(location = 1) in vec4 a_c_;
+        out V_OUT_ {vec4 mColor;} v_out_;
+        uniform mat4 matrix_mvp_;
+        void main()
+        {
+            v_out_.mColor   = a_c_;
+            gl_Position     = vec4(matrix_mvp_ * vec4(a_v_, 0, 1));
+        }
+    VShader End
+
+    FShader Beg
+        #version 330 core
+        in V_OUT_{vec4 mColor;} v_out_;
+        out vec4 color_;
+        void main()
+        {
+            color_ = v_out_.mColor;
+        }
+    FShader End
+Pass End
