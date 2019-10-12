@@ -1144,6 +1144,7 @@ void UIObjectGLCanvas::DrawOutlineObjects()
 void UIObjectGLCanvas::DrawTrackingPoints()
 {
     //auto state = GetState<UIStateGLCanvas>();
+    //if (state->mOperation.mOpMode)
     //for (auto & object : state->mOperation.m)
     //{
     //    uint value = 255;
