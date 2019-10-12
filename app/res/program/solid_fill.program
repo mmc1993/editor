@@ -8,7 +8,8 @@ Pass Beg
         void main()
         {
             v_out_.mColor   = a_c_;
-            gl_Position     = vec4(matrix_mvp_ * vec4(a_v_, 0, 1));
+            gl_Position     = vec4(a_v_, 0, 1);
+            // gl_Position     = vec4(matrix_mvp_ * vec4(a_v_, 0, 1));
         }
     VShader End
 
@@ -18,7 +19,7 @@ Pass Beg
         out vec4 color_;
         void main()
         {
-            color_ = v_out_.mColor;
+            color_ = vec4(1, 0, 0, 1);
         }
     FShader End
 Pass End

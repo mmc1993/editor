@@ -57,6 +57,13 @@ void GLObject::DecodeBinary(std::ifstream & is)
         auto comp = Component::Create(name);
         comp->DecodeBinary(is);
         AddComponent(comp);
+
+        //  Transform 特殊组件, 仅存一个.
+        if (name == "Transform")
+        {
+            DelComponent(_transform);
+            _transform = CastPtr<CompTransform>(comp);
+        }
     }
     //  子节点
     tools::Deserialize(is, count);

@@ -118,7 +118,7 @@ public:
 
     //  编辑功能相关
     struct Operation {
-        enum class OpModeEnum {
+        enum OpModeEnum {
             kDrag,
             kEdit,
         };

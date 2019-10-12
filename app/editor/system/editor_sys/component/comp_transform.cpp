@@ -6,10 +6,15 @@ CompTransform::CompTransform()
     , _scale(1, 1   )
     , _position(0, 0)
 {
-    _trackPoints.push_back(glm::vec2( 5,  5));
-    _trackPoints.push_back(glm::vec2(-5,  5));
-    _trackPoints.push_back(glm::vec2(-5, -5));
-    _trackPoints.push_back(glm::vec2( 5, -5));
+    //_trackPoints.push_back(glm::vec2( 5,  5));
+    //_trackPoints.push_back(glm::vec2(-5,  5));
+    //_trackPoints.push_back(glm::vec2(-5, -5));
+    //_trackPoints.push_back(glm::vec2( 5, -5));
+
+    _trackPoints.push_back(glm::vec2( 1,  1));
+    _trackPoints.push_back(glm::vec2(-1,  1));
+    _trackPoints.push_back(glm::vec2(-1, -1));
+    _trackPoints.push_back(glm::vec2( 1, -1));
 }
 
 CompTransform::~CompTransform()

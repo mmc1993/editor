@@ -146,11 +146,15 @@ public:
     void Post(const SharePtr<interface::FowardCommand> & cmd);
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
+    //  ½»»¥²Ù×÷
+    void OptSelected(const SharePtr<GLObject> & object, bool selected);
+    void OptSelectedClear();
+
 private:
     void HandleFowardCommands();
     void HandlePostCommands();
-    void CollectCommands();
-    void HandleCommands();
+    void CollCommands();
+    void CallCommands();
 
     void DrawOutlineObjects();
     void DrawTrackingPoints();

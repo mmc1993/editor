@@ -1047,22 +1047,12 @@ void UIObjectGLCanvas::HandleFowardCommands()
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
-void UIObjectGLCanvas::CollectCommands()
+void UIObjectGLCanvas::CollCommands()
 {
-    auto state = GetState<UIStateGLCanvas>();
-    const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
-                                 state->Move.z *  0.5f, state->Move.w *  0.5f);
-    const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
-    state->mMatrixStack.Identity(interface::MatrixStack::kModel);
-    state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
-    state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
-    state->mRoot->Update(this, 0.0f);
-    state->mMatrixStack.Pop(interface::MatrixStack::kModel);
-    state->mMatrixStack.Pop(interface::MatrixStack::kView);
-    state->mMatrixStack.Pop(interface::MatrixStack::kProj);
+    GetState<UIStateGLCanvas>()->mRoot->Update(this, 0.0f);
 }
 
-void UIObjectGLCanvas::HandleCommands()
+void UIObjectGLCanvas::CallCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
     if (!state->mFowardCommands.empty())
@@ -1070,11 +1060,13 @@ void UIObjectGLCanvas::HandleCommands()
         HandleFowardCommands();
         state->mFowardCommands.clear();
     }
+    ASSERT_LOG(glGetError() == 0, "");
     if (!state->mPostCommands.empty())
     {
         HandlePostCommands();
         state->mPostCommands.clear();
     }
+    ASSERT_LOG(glGetError() == 0, "");
     if (!state->mOperation.mSelectObjects.empty())
     {
         tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
@@ -1122,10 +1114,14 @@ void UIObjectGLCanvas::DrawOutlineObjects()
 
             auto &mesh = state->mMeshBuffer.back();
             state->mGLProgramSolidFill->UsePass(0);
+            ASSERT_LOG(glGetError() == 0, "");
             Post(  state->mGLProgramSolidFill,
                     object->GetWorldMatrix());
+            ASSERT_LOG(glGetError() == 0, "");
             glBindVertexArray(mesh->GetVAO());
-            glDrawArrays(GL_LINE, 0, mesh->GetVCount());
+            ASSERT_LOG(glGetError() == 0, "");
+            glDrawArrays(GL_LINES, 0, mesh->GetVCount());
+            ASSERT_LOG(glGetError() == 0, "");
         }
     }
 }
@@ -1171,6 +1167,36 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("UNIFORM_GAME_TIME", glfwGetTime());
 }
 
+void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
+{
+    auto state    = GetState<UIStateGLCanvas>();
+    auto it = std::find(state->mOperation.mSelectObjects.begin(),
+                        state->mOperation.mSelectObjects.end(), object);
+    if (selected)
+    {
+        if (it == state->mOperation.mSelectObjects.end())
+        {
+            state->mOperation.mSelectObjects.push_back(object);
+        }
+    }
+    else
+    {
+        if (it != state->mOperation.mSelectObjects.end())
+        {
+            state->mOperation.mSelectObjects.erase(it);
+        }
+    }
+}
+
+void UIObjectGLCanvas::OptSelectedClear()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    state->mOperation.mSelectObjects.clear();
+    state->mOperation.mActiveObject= nullptr;
+    state->mOperation.mActiveComp = nullptr;
+    state->mOperation.mOpMode = UIStateGLCanvas::Operation::kDrag;
+}
+
 interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack;
@@ -1187,8 +1213,17 @@ bool UIObjectGLCanvas::OnEnter()
     {
         auto state = GetState<UIStateGLCanvas>();
         ASSERT_LOG(state->mRoot != nullptr, "");
-        CollectCommands();
-        HandleCommands();
+        const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.w * -0.5f,
+                                     state->Move.z *  0.5f, state->Move.w *  0.5f);
+        const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        state->mMatrixStack.Identity(interface::MatrixStack::kModel);
+        state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
+        state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
+        CollCommands();
+        CallCommands();
+        state->mMatrixStack.Pop(interface::MatrixStack::kModel);
+        state->mMatrixStack.Pop(interface::MatrixStack::kView);
+        state->mMatrixStack.Pop(interface::MatrixStack::kProj);
         return true;
     }
     return false;
