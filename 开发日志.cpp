@@ -63,6 +63,18 @@ ok  //  UIEventEnum 剥离
 
 使用智能指针
 
+为Object生成唯一ID
+EditorSys 只操作ID
+
+
+class UIObject {
+    uint ID;
+};
+
+class GLObject {
+    uint ID;
+};
+
 
 //  GLCanvas
 //      双击 -> 进入编辑
@@ -81,108 +93,3 @@ ok  //  UIEventEnum 剥离
 //      左键按住边框内 -> 拖动对象
 //      Delete        -> 删除对象
 
-
-class UIStateGLCanvas {
-public:
-    //  矩阵栈
-    enum class MatrixTypeEnum {
-        kModel,
-        kView,
-        kProj,
-        Length,
-    };
-    std::stack<glm::mat4> mMatrixStack[MatrixTypeEnum::Length];
-
-    //  命令队列
-    enum class CommandTypeEnum {
-        kPreProcess,    //  前置处理
-        kPostProcess,   //  后置处理
-    };
-
-    enum class PostModeEnum {
-        kOverlay,       //  叠加
-        kSwap,          //  交换
-    };
-
-    struct Command {
-        using Callback = std::function<void (const RenderCommand &)>;
-        Callback    mCallback;
-        CommandTypeEnum mType;
-        RenderCommand(CommandTypeEnum type): mType(type) {}
-        void Call() { if (mCallback) { Callback(*this); } }
-    };
-
-    struct PreCommand: public RenderCommand {
-        PreCommand(): RenderCommand(CommandTypeEnum::kPreProcess)
-        { }
-
-        SharePtr<GLMaterial> mMaterial;     //  材质
-        glm::mat4 mTransform;               //  矩阵
-    };
-
-    struct PostCommand: public RenderCommand {
-        PostCommand(): RenderCommand(CommandTypeEnum::kPostProcess)
-        { }
-
-        SharePtr<GLProgram> mProgram;       //  着色器
-        SharePtr<GLMesh> mMesh;             //  网格
-        glm::mat4 mTransform;               //  矩阵
-        PostModeEnum mMode;
-    };
-
-    GLuint mRenderTarget;
-    GLuint mRenderTextures[2];
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-namespace Interface {
-    class GLCanvasComponent {
-    public:
-        enum FlagEnum {
-            kInsert = 1 << 0,   //  支持插入操作
-            kDelete = 1 << 1,   //  支持删除操作
-            kModify = 1 << 2,   //  支持修改操作
-        }
-    public:
-        GLCanvasComponent(size_t flag): _flag(flag) { }
-        virtual void InsertControlPoint(size_t index, const glm::vec2 & point) = 0;
-        virtual void ModifyControlPoint(size_t index, const glm::vec2 & point) = 0;
-        virtual void DeleteControlPoint(size_t index)  = 0;
-        bool TestFlag(size_t flag) { return _flag & flag; }
-        void AddFlag(size_t flag) { _flag |=  flag; }
-        void DelFlag(size_t flag) { _flag &= ~flag; }
-        size_t GetFlag() const { return _flag; }
-
-    private:
-        size_t _flag;
-    }
-
-    class GLCanvasObject {
-    public:
-        GLCanvasObject(UIGLCanvas * canvas): _canvas(canvas) { }
-        virtual std::vector<GLCanvasComponent *> & GetObjects() = 0;
-        virtual void OnUpdate(float dt) = 0;
-        virtual void OnRender(float dt) = 0;
-        UIGLCanvas * GetCanvas();
-        void Update(float dt);
-
-    private:
-        UIGLCanvas * _canvas;
-    }
-}
