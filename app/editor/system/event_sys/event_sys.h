@@ -11,13 +11,13 @@ public:
         kSaveProject,       //  {}
         kFreeProject,       //  {}
         //  ui object
-        kSelectObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点, bool 是否选中, bool 是否多选 }
-        kDeleteObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点 }
-        kInsertObject,    //  { UIOBject 选中的节点, GLOBject 选中的节点, UIObject 新增的节点, GLObject 新增的节点  }
-        kRenameObject,    //  { UIObject 选中的节点, GLOBject 选中的节点, string 旧名字, string 新名字 }
+        kSelectObject,    //  { GLOBject 选中的节点, bool 是否选中, bool 是否多选 }
+        kDeleteObject,    //  { GLOBject 删除的节点 }
+        kInsertObject,    //  { GLObject 新增的节点  }
+        kRenameObject,    //  { GLOBject 选中的节点, string 旧名字 }
         //  component
-        kDeleteComponent,   //  { UIObject 选中的节点, GLOBject 选中的节点, Component 选中的组件 }
-        kAppendComponent,   //  { UIObject 选中的节点, GLOBject 选中的节点, Component 新增的组件 }
+        kDeleteComponent,   //  { GLOBject 选中的节点, Component 选中的组件 }
+        kAppendComponent,   //  { GLOBject 选中的节点, Component 新增的组件 }
     };
 
     using func_t = std::function<void(TypeEnum type, const std::any &)>;

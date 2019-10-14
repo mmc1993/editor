@@ -39,8 +39,6 @@ public:
     glm::vec4 Move_;                    //  上一帧方位
 
     std::vector<std::string> MenuBar;   //  菜单栏
-
-    std::any UserData;                  //  用户数据
 };
 
 class UIStateLayout : public UIState {
