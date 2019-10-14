@@ -23,12 +23,20 @@ public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
 
 private:
-    //  关闭项目
-    //  打开项目
+    SharePtr<UIObject> NewObject(uint id, const std::string & name);
+
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
+    void OnEventNewProject();
     void OnEventOpenProject();
     void OnEventFreeProject();
-    void OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi);
+    void OnEventInsertObject(const SharePtr<GLObject> & object);
+    void OnEventDeleteObject(const SharePtr<GLObject> & object);
+    void OnEventRenameObject(const SharePtr<GLObject> & object, const std::string &name);
+    void OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi);
+
+private:
+    std::map<uint, SharePtr<UIObject>> _id2obj;
+    std::map<SharePtr<UIObject>, uint> _obj2id;
 };
 
 //  资源列表
@@ -43,12 +51,10 @@ public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
 
 private:
-    //  选择对象
-    //  增加组件
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
-    void OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi);
-    void OnEventAppendComponent(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, const SharePtr<Component> & component);
-    void OnEventDeleteComponent(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, const SharePtr<Component> & component);
+    void OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi);
+    void OnEventAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component);
+    void OnEventDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component);
 };
 
 //  舞台
@@ -60,7 +66,7 @@ private:
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
     void OnEventOpenProject();
     void OnEventFreeProject();
-    void OnEventSelectObject(const SharePtr<UIObject> & uiObject, const SharePtr<GLObject> & glObject, bool select, bool multi);
+    void OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi);
 };
 
 //  全局
