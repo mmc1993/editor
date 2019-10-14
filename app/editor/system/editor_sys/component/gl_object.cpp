@@ -4,7 +4,17 @@
 #include "../../ui_sys/ui_object/ui_object.h"
 
 GLObject::GLObject()
-    : _state(kActive)
+    : _id(~0)
+    , _state(kActive)
+    , _parent(nullptr)
+{
+    //  PS:
+    //      这个构造函数仅在从文件反序列化时使用.
+}
+
+GLObject::GLObject(uint id)
+    : _id(id)
+    , _state(kActive)
     , _parent(nullptr)
 {
     _transform = std::create_ptr<CompTransform>();
@@ -23,8 +33,8 @@ void GLObject::OnUpdate(float dt)
 void GLObject::EncodeBinary(std::ofstream & os)
 {
     //  自身
+    tools::Serialize(os, _id);
     tools::Serialize(os, _name);
-    
     //  组件
     auto count = GetComponents().size();
     tools::Serialize(os, count);
@@ -33,7 +43,6 @@ void GLObject::EncodeBinary(std::ofstream & os)
         tools::Serialize(os,comp->GetName());
         comp->EncodeBinary(os);
     }
-
     //  子节点
     count = GetObjects().size();
     tools::Serialize(os, count);
@@ -46,6 +55,7 @@ void GLObject::EncodeBinary(std::ofstream & os)
 void GLObject::DecodeBinary(std::ifstream & is)
 {
     //  自身
+    tools::Deserialize(is, _id);
     tools::Deserialize(is, _name);
     //  组件
     size_t count;
@@ -57,14 +67,9 @@ void GLObject::DecodeBinary(std::ifstream & is)
         auto comp = Component::Create(name);
         comp->DecodeBinary(is);
         AddComponent(comp);
-
-        //  Transform 特殊组件, 仅存一个.
-        if (name == "Transform")
-        {
-            DelComponent(_transform);
-            _transform = CastPtr<CompTransform>(comp);
-        }
     }
+    SetTransform(GetComponent<CompTransform>());
+
     //  子节点
     tools::Deserialize(is, count);
     for (auto i = 0; i != count; ++i)
@@ -209,6 +214,23 @@ SharePtr<GLObject> GLObject::GetParent()
     return _parent != nullptr? _parent->shared_from_this(): nullptr;
 }
 
+void GLObject::SetTransform(const SharePtr<CompTransform> & transform)
+{
+    ASSERT_LOG(_transform == nullptr, "");
+    _transform = transform;
+}
+
+SharePtr<CompTransform> GLObject::GetTransform()
+{
+    ASSERT_LOG(_transform != nullptr, "");
+    return _transform;
+}
+
+glm::mat4 GLObject::GetWorldMatrix()
+{
+    return _worldMat;
+}
+
 void GLObject::ClearComponents()
 {
 	while (!_components.empty())
@@ -221,6 +243,7 @@ void GLObject::ClearComponents()
 
 void GLObject::AddComponent(const SharePtr<Component> & component)
 {
+    ASSERT_LOG(_id != ~0, "");
     _components.push_back(component);
     component->SetOwner(this);
     component->OnAdd();
@@ -243,15 +266,4 @@ void GLObject::DelComponent(const std::type_info & type)
 std::vector<SharePtr<Component>> & GLObject::GetComponents()
 {
     return _components;
-}
-
-SharePtr<CompTransform> GLObject::GetTransform()
-{
-    ASSERT_LOG(_transform != nullptr, "");
-    return _transform;
-}
-
-glm::mat4 GLObject::GetWorldMatrix()
-{
-    return _worldMat;
 }

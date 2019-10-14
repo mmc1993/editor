@@ -21,6 +21,7 @@ public:
 
 public:
     GLObject();
+    GLObject(uint id);
     virtual ~GLObject();
     virtual void OnUpdate(float dt);
     virtual void EncodeBinary(std::ofstream & os) override;
@@ -47,6 +48,13 @@ public:
 
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();
+
+    uint GetID() { return _id; }
+
+    void SetTransform(const SharePtr<CompTransform> & transform);
+    SharePtr<CompTransform> GetTransform();
+
+    glm::mat4 GetWorldMatrix();
 
 	void ClearComponents();
     void AddComponent(const SharePtr<Component> & component);
@@ -80,13 +88,10 @@ public:
         return std::move(result);
     }
 
-    SharePtr<CompTransform> GetTransform();
-
-    glm::mat4 GetWorldMatrix();
-
 private:
+    uint                                _id;
+    uint                                _state;
     std::string                         _name;
-    size_t                              _state;
     GLObject*                           _parent;
     glm::mat4                           _worldMat;
     SharePtr<CompTransform>             _transform;
