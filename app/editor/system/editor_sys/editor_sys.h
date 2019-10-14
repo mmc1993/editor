@@ -34,9 +34,9 @@ public:
     //  新建项目
     void OptNewProject(const std::string & url);
     //  打开项目
-    bool OptOpenProject(const std::string & url);
+    void OptOpenProject(const std::string & url);
     //  保存项目
-    bool OptSaveProject(const std::string & url);
+    void OptSaveProject(const std::string & url);
     //  关闭项目
     void OptFreeProject();
 

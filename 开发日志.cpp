@@ -63,17 +63,14 @@ ok  //  UIEventEnum 剥离
 
 使用智能指针
 
-为Object生成唯一ID
-EditorSys 只操作ID
+为GLObject生成唯一ID
+EditorSys只操作GLObject
+//  GLObject 新增_id
+//  Project 新增 _acc
+//  所有GLObject统一 EditorSys 生成
 
-
-class UIObject {
-    uint ID;
-};
-
-class GLObject {
-    uint ID;
-};
+//  从UIObject去除GLObject关联
+//  事件消息发送GLObject ID
 
 
 //  GLCanvas

@@ -113,26 +113,21 @@ void EditorSys::OptNewProject(const std::string & url)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
 }
 
-bool EditorSys::OptOpenProject(const std::string & url)
+void EditorSys::OptOpenProject(const std::string & url)
 {
     OptFreeProject();
     _project.reset(new Project());
-    auto ret = _project->Load(url);
-    if (ret)
-    {
-        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
-    }
-    return ret;
+    _project->Load(url);
+    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
 }
 
-bool EditorSys::OptSaveProject(const std::string & url)
+void EditorSys::OptSaveProject(const std::string & url)
 {
     if (_project != nullptr)
     {
         _project->Save(url);
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSaveProject, nullptr);
     }
-    return true;
 }
 
 void EditorSys::OptFreeProject()
