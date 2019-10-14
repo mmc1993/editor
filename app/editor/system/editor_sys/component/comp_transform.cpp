@@ -93,13 +93,13 @@ float CompTransform::GetAngle() const
     return _angle;
 }
 
-const glm::mat3 & CompTransform::GetMatrix()
+const glm::mat4 & CompTransform::GetMatrix()
 {
     UpdateMatrix();
     return _matrix;
 }
 
-glm::mat3 CompTransform::GetMatrixFromRoot()
+glm::mat4 CompTransform::GetMatrixFromRoot()
 {
     auto matrix = GetMatrix();
     auto parent = GetOwner()->GetParent();
@@ -111,7 +111,7 @@ glm::mat3 CompTransform::GetMatrixFromRoot()
     return matrix;
 }
 
-glm::mat3 CompTransform::GetRotateFromRoot()
+glm::mat4 CompTransform::GetRotateFromRoot()
 {
     auto matrix = GetAngleMatrix();
     auto parent = GetOwner()->GetParent();
@@ -120,12 +120,12 @@ glm::mat3 CompTransform::GetRotateFromRoot()
         matrix = parent->GetTransform()->GetAngleMatrix() * matrix;
         parent = parent->GetParent();
     }
-    return (glm::mat3)matrix;
+    return matrix;
 }
 
 glm::vec2 CompTransform::GetWorldPosition()
 {
-    return glm::vec3(GetMatrixFromRoot() * glm::vec3(0, 0, 1));
+    return glm::vec3(GetMatrixFromRoot() * glm::vec4(0, 0, 0, 1));
 }
 
 glm::mat4 CompTransform::GetAngleMatrix()
@@ -151,6 +151,7 @@ std::vector<Component::Property> CompTransform::CollectProperty()
 bool CompTransform::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
 {
     std::cout << "Title " << title << std::endl;
+    _isChange = true;
     return true;
 }
 
@@ -160,7 +161,7 @@ void CompTransform::UpdateMatrix()
     {
         auto t = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
         auto s = glm::scale(glm::mat4(1), glm::vec3(_scale, 1));
-        auto r = GetAngleMatrix();
+        auto r = glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
         _matrix = t * r * s;
         _isChange = false;
     }

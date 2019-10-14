@@ -1275,7 +1275,7 @@ bool UIObjectGLCanvas::OnEnter()
         ASSERT_LOG(state->mRoot != nullptr, "");
         const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f,
                                      state->Move.w * -0.5f, state->Move.w * 0.5f);
-        const auto view = glm::lookAt(glm::vec3(0, 0, -1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
         state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
         state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
@@ -1295,7 +1295,8 @@ void UIObjectGLCanvas::OnLeave(bool ret)
     {
         auto state = GetState<UIStateGLCanvas>();
         ImGui::Image((ImTextureID)state->mRenderTextures[0], 
-                      ImVec2(state->Move.z, state->Move.w));
+                      ImVec2(state->Move.z, state->Move.w),
+                      ImVec2(0, 1), ImVec2(1, 0));
     }
 }
 

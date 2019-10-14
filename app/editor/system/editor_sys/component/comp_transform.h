@@ -25,9 +25,9 @@ public:
     const glm::vec2 & GetScale() const;
     float GetAngle() const;
 
-    const glm::mat3 & GetMatrix();
-    glm::mat3 GetMatrixFromRoot();
-    glm::mat3 GetRotateFromRoot();
+    const glm::mat4 & GetMatrix();
+    glm::mat4 GetMatrixFromRoot();
+    glm::mat4 GetRotateFromRoot();
     glm::vec2 GetWorldPosition();
     glm::mat4 GetAngleMatrix();
 
@@ -47,7 +47,7 @@ private:
 private:
     float     _angle;
     glm::vec2 _scale;
-    glm::mat3 _matrix;
+    glm::mat4 _matrix;
     glm::vec2 _position;
     bool _isChange;
 };
