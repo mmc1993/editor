@@ -17,16 +17,21 @@ public:
     void OptInsertObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent);
     //  选中对象
     void OptSelectObject(const SharePtr<GLObject> & object, bool select, bool multi = false);
+    void OptSelectObject(uint id, bool select, bool multi = false);
     //  修改名字
     void OptRenameObject(const SharePtr<GLObject> & object, const std::string & name);
+    void OptRenameObject(uint id, const std::string & name);
     //  删除对象
     void OptDeleteObject(const SharePtr<GLObject> & object);
+    void OptDeleteObject(uint id);
 
     /// 组件
     //  新增组件
     void OptAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component);
+    void OptAppendComponent(uint id, const SharePtr<Component> & component);
     //  删除组件
     void OptDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component);
+    void OptDeleteComponent(uint id, const SharePtr<Component> & component);
 
     /// 项目
     //  新建项目
@@ -42,12 +47,14 @@ public:
     void OpenDialogNewProject(const std::string & url);
     void OpenDialogOpenProject(const std::string & url);
     //  项目是否打开
-    bool IsOpenProject() const;
-    //  生成/检查可用名字
-    std::string ObjectName(const SharePtr<GLObject> & parent) const;
-    bool        ObjectName(const SharePtr<GLObject> & parent, const std::string & name) const;
-    //  获取当前选中的对象
-    const std::vector<SharePtr<GLObject>> & GetSelectedObjects() const;
+    bool IsOpenProject();
     //  当前项目
     const UniquePtr<Project> & GetProject();
+    //  生成/检查可用名字
+    std::string ObjectName(const SharePtr<GLObject> & parent);
+    std::string ObjectName(uint id);
+    bool        ObjectName(const SharePtr<GLObject> & parent, const std::string & name);
+    bool        ObjectName(uint id, const std::string & name);
+    //  获取当前选中的对象
+    const std::vector<SharePtr<GLObject>> & GetSelectedObjects();
 };

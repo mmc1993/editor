@@ -46,12 +46,22 @@ void EditorSys::OptSelectObject(const SharePtr<GLObject> & object, bool select, 
     }
 }
 
+void EditorSys::OptSelectObject(uint id, bool select, bool multi)
+{
+    OptSelectObject(GetProject()->GetObject(id), select, multi);
+}
+
 void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
 {
     OptSelectObject(object,  false);
     GetProject()->DelObject(object);
     object->DelThis();
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(object));
+}
+
+void EditorSys::OptDeleteObject(uint id)
+{
+    OptDeleteObject(GetProject()->GetObject(id));
 }
 
 void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::string & name)
@@ -63,16 +73,31 @@ void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::st
     }
 }
 
+void EditorSys::OptRenameObject(uint id, const std::string & name)
+{
+    OptRenameObject(GetProject()->GetObject(id), name);
+}
+
 void EditorSys::OptAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
     object->AddComponent(component);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kAppendComponent, std::make_tuple(object, component));
 }
 
+void EditorSys::OptAppendComponent(uint id, const SharePtr<Component>& component)
+{
+    OptAppendComponent(GetProject()->GetObject(id), component);
+}
+
 void EditorSys::OptDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
     object->DelComponent(component);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteComponent, std::make_tuple(object, component));
+}
+
+void EditorSys::OptDeleteComponent(uint id, const SharePtr<Component>& component)
+{
+    OptDeleteComponent(GetProject()->GetObject(id), component);
 }
 
 void EditorSys::OptNewProject(const std::string & url)
@@ -121,7 +146,7 @@ void EditorSys::OpenDialogOpenProject(const std::string & url)
 {
 }
 
-bool EditorSys::IsOpenProject() const
+bool EditorSys::IsOpenProject()
 {
     ASSERT_LOG(
         (_project == nullptr) || 
@@ -129,7 +154,12 @@ bool EditorSys::IsOpenProject() const
     return _project != nullptr;
 }
 
-std::string EditorSys::ObjectName(const SharePtr<GLObject> & object) const
+const UniquePtr<Project> & EditorSys::GetProject()
+{
+    return _project;
+}
+
+std::string EditorSys::ObjectName(const SharePtr<GLObject> & object)
 {
     size_t i = 0;
     auto name = SFormat("object_{0}", i++);
@@ -138,7 +168,12 @@ std::string EditorSys::ObjectName(const SharePtr<GLObject> & object) const
     return std::move(name);
 }
 
-bool EditorSys::ObjectName(const SharePtr<GLObject> & parent, const std::string & name) const
+std::string EditorSys::ObjectName(uint id)
+{
+    return ObjectName(GetProject()->GetObject(id));
+}
+
+bool EditorSys::ObjectName(const SharePtr<GLObject> & parent, const std::string & name)
 {
     if (name.empty()) 
     {
@@ -147,12 +182,13 @@ bool EditorSys::ObjectName(const SharePtr<GLObject> & parent, const std::string 
     return nullptr == parent->GetObject(name);
 }
 
-const std::vector<SharePtr<GLObject>> & EditorSys::GetSelectedObjects() const
+bool EditorSys::ObjectName(uint id, const std::string & name)
+{
+    return ObjectName(GetProject()->GetObject(id), name);
+}
+
+const std::vector<SharePtr<GLObject>> & EditorSys::GetSelectedObjects()
 {
     return _selected;
 }
 
-const UniquePtr<Project> & EditorSys::GetProject()
-{
-    return _project;
-}
