@@ -53,10 +53,11 @@ void EditorSys::OptSelectObject(uint id, bool select, bool multi)
 
 void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
 {
-    OptSelectObject(object,  false);
-    GetProject()->DelObject(object);
-    object->DelThis();
-    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(object));
+    auto temp = object;
+    OptSelectObject(temp,  false);
+    GetProject()->DelObject(temp);
+    temp->DelThis();
+    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(temp));
 }
 
 void EditorSys::OptDeleteObject(uint id)

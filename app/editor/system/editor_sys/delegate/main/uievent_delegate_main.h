@@ -23,10 +23,12 @@ public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
 
 private:
+    void InitObjects(
+        const SharePtr<UIObject> & uiobject,
+        const SharePtr<GLObject> & globject);
     SharePtr<UIObject> NewObject(uint id, const std::string & name);
 
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
-    void OnEventNewProject();
     void OnEventOpenProject();
     void OnEventFreeProject();
     void OnEventInsertObject(const SharePtr<GLObject> & object);

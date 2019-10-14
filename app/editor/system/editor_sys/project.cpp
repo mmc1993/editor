@@ -8,7 +8,7 @@ void Project::New(const std::string & url)
 {
     _acc = 0x0;
     _url = url;
-    _root.reset(new GLObject(_acc));
+    _root = NewObject();
 }
 
 void Project::Load(const std::string & url)
@@ -27,10 +27,10 @@ void Project::Load(const std::string & url)
     while (!list.empty())
     {
         auto & front = list.front();
-        for (auto & object : front->GetObjects())
-        {
-            list.push_back(object);
-        }
+        std::copy(
+            front->GetObjects().begin(),
+            front->GetObjects().end(),
+            std::back_inserter(list));
         _objects.insert(std::make_pair(front->GetID(), front));
         list.pop_front();
     }

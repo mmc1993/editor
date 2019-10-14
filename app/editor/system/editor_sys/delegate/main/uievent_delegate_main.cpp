@@ -9,18 +9,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
         auto & arg = (const UIEvent::Delegate &)param;
         if (arg.mType == 0)
         {
-            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(
-                &UIEventDelegateMainObjList::OnEvent, this,
-                std::placeholders::_1,
-                std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(
-                &UIEventDelegateMainObjList::OnEvent, this,
-                std::placeholders::_1,
-                std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
-                &UIEventDelegateMainObjList::OnEvent, this,
-                std::placeholders::_1,
-                std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kInsertObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
         }
         return true;
     }
@@ -109,6 +103,18 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
     return false;
 }
 
+void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject>& uiobject, const SharePtr<GLObject>& globject)
+{
+    _id2obj.insert(std::make_pair(globject->GetID(), uiobject));
+    _obj2id.insert(std::make_pair(uiobject, globject->GetID()));
+    for (auto & object : globject->GetObjects())
+    {
+        auto obj = NewObject(object->GetID(), object->GetName());
+        InitObjects(obj, object);
+        uiobject->AddObject(obj);
+    }
+}
+
 SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::string & name)
 {
     auto raw = mmc::JsonValue::Hash();
@@ -135,36 +141,38 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
     case EventSys::TypeEnum::kFreeProject:
         OnEventFreeProject();
         break;
+    case EventSys::TypeEnum::kInsertObject:
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>> &>(param);
+            OnEventInsertObject(std::get<0>(value));
+        }
+        break;
+    case EventSys::TypeEnum::kDeleteObject:
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>> &>(param);
+            OnEventDeleteObject(std::get<0>(value));
+        }
+        break;
+    case EventSys::TypeEnum::kRenameObject:
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>,std::string> &>(param);
+            OnEventRenameObject(std::get<0>(value), std::get<1>(value));
+        }
+        break;
     case EventSys::TypeEnum::kSelectObject:
-        auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>, bool, bool> &>(param);
-        OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>, bool, bool> &>(param);
+            OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        }
         break;
     }
 }
 
-void UIEventDelegateMainObjList::OnEventNewProject()
+void UIEventDelegateMainObjList::OnEventOpenProject()
 {
     ASSERT_LOG(_obj2id.empty(), "");
     ASSERT_LOG(_id2obj.empty(), "");
-    auto &root = Global::Ref().mEditorSys->GetProject()->GetRoot();
-    _obj2id.insert(std::make_pair(GetOwner(), root->GetID()));
-    _id2obj.insert(std::make_pair(root->GetID(), GetOwner()));
-}
-
-void UIEventDelegateMainObjList::OnEventOpenProject()
-{
-    std::function<void (SharePtr<UIObject> root, const std::vector<SharePtr<GLObject>> & objects)> InitObjectTree;
-    InitObjectTree = [this, &InitObjectTree](SharePtr<UIObject> root, const std::vector<SharePtr<GLObject>> & objects)
-    {
-        for (auto object : objects)
-        {
-            auto uiobject = NewObject(object->GetID(), object->GetName());
-            InitObjectTree(uiobject, object->GetObjects());
-            root->AddObject(uiobject);
-        }
-    };
-
-    InitObjectTree(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetRoot()->GetObjects());
+    InitObjects(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetRoot());
 }
 
 void UIEventDelegateMainObjList::OnEventFreeProject()
