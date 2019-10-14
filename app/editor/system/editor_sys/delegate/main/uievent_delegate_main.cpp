@@ -74,7 +74,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             {
                 auto name = Global::Ref().mEditorSys->ObjectName(menu.mObject);
 
-                auto newGLObject = std::create_ptr<GLObject>();
+                auto newGLObject = Global::Ref().mEditorSys->GetProject()->NewObject();
                 newGLObject->SetName(name);
 
                 auto raw = mmc::JsonValue::Hash();
