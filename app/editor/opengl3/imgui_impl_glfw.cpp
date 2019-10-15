@@ -85,7 +85,12 @@ void ImGui_ImplGlfw_MouseButtonCallback(GLFWwindow* window, int button, int acti
         g_PrevUserCallbackMousebutton(window, button, action, mods);
 
     if (action == GLFW_PRESS && button >= 0 && button < IM_ARRAYSIZE(g_MouseJustPressed))
+    {
         g_MouseJustPressed[button] = true;
+        double mx, my;
+        glfwGetCursorPos(window, &mx, &my);
+        ImGui::GetIO().MouseDownPoints[button] = ImVec2((float)mx, (float)my);
+    }
 }
 
 void ImGui_ImplGlfw_ScrollCallback(GLFWwindow* window, double xoffset, double yoffset)
