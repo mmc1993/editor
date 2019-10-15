@@ -2,7 +2,7 @@
 
 namespace glm {
     template <class T>
-    class T lerp(const T & a, const T & b, float v)
+    T lerp(const T & a, const T & b, float v)
     {
         return a + v * (b - a);
     }
