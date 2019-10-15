@@ -170,19 +170,19 @@ namespace tools {
         ASSERT_LOG(points.size() >= 3, "");
         auto min = 0;
         auto ret = 0.0f;
-        for (auto i = 0; i != points.size(); ++i)
-        {
-            if (points.at(i).x<=points.at(min).x)
-            {
-                auto prev = (i + points.size() - 1) % points.size();
-                auto next = (i + 1)                 % points.size();
-                auto a = glm::vec3(points.at(i) - points.at(prev), 0);
-                auto b = glm::vec3(points.at(next) - points.at(i), 0);
-                auto z = glm::cross(a, b).z;
-                if (z != 0) {ret=z; min=i;}
-            }
-        }
-        return ret;
+for (auto i = 0; i != points.size(); ++i)
+{
+    if (points.at(i).x <= points.at(min).x)
+    {
+        auto prev = (i + points.size() - 1) % points.size();
+        auto next = (i + 1) % points.size();
+        auto a = glm::vec3(points.at(i) - points.at(prev), 0);
+        auto b = glm::vec3(points.at(next) - points.at(i), 0);
+        auto z = glm::cross(a, b).z;
+        if (z != 0) { ret = z; min = i; }
+    }
+}
+return ret;
     }
 
     //  二分多边形
@@ -212,14 +212,14 @@ namespace tools {
     {
         if (points.size() < 3) { return; }
 
-        static const auto CheckStripPoint = [](const std::vector<glm::vec2> & points, size_t i)
+        static const auto CheckStripPoint = [] (const std::vector<glm::vec2> & points, size_t i)
         {
             float crossA = 0, crossB = 0;
-            auto & a = points.at(i                      );
+            auto & a = points.at(i);
             auto & b = points.at((i + 1) % points.size());
             for (size_t j = 0; j != i; ++j)
             {
-                auto & c = points.at(j                      );
+                auto & c = points.at(j);
                 auto & d = points.at((j + 1) % points.size());
                 if (IsCrossSegment(a, b, c, d, &crossA, &crossB))
                 {
@@ -232,14 +232,12 @@ namespace tools {
             return std::make_tuple(false, glm::highp_vec2(), (size_t)0, (size_t)0);
         };
 
-        std::vector<glm::vec2> binary[2];
         for (auto i = 2; i != points.size(); ++i)
         {
-            auto [cross, point, endA, endB] = CheckStripPoint(points, i);
+            auto[cross, point, endA, endB] = CheckStripPoint(points, i);
             if (cross)
             {
-                binary[0].clear();
-                binary[1].clear();
+                std::vector<glm::vec2> binary[2];
                 BinaryPoints(points, endB, point, endA, point, binary);
                 StripClosePoints(binary[0], output);
                 StripClosePoints(binary[1], output);
@@ -260,9 +258,25 @@ namespace tools {
     //  切割凹多边形
     inline void StripCullPoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
     {
-        static const auto CheckStripPoint = [](const std::vector<glm::vec2> & points, size_t i)
+        static const auto CheckStripPoint = [] (const std::vector<glm::vec2> & points, size_t i)
         {
-            //  _TODO
+            float crossA = 0, crossB = 0;
+            float minC = std::numeric_limits<float>::max();
+            auto minI = std::numeric_limits<size_t>::max();
+            auto & a = points.at(i                      );
+            auto & b = points.at((i + 1) % points.size());
+            for (size_t j = 0; j != points.size(); ++j)
+            {
+                auto & c = points.at(j                      );
+                auto & d = points.at((j + 1) % points.size());
+                if (IsCrossLine(a, b, c, d, &crossA, &crossB))
+                {
+                    if (crossA > 1 && crossA < minC)
+                    { minC = crossA; minI = j; }
+                }
+            }
+            ASSERT_LOG(minI != std::numeric_limits<size_t>::max(), "");
+            return std::make_tuple(glm::lerp(a, b, minC), (i + 1) % points.size(), (minI + 1) % points.size());
         };
 
         auto normal = CalePointsOrder(points);
@@ -275,9 +289,15 @@ namespace tools {
             auto bc = glm::vec3(c - b, 0);
             if (glm::cross(ab, bc).z * normal < 0)
             {
-                
+                std::vector<glm::vec2> binary[2];
+                auto [point, endA, endB] = CheckStripPoint(points,  i);
+                BinaryPoints(points, endA, point, endB, point, binary);
+                StripCullPoints(binary[0], output);
+                StripCullPoints(binary[1], output);
+                return;
             }
         }
+        output.push_back(points);
     }
 
     //  切割凸多边形
