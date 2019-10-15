@@ -116,23 +116,28 @@ public:
 
     //  编辑功能相关
     struct Operation {
+        //  操作模式
         enum OpModeEnum {
             kDrag,
             kEdit,
-        };
-        //  操作模式
-        OpModeEnum mOpMode;
+        } mOpMode;
 
         //  激活的对象
-        size_t mCompTrackPointIndex;
-        SharePtr<GLObject> mActiveObject;
-        SharePtr<Component>  mActiveComp;
+        SharePtr<GLObject>  mActiveObject;
+        SharePtr<Component> mActiveComponent;
+        size_t              mTrackPointIndex;
+
+        glm::vec3           mView;
+        float               mScale;
 
         //  选中的对象
         std::vector<SharePtr<GLObject>> mSelectObjects;
 
         //  初始化
-        Operation(): mOpMode(OpModeEnum::kDrag) { }
+        Operation()
+            : mOpMode(OpModeEnum::kDrag)
+            , mScale(1)
+        { }
     } mOperation;
 
     std::vector<SharePtr<GLMesh>> mMeshBuffer;

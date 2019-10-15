@@ -35,7 +35,9 @@ public:
         int mKey;           //  0, 1, 2       => 左键, 右键, 中键
         int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
         int mState;         //  1, 2, 4       => alt, ctrl, shift
+        int mWheel;         //  滚轮滚动
         glm::vec2 mMouse;   //  鼠标坐标
+        glm::vec2 mFirst;   //  起始坐标
 
         Mouse(const int act, const int key, const SharePtr<UIObject> & object = nullptr)
             : Event(object)
@@ -45,6 +47,8 @@ public:
         {
             mMouse.x = ImGui::GetMousePos().x;
             mMouse.y = ImGui::GetMousePos().y;
+            mWheel = (int)ImGui::GetIO().MouseWheel;
+            mFirst = ImGui::GetIO().MouseDownPoints[mKey];
         }
     };
 

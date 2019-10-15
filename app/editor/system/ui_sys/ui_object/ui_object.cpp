@@ -1253,7 +1253,7 @@ void UIObjectGLCanvas::OptSelectedClear()
     auto state = GetState<UIStateGLCanvas>();
     state->mOperation.mSelectObjects.clear();
     state->mOperation.mActiveObject= nullptr;
-    state->mOperation.mActiveComp = nullptr;
+    state->mOperation.mActiveComponent = nullptr;
     state->mOperation.mOpMode = UIStateGLCanvas::Operation::kDrag;
 }
 
@@ -1275,7 +1275,7 @@ bool UIObjectGLCanvas::OnEnter()
         ASSERT_LOG(state->mRoot != nullptr, "");
         const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f,
                                      state->Move.w * -0.5f, state->Move.w * 0.5f);
-        const auto view = glm::lookAt(glm::vec3(0, 0, 1), glm::vec3(0, 0, 0), glm::vec3(0, 1, 0));
+        const auto view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
         state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
         state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
