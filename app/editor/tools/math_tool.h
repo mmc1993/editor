@@ -170,19 +170,19 @@ namespace tools {
         ASSERT_LOG(points.size() >= 3, "");
         auto min = 0;
         auto ret = 0.0f;
-for (auto i = 0; i != points.size(); ++i)
-{
-    if (points.at(i).x <= points.at(min).x)
-    {
-        auto prev = (i + points.size() - 1) % points.size();
-        auto next = (i + 1) % points.size();
-        auto a = glm::vec3(points.at(i) - points.at(prev), 0);
-        auto b = glm::vec3(points.at(next) - points.at(i), 0);
-        auto z = glm::cross(a, b).z;
-        if (z != 0) { ret = z; min = i; }
-    }
-}
-return ret;
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            if (points.at(i).x <= points.at(min).x)
+            {
+                auto prev = (i + points.size() - 1) % points.size();
+                auto next = (i + 1) % points.size();
+                auto a = glm::vec3(points.at(i) - points.at(prev), 0);
+                auto b = glm::vec3(points.at(next) - points.at(i), 0);
+                auto z = glm::cross(a, b).z;
+                if (z != 0) { ret = z; min = i; }
+            }
+        }
+        return ret;
     }
 
     //  二分多边形
