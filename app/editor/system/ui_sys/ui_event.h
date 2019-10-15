@@ -135,6 +135,8 @@ public:
             ASSERT_LOG(!_owner.expired(), "");
             return _owner.lock();
         }
+
+        virtual ~DelegateHandler() { }
     private:
         WeakPtr<UIObject> _owner;
     };

@@ -105,8 +105,6 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
 void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject>& uiobject, const SharePtr<GLObject>& globject)
 {
-    _id2obj.insert(std::make_pair(globject->GetID(), uiobject));
-    _obj2id.insert(std::make_pair(uiobject, globject->GetID()));
     for (auto & object : globject->GetObjects())
     {
         auto obj = NewObject(object->GetID(), object->GetName());
@@ -172,6 +170,9 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
 {
     ASSERT_LOG(_obj2id.empty(), "");
     ASSERT_LOG(_id2obj.empty(), "");
+    auto root = Global::Ref().mEditorSys->GetProject()->GetRoot();
+    _id2obj.insert(std::make_pair(root->GetID(), GetOwner()));
+    _obj2id.insert(std::make_pair(GetOwner(), root->GetID()));
     InitObjects(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetRoot());
 }
 
