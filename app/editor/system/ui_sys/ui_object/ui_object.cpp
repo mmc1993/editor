@@ -1273,9 +1273,10 @@ bool UIObjectGLCanvas::OnEnter()
     {
         auto state = GetState<UIStateGLCanvas>();
         ASSERT_LOG(state->mRoot != nullptr, "");
-        const auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f,
-                                     state->Move.w * -0.5f, state->Move.w * 0.5f);
-        const auto view = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+        auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f, state->Move.w * -0.5f, state->Move.w * 0.5f);
+        auto view = glm::lookAt(state->mOperation.mView, state->mOperation.mView-glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+        view = glm::scale(view, glm::vec3(state->mOperation.mScale, state->mOperation.mScale, 1));
+
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
         state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
         state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
@@ -1326,4 +1327,43 @@ void UIObjectGLCanvas::OnApplyLayout()
 void UIObjectGLCanvas::OnResetLayout()
 {
     OnApplyLayout();
+}
+
+inline bool UIObjectGLCanvas::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+{
+    switch (e)
+    {
+    case UIEventEnum::kKey:
+        OnEventKey((const UIEvent::Key &)param);
+        return true;
+    case UIEventEnum::kMenu:
+        OnEventMenu((const UIEvent::Menu &)param);
+        return true;
+    case UIEventEnum::kMouse:
+        OnEventMouse((const UIEvent::Mouse &)param);
+        return true;
+    }
+    return false;
+}
+
+void UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
+{
+}
+
+void UIObjectGLCanvas::OnEventMenu(const UIEvent::Menu & param)
+{
+}
+
+void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (param.mAct == 1 && param.mKey == 2)
+    {
+        state->mOperation.mView.x -= param.mDelta.x;
+        state->mOperation.mView.y += param.mDelta.y;
+    }
+    if (param.mWheel != 0)
+    {
+        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.1f * param.mWheel), 0.5f, 5.0f);
+    }
 }

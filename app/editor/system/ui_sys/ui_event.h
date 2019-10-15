@@ -36,6 +36,7 @@ public:
         int mAct;           //  0, 1, 2, 3, 4 => 悬浮, 按下, 抬起, 单击, 双击
         int mState;         //  1, 2, 4       => alt, ctrl, shift
         int mWheel;         //  滚轮滚动
+        glm::vec2 mDelta;   //  坐标偏移
         glm::vec2 mMouse;   //  鼠标坐标
         glm::vec2 mFirst;   //  起始坐标
 
@@ -47,6 +48,7 @@ public:
         {
             mMouse.x = ImGui::GetMousePos().x;
             mMouse.y = ImGui::GetMousePos().y;
+            mDelta = ImGui::GetIO().MouseDelta;
             mWheel = (int)ImGui::GetIO().MouseWheel;
             mFirst = ImGui::GetIO().MouseDownPoints[mKey];
         }

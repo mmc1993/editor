@@ -163,4 +163,9 @@ private:
     virtual void OnLeave(bool ret) override;
     virtual void OnApplyLayout() override;
     virtual void OnResetLayout() override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
+
+    void OnEventKey(const UIEvent::Key & param);
+    void OnEventMenu(const UIEvent::Menu & param);
+    void OnEventMouse(const UIEvent::Mouse & param);
 };
