@@ -1,5 +1,13 @@
 #pragma once
 
+namespace glm {
+    template <class T>
+    class T lerp(const T & a, const T & b, float v)
+    {
+        return a + v * (b - a);
+    }
+}
+
 namespace tools {
     //  是否包含点
     inline bool IsContain(const glm::vec4 & rect, const glm::vec2 & point)
@@ -157,11 +165,11 @@ namespace tools {
     }
 
     //  计算多边形顶点顺序
-    inline int CalePointsOrder(const std::vector<glm::vec2> & points)
+    inline float CalePointsOrder(const std::vector<glm::vec2> & points)
     {
         ASSERT_LOG(points.size() >= 3, "");
         auto min = 0;
-        auto ret = 0;
+        auto ret = 0.0f;
         for (auto i = 0; i != points.size(); ++i)
         {
             if (points.at(i).x<=points.at(min).x)
@@ -171,13 +179,7 @@ namespace tools {
                 auto a = glm::vec3(points.at(i) - points.at(prev), 0);
                 auto b = glm::vec3(points.at(next) - points.at(i), 0);
                 auto z = glm::cross(a, b).z;
-                if (z != 0) 
-                {
-                    ret = z < 0 ?  1
-                        : z > 0 ? -1
-                        : 0;
-                    min = i; 
-                }
+                if (z != 0) {ret=z; min=i;}
             }
         }
         return ret;
@@ -186,23 +188,23 @@ namespace tools {
     //  二分多边形
     inline void BinaryPoints(
         const std::vector<glm::vec2> & points,
-        const uint begA, const uint endA, const glm::vec2 & beg,
-        const uint begB, const uint endB, const glm::vec2 & end,
+        const uint endA, const glm::vec2 & a,
+        const uint endB, const glm::vec2 & b,
         std::vector<glm::vec2> output[2])
     {
-        output[0].push_back(beg);
-        output[0].push_back(end);
+        output[0].push_back(a);
+        if (output[0].back() != b) { output[0].push_back(b); }
         for (auto i = endB; i != endA; i = (i + 1) % points.size())
         {
-            output[0].push_back(points.at(i));
+            if (output[0].back() != points.at(i)) { output[0].push_back(points.at(i)); }
         }
 
-        output[1].push_back(beg);
+        output[1].push_back(b);
+        if (output[1].back() != a) { output[1].push_back(a); }
         for (auto i = endA; i != endB; i = (i + 1) % points.size())
         {
-            output[1].push_back(points.at(i));
+            if (output[1].back() != points.at(i)) { output[1].push_back(points.at(i)); }
         }
-        output[1].push_back(end);
     }
 
     //  切割闭合路径
@@ -210,15 +212,41 @@ namespace tools {
     {
         if (points.size() < 3) { return; }
 
-        //static auto CheckStripPoint = [](const std::vector<glm::vec2> & points, )
-        //{
-        //    
-        //};
+        static const auto CheckStripPoint = [](const std::vector<glm::vec2> & points, size_t i)
+        {
+            float crossA = 0, crossB = 0;
+            auto & a = points.at(i                      );
+            auto & b = points.at((i + 1) % points.size());
+            for (size_t j = 0; j != i; ++j)
+            {
+                auto & c = points.at(j                      );
+                auto & d = points.at((j + 1) % points.size());
+                if (IsCrossSegment(a, b, c, d, &crossA, &crossB))
+                {
+                    return std::make_tuple(true,
+                        glm::lerp(a, b, crossA),
+                        (i + 1) % points.size(),
+                        (j + 1) % points.size());
+                }
+            }
+            return std::make_tuple(false, glm::highp_vec2(), (size_t)0, (size_t)0);
+        };
 
+        std::vector<glm::vec2> binary[2];
         for (auto i = 2; i != points.size(); ++i)
         {
-
+            auto [cross, point, endA, endB] = CheckStripPoint(points, i);
+            if (cross)
+            {
+                binary[0].clear();
+                binary[1].clear();
+                BinaryPoints(points, endB, point, endA, point, binary);
+                StripClosePoints(binary[0], output);
+                StripClosePoints(binary[1], output);
+                return;
+            }
         }
+        output.push_back(points);
     }
 
     //  切割闭合路径
@@ -229,9 +257,44 @@ namespace tools {
         return std::move(result);
     }
 
+    //  切割凹多边形
+    inline void StripCullPoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
+    {
+        static const auto CheckStripPoint = [](const std::vector<glm::vec2> & points, size_t i)
+        {
+            //  _TODO
+        };
+
+        auto normal = CalePointsOrder(points);
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & a = points.at(i);
+            auto & b = points.at((i + 1) % points.size());
+            auto & c = points.at((i + 2) % points.size());
+            auto ab = glm::vec3(b - a, 0);
+            auto bc = glm::vec3(c - b, 0);
+            if (glm::cross(ab, bc).z * normal < 0)
+            {
+                
+            }
+        }
+    }
+
     //  切割凸多边形
     inline std::vector<std::vector<glm::vec2>> StripCullPoints(const std::vector<glm::vec2> & points)
     {
-        return std::vector<std::vector<glm::vec2>>();
+        std::vector<std::vector<glm::vec2>> result;
+        StripCullPoints(points, result);
+        return std::move(result);
+    }
+
+    //  顶点去重
+    inline std::vector<glm::vec2> UniquePoints(const std::vector<glm::vec2> & points)
+    {
+        auto result = points;
+        std::sort(result.begin(), result.end(), [](auto & a, auto & b) { return a == b; });
+        auto it = std::unique(result.begin(), result.end());
+        result.erase(it, result.end());
+        return std::move(result);
     }
 }
