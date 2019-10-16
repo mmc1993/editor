@@ -2,7 +2,7 @@
 
 #include "../../include.h"
 
-class Raw : public std::enable_shared_from_this<Raw> {
+class Raw {
 public:
     virtual ~Raw()
     { }
@@ -92,15 +92,15 @@ private:
 class GLTexture : public Raw {
 public:
     struct Sample {
-        uint32_t minfilter;
-        uint32_t magfilter;
-        uint32_t wraps;
-        uint32_t wrapt;
+        uint32_t mMinFilter;
+        uint32_t mMagFilter;
+        uint32_t mWrapS;
+        uint32_t mWrapT;
         Sample()
-            : minfilter(GL_LINEAR)
-            , magfilter(GL_LINEAR)
-            , wraps(GL_CLAMP_TO_EDGE)
-            , wrapt(GL_CLAMP_TO_EDGE)
+            : mMinFilter(GL_LINEAR)
+            , mMagFilter(GL_LINEAR)
+            , mWrapS(GL_CLAMP_TO_EDGE)
+            , mWrapT(GL_CLAMP_TO_EDGE)
         { }
     };
 
