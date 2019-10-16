@@ -15,5 +15,9 @@ using WeakPtr = std::weak_ptr<T>;
 template <class T, class U>
 SharePtr<T> CastPtr(const U & ptr)
 {
+#ifdef ENABLE_DEBUG
+    return std::dynamic_pointer_cast<T>(ptr);
+#else
     return std::reinterpret_pointer_cast<T>(ptr);
+#endif
 }

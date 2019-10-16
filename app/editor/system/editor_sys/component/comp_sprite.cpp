@@ -1,4 +1,5 @@
 #include "comp_sprite.h"
+#include "../../raw_sys/raw_sys.h"
 
 void CompSprite::OnAdd()
 { }
@@ -27,10 +28,20 @@ void CompSprite::DecodeBinary(std::ifstream & is)
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);
+
+    if (_url.empty())
+    {
+        _material = CastPtr<GLMaterial>(Global::Ref().mRawSys->Import(_url));
+    }
 }
 
 bool CompSprite::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
 {
+    if (title == "Url")
+    {
+        auto & url = std::any_cast<const std::string &>(backup);
+        _material = CastPtr<GLMaterial>(Global::Ref().mRawSys->Import(url));
+    }
     return true;
 }
 

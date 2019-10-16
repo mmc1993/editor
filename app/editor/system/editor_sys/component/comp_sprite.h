@@ -25,5 +25,6 @@ private:
     std::string _url;
     glm::vec2 _size;
     glm::vec2 _anchor;
+    SharePtr<GLMaterial> _material;
     SharePtr<interface::FowardCommand> _command;
 };
