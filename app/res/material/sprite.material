@@ -1,0 +1,6 @@
+{
+    "program": "res/lambert/program/forward.program",
+    "textures": [
+        { "key": "mDiffuse0", "val": "res/image/17.png" }
+    ]
+}
