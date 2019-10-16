@@ -135,7 +135,7 @@ bool GLImage::InitFromAtlas(const std::string & url)
     path.append(name);
     path.append(".atlas");
 
-    auto json = mmc::JsonValue::FromFile(path);
+    auto json = mmc::Json::FromFile(path);
     if (json == nullptr) { return false; }
 
     dir += json->At("meta", "image")->ToString();
@@ -186,33 +186,30 @@ bool GLTexture::InitFromImage(const std::string & url)
 bool GLTexture::InitFromAtlas(const std::string & url)
 {
     ASSERT_LOG(tools::GetFileSuffix(url) == ".png", url.c_str());
+    std::string         path;
+    mmc::Json::Pointer atlas;
     auto folder = tools::GetFileFolder(url);
-    mmc::JsonValue::Value json;
-
-    //  Ëø¶¨ Atlas
-    std::string path;
     auto dirname = tools::GetFolderName(url);
     path.append(folder);
     path.append(dirname);
     auto name = SFormat("{0}{1}.atlas", path, 0);
     for (auto i = 0; tools::IsFileExists(name); ++i)
     {
-        auto temp = mmc::JsonValue::FromFile(name);
-        if (temp == nullptr) { break; }
-        auto frames=temp->At("frames");
-        if (frames->IsHashKey(url))
-        { json = temp; break; }
+        auto json = mmc::Json::FromFile(name);
+        if (json == nullptr) { break; }
+        if (json->HasKey("frames",url))
+        { atlas = json; break; }
 
-        name = SFormat("{0}{1}.atlas", path, 0);
+        name = SFormat("{0}{1}.atlas", path, i);
     }
 
-    if (json != nullptr) 
+    if (atlas != nullptr) 
     {
         _pointer = Global::Ref().mRawSys->Get<GLImage>(name);
-        _offset.x = json->At(url, "frame", "x")->ToFloat() / _pointer->mW;
-        _offset.y = json->At(url, "frame", "y")->ToFloat() / _pointer->mH;
-        _offset.z = json->At(url, "frame", "w")->ToFloat() / _pointer->mW + _offset.x;
-        _offset.w = json->At(url, "frame", "h")->ToFloat() / _pointer->mH + _offset.y;
+        _offset.x = atlas->At(url, "frame", "x")->ToNumber() / _pointer->mW;
+        _offset.y = atlas->At(url, "frame", "y")->ToNumber() / _pointer->mH;
+        _offset.z = atlas->At(url, "frame", "w")->ToNumber() / _pointer->mW + _offset.x;
+        _offset.w = atlas->At(url, "frame", "h")->ToNumber() / _pointer->mH + _offset.y;
     }
 
     return _pointer != nullptr;
@@ -511,24 +508,24 @@ GLMaterial::GLMaterial() : _mesh(nullptr), _program(nullptr)
 
 bool GLMaterial::Init(const std::string & url)
 {
-    auto json = mmc::JsonValue::FromFile(url);
+    auto json = mmc::Json::FromFile(url);
     ASSERT_LOG(json, "URL: {0}", url);
-    if (json->IsHashKey("mesh"))
+    if (json->HasKey("mesh"))
     {
         auto ptr = Global::Ref().mRawSys->Import(json->At("mesh")->ToString());
         SetMesh(CastPtr<GLMesh>(ptr));
     }
-    if (json->IsHashKey("program"))
+    if (json->HasKey("program"))
     {
         auto ptr = Global::Ref().mRawSys->Import(json->At("program")->ToString());
         SetProgram(CastPtr<GLProgram>(ptr));
     }
-    if (json->IsHashKey("textures"))
+    if (json->HasKey("textures"))
     {
         for (auto value : json->At("textures"))
         {
-            auto ptr = Global::Ref().mRawSys->Import(value.mValue->At("val")->ToString());
-            SetTexture(value.mValue->At("key")->ToString(), CastPtr<GLTexture>(ptr));
+            auto ptr = Global::Ref().mRawSys->Import(value.mVal->At("val")->ToString());
+            SetTexture(value.mVal->At("key")->ToString(), CastPtr<GLTexture>(ptr));
         }
     }
     return true;

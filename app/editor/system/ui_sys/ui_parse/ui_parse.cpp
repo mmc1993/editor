@@ -32,12 +32,12 @@ SharePtr<UIObject> UIParser::CreateObject(const int type)
 
 SharePtr<UIObject> UIParser::Parse(const std::string & url)
 {
-    auto json = mmc::JsonValue::FromFile(url);
+    auto json = mmc::Json::FromFile(url);
     ASSERT_LOG(json, "Parse: {0}", url);
     return Parse(json);
 }
 
-SharePtr<UIObject> UIParser::Parse(const mmc::JsonValue::Value json)
+SharePtr<UIObject> UIParser::Parse(const mmc::Json::Pointer json)
 {
     auto object = CreateObject(std::stoi(json->At("__Property", "Type")->ToString()));
     ASSERT_LOG(object != nullptr, "");
@@ -46,27 +46,27 @@ SharePtr<UIObject> UIParser::Parse(const mmc::JsonValue::Value json)
     return object;
 }
 
-void UIParser::Parse__Property(const mmc::JsonValue::Value json, const SharePtr<UIObject> & object)
+void UIParser::Parse__Property(const mmc::Json::Pointer json, const SharePtr<UIObject> & object)
 {
     for (auto ele : json->At("__Property"))
     {
-        ASSERT_LOG(ele.mValue->GetType() == mmc::JsonValue::Type::kSTRING, "{0}", ele.mKey);
+        ASSERT_LOG(ele.mVal->GetType() == mmc::Json::Type::kSTRING, "{0}", ele.mKey);
         if (ele.mKey == "EventDelegate")
         {
-            ASSERT_LOG(s_DelegateMap.count(ele.mValue->ToString()) == 1, ele.mValue->ToString().c_str());
-            object->BindDelegate(s_DelegateMap.at(ele.mValue->ToString())());
+            ASSERT_LOG(s_DelegateMap.count(ele.mVal->ToString()) == 1, ele.mVal->ToString().c_str());
+            object->BindDelegate(s_DelegateMap.at(ele.mVal->ToString())());
         }
         else
         {
-            object->GetState()->FromStringParse(ele.mKey, ele.mValue->ToString());
+            object->GetState()->FromStringParse(ele.mKey, ele.mVal->ToString());
         }
     }
 }
 
-void UIParser::Parse__Children(const mmc::JsonValue::Value json, const SharePtr<UIObject> & object)
+void UIParser::Parse__Children(const mmc::Json::Pointer json, const SharePtr<UIObject> & object)
 {
     for (auto ele : json->At("__Children"))
     {
-        object->AddObject(Parse(ele.mValue));
+        object->AddObject(Parse(ele.mVal));
     }
 }

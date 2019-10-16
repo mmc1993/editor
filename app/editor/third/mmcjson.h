@@ -18,26 +18,26 @@
 #define DEBUG_ERROR(exp, string) SFormat("{0}: {1}", exp, std::string(string).substr(0, 20))
 
 namespace mmc {
-    class JsonValue: public std::enable_shared_from_this<JsonValue> {
+    class Json : public std::enable_shared_from_this<Json> {
     public:
         //  异常定义
-        class ErrorParse : public std::exception {
+        class Error : public std::exception {
         public:
-            ErrorParse(const std::string & what) : std::exception(what.c_str()) {}
+            Error(const std::string & what) : std::exception(what.c_str()) {}
         };
 
     public:
-        using Value = std::shared_ptr<JsonValue>;
-		struct Child {
-			Child() {}
-            Child(const Value & value) : mValue(value) {}
-			Child(const Value & value, const std::string & key)
-                : mKey(key), mValue(value) {}
-            bool operator==(const Child & other) const { return mValue == other.mValue; }
-			bool operator==(const Value & other) const { return mValue == other; }
+        using Pointer = std::shared_ptr<Json>;
+
+		struct Element {
+			Element() {}
+            Element(const Pointer & value) : mVal(value) {}
+			Element(const Pointer & value, const std::string & key) : mKey(key), mVal(value) {}
+            bool operator==(const Element & other) const { return mVal == other.mVal; }
+			bool operator==(const Pointer & other) const { return mVal == other; }
 			bool operator==(const std::string & key) const { return mKey == key; }
 			std::string mKey;
-			Value mValue;
+			Pointer mVal;
 		};
 
         enum Type {
@@ -46,7 +46,6 @@ namespace mmc {
             kHASH,
             kLIST,
             kBOOL,
-            kNULL,
         };
 
     private:
@@ -57,12 +56,12 @@ namespace mmc {
                 return string;
             }
 
-            static const char * ParseList(const char * string, std::vector<Child> & childs)
+            static const char * ParseList(const char * string, std::vector<Element> & childs)
             {
                 childs.clear();
                 while (*string != ']')
                 {
-					auto value = Null();
+					auto value = New();
                     string = Parser::Parse(string, value);
                     string = SkipSpace(string);
                     *string == ',' && ++string;
@@ -72,15 +71,15 @@ namespace mmc {
                 return ++string;
             }
 
-            static const char * ParseHash(const char * string, std::vector<Child> & childs)
+            static const char * ParseHash(const char * string, std::vector<Element> & childs)
             {
                 childs.clear();
                 while (*string != '}')
                 {
-                    DEBUG_CHECK((*string == '\"'), ErrorParse, DEBUG_ERROR("Parse Hash Error: ", string));
-					std::string key; auto value = Null();
+                    DEBUG_CHECK((*string == '\"'), Error, DEBUG_ERROR("Parse Hash Error: ", string));
+					std::string key; auto value = New();
                     string = SkipSpace(Parser::ParseString(string + 1, key));
-                    DEBUG_CHECK((*string == ':'), ErrorParse, DEBUG_ERROR("Parse Hash Error: ", string));
+                    DEBUG_CHECK((*string == ':'), Error, DEBUG_ERROR("Parse Hash Error: ", string));
                     string = SkipSpace(Parser::Parse(string + 1, value));
                     *string == ',' && ++string;
                     string = SkipSpace(string);
@@ -94,13 +93,13 @@ namespace mmc {
                 output.clear();
                 for (; *string != '\"'; ++string)
                 {
-                    DEBUG_CHECK(*string != '\0', ErrorParse, DEBUG_ERROR("Parse String Error", string));
+                    DEBUG_CHECK(*string != '\0', Error, DEBUG_ERROR("Parse String Error", string));
                     output.append(1, *string);
                 }
                 return string + 1;
             }
 
-            static const char * ParseNumber(const char * string, double & output)
+            static const char * ParseNumber(const char * string, float & output)
             {
                 char value[64] = { 0 };
                 for (auto i = 0; 
@@ -111,42 +110,42 @@ namespace mmc {
                 {
                     value[i] = *string;
                 }
-                output = std::strtod(value, nullptr);
+                output = std::strtof(value, nullptr);
                 return string;
             }
 
-            static const char * ParseFalse(const char * string, double & output)
+            static const char * ParseFalse(const char * string, float & output)
             {
                 output = 0; return string + 5;
             }
 
-            static const char * ParseTrue(const char * string, double & output)
+            static const char * ParseTrue(const char * string, float & output)
             {
                 output = 1; return string + 4;
             }
 
-            static const char * Parse(const char * string, Value & value)
+            static const char * Parse(const char * string, Pointer & value)
             {
                 string = Parser::SkipSpace(string);
                 if (*string == '[')
                 {
                     string = ParseList(SkipSpace(string + 1), value->_elems);
-                    value->_type = mmc::JsonValue::Type::kLIST;
+                    value->_type = mmc::Json::Type::kLIST;
                 }
                 else if (*string == '{')
                 {
                     string = ParseHash(SkipSpace(string + 1), value->_elems);
-                    value->_type = mmc::JsonValue::Type::kHASH;
+                    value->_type = mmc::Json::Type::kHASH;
                 }
                 else if (*string == '\"')
                 {
                     string = ParseString(string + 1, value->_string);
-                    value->_type = mmc::JsonValue::Type::kSTRING;
+                    value->_type = mmc::Json::Type::kSTRING;
                 }
                 else if (*string >= '0' && *string <= '9')
                 {
                     string = ParseNumber(string, value->_number);
-                    value->_type = mmc::JsonValue::Type::kNUMBER;
+                    value->_type = mmc::Json::Type::kNUMBER;
                 }
                 else if (string[0] == 't' &&
                          string[1] == 'r' &&
@@ -154,7 +153,7 @@ namespace mmc {
                          string[3] == 'e')
                 {
                     string = ParseTrue(string, value->_number);
-                    value->_type = mmc::JsonValue::Type::kBOOL;
+                    value->_type = mmc::Json::Type::kBOOL;
                 }
                 else if (string[0] == 'f' &&
                          string[1] == 'a' &&
@@ -163,178 +162,134 @@ namespace mmc {
                          string[4] == 'e')
                 {
                     string = ParseFalse(string, value->_number);
-					value->_type = mmc::JsonValue::Type::kBOOL;
+					value->_type = mmc::Json::Type::kBOOL;
                 }
                 else
                 {
-                    DEBUG_CHECK(false, ErrorParse, DEBUG_ERROR("Parse Json Error", string));
+                    DEBUG_CHECK(false, Error, DEBUG_ERROR("Parse Json Error", string));
                 }
                 return string;
             }
         };
 
 	public:
-		JsonValue() : _type(Type::kNULL), _number(0) { }
+		Json() : _type(Type::kNUMBER), _number(0) { }
 
-        static Value Hash()
+        static Pointer New()
         {
-            auto ret = Null();
+            return std::make_shared<Json>();
+        }
+
+        static Pointer Hash()
+        {
+            auto ret = New();
             ret->_type = Type::kHASH;
             return ret;
         }
 
-        static Value List()
+        static Pointer List()
         {
-            auto ret = Null();
+            auto ret = New();
             ret->_type = Type::kLIST;
             return ret;
         }
 
-        static Value Null()
-        {
-            return std::make_shared<JsonValue>();
-        }
-
-        //  工厂函数
 		template <class T>
-		static Value FromValue(const T & val)
+		static Pointer FromValue(const T & val)
 		{
-			auto value = Null();
+			auto value = New();
 			value->Set(val);
 			return value;
 		}
 
-		static Value FromValue(const std::string & val)
+		static Pointer FromValue(const std::string & val)
 		{
 			return FromValue(val.c_str(), val.size());
 		}
 
-		static Value FromValue(const char * val, size_t len = 0)
+		static Pointer FromValue(const char * val, size_t len = 0)
 		{
-			auto value = Null();
+			auto value = New();
 			value->Set(val, len);
 			return value;
 		}
 
-		static Value FromBuffer(const std::string & buffer)
-		{
-            auto value = Null();
-            try
-            {
-                Parser::Parse(buffer.c_str(), value);
-            }
-            catch (const ErrorParse &)
-            {
-                value.reset();
-            }
-            return value;
-		}
-
-        static Value FromFile(const std::string & fname)
+        static Pointer FromFile(const std::string & fname)
         {
             std::string buffer;
             std::ifstream ifile(fname);
             std::noskipws(ifile);
-            std::copy(std::istream_iterator<char>(ifile),
+            std::copy(
+                std::istream_iterator<char>(ifile),
                 std::istream_iterator<char>(),
                 std::back_inserter(buffer));
             return FromBuffer(buffer);
         }
 
-        //  访问函数
-        const std::vector<Child> & GetElements() const
-        {
-            return _elems;
-        }
-
-        std::vector<Child> & GetElements()
-        {
-            return _elems;
-        }
-
-        bool IsHashKey(const std::string & key) const
-        {
-            return Find(key) != _elems.end();
-        }
-
-        size_t GetCount() const
-        {
-            return _elems.size();
-        }
-
-        Type GetType() const
-        {
-            return _type;
-        }
-
-        int ToInt() const
-        {
-            return static_cast<int>(_number);
-        }
-
-		bool ToBool() const
+		static Pointer FromBuffer(const std::string & buffer)
 		{
-			return _number != 0;
+            auto pointer = New();
+            try
+            {
+                Parser::Parse(buffer.c_str(), pointer);
+            }
+            catch (const Error &)
+            {
+                return nullptr;
+            }
+            return pointer;
 		}
 
-        float ToFloat() const
-        {
-            return static_cast<float>(_number);
-        }
+        Type                GetType()   { return _type; }
+        size_t              GetCount()  { return _elems.size(); }
+        bool                ToBool()    { return _number != 0; }
+        float               ToNumber()  { return _number; }
+        const std::string & ToString()  { return _string; }
+        std::vector<Element> & GetElements() { return _elems; }
 
-        double ToDouble() const
-        {
-            return static_cast<double>(_number);
-        }
-
-		const std::string & ToString() const
-		{
-			return _string;
-		}
-
-        std::string Print(size_t space = 0) const
+        std::string Print(size_t space = 0)
         {
             switch (GetType())
             {
             case kNUMBER:
-            {
-                return std::to_string(_number);
-            }
-            break;
+                {
+                    return std::to_string(_number);
+                }
+                break;
             case kSTRING:
-            {
-                return "\"" + _string + "\"";
-            }
-            break;
+                {
+                    return "\"" + _string + "\"";
+                }
+                break;
             case kHASH:
-            {
-                std::vector<std::string> strings;
-                std::string resule("{\n" + std::string(++space, '\t'));
-                for (const auto & ele : _elems)
                 {
-                    strings.push_back(SFormat("\"{0}\": {1}",
-                        ele.mKey, ele.mValue->Print(space)));
+                    std::vector<std::string> strings;
+                    std::string resule("{\n" + std::string(++space, '\t'));
+                    for (const auto & ele : _elems)
+                    {
+                        strings.push_back(SFormat("\"{0}\": {1}",
+                            ele.mKey, ele.mVal->Print(space)));
+                    }
+                    resule.append(tools::Join(strings, ",\n" + std::string(space, '\t')));
+                    resule.append("\n"); resule.append(--space, '\t'); resule.append("}");
+                    return std::move(resule);
                 }
-                resule.append(tools::Join(strings, ",\n" + std::string(space, '\t')));
-                resule.append("\n"); resule.append(--space, '\t'); resule.append("}");
-                return std::move(resule);
-            }
-            break;
+                break;
             case kLIST:
-            {
-                std::vector<std::string> strings;
-                for (const auto & ele : _elems)
                 {
-                    strings.push_back(ele.mValue->Print(space));
+                    std::vector<std::string> strings;
+                    for (const auto & ele : _elems)
+                    {
+                        strings.push_back(ele.mVal->Print(space));
+                    }
+                    return "[" + tools::Join(strings, ", ") + "]";
                 }
-                return "[" + tools::Join(strings, ", ") + "]";
-            }
-            break;
+                break;
             case kBOOL:
-            {
-                return ToBool() ? "true" : "false";
-            }
-            break;
+                {
+                    return ToBool() ? "true" : "false";
+                }
+                break;
             }
             return "null";
         }
@@ -345,7 +300,7 @@ namespace mmc {
         {
             using _Type = std::remove_const_t<std::remove_reference_t<std::remove_cv_t<T>>>;
 
-            if constexpr (std::is_same_v<_Type, Value>)
+            if constexpr (std::is_same_v<_Type, Pointer>)
             {
                 _type = val->_type;
                 _elems = val->_elems;
@@ -353,7 +308,7 @@ namespace mmc {
             }
             else if constexpr (std::is_arithmetic_v<_Type>)
             {
-                _type = Type::kNUMBER; _elems.clear(); _number = (double)val;
+                _type = Type::kNUMBER; _elems.clear(); _number = (float)val;
             }
             else if constexpr (std::is_same_v<_Type, bool>)
             {
@@ -378,38 +333,69 @@ namespace mmc {
 		}
 
         template <class Key, class ...Keys>
-        Value & At(const Key & key, Keys && ... keys)
+        bool HasKey(const Key & key, Keys && ... keys)
+        {
+            if constexpr (std::is_arithmetic_v<Key>)
+            {
+                if (GetType() == kLIST && key < GetCount())
+                {
+                    return GetElements().at(key).mVal->HasKey(std::forward<Keys>(keys)...);
+                }
+            }
+            else if (auto it = Find(key); it != _elems.end())
+            {
+                it->mVal->HasKey(std::forward<Keys>(keys)...);
+            }
+            return false;
+        }
+
+        template <class Key>
+        bool HasKey(const Key & key)
+        {
+            if constexpr (std::is_arithmetic_v<Key>)
+            {
+                return GetType() == kLIST && key < GetCount();
+            }
+            else
+            {
+                return Find(key) != GetElements().end();
+            }
+        }
+
+        template <class Key, class ...Keys>
+        Pointer & At(const Key & key, Keys && ... keys)
         {
             return At(key)->At(std::forward<Keys>(keys)...);
         }
 
         template <class Key>
-        Value & At(const Key & key)
+        Pointer & At(const Key & key)
         {
             return AtImpl(key);
         }
 
-        //  插入函数
 		template <class Key, class ...Keys>
-		Value Insert(const Value & value, const Key & key, Keys && ... keys)
+		Pointer Insert(const Pointer & value, const Key & key, Keys && ... keys)
 		{
-			return At(key)->Insert(value, std::forward<Keys...>(keys...));
+			return At(key)->Insert(value, std::forward<Keys>(keys)...);
 		}
 
 		template <class Key>
-		Value Insert(const Value & value, const Key & key)
+		Pointer Insert(const Pointer & value, const Key & key)
 		{
 			return InsertImpl(value, key);
 		}
 
     private:
-        Value InsertImpl(const Value & value, const char * key)
+
+
+        Pointer InsertImpl(const Pointer & value, const char * key)
         {
             assert(_type == Type::kHASH);
             return InsertImpl(value, std::string(key));
         }
 
-        Value InsertImpl(const Value & value, const std::string & key)
+        Pointer InsertImpl(const Pointer & value, const std::string & key)
         {
             assert(_type == Type::kHASH);
             if (Find(key) == _elems.end())
@@ -419,7 +405,7 @@ namespace mmc {
             return shared_from_this();
         }
 
-        Value InsertImpl(const Value & value, size_t idx = (size_t)-1)
+        Pointer InsertImpl(const Pointer & value, size_t idx = (size_t)-1)
         {
             assert(_type == Type::kLIST);
             auto insert = idx >= _elems.size()
@@ -429,67 +415,66 @@ namespace mmc {
             return shared_from_this();
         }
 
-        Value & AtImpl(size_t idx)
+        Pointer & AtImpl(size_t idx)
         {
             assert(_type == Type::kLIST);
-            return _elems.at(idx).mValue;
+            return _elems.at(idx).mVal;
         }
 
-        Value & AtImpl(const char * key)
+        Pointer & AtImpl(const char * key)
         {
             assert(_type == Type::kHASH);
             return AtImpl(std::string(key));
         }
 
-        Value & AtImpl(const std::string & key)
+        Pointer & AtImpl(const std::string & key)
         {
             auto it = Find(key);
             assert(it != _elems.end());
-            return const_cast<Value &>(it->mValue);
+            return const_cast<Pointer &>(it->mVal);
         }
 
-		std::vector<Child>::const_iterator Find(const std::string & key) const
+		std::vector<Element>::const_iterator Find(const std::string & key)
 		{
 			return std::find(_elems.begin(), _elems.end(), key);
 		}
 
     private:
-        std::vector<Child> _elems;
-        std::string _string;
-        double _number;
-        Type _type;
-
+        std::vector<Element> _elems;
+        std::string     _string;
+        float           _number;
+        Type            _type;
         friend struct Parser;
     };
 }
 
 namespace std {
-    inline vector<mmc::JsonValue::Child>::iterator begin(mmc::JsonValue::Value & json)
+    inline vector<mmc::Json::Element>::iterator begin(mmc::Json::Pointer & json)
     {
         return begin(json->GetElements());
     }
 
-    inline vector<mmc::JsonValue::Child>::iterator end(mmc::JsonValue::Value & json)
+    inline vector<mmc::Json::Element>::iterator end(mmc::Json::Pointer & json)
     {   
         return end(json->GetElements());
     }
 
-    inline vector<mmc::JsonValue::Child>::iterator begin(const mmc::JsonValue::Value & json)
+    inline vector<mmc::Json::Element>::iterator begin(const mmc::Json::Pointer & json)
     {
         return begin(json->GetElements());
     }
 
-    inline vector<mmc::JsonValue::Child>::iterator end(const mmc::JsonValue::Value & json)
+    inline vector<mmc::Json::Element>::iterator end(const mmc::Json::Pointer & json)
     {
         return end(json->GetElements());
     }
 
-    inline std::string to_string(const mmc::JsonValue & json)
+    inline std::string to_string(const mmc::Json & json)
     {
-        return json.Print();
+        return const_cast<mmc::Json &>(json).Print();
     }
 
-    inline std::string to_string(const mmc::JsonValue::Value & json)
+    inline std::string to_string(const mmc::Json::Pointer & json)
     {
         return to_string(*json);
     }

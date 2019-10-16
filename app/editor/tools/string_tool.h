@@ -104,8 +104,9 @@ namespace tools {
         auto beg = fname.find_last_of('/', end - 1);
         if (beg != std::string::npos && end != std::string::npos)
         {
-            return fname.substr(beg + 1, end - beg);
+            name = fname.substr(beg + 1, end - beg);
         }
+        return name;
     }
 
     //  返回文件名 没后缀

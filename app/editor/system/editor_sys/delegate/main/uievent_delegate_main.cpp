@@ -43,7 +43,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                     std::transform(
                         std::begin(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
                         std::end(  Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
-                        std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mValue->ToString(); });
+                        std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mVal->ToString(); });
                 }
                 UIMenu::PopMenu(mouse.mObject, buffer);
             }
@@ -117,14 +117,14 @@ void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject>& uiobject,
 
 SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::string & name)
 {
-    auto raw = mmc::JsonValue::Hash();
-    raw->Insert(mmc::JsonValue::List(), "__Children");
-    raw->Insert(mmc::JsonValue::Hash(), "__Property");
-    raw->Insert(mmc::JsonValue::FromValue("2"), "__Property", "Type");
-    raw->Insert(mmc::JsonValue::FromValue("0"), "__Property", "Align");
-    raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragMove");
-    raw->Insert(mmc::JsonValue::FromValue("ok"), "__Property", "IsCanDragFree");
-    raw->Insert(mmc::JsonValue::FromValue(name), "__Property", "Name");
+    auto raw = mmc::Json::Hash();
+    raw->Insert(mmc::Json::List(), "__Children");
+    raw->Insert(mmc::Json::Hash(), "__Property");
+    raw->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
+    raw->Insert(mmc::Json::FromValue("0"), "__Property", "Align");
+    raw->Insert(mmc::Json::FromValue("ok"), "__Property", "IsCanDragMove");
+    raw->Insert(mmc::Json::FromValue("ok"), "__Property", "IsCanDragFree");
+    raw->Insert(mmc::Json::FromValue(name), "__Property", "Name");
     auto object = UIParser::Parse(raw);
     _id2obj.insert(std::make_pair(id, object));
     _obj2id.insert(std::make_pair(object, id));

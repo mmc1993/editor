@@ -63,7 +63,7 @@ bool AtlasSys::ImportImage(const std::string & url)
 
 bool AtlasSys::ImportAtlas(const std::string & url)
 {
-    auto json = mmc::JsonValue::FromFile(url);
+    auto json = mmc::Json::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
     auto dir = tools::GetFileFolder(url);
     dir += json->At("meta", "image")->ToString();
@@ -72,8 +72,8 @@ bool AtlasSys::ImportAtlas(const std::string & url)
     ASSERT_LOG(ptr != nullptr, url.c_str());
     auto raw = CastPtr<GLTexture>(ptr);
 
-    auto w = json->At("meta", "size", "w")->ToFloat();
-    auto h = json->At("meta", "size", "h")->ToFloat();
+    auto w = json->At("meta", "size", "w")->ToNumber();
+    auto h = json->At("meta", "size", "h")->ToNumber();
     for (auto val : json->At("frames"))
     {
         if (!IsHasKey(val.mKey))
@@ -81,10 +81,10 @@ bool AtlasSys::ImportAtlas(const std::string & url)
             Image image;
             image.mKey = val.mKey;
             image.mID = raw->GetID();
-            image.mQuat.x = val.mValue->At("frame")->At("x")->ToFloat() / w;
-            image.mQuat.y = val.mValue->At("frame")->At("y")->ToFloat() / h;
-            image.mQuat.z = (val.mValue->At("frame")->At("x")->ToFloat() + val.mValue->At("frame")->At("w")->ToFloat()) / w;
-            image.mQuat.w = (val.mValue->At("frame")->At("y")->ToFloat() + val.mValue->At("frame")->At("h")->ToFloat()) / h;
+            image.mQuat.x = val.mVal->At("frame")->At("x")->ToNumber() / w;
+            image.mQuat.y = val.mVal->At("frame")->At("y")->ToNumber() / h;
+            image.mQuat.z = (val.mVal->At("frame")->At("x")->ToNumber() + val.mVal->At("frame")->At("w")->ToNumber()) / w;
+            image.mQuat.w = (val.mVal->At("frame")->At("y")->ToNumber() + val.mVal->At("frame")->At("h")->ToNumber()) / h;
             _resources.insert(std::make_pair(image.mKey, image));
         }
     }
@@ -99,7 +99,7 @@ void AtlasSys::DeleteImage(const std::string & url)
 
 void AtlasSys::DeleteAtlas(const std::string & url)
 {
-    auto json = mmc::JsonValue::FromFile(url);
+    auto json = mmc::Json::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
     auto dir = tools::GetFileFolder(url);
     dir += json->At("meta", "image")->ToString();
