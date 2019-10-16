@@ -1032,11 +1032,10 @@ void UIObjectGLCanvas::HandleFowardCommands()
         {
             auto texNum = 0;
             command->mProgram->UsePass(i);
-            for (auto & texture : command->mMaterial->GetTextures())
+            for (auto & texture : command->mTextures)
             {
                 command->mProgram->BindUniformTex2D(
-                    texture.mKey.c_str(),
-                    texture.mTex->GetID(), texNum++);
+                    texture.first.c_str(), texture.second->GetID(), texNum++);
             }
             command->Call();
             Post(command->mProgram,command->mTransform);

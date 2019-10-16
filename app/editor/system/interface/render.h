@@ -15,9 +15,10 @@ namespace interface {
     };
 
     struct FowardCommand : public RenderCommand {
-        SharePtr<GLMesh> mMesh;
+        using TextureArray = std::vector<std::pair<std::string, SharePtr<GLTexture>>>;
+        SharePtr<GLMesh>    mMesh;
         SharePtr<GLProgram> mProgram;
-        SharePtr<GLMaterial> mMaterial;     //  ²ÄÖÊ
+        TextureArray        mTextures;
         glm::mat4 mTransform;               //  ¾ØÕó
     };
 

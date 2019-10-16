@@ -74,4 +74,5 @@ namespace tools {
 
     //  Ô¤ÖÃ×ÅÉ«Æ÷
     const char * const GL_PROGRAM_SOLID_FILL = "res/program/solid_fill.program";
+    const char * const GL_PROGRAM_SPRITE     = "res/program/sprite.program";
 }
