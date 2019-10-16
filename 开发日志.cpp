@@ -66,6 +66,9 @@ ok  //  UIEventEnum 剥离
 为GLObject生成唯一ID
 EditorSys只操作GLObject
 
+//  图集/图片合并
+//  资源缓存改用WeakPtr
+
 精灵
 瓦片地图
 光照
