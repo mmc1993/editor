@@ -144,7 +144,7 @@ std::vector<Component::Property> CompTransform::CollectProperty()
     return {
         {   interface::Serializer::StringValueTypeEnum::kVector2,  "Poosition", &_position  },
         {   interface::Serializer::StringValueTypeEnum::kVector2,  "Scale",     &_scale     },
-        {   interface::Serializer::StringValueTypeEnum::kFloat, "Angle",        &_angle     }
+        {   interface::Serializer::StringValueTypeEnum::kFloat,    "Angle",     &_angle     }
     };
 }
 

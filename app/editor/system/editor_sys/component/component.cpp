@@ -42,6 +42,10 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
             result.push_back(std::create_ptr<UIPropertyVector3>(*(glm::vec3 *)property.mMember, property.mName, modifyfunc)); break;
         case interface::Serializer::StringValueTypeEnum::kVector4:
             result.push_back(std::create_ptr<UIPropertyVector4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
+        case interface::Serializer::StringValueTypeEnum::kColor4:
+            result.push_back(std::create_ptr<UIPropertyColor4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
+        case interface::Serializer::StringValueTypeEnum::kAsset:
+            result.push_back(std::create_ptr<UIPropertyAsset>(*(std::string *)property.mMember, property.mName, modifyfunc)); break;
         }
     }
     return std::move(result);

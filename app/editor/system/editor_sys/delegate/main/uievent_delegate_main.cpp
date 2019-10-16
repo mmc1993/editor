@@ -80,8 +80,8 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             }
             else if (menu.mPath.at(0) == 'A' && menu.mPath.at(1) == 'd' &&
                      menu.mPath.at(2) == 'd' && menu.mPath.at(3) == ' ' &&
-                     menu.mPath.at(4) == 'C' && menu.mPath.at(3) == 'o' &&
-                     menu.mPath.at(3) == 'm' && menu.mPath.at(3) == 'p')
+                     menu.mPath.at(4) == 'C' && menu.mPath.at(5) == 'o' &&
+                     menu.mPath.at(6) == 'm' && menu.mPath.at(7) == 'p')
             {
                 Global::Ref().mEditorSys->OptAppendComponent(_obj2id.at(menu.mObject), Component::Create(tools::GetFileFullName(menu.mPath)));
             }

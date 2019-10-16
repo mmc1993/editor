@@ -19,6 +19,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
             *((float *)out) = std::stof(val);
         }
         return true;
+    case interface::Serializer::StringValueTypeEnum::kAsset:
     case interface::Serializer::StringValueTypeEnum::kString:
         {
             *((std::string *)out) = val;
@@ -41,6 +42,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
             value->z = std::stof(array.at(2));
         }
         return true;
+    case interface::Serializer::StringValueTypeEnum::kColor4:
     case interface::Serializer::StringValueTypeEnum::kVector4:
         {
             auto value = (glm::vec4 *)out;

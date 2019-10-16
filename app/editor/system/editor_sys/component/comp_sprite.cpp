@@ -37,7 +37,7 @@ bool CompSprite::OnModifyProperty(const std::any & value, const std::any & backu
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
     return {
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Url",    &_url    },
+        { interface::Serializer::StringValueTypeEnum::kAsset,   "Url",    &_url    },
         { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
         { interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor }
     };

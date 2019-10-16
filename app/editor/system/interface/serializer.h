@@ -20,6 +20,8 @@ public:
         kIntList,       //  整数列表
         kFloatList,     //  浮点列表
         kStringList,    //  字符串列表
+        kColor4,        //  颜色
+        kAsset,         //  资源
     };
 
     static bool FromStringParse(

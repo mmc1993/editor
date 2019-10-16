@@ -79,8 +79,8 @@ protected:
     {
         auto width = ImGui::GetWindowWidth();
         ImGui::Columns(2, nullptr, false);
-        ImGui::SetColumnWidth(1, width * 0.7f);
-        ImGui::SetColumnOffset(1, width * 0.3f);
+        ImGui::SetColumnWidth(1, width * 0.8f);
+        ImGui::SetColumnOffset(1, width * 0.2f);
 
         ImGui::Text(GetTitle().c_str());
         ImGui::NextColumn();
@@ -89,7 +89,7 @@ protected:
 };
 
 // ---
-//  属性 int
+//  属性 UIPropertyInt
 // ---
 class UIPropertyInt : public UIPropertyObject<int> {
 public:
@@ -104,7 +104,7 @@ public:
 };
 
 // ---
-//  属性 bool
+//  属性 UIPropertyBool
 // ---
 class UIPropertyBool : public UIPropertyObject<bool> {
 public:
@@ -119,7 +119,7 @@ public:
 };
 
 // ---
-//  属性 float
+//  属性 UIPropertyFloat
 // ---
 class UIPropertyFloat : public UIPropertyObject<float> {
 public:
@@ -134,7 +134,7 @@ public:
 };
 
 // ---
-//  属性 string
+//  属性 UIPropertyString
 // ---
 class UIPropertyString : public UIPropertyObject<std::string> {
 public:
@@ -149,7 +149,7 @@ public:
 };
 
 // ---
-//  属性 combo
+//  属性 UIPropertyCombo
 // ---
 class UIPropertyCombo : public UIPropertyObject<size_t> {
 public:
@@ -168,7 +168,7 @@ private:
 };
 
 // ---
-//  属性 vec2
+//  属性 UIPropertyVector2
 // ---
 class UIPropertyVector2 : public UIPropertyObject<glm::vec2> {
 public:
@@ -183,7 +183,7 @@ public:
 };
 
 // ---
-//  属性 vec3
+//  属性 UIPropertyVector3
 // ---
 class UIPropertyVector3 : public UIPropertyObject<glm::vec3> {
 public:
@@ -198,7 +198,7 @@ public:
 };
 
 // ---
-//  属性 vec4
+//  属性 UIPropertyVector4
 // ---
 class UIPropertyVector4 : public UIPropertyObject<glm::vec4> {
 public:
@@ -213,7 +213,7 @@ public:
 };
 
 // ---
-//  属性 color4
+//  属性 UIPropertyColor4
 // ---
 class UIPropertyColor4 : public UIPropertyObject<glm::vec4> {
 public:
@@ -222,6 +222,21 @@ public:
         const std::string & title,
         const Handler_t & handler)
         : UIPropertyObject<glm::vec4>(value, title, handler)
+    { }
+
+    virtual bool OnEnter() override;
+};
+
+// ---
+//  属性 UIPropertyAsset
+// ---
+class UIPropertyAsset: public UIPropertyObject<std::string> {
+public:
+    UIPropertyAsset(
+        std::string & value,
+        const std::string & title,
+        const Handler_t & handler)
+        : UIPropertyObject<std::string>(value, title, handler)
     { }
 
     virtual bool OnEnter() override;

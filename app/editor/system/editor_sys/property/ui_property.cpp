@@ -131,4 +131,26 @@ bool UIPropertyColor4::OnEnter()
     return true;
 }
 
+bool UIPropertyAsset::OnEnter()
+{
+    UIPropertyObject::OnEnter();
 
+    if (ImGui::InputText(
+        ImID(this).c_str(),
+        GetBackup().data(), GetBackup().size(),
+        ImGuiInputTextFlags_CallbackResize,
+        &imgui_tools::OnResizeBuffer,
+        &GetBackup()))
+    {
+        Modify();
+    }
+    ImGui::SameLine();
+
+    if (ImGui::Button("Select"))
+    {
+
+    }
+
+    ImGui::Columns(1);
+    return false;
+}
