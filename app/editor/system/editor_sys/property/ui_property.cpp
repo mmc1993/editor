@@ -138,7 +138,8 @@ bool UIPropertyAsset::OnEnter()
     if (ImGui::InputText(
         ImID(this).c_str(),
         GetBackup().data(), GetBackup().size(),
-        ImGuiInputTextFlags_CallbackResize,
+        ImGuiInputTextFlags_CallbackResize |
+        ImGuiInputTextFlags_EnterReturnsTrue,
         &imgui_tools::OnResizeBuffer,
         &GetBackup()))
     {
