@@ -9,17 +9,17 @@ class Serializer {
 public:
     //  字符串值基础类型
     enum class StringValueTypeEnum {
-        kERR,           //  无效
-        kINT,           //  整数
-        kBOOL,          //  布尔
-        kFLOAT,         //  浮点
-        kSTRING,        //  字符串
-        kVEC2,          //  向量2
-        kVEC3,          //  向量3
-        kVEC4,          //  向量4
-        kINT_LIST,      //  整数列表
-        kFLOAT_LIST,    //  浮点列表
-        kSTRING_LIST,   //  字符串列表
+        kErr,           //  无效
+        kInt,           //  整数
+        kBool,          //  布尔
+        kFloat,         //  浮点
+        kString,        //  字符串
+        kVector2,       //  向量2
+        kVector3,       //  向量3
+        kVector4,       //  向量4
+        kIntList,       //  整数列表
+        kFloatList,     //  浮点列表
+        kStringList,    //  字符串列表
     };
 
     static bool FromStringParse(

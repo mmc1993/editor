@@ -4,27 +4,27 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
 {
     switch (type)
     {
-    case interface::Serializer::StringValueTypeEnum::kINT:
+    case interface::Serializer::StringValueTypeEnum::kInt:
         {
             *((int *)out) = std::stoi(val);
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kBOOL:
+    case interface::Serializer::StringValueTypeEnum::kBool:
         {
             *((bool *)out) = val.at(0) == 'o' && val.at(1) == 'k';
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kFLOAT:
+    case interface::Serializer::StringValueTypeEnum::kFloat:
         {
             *((float *)out) = std::stof(val);
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kSTRING:
+    case interface::Serializer::StringValueTypeEnum::kString:
         {
             *((std::string *)out) = val;
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kVEC2:
+    case interface::Serializer::StringValueTypeEnum::kVector2:
         {
             auto value = (glm::vec2 *)out;
             auto array = tools::Split(val, sep);
@@ -32,7 +32,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
             value->y = std::stof(array.at(1));
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kVEC3:
+    case interface::Serializer::StringValueTypeEnum::kVector3:
         {
             auto value = (glm::vec3 *)out;
             auto array = tools::Split(val, sep);
@@ -41,7 +41,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
             value->z = std::stof(array.at(2));
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kVEC4:
+    case interface::Serializer::StringValueTypeEnum::kVector4:
         {
             auto value = (glm::vec4 *)out;
             auto array = tools::Split(val, sep);
@@ -51,7 +51,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
             value->w = std::stof(array.at(3));
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kINT_LIST:
+    case interface::Serializer::StringValueTypeEnum::kIntList:
         {
             auto value = (std::vector<int>*)out;
             auto array = tools::Split(val, sep);
@@ -62,7 +62,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
                 { return std::stoi(val); });
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kFLOAT_LIST:
+    case interface::Serializer::StringValueTypeEnum::kFloatList:
         {
             auto value = (std::vector<float> *)out;
             auto array = tools::Split(val, sep);
@@ -73,7 +73,7 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
                 { return std::stof(val); });
         }
         return true;
-    case interface::Serializer::StringValueTypeEnum::kSTRING_LIST:
+    case interface::Serializer::StringValueTypeEnum::kStringList:
         {
             auto value = (std::vector<std::string> *)out;
             auto array = tools::Split(val, sep);

@@ -23,7 +23,7 @@ public:
         void *                                     mMember;
 
         Property()
-            : mType(interface::Serializer::StringValueTypeEnum::kERR)
+            : mType(interface::Serializer::StringValueTypeEnum::kErr)
             , mMember(nullptr)
         { }
 
