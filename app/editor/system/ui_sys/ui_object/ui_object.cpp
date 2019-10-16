@@ -1000,21 +1000,21 @@ void UIObjectGLCanvas::HandlePostCommands()
     glBlitFramebuffer(0, 0, (iint)state->Move.z, (iint)state->Move.w, 0, 0, (iint)state->Move.z, (iint)state->Move.w, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     for (auto & command : state->mPostCommands)
     {
-        for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
+        for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
         {
-            if (command->mType == interface::PostCommand::kSwap)
+            if (command.mType == interface::PostCommand::kSwap)
             {
                 std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
             }
-            command->mProgram->UsePass(i);
+            command.mProgram->UsePass(i);
             tools::RenderTargetAttachment(
                 GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, state->mRenderTextures[0]);
-            command->mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
-            command->Call();
-            Post(command->mProgram,command->mTransform);
-            glBindVertexArray(command->mMesh->GetVAO());
-            glDrawElements(GL_TRIANGLES, command->mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
+            command.mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
+            command.Call();
+            Post(command.mProgram, command.mTransform);
+            glBindVertexArray(command.mMesh->GetVAO());
+            glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
         }
     }
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
@@ -1028,19 +1028,19 @@ void UIObjectGLCanvas::HandleFowardCommands()
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
     for (auto & command : state->mFowardCommands)
     {
-        for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
+        for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
         {
             auto texNum = 0;
-            command->mProgram->UsePass(i);
-            for (auto & texture : command->mTextures)
+            command.mProgram->UsePass(i);
+            for (auto & texture : command.mTextures)
             {
-                command->mProgram->BindUniformTex2D(
+                command.mProgram->BindUniformTex2D(
                     texture.first.c_str(), texture.second->GetID(), texNum++);
             }
-            command->Call();
-            Post(command->mProgram,command->mTransform);
-            glBindVertexArray(command->mMesh->GetVAO());
-            glDrawElements(GL_TRIANGLES, command->mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
+            command.Call();
+            Post(command.mProgram, command.mTransform);
+            glBindVertexArray(command.mMesh->GetVAO());
+            glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
         }
     }
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
@@ -1189,12 +1189,12 @@ void UIObjectGLCanvas::DrawTrackingPoints()
     //}
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<interface::PostCommand> & cmd)
+void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
 {
     GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<interface::FowardCommand> & cmd)
+void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 {
     GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
 }

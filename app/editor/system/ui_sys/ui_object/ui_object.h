@@ -142,8 +142,8 @@ public:
     UIObjectGLCanvas();
     interface::MatrixStack & GetMatrixStack();
     void BindRoot(const SharePtr<GLObject> & root);
-    void Post(const SharePtr<interface::PostCommand>   & cmd);
-    void Post(const SharePtr<interface::FowardCommand> & cmd);
+    void Post(const interface::PostCommand  & cmd);
+    void Post(const interface::FowardCommand & cmd);
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
