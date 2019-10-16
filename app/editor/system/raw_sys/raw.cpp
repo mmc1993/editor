@@ -407,17 +407,23 @@ bool GLMaterial::Init(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json, "URL: {0}", url);
-
-    auto ptr = Global::Ref().mRawSys->Import(json->At("mesh")->ToString());
-    SetMesh(CastPtr<GLMesh>(ptr));
-
-    ptr = Global::Ref().mRawSys->Import(json->At("program")->ToString());
-    SetProgram(CastPtr<GLProgram>(ptr));
-
-    for (auto value : json->At("textures"))
+    if (json->IsHashKey("mesh"))
     {
-        ptr = Global::Ref().mRawSys->Import(value.mValue->At("val")->ToString());
-        SetTexture(value.mValue->At("key")->ToString(), CastPtr<GLTexture>(ptr));
+        auto ptr = Global::Ref().mRawSys->Import(json->At("mesh")->ToString());
+        SetMesh(CastPtr<GLMesh>(ptr));
+    }
+    if (json->IsHashKey("program"))
+    {
+        auto ptr = Global::Ref().mRawSys->Import(json->At("program")->ToString());
+        SetProgram(CastPtr<GLProgram>(ptr));
+    }
+    if (json->IsHashKey("textures"))
+    {
+        for (auto value : json->At("textures"))
+        {
+            auto ptr = Global::Ref().mRawSys->Import(value.mValue->At("val")->ToString());
+            SetTexture(value.mValue->At("key")->ToString(), CastPtr<GLTexture>(ptr));
+        }
     }
     return true;
 }

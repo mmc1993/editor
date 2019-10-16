@@ -15,6 +15,8 @@ namespace interface {
     };
 
     struct FowardCommand : public RenderCommand {
+        SharePtr<GLMesh> mMesh;
+        SharePtr<GLProgram> mProgram;
         SharePtr<GLMaterial> mMaterial;     //  ²ÄÖÊ
         glm::mat4 mTransform;               //  ¾ØÕó
     };

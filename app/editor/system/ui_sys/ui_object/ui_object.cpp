@@ -1028,20 +1028,20 @@ void UIObjectGLCanvas::HandleFowardCommands()
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
     for (auto & command : state->mFowardCommands)
     {
-        auto & material = command->mMaterial;
-        for (auto i = 0; i != material->GetProgram()->GetPassCount(); ++i)
+        for (auto i = 0; i != command->mProgram->GetPassCount(); ++i)
         {
             auto texNum = 0;
-            material->GetProgram()->UsePass(i);
-            for (auto & texture : material->GetTextures())
+            command->mProgram->UsePass(i);
+            for (auto & texture : command->mMaterial->GetTextures())
             {
-                material->GetProgram()->BindUniformTex2D(
-                    texture.mKey.c_str(), texture.mTex->GetID(), texNum++);
+                command->mProgram->BindUniformTex2D(
+                    texture.mKey.c_str(),
+                    texture.mTex->GetID(), texNum++);
             }
             command->Call();
-            Post(material->GetProgram(),command->mTransform);
-            glBindVertexArray(material->GetMesh()->GetVAO());
-            glDrawElements(GL_TRIANGLES, material->GetMesh()->GetECount(), GL_UNSIGNED_INT, nullptr);
+            Post(command->mProgram,command->mTransform);
+            glBindVertexArray(command->mMesh->GetVAO());
+            glDrawElements(GL_TRIANGLES, command->mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
         }
     }
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
