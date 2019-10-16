@@ -87,13 +87,25 @@ namespace tools {
             });
     }
 
-    //  返回目录名 带斜杆
-    inline std::string GetFileDir(const std::string & fname)
+    //  返回目录路径 带斜杆
+    inline std::string GetFileFolder(const std::string & fname)
     {
         auto pos = fname.find_last_of('/');
         pos = pos != std::string::npos
             ? pos + 1 : 0;
         return fname.substr(0, pos);
+    }
+
+    //  返回目录名 带斜杆
+    inline std::string GetFolderName(const std::string & fname)
+    {
+        std::string name;
+        auto end = fname.find_last_of('/');
+        auto beg = fname.find_last_of('/', end - 1);
+        if (beg != std::string::npos && end != std::string::npos)
+        {
+            return fname.substr(beg + 1, end - beg);
+        }
     }
 
     //  返回文件名 没后缀

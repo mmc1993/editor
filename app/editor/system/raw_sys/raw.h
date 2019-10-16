@@ -87,18 +87,37 @@ private:
 };
 
 // ---
+//  GLImage
+// ---
+class GLImage: Raw {
+public:
+    GLImage();
+    ~GLImage();
+    void SetParam(int key, int val);
+    virtual bool Init(const std::string & url) override;
+
+private:
+    void Init(const void * data);
+    bool InitFromImage(const std::string & url);
+    bool InitFromAtlas(const std::string & url);
+
+public:
+    uint mFormat, mID, mW, mH;
+};
+
+// ---
 //  GLTexture
 // ---
 class GLTexture : public Raw {
 public:
-    struct Sample {
-        uint32_t mMinFilter;
-        uint32_t mMagFilter;
-        uint32_t mWrapS;
-        uint32_t mWrapT;
-        Sample()
-            : mMinFilter(GL_LINEAR)
-            , mMagFilter(GL_LINEAR)
+    struct Filter {
+        uint mMin;
+        uint mMag;
+        uint mWrapS;
+        uint mWrapT;
+        Filter()
+            : mMin(GL_LINEAR)
+            , mMag(GL_LINEAR)
             , mWrapS(GL_CLAMP_TO_EDGE)
             , mWrapT(GL_CLAMP_TO_EDGE)
         { }
@@ -107,21 +126,23 @@ public:
 public:
     GLTexture();
     ~GLTexture();
-    std::uint32_t GetW() const { return _w; }
-    std::uint32_t GetH() const { return _h; }
-    std::uint32_t GetID() const { return _id; }
-    std::uint32_t GetFormat() const { return _fmt; }
-    void SetParam(int key, int val) const
-    {
-        glBindTexture(  GL_TEXTURE_2D, _id);
-        glTexParameteri(GL_TEXTURE_2D, key, val);
-        glBindTexture(  GL_TEXTURE_2D, 0);
-    }
+    uint GetID() { return _pointer->mID; }
+    uint GetImageW() { return _pointer->mW; }
+    uint GetImageH() { return _pointer->mH; }
+    uint GetImageFormat() { return _pointer->mFormat; }
+    const glm::vec4 & GetOffset() { return _offset; }
+    uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
+    uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
 
     virtual bool Init(const std::string & url) override;
 
-public:
-    std::uint32_t _fmt, _id, _w, _h;
+private:
+    bool InitFromImage(const std::string & url);
+    bool InitFromAtlas(const std::string & url);
+
+private:
+    SharePtr<GLImage> _pointer;
+    glm::vec4         _offset;
 };
 
 

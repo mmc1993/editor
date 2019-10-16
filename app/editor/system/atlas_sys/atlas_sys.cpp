@@ -65,7 +65,7 @@ bool AtlasSys::ImportAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
-    auto dir = tools::GetFileDir(url);
+    auto dir = tools::GetFileFolder(url);
     dir += json->At("meta", "image")->ToString();
 
     auto ptr = Global::Ref().mRawSys->Import(dir);
@@ -101,7 +101,7 @@ void AtlasSys::DeleteAtlas(const std::string & url)
 {
     auto json = mmc::JsonValue::FromFile(url);
     ASSERT_LOG(json != nullptr, url.c_str());
-    auto dir = tools::GetFileDir(url);
+    auto dir = tools::GetFileFolder(url);
     dir += json->At("meta", "image")->ToString();
     Global::Ref().mRawSys->Delete(dir);
     for (auto val : json->At("frames"))

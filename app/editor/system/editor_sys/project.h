@@ -13,7 +13,7 @@ public:
     Project();
     bool IsOpen() const { return _root != nullptr; }
     const std::string & GetURL() const { return _url; }
-    const std::string & GetDIR() const { return tools::GetFileDir(_url); }
+    const std::string & GetDIR() const { return tools::GetFileFolder(_url); }
     
     void New(const std::string & url);
     void Load(const std::string & url);

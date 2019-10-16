@@ -74,42 +74,148 @@ void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> 
 }
 
 // ---
-//  GLTexture
+//  GLImage
 // ---
-GLTexture::GLTexture() : _fmt(0), _id(0), _w(0), _h(0)
+GLImage::GLImage()
+    : mFormat(0)
+    , mID(0)
+    , mW(0)
+    , mH(0)
 { }
 
-GLTexture::~GLTexture()
+GLImage::~GLImage()
 {
-    glDeleteTextures(1, &_id);
+    glDeleteTextures(1, &mID);
 }
 
-bool GLTexture::Init(const std::string & url)
+void GLImage::Init(const void * data)
 {
-    int w, h, fmt;
-    auto data = stbi_load(url.c_str(), &w, &h, &fmt, 0);
-    ASSERT_LOG(data != nullptr, "URL: {0}", url);
-    CHECK_RET(data != nullptr, false);
-
-    switch (fmt)
-    {
-    case 1: _fmt = GL_RED; break;
-    case 3: _fmt = GL_RGB; break;
-    case 4: _fmt = GL_RGBA; break;
-    }
-    _w = w;
-    _h = h;
-    glGenTextures(1, &_id);
-    glBindTexture(GL_TEXTURE_2D, _id);
-    glTexImage2D( GL_TEXTURE_2D, 0, _fmt, _w, _h, 0, _fmt, GL_UNSIGNED_BYTE, data);
+    glGenTextures(1, &mID);
+    glBindTexture(GL_TEXTURE_2D, mID);
+    glTexImage2D( GL_TEXTURE_2D, 0, mFormat, mW, mH, 0, mFormat, GL_UNSIGNED_BYTE, data);
     glBindTexture(GL_TEXTURE_2D, 0);
-    stbi_image_free(data);
 
     SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     SetParam(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     SetParam(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+bool GLImage::InitFromImage(const std::string & url)
+{
+    int w, h, format;
+    auto data = stbi_load(url.c_str(), &w, &h, &format, 0);
+    if (data == nullptr)
+    {
+        return false;
+    }
+    switch (format)
+    {
+    case 1: mFormat = GL_RED; break;
+    case 3: mFormat = GL_RGB; break;
+    case 4: mFormat = GL_RGBA; break;
+    }
+    mW = w;
+    mH = h;
+    Init(data);
+    stbi_image_free(data);
     return true;
+}
+
+bool GLImage::InitFromAtlas(const std::string & url)
+{
+    auto dir  = tools::GetFileFolder(url);
+    auto name = tools::GetFolderName(url);
+    if (dir.empty() || name.empty())
+    {
+        return false;
+    }
+
+    auto path = dir;
+    path.append(name);
+    path.append(".atlas");
+
+    auto json = mmc::JsonValue::FromFile(path);
+    if (json == nullptr) { return false; }
+
+    dir += json->At("meta", "image")->ToString();
+
+    auto ptr = Global::Ref().mRawSys->Import(dir);
+    ASSERT_LOG(ptr != nullptr, url.c_str());
+    auto raw = CastPtr<GLTexture>(ptr);
+    return false;
+}
+
+void GLImage::SetParam(int key, int val)
+{
+    glBindTexture(GL_TEXTURE_2D, mID);
+    glTexParameteri(GL_TEXTURE_2D, key, val);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+bool GLImage::Init(const std::string & url)
+{
+    return InitFromImage(url) || InitFromAtlas(url);
+}
+
+// ---
+//  GLTexture
+// ---
+GLTexture::GLTexture()
+{ }
+
+GLTexture::~GLTexture()
+{ }
+
+bool GLTexture::Init(const std::string & url)
+{
+    return InitFromImage(url) || InitFromAtlas(url);
+}
+
+bool GLTexture::InitFromImage(const std::string & url)
+{
+    if (!tools::IsFileExists(url)) { return false; }
+    _pointer = Global::Ref().mRawSys->Get<GLImage>(url);
+    _offset.x = 0.0f;
+    _offset.y = 0.0f;
+    _offset.z = 1.0f;
+    _offset.w = 1.0f;
+    return true;
+}
+
+bool GLTexture::InitFromAtlas(const std::string & url)
+{
+    ASSERT_LOG(tools::GetFileSuffix(url) == ".png", url.c_str());
+    auto folder = tools::GetFileFolder(url);
+    mmc::JsonValue::Value json;
+
+    //  Ëø¶¨ Atlas
+    std::string path;
+    auto dirname = tools::GetFolderName(url);
+    path.append(folder);
+    path.append(dirname);
+    auto name = SFormat("{0}{1}.atlas", path, 0);
+    for (auto i = 0; tools::IsFileExists(name); ++i)
+    {
+        auto temp = mmc::JsonValue::FromFile(name);
+        if (temp == nullptr) { break; }
+        auto frames=temp->At("frames");
+        if (frames->IsHashKey(url))
+        { json = temp; break; }
+
+        name = SFormat("{0}{1}.atlas", path, 0);
+    }
+
+    if (json != nullptr) 
+    {
+        _pointer = Global::Ref().mRawSys->Get<GLImage>(name);
+        _offset.x = json->At(url, "frame", "x")->ToFloat() / _pointer->mW;
+        _offset.y = json->At(url, "frame", "y")->ToFloat() / _pointer->mH;
+        _offset.z = json->At(url, "frame", "w")->ToFloat() / _pointer->mW + _offset.x;
+        _offset.w = json->At(url, "frame", "h")->ToFloat() / _pointer->mH + _offset.y;
+    }
+
+    return _pointer != nullptr;
 }
 
 GLProgram::GLProgram() : _use(GL_INVALID_INDEX)
@@ -459,4 +565,3 @@ void GLMaterial::SetTexture(const std::string & key, const SharePtr<GLTexture> &
     if (it != _textures.end()) { it->mKey = key;it->mTex = tex; }
     else { _textures.emplace_back(key, tex); }
 }
-
