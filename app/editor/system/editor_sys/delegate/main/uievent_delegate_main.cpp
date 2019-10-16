@@ -78,10 +78,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             {
                 Global::Ref().mEditorSys->OptRenameObject(_obj2id.at(menu.mObject), menu.mEdit);
             }
-            else
+            else if (menu.mPath.at(0) == 'A' && menu.mPath.at(1) == 'd' &&
+                     menu.mPath.at(2) == 'd' && menu.mPath.at(3) == ' ' &&
+                     menu.mPath.at(4) == 'C' && menu.mPath.at(3) == 'o' &&
+                     menu.mPath.at(3) == 'm' && menu.mPath.at(3) == 'p')
             {
-                auto name = menu.mPath.substr(std::strlen("Add Component/"));
-                Global::Ref().mEditorSys->OptAppendComponent(_obj2id.at(menu.mObject), Component::Create(name));
+                Global::Ref().mEditorSys->OptAppendComponent(_obj2id.at(menu.mObject), Component::Create(tools::GetFileFullName(menu.mPath)));
             }
             std::cout
                 << "Menu Key: " << menu.mPath << ' '

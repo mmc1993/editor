@@ -17,18 +17,28 @@ const std::string & CompSprite::GetName()
 
 void CompSprite::EncodeBinary(std::ofstream & os)
 {
+    tools::Serialize(os, _url);
+    tools::Serialize(os, _size);
+    tools::Serialize(os, _anchor);
 }
 
 void CompSprite::DecodeBinary(std::ifstream & is)
 {
+    tools::Deserialize(is, _url);
+    tools::Deserialize(is, _size);
+    tools::Deserialize(is, _anchor);
 }
 
 bool CompSprite::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
 {
-    return false;
+    return true;
 }
 
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
-    return std::vector<Property>();
+    return {
+        { interface::Serializer::StringValueTypeEnum::kVEC2, "Url",    &_url    },
+        { interface::Serializer::StringValueTypeEnum::kVEC2, "Size",   &_size   },
+        { interface::Serializer::StringValueTypeEnum::kVEC2, "Anchor", &_anchor }
+    };
 }

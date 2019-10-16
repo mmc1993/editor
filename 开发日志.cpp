@@ -65,13 +65,11 @@ ok  //  UIEventEnum 剥离
 
 为GLObject生成唯一ID
 EditorSys只操作GLObject
-//  GLObject 新增_id
-//  Project 新增 _acc
-//  所有GLObject统一 EditorSys 生成
 
-//  从UIObject去除GLObject关联
-//  事件消息发送GLObject ID
-
+精灵
+瓦片地图
+光照
+阴影
 
 //  GLCanvas
 //      双击 -> 进入编辑
@@ -90,3 +88,5 @@ EditorSys只操作GLObject
 //      左键按住边框内 -> 拖动对象
 //      Delete        -> 删除对象
 
+资源管理器
+资源选择框
