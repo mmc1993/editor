@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 namespace glm {
     template <class T>
@@ -9,7 +9,7 @@ namespace glm {
 }
 
 namespace tools {
-    //  ÊÇ·ñ°üº¬µã
+    //  æ˜¯å¦åŒ…å«ç‚¹
     inline bool IsContain(const glm::vec4 & rect, const glm::vec2 & point)
     {
         return rect.x <= point.x
@@ -18,7 +18,7 @@ namespace tools {
             && rect.y + rect.w >= point.y;
     }
 
-    //  ÊÇ·ñÔÚ±ßÉÏ
+    //  æ˜¯å¦åœ¨è¾¹ä¸Š
     inline int IsOnRect(const glm::vec4 & rect, const glm::vec2 & point, float border = 0)
     {
         auto t = rect.y, b = rect.y + rect.w;
@@ -30,41 +30,41 @@ namespace tools {
         return -1;
     }
 
-    //  µãµ½ËÄ±ßĞÎ¾àÀë
-    //      ·µ»Ø¾àÀë¼°×î½Ó½üµÄ±ß
+    //  ç‚¹åˆ°å››è¾¹å½¢è·ç¦»
+    //      è¿”å›è·ç¦»åŠæœ€æ¥è¿‘çš„è¾¹
     inline std::pair<float, int> RectInDistance(const glm::vec4 & rect, const glm::vec2 & point)
     {
         auto t = std::abs(point.y - rect.y);
         auto b = std::abs(point.y - rect.y - rect.w);
         auto l = std::abs(point.x - rect.x);
         auto r = std::abs(point.x - rect.x - rect.z);
-        //  ¾ØĞÎË®Æ½·¶Î§ÄÚ
+        //  çŸ©å½¢æ°´å¹³èŒƒå›´å†…
         if (point.x >= rect.x && point.x <= rect.x + rect.z) { l = r = 0; }
-        //  ¾ØĞÎ´¹Ö±·¶Î§ÄÚ
+        //  çŸ©å½¢å‚ç›´èŒƒå›´å†…
         if (point.y >= rect.y && point.y <= rect.y + rect.w) { t = b = 0; }
 
         auto xmin = std::min(l, r);
         auto ymin = std::min(t, b);
-        //  ¾ØĞÎÄÚ
+        //  çŸ©å½¢å†…
         if (xmin == 0 && ymin == 0) { return std::make_pair(0.0f, 0); }
-        //  ´¹Ö±¾àÀë
+        //  å‚ç›´è·ç¦»
         if (xmin == 0) { return std::make_pair(ymin, ymin == t ? 0 : 1); }
-        //  Ë®Æ½¾àÀë
+        //  æ°´å¹³è·ç¦»
         if (ymin == 0) { return std::make_pair(xmin, xmin == l ? 2 : 3); }
-        //  ·µ»ØÔ¶µÄ¾àÀë
+        //  è¿”å›è¿œçš„è·ç¦»
         auto dist = std::max(xmin, ymin);
         return std::make_pair(dist, dist == t ? 0
                                   : dist == b ? 1
                                   : dist == l ? 2 : 3);
     }
 
-    //  ¸¡µãÊı±È½Ï
+    //  æµ®ç‚¹æ•°æ¯”è¾ƒ
     inline bool Equal(const float f0, const float f1)
     {
         return std::abs(f1 - f0) <= FLT_EPSILON;
     }
 
-    //  µãÊÇ·ñÔÚÏß¶ÎÉÏ
+    //  ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Š
     inline bool IsOnSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
         return p.x >= std::min(a.x, b.x)
@@ -74,7 +74,7 @@ namespace tools {
             && glm::cross(glm::vec3(p - a, 0), glm::vec3(b - p, 0)).z == 0.0f;
     }
 
-    //  µãÊÇ·ñÔÚÏß¶ÎÉÏ
+    //  ç‚¹æ˜¯å¦åœ¨çº¿æ®µä¸Š
     inline bool IsOnSegment(const glm::vec2 & p, const std::vector<glm::vec2> & points)
     {
         auto size = points.size();
@@ -87,7 +87,7 @@ namespace tools {
         return false;
     }
 
-    //  Ö±Ïß½»µã
+    //  ç›´çº¿äº¤ç‚¹
     inline bool IsCrossLine(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d, float * crossA, float * crossB)
     {
         assert(crossA != nullptr);
@@ -102,7 +102,7 @@ namespace tools {
         return false;
     }
 
-    //  Ïß¶ÎÏà½»
+    //  çº¿æ®µç›¸äº¤
     inline bool IsCrossSegment(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d)
     {
         auto ab = glm::vec3(b - a, 0);
@@ -111,7 +111,7 @@ namespace tools {
             && glm::cross(cd, glm::vec3(a - c, 0)).z * glm::cross(cd, glm::vec3(b - c, 0)).z <= 0;
     }
 
-    //  Ïß¶Î½»µã
+    //  çº¿æ®µäº¤ç‚¹
     inline bool IsCrossSegment(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d, float * crossA, float * crossB)
     {
         if (IsCrossLine(a, b, c, d, crossA, crossB))
@@ -122,7 +122,7 @@ namespace tools {
         return false;
     }
 
-    //  µãÊÇ·ñÔÚ¶à±ßĞÎÄÚ
+    //  ç‚¹æ˜¯å¦åœ¨å¤šè¾¹å½¢å†…
     inline bool IsInPolygon(const glm::vec2 & a, const std::vector<glm::vec2> & points)
     {
         glm::vec2 b(std::numeric_limits<float>::max(), a.y);
@@ -148,7 +148,7 @@ namespace tools {
         return (num & 1) == 1;
     }
 
-    //  µãµ½Ïß¶Î×î¶Ì¾àÀë
+    //  ç‚¹åˆ°çº¿æ®µæœ€çŸ­è·ç¦»
     inline glm::vec2 PointToSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
         auto ab = glm::vec3(b - a, 0);
@@ -164,7 +164,7 @@ namespace tools {
         }
     }
 
-    //  ¼ÆËã¶à±ßĞÎ¶¥µãË³Ğò
+    //  è®¡ç®—å¤šè¾¹å½¢é¡¶ç‚¹é¡ºåº
     inline float CalePointsOrder(const std::vector<glm::vec2> & points)
     {
         ASSERT_LOG(points.size() >= 3, "");
@@ -185,7 +185,7 @@ namespace tools {
         return ret;
     }
 
-    //  ¶ş·Ö¶à±ßĞÎ
+    //  äºŒåˆ†å¤šè¾¹å½¢
     inline void BinaryPoints(
         const std::vector<glm::vec2> & points,
         const uint endA, const glm::vec2 & a,
@@ -207,7 +207,7 @@ namespace tools {
         }
     }
 
-    //  ÇĞ¸î±ÕºÏÂ·¾¶
+    //  åˆ‡å‰²é—­åˆè·¯å¾„
     inline void StripClosePoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
     {
         if (points.size() < 3) { return; }
@@ -247,7 +247,7 @@ namespace tools {
         output.push_back(points);
     }
 
-    //  ÇĞ¸î±ÕºÏÂ·¾¶
+    //  åˆ‡å‰²é—­åˆè·¯å¾„
     inline std::vector<std::vector<glm::vec2>> StripClosePoints(const std::vector<glm::vec2> & points)
     {
         std::vector<std::vector<glm::vec2>> result;
@@ -255,7 +255,7 @@ namespace tools {
         return std::move(result);
     }
 
-    //  ÇĞ¸î°¼¶à±ßĞÎ
+    //  åˆ‡å‰²å‡¹å¤šè¾¹å½¢
     inline void StripCullPoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
     {
         static const auto CheckStripPoint = [] (const std::vector<glm::vec2> & points, size_t i)
@@ -300,7 +300,7 @@ namespace tools {
         output.push_back(points);
     }
 
-    //  ÇĞ¸îÍ¹¶à±ßĞÎ
+    //  åˆ‡å‰²å‡¸å¤šè¾¹å½¢
     inline std::vector<std::vector<glm::vec2>> StripCullPoints(const std::vector<glm::vec2> & points)
     {
         std::vector<std::vector<glm::vec2>> result;
@@ -308,7 +308,7 @@ namespace tools {
         return std::move(result);
     }
 
-    //  ¶¥µãÈ¥ÖØ
+    //  é¡¶ç‚¹å»é‡
     inline std::vector<glm::vec2> UniquePoints(const std::vector<glm::vec2> & points)
     {
         auto result = points;
@@ -316,5 +316,15 @@ namespace tools {
         auto it = std::unique(result.begin(), result.end());
         result.erase(it, result.end());
         return std::move(result);
+    }
+
+    //  è¿”å›ä¸€ä¸ªå›ºå®šéšæœºé¢œè‰²
+    inline glm::vec4 GetRandomColor(size_t & seed)
+    {
+        seed = (seed >> 3) | ((seed & 0x7) << 29);
+        return glm::vec4(
+            (seed & 0xff) / 255.0f,
+            ((seed & 0xff00) >> 8) / 255.0f,
+            ((seed & 0xff0000) >> 16) / 255.0f, 1.0f);
     }
 }

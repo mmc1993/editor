@@ -1099,14 +1099,15 @@ void UIObjectGLCanvas::DrawOutlineObjects()
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
-        uint value = 255;
+        uint value = 0x22B14C;
         for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
-            value *= 2;
+            glm::vec4 color(((value & 0xff)) / 255.0f,
+                            ((value & 0xff00) >> 8) / 255.0f,
+                            ((value & 0xff0000) >> 16) / 255.0f,1.0f);
+            value += 123;
+
             std::vector<GLMesh::Vertex> points;
-            glm::vec4 color((value & 0xff)     / 255.0f,
-                            (value & 0xff00)   / 255.0f,
-                            (value & 0xff0000) / 255.0f,1.0f);
             auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
             for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
@@ -1144,7 +1145,12 @@ void UIObjectGLCanvas::DrawOutlineObjects()
 
 void UIObjectGLCanvas::DrawTrackingPoints()
 {
-    //auto state = GetState<UIStateGLCanvas>();
+    auto state = GetState<UIStateGLCanvas>();
+    if (state->mOperation.mOpMode == UIStateGLCanvas::Operation::kEdit)
+    {
+
+    }
+
     //if (state->mOperation.mOpMode)
     //for (auto & object : state->mOperation.m)
     //{
@@ -1230,7 +1236,7 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
 
 void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
 {
-    auto state    = GetState<UIStateGLCanvas>();
+    auto state = GetState<UIStateGLCanvas>();
     auto it = std::find(state->mOperation.mSelectObjects.begin(),
                         state->mOperation.mSelectObjects.end(), object);
     if (selected)
