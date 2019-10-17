@@ -267,7 +267,7 @@ bool GLProgram::Init(const std::string & url)
                 break;
             }
 
-            if (tools::IsEqualSkipSpace(line, "BlendMode") || 
+            if (tools::IsEqualSkipSpace(line, "BlendFunc") || 
                 tools::IsEqualSkipSpace(line, "StencilTest"))
             {
                 ASSERT_LOG(pass != nullptr, "½âÎöPassÊôÐÔ´íÎó: {0}, {1}", endFlag, line);
@@ -276,7 +276,7 @@ bool GLProgram::Init(const std::string & url)
                 ss.str(line);
                 ss >> word;
 
-                if (word == "BlendMode")
+                if (word == "BlendFunc")
                 {
                     ss >> word;
                     if (word == "Zero") { pass->mBlendSrc = GL_ZERO; }

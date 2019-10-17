@@ -164,9 +164,6 @@ private:
     void DrawTrackingPoints();
     void DrawSelectRect();
 
-    void ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
-    SharePtr<GLMesh> & GetMeshBuffer(size_t i);
-
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
     virtual void OnApplyLayout() override;
@@ -176,4 +173,12 @@ private:
     void OnEventKey(const UIEvent::Key & param);
     void OnEventMenu(const UIEvent::Menu & param);
     void OnEventMouse(const UIEvent::Mouse & param);
+
+    //  ¹¤¾ßº¯Êý
+    glm::mat4 GetMatView();
+    glm::mat4 GetMatProj();
+    glm::mat4 GetMatViewProj();
+    glm::vec2 ProjectWorld(const glm::vec2 & pt);
+    SharePtr<GLMesh> & GetMeshBuffer(size_t idx);
+    void ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 };

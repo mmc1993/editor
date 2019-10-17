@@ -1109,10 +1109,7 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
             for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
-            {
-                points.emplace_back(trackPoints.at(i1)                           , color);
-                points.emplace_back(trackPoints.at((i1 + 1) % trackPoints.size()), color);
-            }
+            {points.emplace_back(trackPoints.at(i1), color);}
 
             auto & mesh = GetMeshBuffer(i0);
             mesh->Update(points, {});
@@ -1121,7 +1118,8 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             Post(  state->mGLProgramSolidFill,
                     object->GetWorldMatrix());
             glBindVertexArray(mesh->GetVAO());
-            glDrawArrays(GL_LINES, 0, mesh->GetVCount());
+            glDrawArrays(GL_LINE_LOOP, 0, mesh->GetVCount());
+            glBindVertexArray(0);
         }
     }
 }
@@ -1152,6 +1150,7 @@ void UIObjectGLCanvas::DrawTrackingPoints()
                         object->GetWorldMatrix());
                 glBindVertexArray(mesh->GetVAO());
                 glDrawArrays(GL_POINTS, 0, mesh->GetVCount());
+                glBindVertexArray(0);
             }
         }
     }
@@ -1162,37 +1161,47 @@ void UIObjectGLCanvas::DrawSelectRect()
     auto state = GetState<UIStateGLCanvas>();
     if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect)
     {
-        //auto rect = state->mOperation.mSelectRect;
-        //if (rect.x > rect.z) std::swap(rect.x, rect.z);
-        //if (rect.y > rect.w) std::swap(rect.y, rect.w);
+        auto rect = state->mOperation.mSelectRect;
+        if (rect.x > rect.z) std::swap(rect.x, rect.z);
+        if (rect.y > rect.w) std::swap(rect.y, rect.w);
 
-        //std::vector<GLMesh::Vertex> points;
-        //points.emplace_back({})
+        auto min = ProjectWorld(glm::vec2(rect.x, rect.y));
+        auto max = ProjectWorld(glm::vec2(rect.z, rect.w));
 
-        //state->mOperation.mSelectRect.x
-        //auto & mesh = GetMeshBuffer(0);
-        //mesh->Update();
+        //  填充
+        std::vector<GLMesh::Vertex> points;
+        points.emplace_back(glm::vec2(min.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        points.emplace_back(glm::vec2(max.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        points.emplace_back(glm::vec2(max.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        points.emplace_back(glm::vec2(min.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        points.emplace_back(glm::vec2(max.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        points.emplace_back(glm::vec2(min.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
+        auto mesh0 = GetMeshBuffer(0);
+        mesh0->Update(points, {});
+
+        //  描边
+        points.clear();
+        points.emplace_back(glm::vec2(min.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.5f));
+        points.emplace_back(glm::vec2(max.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.5f));
+        points.emplace_back(glm::vec2(max.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.5f));
+        points.emplace_back(glm::vec2(min.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.5f));
+        auto mesh1 = GetMeshBuffer(1);
+        mesh1->Update(points, {});
+
+        state->mGLProgramSolidFill->UsePass(0);
+        glEnable(GL_BLEND);
+        Post(state->mGLProgramSolidFill, glm::mat4(1));
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glBindVertexArray(mesh0->GetVAO());
+        glDrawArrays(GL_TRIANGLES, 0, mesh0->GetVCount());
+
+        glBindVertexArray(mesh1->GetVAO());
+        glDrawArrays(GL_LINE_LOOP, 0, mesh1->GetVCount());
+
+        glBindVertexArray(0);
+        glDisable(GL_BLEND);
     }
-}
-
-void UIObjectGLCanvas::ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
-{
-    auto state = GetState<UIStateGLCanvas>();
-    if (add) state->mOperation.mOpMode |=  op;
-    else     state->mOperation.mOpMode &= ~op;
-}
-
-SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t i)
-{
-    auto state = GetState<UIStateGLCanvas>();
-    if (i == state->mMeshBuffer.size())
-    {
-        auto mesh = std::create_ptr<GLMesh>();
-        mesh->Init({}, {}, GLMesh::Vertex::kV 
-                         | GLMesh::Vertex::kC);
-        state->mMeshBuffer.push_back(mesh);
-    }
-    return state->mMeshBuffer.at(i);
 }
 
 void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
@@ -1278,13 +1287,9 @@ bool UIObjectGLCanvas::OnEnter()
     {
         auto state = GetState<UIStateGLCanvas>();
         ASSERT_LOG(state->mRoot != nullptr, "");
-        auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f, state->Move.w * -0.5f, state->Move.w * 0.5f);
-        auto view = glm::lookAt(state->mOperation.mCoord,state->mOperation.mCoord-glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
-        view = glm::scale(view, glm::vec3(state->mOperation.mScale, state->mOperation.mScale, 1));
-
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
-        state->mMatrixStack.Identity(interface::MatrixStack::kView, view);
-        state->mMatrixStack.Identity(interface::MatrixStack::kProj, proj);
+        state->mMatrixStack.Identity(interface::MatrixStack::kView, GetMatView());
+        state->mMatrixStack.Identity(interface::MatrixStack::kProj, GetMatProj());
         CollCommands();
         CallCommands();
         state->mMatrixStack.Pop(interface::MatrixStack::kModel);
@@ -1371,19 +1376,76 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
     {
-        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.1f * param.mWheel), 0.5f, 5.0f);
+        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.2f * param.mWheel), 0.2f, 3.0f);
     }
     //  单击左键选择模式
-    if (param.mAct == 3)
+    if (param.mAct == 3 && param.mKey == 0)
     {
         state->mOperation.mSelectRect.x = param.mMouse.x;
         state->mOperation.mSelectRect.y = param.mMouse.y;
+        state->mOperation.mSelectRect.z = param.mMouse.x;
+        state->mOperation.mSelectRect.w = param.mMouse.y;
         ModifyOpMode(UIStateGLCanvas::Operation::kSelect, true);
     }
+    if (param.mAct == 2 && param.mKey == 0 || param.mAct == 0 && param.mKey == -1)
+    {
+        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, false);
+    }
     //  按下左键选择模式
-    if (param.mAct == 1 && param.mKey == 2 && (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect))
+    if (param.mAct == 1 && param.mKey == 0 && (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect))
     {
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
     }
+}
+
+glm::mat4 UIObjectGLCanvas::GetMatView()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    auto view = glm::lookAt(state->mOperation.mCoord,
+                            state->mOperation.mCoord - glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
+    return glm::scale(view, glm::vec3(state->mOperation.mScale, state->mOperation.mScale, 1));
+}
+
+glm::mat4 UIObjectGLCanvas::GetMatProj()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    return glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f, 
+                      state->Move.w * -0.5f, state->Move.w * 0.5f);
+}
+
+glm::mat4 UIObjectGLCanvas::GetMatViewProj()
+{
+    return GetMatProj() * GetMatView();
+}
+
+glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & pt)
+{
+    glm::vec4 port;
+    glGetFloatv(GL_VIEWPORT, &port.x);
+    const auto & coord = ToLocalCoord(pt);
+    auto result = glm::unProject(
+        glm::vec3(coord.x, port.w - coord.y, 0),
+        glm::mat4(1), GetMatProj(), port);
+    return  glm::inverse(GetMatView()) * glm::vec4(result, 1);
+}
+
+SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (idx == state->mMeshBuffer.size())
+    {
+        auto mesh = std::create_ptr<GLMesh>();
+        mesh->Init({}, {}, GLMesh::Vertex::kV 
+                         | GLMesh::Vertex::kC);
+        state->mMeshBuffer.push_back(mesh);
+    }
+    return state->mMeshBuffer.at(idx);
+}
+
+void UIObjectGLCanvas::ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (add) state->mOperation.mOpMode |=  op;
+    else     state->mOperation.mOpMode &= ~op;
 }
