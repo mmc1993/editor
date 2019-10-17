@@ -162,6 +162,10 @@ private:
 
     void DrawOutlineObjects();
     void DrawTrackingPoints();
+    void DrawSelectRect();
+
+    void ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
+    SharePtr<GLMesh> & GetMeshBuffer(size_t i);
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;

@@ -121,20 +121,22 @@ public:
     struct Operation {
         //  操作模式
         enum OpModeEnum {
-            kDrag,
-            kEdit,
-        } mOpMode;
+            kDrag = 0x1,        //  拖拽
+            kEdit = 0x2,        //  编辑
+            kSelect = 0x4,      //  选择
+        };
 
         //  激活的对象
         SharePtr<GLObject>  mActiveObject;
         SharePtr<Component> mActiveComponent;
         size_t              mTrackPointIndex;
 
-        glm::vec3           mView;
-        float               mScale;
-
-        //  选中的对象
+        glm::vec4                       mSelectRect;
         std::vector<SharePtr<GLObject>> mSelectObjects;
+
+        float       mScale;
+        glm::vec3   mCoord;
+        size_t      mOpMode;
 
         //  初始化
         Operation()

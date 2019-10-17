@@ -1089,6 +1089,8 @@ void UIObjectGLCanvas::CallCommands()
         DrawOutlineObjects();
         DrawTrackingPoints();
     }
+    DrawSelectRect();
+
     glViewport(0, 0, viewport[2], viewport[3]);
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
@@ -1112,20 +1114,9 @@ void UIObjectGLCanvas::DrawOutlineObjects()
                 points.emplace_back(trackPoints.at((i1 + 1) % trackPoints.size()), color);
             }
 
-            //  初始化 Mesh
-            if (i0 == state->mMeshBuffer.size())
-            {
-                auto mesh = std::create_ptr<GLMesh>();
-                mesh->Init(points,std::vector<uint>(), 
-                    GLMesh::Vertex::kV | GLMesh::Vertex::kC);
-                state->mMeshBuffer.push_back(mesh);
-            }
-            else
-            {
-                state->mMeshBuffer.back()->Update(points,{});
-            }
+            auto & mesh = GetMeshBuffer(i0);
+            mesh->Update(points, {});
 
-            auto &mesh = state->mMeshBuffer.back();
             state->mGLProgramSolidFill->UsePass(0);
             ASSERT_LOG(glGetError() == 0, "");
             Post(  state->mGLProgramSolidFill,
@@ -1143,7 +1134,7 @@ void UIObjectGLCanvas::DrawTrackingPoints()
 {
     glPointSize(VAL_TrackPointSize);
     auto state = GetState<UIStateGLCanvas>();
-    if (state->mOperation.mOpMode == UIStateGLCanvas::Operation::kEdit)
+    if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kEdit)
     {
         for (auto & object : state->mOperation.mSelectObjects)
         {
@@ -1157,20 +1148,9 @@ void UIObjectGLCanvas::DrawTrackingPoints()
                 for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
                 {points.emplace_back(trackPoints.at(i1), color);}
 
-                //  初始化 Mesh
-                if (i0 == state->mMeshBuffer.size())
-                {
-                    auto mesh = std::create_ptr<GLMesh>();
-                    mesh->Init(points, std::vector<uint>(),
-                        GLMesh::Vertex::kV | GLMesh::Vertex::kC);
-                    state->mMeshBuffer.push_back(mesh);
-                }
-                else
-                {
-                    state->mMeshBuffer.back()->Update(points, {});
-                }
+                auto & mesh = GetMeshBuffer(i0);
+                mesh->Update(points, {});
 
-                auto &mesh = state->mMeshBuffer.back();
                 state->mGLProgramSolidFill->UsePass(0);
                 ASSERT_LOG(glGetError() == 0, "");
                 Post(  state->mGLProgramSolidFill,
@@ -1183,6 +1163,44 @@ void UIObjectGLCanvas::DrawTrackingPoints()
             }
         }
     }
+}
+
+void UIObjectGLCanvas::DrawSelectRect()
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect)
+    {
+        //auto rect = state->mOperation.mSelectRect;
+        //if (rect.x > rect.z) std::swap(rect.x, rect.z);
+        //if (rect.y > rect.w) std::swap(rect.y, rect.w);
+
+        //std::vector<GLMesh::Vertex> points;
+        //points.emplace_back({})
+
+        //state->mOperation.mSelectRect.x
+        //auto & mesh = GetMeshBuffer(0);
+        //mesh->Update();
+    }
+}
+
+void UIObjectGLCanvas::ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (add) state->mOperation.mOpMode |=  op;
+    else     state->mOperation.mOpMode &= ~op;
+}
+
+SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t i)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (i == state->mMeshBuffer.size())
+    {
+        auto mesh = std::create_ptr<GLMesh>();
+        mesh->Init({}, {}, GLMesh::Vertex::kV 
+                         | GLMesh::Vertex::kC);
+        state->mMeshBuffer.push_back(mesh);
+    }
+    return state->mMeshBuffer.at(i);
 }
 
 void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
@@ -1269,7 +1287,7 @@ bool UIObjectGLCanvas::OnEnter()
         auto state = GetState<UIStateGLCanvas>();
         ASSERT_LOG(state->mRoot != nullptr, "");
         auto proj = glm::ortho(state->Move.z * -0.5f, state->Move.z * 0.5f, state->Move.w * -0.5f, state->Move.w * 0.5f);
-        auto view = glm::lookAt(state->mOperation.mView, state->mOperation.mView-glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
+        auto view = glm::lookAt(state->mOperation.mCoord,state->mOperation.mCoord-glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
         view = glm::scale(view, glm::vec3(state->mOperation.mScale, state->mOperation.mScale, 1));
 
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
@@ -1352,13 +1370,28 @@ void UIObjectGLCanvas::OnEventMenu(const UIEvent::Menu & param)
 void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
 {
     auto state = GetState<UIStateGLCanvas>();
+    //  按下中间拖动舞台
     if (param.mAct == 1 && param.mKey == 2)
     {
-        state->mOperation.mView.x -= param.mDelta.x;
-        state->mOperation.mView.y += param.mDelta.y;
+        state->mOperation.mCoord.x -= param.mDelta.x;
+        state->mOperation.mCoord.y += param.mDelta.y;
     }
+    //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
     {
         state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.1f * param.mWheel), 0.5f, 5.0f);
+    }
+    //  单击左键选择模式
+    if (param.mAct == 3)
+    {
+        state->mOperation.mSelectRect.x = param.mMouse.x;
+        state->mOperation.mSelectRect.y = param.mMouse.y;
+        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, true);
+    }
+    //  按下左键选择模式
+    if (param.mAct == 1 && param.mKey == 2 && (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect))
+    {
+        state->mOperation.mSelectRect.z = param.mMouse.x;
+        state->mOperation.mSelectRect.w = param.mMouse.y;
     }
 }
