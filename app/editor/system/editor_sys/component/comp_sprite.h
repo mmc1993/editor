@@ -19,14 +19,18 @@ protected:
     virtual std::vector<Property> CollectProperty() override;
 
 private:
-    void UpdateTrackPoints();
+    void Update();
     void OnRenderCallback(const interface::RenderCommand & command);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
+    bool            _update;
     std::string     _url;
     glm::vec2       _size;
     glm::vec2       _anchor;
+    SharePtr<GLMesh>  _mesh;
+    SharePtr<GLTexture> _texture;
+    SharePtr<GLProgram> _program;
 };

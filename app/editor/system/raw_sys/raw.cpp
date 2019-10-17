@@ -103,6 +103,8 @@ void GLImage::Init(const void * data)
 
 bool GLImage::InitFromImage(const std::string & url)
 {
+    stbi_set_flip_vertically_on_load(true);
+
     int w, h, format;
     auto data = stbi_load(url.c_str(), &w, &h, &format, 0);
     if (data == nullptr)
@@ -171,12 +173,16 @@ bool GLTexture::Init(const std::string & url)
 bool GLTexture::InitFromImage(const std::string & url)
 {
     if (!tools::IsFileExists(url)) { return false; }
-    _pointer = Global::Ref().mRawSys->Get<GLImage>(url);
-    _offset.x = 0.0f;
-    _offset.y = 0.0f;
-    _offset.z = 1.0f;
-    _offset.w = 1.0f;
-    return true;
+    _pointer = std::create_ptr<GLImage>();
+    if (_pointer->Init(url))
+    {
+        _offset.x = 0.0f;
+        _offset.y = 0.0f;
+        _offset.z = 1.0f;
+        _offset.w = 1.0f;
+        return true;
+    }
+    return false;
 }
 
 bool GLTexture::InitFromAtlas(const std::string & url)

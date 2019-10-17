@@ -39,6 +39,9 @@ public:
         Vertex(const glm::vec2 & _v, const glm::vec4 & _c) : v(_v), c(_c)
         { }
 
+        Vertex(const glm::vec2 & _v, const glm::vec2 & _uv) : v(_v), uv(_uv)
+        { }
+
         Vertex(const glm::vec2 & _v, const glm::vec4 & _c, const glm::vec2 & _uv) : v(_v), c(_c), uv(_uv)
         { }
 

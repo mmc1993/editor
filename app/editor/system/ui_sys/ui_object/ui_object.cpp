@@ -1001,7 +1001,6 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 void UIObjectGLCanvas::HandlePostCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
     tools::RenderTargetAttachment(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[0]);
     tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[1]);
     glBlitFramebuffer(0, 0, (iint)state->Move.z, (iint)state->Move.w, 0, 0, (iint)state->Move.z, (iint)state->Move.w, GL_COLOR_BUFFER_BIT, GL_NEAREST);
@@ -1022,15 +1021,14 @@ void UIObjectGLCanvas::HandlePostCommands()
             Post(command.mProgram, command.mTransform);
             glBindVertexArray(command.mMesh->GetVAO());
             glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray(0);
         }
     }
-    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
 void UIObjectGLCanvas::HandleFowardCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
     tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
     for (auto & command : state->mFowardCommands)
@@ -1048,9 +1046,9 @@ void UIObjectGLCanvas::HandleFowardCommands()
             Post(command.mProgram, command.mTransform);
             glBindVertexArray(command.mMesh->GetVAO());
             glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
+            glBindVertexArray(0);
         }
     }
-    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
 void UIObjectGLCanvas::CollCommands()
@@ -1072,8 +1070,6 @@ void UIObjectGLCanvas::CallCommands()
     glGetIntegerv(GL_VIEWPORT, viewport);
     glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
 
-    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
-
     if (!state->mFowardCommands.empty())
     {
         HandleFowardCommands();
@@ -1088,14 +1084,13 @@ void UIObjectGLCanvas::CallCommands()
     ASSERT_LOG(glGetError() == 0, "");
     if (!state->mOperation.mSelectObjects.empty())
     {
-        tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, state->mRenderTextures[0]);
         DrawOutlineObjects();
         DrawTrackingPoints();
-        tools::RenderTargetBind(0, GL_FRAMEBUFFER);
     }
     glViewport(0, 0, viewport[2], viewport[3]);
+    tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
 void UIObjectGLCanvas::DrawOutlineObjects()
@@ -1130,7 +1125,7 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             }
             else
             {
-                state->mMeshBuffer.back()->Update(points, std::vector<uint>());
+                state->mMeshBuffer.back()->Update(points,{});
             }
 
             auto &mesh = state->mMeshBuffer.back();

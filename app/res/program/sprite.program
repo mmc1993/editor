@@ -25,7 +25,7 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
-        uniform sample2D uniform_texture;
+        uniform sampler2D uniform_texture;
 
         out vec4 color_;
 
