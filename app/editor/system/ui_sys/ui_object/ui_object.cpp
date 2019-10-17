@@ -1099,15 +1099,11 @@ void UIObjectGLCanvas::DrawOutlineObjects()
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
-        uint value = 0x22B14C;
+        uint seed = VAL_TrackPointColor;
         for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
-            glm::vec4 color(((value & 0xff)) / 255.0f,
-                            ((value & 0xff00) >> 8) / 255.0f,
-                            ((value & 0xff0000) >> 16) / 255.0f,1.0f);
-            value += 123;
-
             std::vector<GLMesh::Vertex> points;
+            glm::vec4 color = tools::GetRandomColor(seed);
             auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
             for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
@@ -1145,56 +1141,48 @@ void UIObjectGLCanvas::DrawOutlineObjects()
 
 void UIObjectGLCanvas::DrawTrackingPoints()
 {
+    glPointSize(VAL_TrackPointSize);
     auto state = GetState<UIStateGLCanvas>();
     if (state->mOperation.mOpMode == UIStateGLCanvas::Operation::kEdit)
     {
+        for (auto & object : state->mOperation.mSelectObjects)
+        {
+            uint seed = VAL_TrackPointColor;
+            for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
+            {
+                std::vector<GLMesh::Vertex> points;
+                glm::vec4 color = tools::GetRandomColor(seed);
+                auto & component = object->GetComponents().at(i0);
+                auto & trackPoints = component->GetTrackPoints();
+                for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
+                {points.emplace_back(trackPoints.at(i1), color);}
 
+                //  初始化 Mesh
+                if (i0 == state->mMeshBuffer.size())
+                {
+                    auto mesh = std::create_ptr<GLMesh>();
+                    mesh->Init(points, std::vector<uint>(),
+                        GLMesh::Vertex::kV | GLMesh::Vertex::kC);
+                    state->mMeshBuffer.push_back(mesh);
+                }
+                else
+                {
+                    state->mMeshBuffer.back()->Update(points, {});
+                }
+
+                auto &mesh = state->mMeshBuffer.back();
+                state->mGLProgramSolidFill->UsePass(0);
+                ASSERT_LOG(glGetError() == 0, "");
+                Post(  state->mGLProgramSolidFill,
+                        object->GetWorldMatrix());
+                ASSERT_LOG(glGetError() == 0, "");
+                glBindVertexArray(mesh->GetVAO());
+                ASSERT_LOG(glGetError() == 0, "");
+                glDrawArrays(GL_POINTS, 0, mesh->GetVCount());
+                ASSERT_LOG(glGetError() == 0, "");
+            }
+        }
     }
-
-    //if (state->mOperation.mOpMode)
-    //for (auto & object : state->mOperation.m)
-    //{
-    //    uint value = 255;
-    //    for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
-    //    {
-    //        value *= 2;
-    //        std::vector<GLMesh::Vertex> points;
-    //        glm::vec4 color((value & 0xff)     / 255.0f,
-    //                        (value & 0xff00)   / 255.0f,
-    //                        (value & 0xff0000) / 255.0f,1.0f);
-    //        auto & component = object->GetComponents().at(i0);
-    //        auto & trackPoints = component->GetTrackPoints();
-    //        for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
-    //        {
-    //            points.emplace_back(trackPoints.at(i1)                           , color);
-    //            points.emplace_back(trackPoints.at((i1 + 1) % trackPoints.size()), color);
-    //        }
-
-    //        //  初始化 Mesh
-    //        if (i0 == state->mMeshBuffer.size())
-    //        {
-    //            auto mesh = std::create_ptr<GLMesh>();
-    //            mesh->Init(points,std::vector<uint>(), 
-    //                GLMesh::Vertex::kV | GLMesh::Vertex::kC);
-    //            state->mMeshBuffer.push_back(mesh);
-    //        }
-    //        else
-    //        {
-    //            state->mMeshBuffer.back()->Update(points, std::vector<uint>());
-    //        }
-
-    //        auto &mesh = state->mMeshBuffer.back();
-    //        state->mGLProgramSolidFill->UsePass(0);
-    //        ASSERT_LOG(glGetError() == 0, "");
-    //        Post(  state->mGLProgramSolidFill,
-    //                object->GetWorldMatrix());
-    //        ASSERT_LOG(glGetError() == 0, "");
-    //        glBindVertexArray(mesh->GetVAO());
-    //        ASSERT_LOG(glGetError() == 0, "");
-    //        glDrawArrays(GL_LINES, 0, mesh->GetVCount());
-    //        ASSERT_LOG(glGetError() == 0, "");
-    //    }
-    //}
 }
 
 void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)

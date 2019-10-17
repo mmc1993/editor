@@ -138,6 +138,10 @@ public:
 };
 
 class UIObjectGLCanvas : public UIObject {
+private:
+    static const auto VAL_TrackPointSize    = 10;           //  追踪点大小
+    static const auto VAL_TrackPointColor   = 0x22B14C;     //  追踪点颜色
+
 public:
     UIObjectGLCanvas();
     interface::MatrixStack & GetMatrixStack();

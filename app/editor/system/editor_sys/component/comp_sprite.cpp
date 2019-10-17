@@ -83,7 +83,8 @@ void CompSprite::Update()
         _update = false;
 
         _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-        _size.x = _texture->GetW(); _size.y = _texture->GetH();
+        _size.x = (float)_texture->GetW();
+        _size.y = (float)_texture->GetH();
         _trackPoints.at(0).x = -_size.x *      _anchor.x;
         _trackPoints.at(0).y = -_size.y *      _anchor.y;
         _trackPoints.at(1).x = -_size.x *      _anchor.x;
