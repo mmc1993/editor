@@ -69,11 +69,6 @@ EditorSys只操作GLObject
 //  图集/图片合并
 //  资源缓存改用WeakPtr
 
-精灵
-瓦片地图
-光照
-阴影
-
 //  GLCanvas
 //      双击 -> 进入编辑
 //      Esc -> 退出编辑
@@ -91,5 +86,9 @@ EditorSys只操作GLObject
 //      左键按住边框内 -> 拖动对象
 //      Delete        -> 删除对象
 
+精灵
+瓦片地图
+光照
+阴影
 资源管理器
 资源选择框
