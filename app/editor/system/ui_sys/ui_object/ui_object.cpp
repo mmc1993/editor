@@ -1118,21 +1118,17 @@ void UIObjectGLCanvas::DrawOutlineObjects()
             mesh->Update(points, {});
 
             state->mGLProgramSolidFill->UsePass(0);
-            ASSERT_LOG(glGetError() == 0, "");
             Post(  state->mGLProgramSolidFill,
                     object->GetWorldMatrix());
-            ASSERT_LOG(glGetError() == 0, "");
             glBindVertexArray(mesh->GetVAO());
-            ASSERT_LOG(glGetError() == 0, "");
             glDrawArrays(GL_LINES, 0, mesh->GetVCount());
-            ASSERT_LOG(glGetError() == 0, "");
         }
     }
 }
 
 void UIObjectGLCanvas::DrawTrackingPoints()
 {
-    glPointSize(VAL_TrackPointSize);
+    glPointSize((float)VAL_TrackPointSize);
     auto state = GetState<UIStateGLCanvas>();
     if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kEdit)
     {
@@ -1152,14 +1148,10 @@ void UIObjectGLCanvas::DrawTrackingPoints()
                 mesh->Update(points, {});
 
                 state->mGLProgramSolidFill->UsePass(0);
-                ASSERT_LOG(glGetError() == 0, "");
                 Post(  state->mGLProgramSolidFill,
                         object->GetWorldMatrix());
-                ASSERT_LOG(glGetError() == 0, "");
                 glBindVertexArray(mesh->GetVAO());
-                ASSERT_LOG(glGetError() == 0, "");
                 glDrawArrays(GL_POINTS, 0, mesh->GetVCount());
-                ASSERT_LOG(glGetError() == 0, "");
             }
         }
     }

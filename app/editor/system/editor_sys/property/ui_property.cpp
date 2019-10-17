@@ -153,5 +153,5 @@ bool UIPropertyAsset::OnEnter()
     }
 
     ImGui::Columns(1);
-    return false;
+    return true;
 }

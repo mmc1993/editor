@@ -25,9 +25,10 @@ void CompSprite::OnDel()
 
 void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    Update();
-    if (_texture != nullptr)
+    if (!_url.empty())
     {
+        Update();
+
         interface::FowardCommand command;
         command.mMesh       = _mesh;
         command.mProgram    = _program;
