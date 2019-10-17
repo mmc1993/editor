@@ -1084,10 +1084,7 @@ void UIObjectGLCanvas::CallCommands()
     ASSERT_LOG(glGetError() == 0, "");
     if (!state->mOperation.mSelectObjects.empty())
     {
-        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                      GL_TEXTURE_2D, state->mRenderTextures[0]);
-        DrawOutlineObjects();
-        DrawTrackingPoints();
+        DrawTrackPoint();
     }
     DrawSelectRect();
 
@@ -1095,10 +1092,14 @@ void UIObjectGLCanvas::CallCommands()
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
-void UIObjectGLCanvas::DrawOutlineObjects()
+void UIObjectGLCanvas::DrawTrackPoint()
 {
-    glLineWidth(2);
     auto state = GetState<UIStateGLCanvas>();
+    tools::RenderTargetAttachment(
+        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_2D, state->mRenderTextures[0]);
+    glLineWidth((float)VAL_TrackPointLine);
+    glPointSize((float)VAL_TrackPointSize);
     for (auto & object : state->mOperation.mSelectObjects)
     {
         uint seed = VAL_TrackPointColor;
@@ -1119,48 +1120,21 @@ void UIObjectGLCanvas::DrawOutlineObjects()
                     object->GetWorldMatrix());
             glBindVertexArray(mesh->GetVAO());
             glDrawArrays(GL_LINE_LOOP, 0, mesh->GetVCount());
-            glBindVertexArray(0);
-        }
-    }
-}
-
-void UIObjectGLCanvas::DrawTrackingPoints()
-{
-    glPointSize((float)VAL_TrackPointSize);
-    auto state = GetState<UIStateGLCanvas>();
-    if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kEdit)
-    {
-        for (auto & object : state->mOperation.mSelectObjects)
-        {
-            uint seed = VAL_TrackPointColor;
-            for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
+            if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
             {
-                std::vector<GLMesh::Vertex> points;
-                glm::vec4 color = tools::GetRandomColor(seed);
-                auto & component = object->GetComponents().at(i0);
-                auto & trackPoints = component->GetTrackPoints();
-                for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
-                {points.emplace_back(trackPoints.at(i1), color);}
-
-                auto & mesh = GetMeshBuffer(i0);
-                mesh->Update(points, {});
-
-                state->mGLProgramSolidFill->UsePass(0);
-                Post(  state->mGLProgramSolidFill,
-                        object->GetWorldMatrix());
                 glBindVertexArray(mesh->GetVAO());
                 glDrawArrays(GL_POINTS, 0, mesh->GetVCount());
-                glBindVertexArray(0);
             }
+            glBindVertexArray(0);
         }
     }
 }
 
 void UIObjectGLCanvas::DrawSelectRect()
 {
-    auto state = GetState<UIStateGLCanvas>();
-    if (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect)
+    if (HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
+        auto state = GetState<UIStateGLCanvas>();
         auto rect = state->mOperation.mSelectRect;
         if (rect.x > rect.z) std::swap(rect.x, rect.z);
         if (rect.y > rect.w) std::swap(rect.y, rect.w);
@@ -1392,11 +1366,17 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         ModifyOpMode(UIStateGLCanvas::Operation::kSelect, false);
     }
     //  按下左键选择模式
-    if (param.mAct == 1 && param.mKey == 0 && (state->mOperation.mOpMode & UIStateGLCanvas::Operation::kSelect))
+    if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
     }
+}
+
+bool UIObjectGLCanvas::HasOpMode(UIStateGLCanvas::Operation::OpModeEnum mode)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    return mode & state->mOperation.mOpMode;
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatView()

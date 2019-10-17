@@ -139,6 +139,7 @@ public:
 
 class UIObjectGLCanvas : public UIObject {
 private:
+    static const auto VAL_TrackPointLine    = 2;            //  追踪点线宽
     static const auto VAL_TrackPointSize    = 10;           //  追踪点大小
     static const auto VAL_TrackPointColor   = 0x22B14C;     //  追踪点颜色
 
@@ -160,8 +161,7 @@ private:
     void CollCommands();
     void CallCommands();
 
-    void DrawOutlineObjects();
-    void DrawTrackingPoints();
+    void DrawTrackPoint();
     void DrawSelectRect();
 
     virtual bool OnEnter() override;
@@ -180,5 +180,6 @@ private:
     glm::mat4 GetMatViewProj();
     glm::vec2 ProjectWorld(const glm::vec2 & pt);
     SharePtr<GLMesh> & GetMeshBuffer(size_t idx);
+    bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum mode);
     void ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 };
