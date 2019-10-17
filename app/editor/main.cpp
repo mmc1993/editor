@@ -36,7 +36,6 @@
 #include "system/ui_sys/ui_sys.h"
 #include "system/raw_sys/raw_sys.h"
 #include "system/cfg_sys/cfg_sys.h"
-#include "system/atlas_sys/atlas_sys.h"
 #include "system/event_sys/event_sys.h"
 #include "system/editor_sys/editor_sys.h"
 
@@ -128,16 +127,11 @@ int main(int, char**)
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
     //  初始化资源系统
     Global::Ref().mRawSys = new RawSys();
-    Global::Ref().mRawSys->Import(tools::GL_PROGRAM_SOLID_FILL);
-
     //  初始化配置系统
     Global::Ref().mCfgSys = new CfgSys();
     Global::Ref().mCfgSys->Import("res/cfg/editor/component.json");
     //  初始化事件系统
     Global::Ref().mEventSys = new EventSys();
-    //  初始化图集系统
-    Global::Ref().mAtlasSys = new AtlasSys();
-    Global::Ref().mAtlasSys->Import("res/atlas/icon/atlas.json");
     //  初始化编辑系统
     Global::Ref().mEditorSys = new EditorSys();
     //  初始化UI系统

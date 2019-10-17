@@ -33,10 +33,11 @@ public:
     std::string Name;                   //  名字
     std::string Tips;                   //  说明
     std::string LSkin;                  //  皮肤
+    std::string LSkin_;                  // 皮肤
 
     glm::vec2 StretchMin;               //  最小尺寸
     glm::vec4 Move;                     //  方位
-    glm::vec4 Move_;                    //  上一帧方位
+    glm::vec4 Move_;                    //  方位
 
     std::vector<std::string> MenuBar;   //  菜单栏
 };
@@ -83,6 +84,8 @@ public:
 
 class UIStateImageBox : public UIState {
 public:
+    SharePtr<GLTexture> mSkinTex;
+
     UIStateImageBox();
 };
 

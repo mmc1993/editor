@@ -1,7 +1,6 @@
 #pragma once
 
 class EditorSys;
-class AtlasSys;
 class EventSys;
 class RawSys;
 class CfgSys;
@@ -20,7 +19,6 @@ public:
 
     EditorSys * mEditorSys;
     EventSys * mEventSys;
-    AtlasSys * mAtlasSys;
     RawSys * mRawSys;
     CfgSys * mCfgSys;
     UISys * mUISys;

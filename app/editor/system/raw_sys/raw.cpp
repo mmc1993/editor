@@ -137,13 +137,7 @@ bool GLImage::InitFromAtlas(const std::string & url)
 
     auto json = mmc::Json::FromFile(path);
     if (json == nullptr) { return false; }
-
-    dir += json->At("meta", "image")->ToString();
-
-    auto ptr = Global::Ref().mRawSys->Import(dir);
-    ASSERT_LOG(ptr != nullptr, url.c_str());
-    auto raw = CastPtr<GLTexture>(ptr);
-    return false;
+    return InitFromImage(dir + json->At("meta", "image")->ToString());
 }
 
 void GLImage::SetParam(int key, int val)
@@ -169,7 +163,9 @@ GLTexture::~GLTexture()
 
 bool GLTexture::Init(const std::string & url)
 {
-    return InitFromImage(url) || InitFromAtlas(url);
+    auto ret = InitFromImage(url) || InitFromAtlas(url);
+    ASSERT_LOG(ret, url.c_str());
+    return ret;
 }
 
 bool GLTexture::InitFromImage(const std::string & url)
@@ -512,20 +508,17 @@ bool GLMaterial::Init(const std::string & url)
     ASSERT_LOG(json, "URL: {0}", url);
     if (json->HasKey("mesh"))
     {
-        auto ptr = Global::Ref().mRawSys->Import(json->At("mesh")->ToString());
-        SetMesh(CastPtr<GLMesh>(ptr));
+        SetMesh(Global::Ref().mRawSys->Get<GLMesh>(json->At("mesh")->ToString()));
     }
     if (json->HasKey("program"))
     {
-        auto ptr = Global::Ref().mRawSys->Import(json->At("program")->ToString());
-        SetProgram(CastPtr<GLProgram>(ptr));
+        SetProgram(Global::Ref().mRawSys->Get<GLProgram>(json->At("program")->ToString()));
     }
     if (json->HasKey("textures"))
     {
         for (auto value : json->At("textures"))
         {
-            auto ptr = Global::Ref().mRawSys->Import(value.mVal->At("val")->ToString());
-            SetTexture(value.mVal->At("key")->ToString(), CastPtr<GLTexture>(ptr));
+            SetTexture(value.mVal->At("key")->ToString(), Global::Ref().mRawSys->Get<GLTexture>(value.mVal->At("val")->ToString()));
         }
     }
     return true;

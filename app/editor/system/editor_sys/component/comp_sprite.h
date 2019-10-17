@@ -2,7 +2,6 @@
 
 #include "component.h"
 #include "../../interface/render.h"
-#include "../../atlas_sys/atlas_sys.h"
 
 class CompSprite : public Component {
 public:
@@ -30,5 +29,4 @@ private:
     std::string     _url;
     glm::vec2       _size;
     glm::vec2       _anchor;
-    AtlasSys::Image _image;
 };

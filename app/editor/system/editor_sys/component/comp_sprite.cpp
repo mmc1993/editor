@@ -1,9 +1,10 @@
 #include "comp_sprite.h"
 #include "../../interface/render.h"
-#include "../../atlas_sys/atlas_sys.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
 CompSprite::CompSprite()
+    : _size(0.0f, 0.0f)
+    , _anchor(0.5f, 0.5f)
 {
     _trackPoints.resize(4);
 

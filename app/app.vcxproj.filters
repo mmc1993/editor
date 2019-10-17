@@ -72,9 +72,6 @@
     <ClCompile Include="editor\system\raw_sys\raw_sys.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\atlas_sys\atlas_sys.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -930,9 +927,6 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\raw_sys\raw_sys.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\system\atlas_sys\atlas_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\editor_sys.h">

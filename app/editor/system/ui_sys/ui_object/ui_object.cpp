@@ -2,7 +2,6 @@
 #include "../ui_menu.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../atlas_sys/atlas_sys.h"
 #include "../../editor_sys/editor_sys.h"
 #include "../../editor_sys/component/gl_object.h"
 #include "../../editor_sys/component/component.h"
@@ -112,6 +111,7 @@ void UIObject::ResetLayout()
     //  初始化备份数据
     auto state = GetState();
     state->Move_ = state->Move;
+    state->LSkin_ = state->LSkin;
 
     std::for_each(_children.begin(),_children.end(),
                     std::bind(&UIObject::ResetLayout, 
@@ -216,6 +216,7 @@ void UIObject::Render(float dt, bool visible)
     //  刷新备份数据
     auto state = GetState();
     state->Move_ = state->Move;
+    state->LSkin_ = state->LSkin;
 }
 
 
@@ -909,15 +910,21 @@ UIObjectImageBox::UIObjectImageBox() : UIObject(UITypeEnum::kImageBox, new UISta
 bool UIObjectImageBox::OnEnter()
 {
     auto state = GetState<UIStateImageBox>();
+    //  刷新纹理
+    if (!state->LSkin.empty() && (state->mSkinTex == nullptr || state->LSkin != state->LSkin_))
+    {
+        state->mSkinTex = Global::Ref().mRawSys->Get<GLTexture>(state->LSkin);
+    }
+
     if (state->IsButton)
     {
         if (!state->LSkin.empty())
         {
-            auto & imgSkin = Global::Ref().mAtlasSys->Get(state->LSkin);
             if (ImGui::ImageButton(
-                (ImTextureID)imgSkin.mID, ImVec2(state->Move.z, state->Move.w),
-                ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
-                ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w), 0))
+                (ImTextureID)state->mSkinTex->GetID(), 
+                ImVec2(state->Move.z, state->Move.w),
+                ImVec2(state->mSkinTex->GetOffset().x, state->mSkinTex->GetOffset().y),
+                ImVec2(state->mSkinTex->GetOffset().z, state->mSkinTex->GetOffset().w), 0))
             {
                 PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(3, 0, shared_from_this()));
             }
@@ -933,11 +940,11 @@ bool UIObjectImageBox::OnEnter()
     else
     {
         ASSERT_LOG(!state->LSkin.empty(), "");
-        auto & imgSkin = Global::Ref().mAtlasSys->Get(state->LSkin);
-        ImGui::Image((ImTextureID)imgSkin.mID,
+        ImGui::Image(
+            (ImTextureID)state->mSkinTex->GetID(),
             ImVec2(state->Move.z, state->Move.w),
-            ImVec2(imgSkin.mQuat.x, imgSkin.mQuat.y),
-            ImVec2(imgSkin.mQuat.z, imgSkin.mQuat.w));
+            ImVec2(state->mSkinTex->GetOffset().x, state->mSkinTex->GetOffset().y),
+            ImVec2(state->mSkinTex->GetOffset().z, state->mSkinTex->GetOffset().w));
     }
     return true;
 }

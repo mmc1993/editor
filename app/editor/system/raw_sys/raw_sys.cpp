@@ -3,7 +3,10 @@
 SharePtr<Raw> RawSys::Import(const std::string & url)
 {
     auto it = _resources.find(url);
-    CHECK_RET(it == _resources.end(), it->second);
+    if (it != _resources.end() && !it->second.expired())
+    {
+        return it->second.lock();
+    }
 
     SharePtr<Raw> raw;
     auto suffix = tools::GetFileSuffix(url);
@@ -23,25 +26,24 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
     {
         raw = std::create_ptr<GLMaterial>();
     }
-    auto ret = raw->Init(url);
-    ASSERT_LOG(ret, "{0}", url);
-    if (ret)
+    if (raw->Init(url))
     {
-        _resources.insert(std::make_pair(url, raw));
+        _resources[url] = raw;
     }
     return raw;
 }
 
-void RawSys::Delete(const std::string & url)
-{ 
-    auto it = _resources.find(url);
-    if (it != _resources.end())
-    {
-        _resources.erase(it);
-    }
-}
-
 void RawSys::Clear()
 {
-    _resources.clear();
+    for (auto it = _resources.begin(); it != _resources.end();)
+    {
+        if (it->second.expired())
+        {
+            it = _resources.erase(it);
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
