@@ -36,6 +36,7 @@
     <ClCompile Include="editor\system\raw_sys\raw_sys.cpp" />
     <ClCompile Include="editor\system\interface\serializer.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_event.cpp" />
+    <ClCompile Include="editor\system\ui_sys\ui_object\ui_object_gl_canvas.cpp" />
     <ClCompile Include="editor\third\glm\detail\glm.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinystr.cpp" />
     <ClCompile Include="editor\third\tinyxml\tinyxml.cpp" />
