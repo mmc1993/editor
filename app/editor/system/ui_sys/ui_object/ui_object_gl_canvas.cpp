@@ -4,6 +4,7 @@
 #include "../../editor_sys/editor_sys.h"
 #include "../../editor_sys/component/gl_object.h"
 #include "../../editor_sys/component/component.h"
+#include "../../editor_sys/component/comp_transform.h"
 
 UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 {
@@ -66,7 +67,7 @@ void UIObjectGLCanvas::HandleFowardCommands()
 
 void UIObjectGLCanvas::CollCommands()
 {
-    GetState<UIStateGLCanvas>()->mRoot->Update(this, 0.0f);
+    Global::Ref().mEditorSys->GetProject()->GetRoot()->Update(this, 0.0f);
 }
 
 void UIObjectGLCanvas::CallCommands()
@@ -263,17 +264,11 @@ interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
     return GetState<UIStateGLCanvas>()->mMatrixStack;
 }
 
-void UIObjectGLCanvas::BindRoot(const SharePtr<GLObject>& root)
-{
-    GetState<UIStateGLCanvas>()->mRoot = root;
-}
-
 bool UIObjectGLCanvas::OnEnter()
 {
     if (Global::Ref().mEditorSys->IsOpenProject())
     {
         auto state = GetState<UIStateGLCanvas>();
-        ASSERT_LOG(state->mRoot != nullptr, "");
         state->mMatrixStack.Identity(interface::MatrixStack::kModel);
         state->mMatrixStack.Identity(interface::MatrixStack::kView, GetMatView());
         state->mMatrixStack.Identity(interface::MatrixStack::kProj, GetMatProj());
@@ -366,13 +361,13 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.2f * param.mWheel), 0.2f, 3.0f);
     }
     //  单击左键选择模式
-    if (param.mAct == 3 && param.mKey == 0)
+    if (param.mAct == 3 && param.mKey == 0 && !HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         state->mOperation.mSelectRect.x = param.mMouse.x;
         state->mOperation.mSelectRect.y = param.mMouse.y;
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
-        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, true);
+        AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
     }
     //  按下左键选择模式
     if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
@@ -383,14 +378,16 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  抬起左键结束选择
     if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
-        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, false);
+        AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
     }
-}
-
-bool UIObjectGLCanvas::HasOpMode(UIStateGLCanvas::Operation::OpModeEnum mode)
-{
-    auto state = GetState<UIStateGLCanvas>();
-    return mode & state->mOperation.mOpMode;
+    //  单击选中
+    if (param.mAct == 3 && param.mKey == 0)
+    {
+        //const auto & object = Global::Ref().mEditorSys->GetProject()->GetRoot();
+        //const auto & coord = ProjectWorld(param.mMouse);
+        //auto hit = HitObject(object, object->ParentToLocal(coord));
+        //hit = nullptr;
+    }
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatView()
@@ -437,9 +434,26 @@ SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
     return state->mMeshBuffer.at(idx);
 }
 
-void UIObjectGLCanvas::ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
+bool UIObjectGLCanvas::HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    return op & state->mOperation.mOpMode;
+}
+
+void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
 {
     auto state = GetState<UIStateGLCanvas>();
     if (add) state->mOperation.mOpMode |=  op;
     else     state->mOperation.mOpMode &= ~op;
+}
+
+SharePtr<GLObject> UIObjectGLCanvas::HitObject(const SharePtr<GLObject> & object, const glm::vec2 & point)
+{
+    for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
+    {
+        if (auto ret = HitObject(*it, (*it)->ParentToLocal(point))) { return ret; }
+    }
+    auto it = std::find_if(object->GetComponents().begin(), object->GetComponents().end(),
+        [&](const auto & com) { return tools::IsContains(com->GetTrackPoints(),point); });
+    return it != object->GetComponents().end() ? object : nullptr;
 }

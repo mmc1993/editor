@@ -513,7 +513,7 @@ void UIObject::DispatchEventMouse()
 {
     auto state = GetState<UIStateLayout>();
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
-        ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
+        ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem))
     {
         if (state->mMouseFocus.mObject.expired())
         {

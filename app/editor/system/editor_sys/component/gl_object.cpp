@@ -150,8 +150,6 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
     canvas->GetMatrixStack().Mul(interface::MatrixStack::kModel, GetTransform()->GetMatrix());
-    //  记录世界坐标系中的矩阵
-    _worldMat = canvas->GetMatrixStack().GetM();
 
     OnUpdate(dt);
 
@@ -228,7 +226,12 @@ SharePtr<CompTransform> GLObject::GetTransform()
 
 glm::mat4 GLObject::GetWorldMatrix()
 {
-    return _worldMat;
+    return GetTransform()->GetMatrixFromRoot();
+}
+
+const glm::mat4 & GLObject::GetLocalMatrix()
+{
+    return GetTransform()->GetMatrix();
 }
 
 void GLObject::ClearComponents()
@@ -266,4 +269,24 @@ void GLObject::DelComponent(const std::type_info & type)
 std::vector<SharePtr<Component>> & GLObject::GetComponents()
 {
     return _components;
+}
+
+glm::vec2 GLObject::WorldToLocal(const glm::vec2 & point)
+{
+    return glm::inverse(GetWorldMatrix()) * glm::vec4(point, 0, 1);
+}
+
+glm::vec2 GLObject::LocalToWorld(const glm::vec2 & point)
+{
+    return GetWorldMatrix() * glm::vec4(point, 0, 1);
+}
+
+glm::vec2 GLObject::ParentToLocal(const glm::vec2 & point)
+{
+    return glm::inverse(GetLocalMatrix()) * glm::vec4(point, 0, 1);
+}
+
+glm::vec2 GLObject::LocalToParent(const glm::vec2 & point)
+{
+    return GetLocalMatrix() * glm::vec4(point, 0, 1);
 }

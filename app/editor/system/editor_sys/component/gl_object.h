@@ -54,13 +54,18 @@ public:
     void SetTransform(const SharePtr<CompTransform> & transform);
     SharePtr<CompTransform> GetTransform();
 
-    glm::mat4 GetWorldMatrix();
-
 	void ClearComponents();
     void AddComponent(const SharePtr<Component> & component);
     void DelComponent(const SharePtr<Component> & component);
     void DelComponent(const std::type_info & type);
     std::vector<SharePtr<Component>> & GetComponents();
+
+    glm::mat4 GetWorldMatrix();
+    const glm::mat4 & GetLocalMatrix();
+    glm::vec2 WorldToLocal(const glm::vec2 & point);
+    glm::vec2 LocalToWorld(const glm::vec2 & point);
+    glm::vec2 ParentToLocal(const glm::vec2 & point);
+    glm::vec2 LocalToParent(const glm::vec2 & point);
 
     template <class T>
     SharePtr<T> GetComponent()
@@ -92,8 +97,7 @@ private:
     uint                                _id;
     uint                                _state;
     std::string                         _name;
-    GLObject*                           _parent;
-    glm::mat4                           _worldMat;
+    GLObject *                          _parent;
     SharePtr<CompTransform>             _transform;
     std::vector<SharePtr<GLObject>>     _children;
     std::vector<SharePtr<Component>>    _components;

@@ -146,7 +146,6 @@ private:
 public:
     UIObjectGLCanvas();
     interface::MatrixStack & GetMatrixStack();
-    void BindRoot(const SharePtr<GLObject> & root);
     void Post(const interface::PostCommand  & cmd);
     void Post(const interface::FowardCommand & cmd);
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
@@ -180,6 +179,8 @@ private:
     glm::mat4 GetMatViewProj();
     glm::vec2 ProjectWorld(const glm::vec2 & pt);
     SharePtr<GLMesh> & GetMeshBuffer(size_t idx);
-    bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum mode);
-    void ModifyOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
+    bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op);
+    void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
+
+    SharePtr<GLObject> HitObject(const SharePtr<GLObject> & object, const glm::vec2 & point);
 };

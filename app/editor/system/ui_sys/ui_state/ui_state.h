@@ -118,7 +118,6 @@ class UIStateGLCanvas : public UIState {
 public:
     GLuint mRenderTarget;
     GLuint mRenderTextures[2];
-    SharePtr<GLObject>  mRoot;
     interface::MatrixStack mMatrixStack;
     std::vector<interface::PostCommand>   mPostCommands;
     std::vector<interface::FowardCommand> mFowardCommands;

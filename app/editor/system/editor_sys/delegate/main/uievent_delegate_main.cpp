@@ -349,12 +349,10 @@ void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any &
 
 void UIEventDelegateMainStage::OnEventOpenProject()
 {
-    CastPtr<UIObjectGLCanvas>(GetOwner())->BindRoot(Global::Ref().mEditorSys->GetProject()->GetRoot());
 }
 
 void UIEventDelegateMainStage::OnEventFreeProject()
 {
-    CastPtr<UIObjectGLCanvas>(GetOwner())->BindRoot(nullptr);
     CastPtr<UIObjectGLCanvas>(GetOwner())->OptSelectedClear();
 }
 

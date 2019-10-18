@@ -123,7 +123,7 @@ namespace tools {
     }
 
     //  点是否在多边形内
-    inline bool IsInPolygon(const glm::vec2 & a, const std::vector<glm::vec2> & points)
+    inline bool IsContains(const std::vector<glm::vec2> & points, const glm::vec2 & a)
     {
         glm::vec2 b(std::numeric_limits<float>::max(), a.y);
 
