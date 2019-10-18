@@ -60,7 +60,13 @@ public:
         Join() {}
     } mJoin[(size_t)DirectEnum::Length];
 
-    //  拉伸数据
+    //  鼠标焦点
+    struct MouseFocus {
+        UIObject * mObject;
+        MouseFocus() : mObject(nullptr) {}
+    } mMouseFocus;
+
+    //  拉伸焦点
     struct StretchFocus {
         UIObject *  mObject;
         DirectEnum  mDirect;
