@@ -1381,15 +1381,16 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mSelectRect.w = param.mMouse.y;
         ModifyOpMode(UIStateGLCanvas::Operation::kSelect, true);
     }
-    if (param.mAct == 2 && param.mKey == 0 || param.mAct == 0 && param.mKey == -1)
-    {
-        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, false);
-    }
     //  按下左键选择模式
     if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
+    }
+    //  抬起左键结束选择
+    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
+    {
+        ModifyOpMode(UIStateGLCanvas::Operation::kSelect, false);
     }
 }
 
