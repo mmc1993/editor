@@ -62,8 +62,8 @@ public:
 
     //  鼠标焦点
     struct MouseFocus {
-        UIObject * mObject;
-        MouseFocus() : mObject(nullptr) {}
+        WeakPtr<UIObject> mObject;
+        int               mKey;
     } mMouseFocus;
 
     //  拉伸焦点

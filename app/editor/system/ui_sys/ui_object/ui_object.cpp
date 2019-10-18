@@ -514,26 +514,46 @@ SharePtr<UIObject> UIObject::DispatchEventDrag(const UIEvent::Drag & param)
 
 void UIObject::DispatchEventMouse()
 {
+    auto state = GetState<UIStateLayout>();
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
         ImGui::IsWindowHovered(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        if (ImGui::IsMouseReleased(0)) { DispatchEventMouse(UIEvent::Mouse(2, 0)); }
-        if (ImGui::IsMouseReleased(1)) { DispatchEventMouse(UIEvent::Mouse(2, 1)); }
-        if (ImGui::IsMouseReleased(2)) { DispatchEventMouse(UIEvent::Mouse(2, 2)); }
-
-        if (ImGui::IsMouseClicked(0)) { DispatchEventMouse(UIEvent::Mouse(3, 0)); }
-        if (ImGui::IsMouseClicked(1)) { DispatchEventMouse(UIEvent::Mouse(3, 1)); }
-        if (ImGui::IsMouseClicked(2)) { DispatchEventMouse(UIEvent::Mouse(3, 2)); }
-
-        if (ImGui::IsMouseDoubleClicked(0)) { DispatchEventMouse(UIEvent::Mouse(4, 0)); }
-        if (ImGui::IsMouseDoubleClicked(1)) { DispatchEventMouse(UIEvent::Mouse(4, 1)); }
-        if (ImGui::IsMouseDoubleClicked(2)) { DispatchEventMouse(UIEvent::Mouse(4, 2)); }
+        if (state->mMouseFocus.mObject.expired())
+        {
+            if (ImGui::IsMouseClicked(0)) { state->mMouseFocus.mKey = 0; state->mMouseFocus.mObject = DispatchEventMouse(UIEvent::Mouse(3, 0)); }
+            if (ImGui::IsMouseClicked(1)) { state->mMouseFocus.mKey = 1; state->mMouseFocus.mObject = DispatchEventMouse(UIEvent::Mouse(3, 1)); }
+            if (ImGui::IsMouseClicked(2)) { state->mMouseFocus.mKey = 2; state->mMouseFocus.mObject = DispatchEventMouse(UIEvent::Mouse(3, 2)); }
+        }
+        if (state->mMouseFocus.mObject.expired()) { DispatchEventMouse(UIEvent::Mouse(0, -1)); }
+    }
+    
+    if (!state->mMouseFocus.mObject.expired())
+    {
+        if (ImGui::IsMouseDoubleClicked(0)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(4, 0)); }
+        if (ImGui::IsMouseDoubleClicked(1)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(4, 1)); }
+        if (ImGui::IsMouseDoubleClicked(2)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(4, 2)); }
 
         auto hoverKey = -1;
-        if (ImGui::IsMouseDown(0)) { DispatchEventMouse(UIEvent::Mouse(1, 0)); hoverKey = 0; }
-        if (ImGui::IsMouseDown(1)) { DispatchEventMouse(UIEvent::Mouse(1, 1)); hoverKey = 1; }
-        if (ImGui::IsMouseDown(2)) { DispatchEventMouse(UIEvent::Mouse(1, 2)); hoverKey = 2; }
-        DispatchEventMouse(UIEvent::Mouse(0, hoverKey));
+        if (ImGui::IsMouseDown(0)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(1, 0)); hoverKey = 0; }
+        if (ImGui::IsMouseDown(1)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(1, 1)); hoverKey = 1; }
+        if (ImGui::IsMouseDown(2)) { state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(1, 2)); hoverKey = 2; }
+        state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(0, hoverKey));
+    }
+
+    if (!state->mMouseFocus.mObject.expired() && ImGui::IsMouseReleased(0))
+    {
+        state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(2, 0));
+        if (state->mMouseFocus.mKey == 0) { state->mMouseFocus.mObject.reset(); }
+    }
+    if (!state->mMouseFocus.mObject.expired() && ImGui::IsMouseReleased(1))
+    {
+        state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(2, 1));
+        if (state->mMouseFocus.mKey == 1) { state->mMouseFocus.mObject.reset(); }
+    }
+    if (!state->mMouseFocus.mObject.expired() && ImGui::IsMouseReleased(2))
+    {
+        state->mMouseFocus.mObject.lock()->PostEventMessage(UIEventEnum::kMouse, UIEvent::Mouse(2, 2));
+        if (state->mMouseFocus.mKey == 2) { state->mMouseFocus.mObject.reset(); }
     }
 }
 
