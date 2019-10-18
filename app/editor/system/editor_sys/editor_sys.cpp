@@ -30,7 +30,7 @@ void EditorSys::OptSelectObject(const SharePtr<GLObject> & object, bool select, 
             }
         }
 
-        if (!has)
+        if (!has && object)
         {
             _selected.push_back(object);
             Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSelectObject, std::make_tuple(object, true, multi));

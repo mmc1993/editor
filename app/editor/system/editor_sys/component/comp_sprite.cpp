@@ -88,20 +88,20 @@ void CompSprite::Update()
         _size.y = (float)_texture->GetH();
         _trackPoints.at(0).x = -_size.x *      _anchor.x;
         _trackPoints.at(0).y = -_size.y *      _anchor.y;
-        _trackPoints.at(1).x = -_size.x *      _anchor.x;
-        _trackPoints.at(1).y =  _size.y * (1 - _anchor.y);
+        _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
+        _trackPoints.at(1).y = -_size.y *      _anchor.y;
         _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
         _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-        _trackPoints.at(3).x =  _size.x * (1 - _anchor.x);
-        _trackPoints.at(3).y = -_size.y *      _anchor.y;
+        _trackPoints.at(3).x = -_size.x *      _anchor.x;
+        _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
         auto & offset = _texture->GetOffset();
 
         std::vector<GLMesh::Vertex> vertexs;
         vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
-        vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.x, offset.w));
+        vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
         vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));
-        vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.z, offset.y));
+        vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.x, offset.w));
         _mesh->Update(vertexs, {0, 1, 2, 0, 2, 3});
     }
 }

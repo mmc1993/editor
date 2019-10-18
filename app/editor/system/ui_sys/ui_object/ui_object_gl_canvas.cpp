@@ -1,6 +1,7 @@
 #include "ui_object.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
+#include "../../event_sys/event_sys.h"
 #include "../../editor_sys/editor_sys.h"
 #include "../../editor_sys/component/gl_object.h"
 #include "../../editor_sys/component/component.h"
@@ -149,12 +150,10 @@ void UIObjectGLCanvas::DrawSelectRect()
     if (HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         auto state = GetState<UIStateGLCanvas>();
-        auto rect = state->mOperation.mSelectRect;
-        if (rect.x > rect.z) std::swap(rect.x, rect.z);
-        if (rect.y > rect.w) std::swap(rect.y, rect.w);
-
-        auto min = ProjectWorld(glm::vec2(rect.x, rect.y));
-        auto max = ProjectWorld(glm::vec2(rect.z, rect.w));
+        auto min = ProjectWorld(glm::vec2(state->mOperation.mSelectRect.x, state->mOperation.mSelectRect.y));
+        auto max = ProjectWorld(glm::vec2(state->mOperation.mSelectRect.z, state->mOperation.mSelectRect.w));
+        if (min.x > max.x) std::swap(min.x, max.x);
+        if (min.y > max.y) std::swap(min.y, max.y);
 
         //  Ìî³ä
         std::vector<GLMesh::Vertex> points;
@@ -189,6 +188,8 @@ void UIObjectGLCanvas::DrawSelectRect()
 
         glBindVertexArray(0);
         glDisable(GL_BLEND);
+
+        FromRectSelectObjects(min, max);
     }
 }
 
@@ -380,15 +381,6 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     {
         AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
     }
-    //  µ¥»÷Ñ¡ÖÐ
-    if (param.mAct == 3 && param.mKey == 0)
-    {
-        //  TODO_
-        const auto & object = Global::Ref().mEditorSys->GetProject()->GetRoot();
-        const auto & coord = ProjectWorld(param.mMouse);
-        auto hit = HitObject(object, object->ParentToLocal(coord));
-        hit = nullptr;
-    }
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatView()
@@ -435,8 +427,7 @@ SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
 
 bool UIObjectGLCanvas::HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op)
 {
-    auto state = GetState<UIStateGLCanvas>();
-    return op & state->mOperation.mOpMode;
+    return op & GetState<UIStateGLCanvas>()->mOperation.mOpMode;
 }
 
 void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add)
@@ -446,13 +437,87 @@ void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool
     else     state->mOperation.mOpMode &= ~op;
 }
 
-SharePtr<GLObject> UIObjectGLCanvas::HitObject(const SharePtr<GLObject> & object, const glm::vec2 & point)
+const SharePtr<GLObject>& UIObjectGLCanvas::GetRootObject()
 {
+    ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+    return Global::Ref().mEditorSys->GetProject()->GetRoot();
+}
+
+void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
+{
+    if (min == max)
+    {
+        auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min));
+        if (hit)
+        {
+            Global::Ref().mEditorSys->OptSelectObject(hit, true, true);
+        }
+        else
+        {
+            Global::Ref().mEditorSys->OptSelectObject(hit, true, false);
+        }
+    }
+    else
+    {
+        std::vector<SharePtr<GLObject>> output;
+        FromRectSelectObjects(GetRootObject(), 
+                              GetRootObject()->ParentToLocal(min), 
+                              GetRootObject()->ParentToLocal(max), output);
+        if (!output.empty())
+        {
+            output.clear();
+        }
+    }
+}
+
+void UIObjectGLCanvas::FromRectSelectObjects(const SharePtr<GLObject> & object, const glm::vec2 & min, const glm::vec2 & max, std::vector<SharePtr<GLObject>> & output)
+{
+    auto tmin = min;
+    auto tmax = max;
+    auto pred = [&tmin, &tmax] (const auto & com)
+    { 
+        auto rect = glm::vec4(tmin.x, tmin.y, tmax.x - tmin.x, tmax.y - tmin.y);
+        auto it = std::find_if(com->GetTrackPoints().begin(), com->GetTrackPoints().end(),
+            [&rect] (const glm::vec2 & point) { return tools::IsContains(rect, point); });
+        return it != com->GetTrackPoints().end();
+    };
+
+    for (auto & children : object->GetObjects())
+    {
+        tmin = children->ParentToLocal(min);
+        tmax = children->ParentToLocal(max);
+        auto ret = std::find_if(children->GetComponents().begin(),
+                                children->GetComponents().end(), pred);
+        if (ret != children->GetComponents().end())
+        {
+            output.push_back(children);
+        }
+        FromRectSelectObjects(children, tmin, tmax, output);
+    }
+}
+
+SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit)
+{
+    auto thit = hit;
+    auto pred = [&thit] (const auto & com)
+    { 
+        return tools::IsContains(com->GetTrackPoints(), thit); 
+    };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
     {
-        if (auto ret = HitObject(*it, (*it)->ParentToLocal(point))) { return ret; }
+        thit = (*it)->ParentToLocal(hit);
+
+        if (auto ret = FromPointSelectObject(*it, thit))
+        {
+            return ret;
+        }
+        auto ret = std::find_if(
+            (*it)->GetComponents().begin(), 
+            (*it)->GetComponents().end(), pred);
+        if (ret != (*it)->GetComponents().end())
+        {
+            return *it;
+        }
     }
-    auto it = std::find_if(object->GetComponents().begin(), object->GetComponents().end(),
-        [&](const auto & com) { return tools::IsContains(com->GetTrackPoints(),point); });
-    return it != object->GetComponents().end() ? object : nullptr;
+    return nullptr;
 }

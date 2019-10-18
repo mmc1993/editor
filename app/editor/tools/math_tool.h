@@ -10,7 +10,7 @@ namespace glm {
 
 namespace tools {
     //  是否包含点
-    inline bool IsContain(const glm::vec4 & rect, const glm::vec2 & point)
+    inline bool IsContains(const glm::vec4 & rect, const glm::vec2 & point)
     {
         return rect.x <= point.x
             && rect.y <= point.y

@@ -493,7 +493,7 @@ SharePtr<UIObject> UIObject::DispatchEventDrag(const UIEvent::Drag & param)
         if (result != nullptr) { return result; }
     }
 
-    if (IsVisible() && tools::IsContain(ToWorldRect(), param.mEndWorld))
+    if (IsVisible() && tools::IsContains(ToWorldRect(), param.mEndWorld))
     {
         ASSERT_LOG(param.mAct == 0 || param.mAct == 1, "");
         if (param.mAct == 0 && GetState()->IsCanDragMove)
@@ -562,7 +562,7 @@ SharePtr<UIObject> UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
         if (result != nullptr) { return result; }
     }
 
-    if (IsVisible() && tools::IsContain(ToWorldRect(), param.mMouse))
+    if (IsVisible() && tools::IsContains(ToWorldRect(), param.mMouse))
     {
         return PostEventMessage(UIEventEnum::kMouse, param);
     }
