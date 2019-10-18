@@ -383,10 +383,11 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  µ¥»÷Ñ¡ÖÐ
     if (param.mAct == 3 && param.mKey == 0)
     {
-        //const auto & object = Global::Ref().mEditorSys->GetProject()->GetRoot();
-        //const auto & coord = ProjectWorld(param.mMouse);
-        //auto hit = HitObject(object, object->ParentToLocal(coord));
-        //hit = nullptr;
+        //  TODO_
+        const auto & object = Global::Ref().mEditorSys->GetProject()->GetRoot();
+        const auto & coord = ProjectWorld(param.mMouse);
+        auto hit = HitObject(object, object->ParentToLocal(coord));
+        hit = nullptr;
     }
 }
 
@@ -412,13 +413,11 @@ glm::mat4 UIObjectGLCanvas::GetMatViewProj()
 
 glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & pt)
 {
-    glm::vec4 port;
-    glGetFloatv(GL_VIEWPORT, &port.x);
     const auto & coord = ToLocalCoord(pt);
-    auto result = glm::unProject(
-        glm::vec3(coord.x, port.w - coord.y, 0),
-        glm::mat4(1), GetMatProj(), port);
-    return  glm::inverse(GetMatView()) * glm::vec4(result, 1);
+    glm::vec4 port(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto result = glm::unProject(glm::vec3(coord.x, port.w - coord.y, 0),
+                                 glm::mat4(1), GetMatProj(), port      );
+    return glm::inverse(GetMatView()) * glm::vec4(result, 1);
 }
 
 SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
