@@ -149,7 +149,7 @@ std::vector<Component::Property> CompTransform::CollectProperty()
     };
 }
 
-bool CompTransform::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
+bool CompTransform::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     std::cout << "Title " << title << std::endl;
     _update = true;

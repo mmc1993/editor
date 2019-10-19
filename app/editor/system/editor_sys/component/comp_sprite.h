@@ -13,7 +13,9 @@ public:
     virtual const std::string & GetName() override;
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
-    virtual bool OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title) override;
+    virtual bool OnModifyProperty(const std::any & oldValue, 
+                                  const std::any & newValue, 
+                                  const std::string & title) override;
 
 protected:
     virtual std::vector<Property> CollectProperty() override;

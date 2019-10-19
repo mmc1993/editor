@@ -14,12 +14,12 @@ private:
     virtual bool OnEnter() override;
 };
 
-template <class T, class B = T>
+template <class T>
 class UIPropertyState : public UIState {
 public:
     using Handler_t = std::function<bool(
-        const std::any & value,
-        const std::any & backup,
+        const std::any & oldValue,
+        const std::any & newValue,
         const std::string & title)>;
 
 public:
@@ -29,17 +29,19 @@ public:
         const Handler_t & handler)
         : mTitle(title)
         , mValue(value)
-        , mBackup(value)
+        , mOldValue(value)
+        , mNewValue(value)
         , mHandler(handler)
     { }
 
-    B           mBackup;
+    T           mOldValue;
+    T           mNewValue;
     T &         mValue;
     std::string mTitle;
     Handler_t mHandler;
 };
 
-template <class T, class B = T>
+template <class T>
 class UIPropertyObject : public UIObject {
 public:
     using Handler_t = typename UIPropertyState<T>::Handler_t;
@@ -49,34 +51,37 @@ protected:
         T & value,
         const std::string & title,
         const Handler_t & handler)
-        : UIObject(UITypeEnum::kOther, new UIPropertyState<T, B>(value, title, handler))
+        : UIObject(UITypeEnum::kOther, new UIPropertyState<T>(value, title, handler))
     { }
 
-    const std::string & GetTitle()
-    {
-        return GetState<UIPropertyState<T, B>>()->mTitle;
-    }
-
-    T & GetValue()
-    {
-        return GetState<UIPropertyState<T, B>>()->mValue;
-    }
-
-    B & GetBackup()
-    {
-        return GetState<UIPropertyState<T, B>>()->mBackup;
-    }
+    const std::string & GetTitle() { return GetState<UIPropertyState<T>>()->mTitle; }
+    T & GetNewValue() { return GetState<UIPropertyState<T>>()->mNewValue; }
+    T & GetOldValue() { return GetState<UIPropertyState<T>>()->mOldValue; }
+    T & GetValue() { return GetState<UIPropertyState<T>>()->mValue; }
 
     bool Modify()
     {
-        auto ret = GetState<UIPropertyState<T, B>>()->mHandler(GetValue(), GetBackup(), GetTitle());
-        if (ret) { GetValue() = GetBackup(); }
-        else { GetBackup() = GetValue(); }
+        auto ret = GetState<UIPropertyState<T>>()->mHandler(GetOldValue(), GetNewValue(), GetTitle());
+        if (ret) 
+        {
+            GetValue() = GetNewValue(); 
+            GetOldValue() = GetValue();
+        }
+        else 
+        {
+            GetNewValue() = GetValue();
+        }
         return ret;
     }
 
     virtual bool OnEnter() override
     {
+        if (GetOldValue() != GetValue())
+        {
+            GetOldValue() = GetValue();
+            GetNewValue() = GetValue();
+        }
+
         auto width = ImGui::GetWindowWidth();
         ImGui::Columns(2, nullptr, false);
         ImGui::SetColumnWidth(1, width * 0.8f);

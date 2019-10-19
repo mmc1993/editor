@@ -9,7 +9,7 @@ bool UIPropertyInt::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::InputInt(ImID(this).c_str(), &GetBackup()))
+    if (ImGui::InputInt(ImID(this).c_str(), &GetNewValue()))
     {
         Modify();
     }
@@ -21,7 +21,7 @@ bool UIPropertyBool::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::Checkbox(ImID(this).c_str(), &GetBackup()))
+    if (ImGui::Checkbox(ImID(this).c_str(), &GetNewValue()))
     {
         Modify();
     }
@@ -33,7 +33,7 @@ bool UIPropertyFloat::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::InputFloat(ImID(this).c_str(), &GetBackup()))
+    if (ImGui::InputFloat(ImID(this).c_str(), &GetNewValue()))
     {
         Modify();
     }
@@ -47,10 +47,10 @@ bool UIPropertyString::OnEnter()
     
     if (ImGui::InputText(
         ImID(this).c_str(), 
-        GetBackup().data(), GetBackup().size(), 
+        GetNewValue().data(), GetNewValue().size(), 
         ImGuiInputTextFlags_CallbackResize,
         &imgui_tools::OnResizeBuffer,
-        &GetBackup()))
+        &GetNewValue()))
     {
         Modify();
     }
@@ -62,7 +62,7 @@ bool UIPropertyCombo::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    auto & value = GetBackup();
+    auto & value = GetNewValue();
     if (ImGui::BeginCombo(ImID(this).c_str(), _list.at(value).c_str()))
     {
         for (auto i = 0; i != _list.size(); ++i)
@@ -87,7 +87,7 @@ bool UIPropertyVector2::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::InputFloat2(ImID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat2(ImID(this).c_str(), &GetNewValue().x, 3))
     {
         Modify();
     }
@@ -99,7 +99,7 @@ bool UIPropertyVector3::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::InputFloat3(ImID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat3(ImID(this).c_str(), &GetNewValue().x, 3))
     {
         Modify();
     }
@@ -111,7 +111,7 @@ bool UIPropertyVector4::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::InputFloat4(ImID(this).c_str(), &GetBackup().x, 3))
+    if (ImGui::InputFloat4(ImID(this).c_str(), &GetNewValue().x, 3))
     {
         Modify();
     }
@@ -123,7 +123,7 @@ bool UIPropertyColor4::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    if (ImGui::ColorEdit4(ImID(this).c_str(), &GetBackup().x))
+    if (ImGui::ColorEdit4(ImID(this).c_str(), &GetNewValue().x))
     {
         Modify();
     }
@@ -137,11 +137,11 @@ bool UIPropertyAsset::OnEnter()
 
     if (ImGui::InputText(
         ImID(this).c_str(),
-        GetBackup().data(), GetBackup().size(),
+        GetNewValue().data(), GetNewValue().size(),
         ImGuiInputTextFlags_CallbackResize |
         ImGuiInputTextFlags_EnterReturnsTrue,
         &imgui_tools::OnResizeBuffer,
-        &GetBackup()))
+        &GetNewValue()))
     {
         Modify();
     }

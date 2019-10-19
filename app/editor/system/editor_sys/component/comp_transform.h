@@ -32,11 +32,10 @@ public:
     glm::mat4 GetAngleMatrix();
 
     virtual const std::string & GetName() override;
-
-    virtual bool OnModifyProperty(
-        const std::any & value, 
-        const std::any & backup,
-        const std::string & title) override;
+    
+    virtual bool OnModifyProperty(const std::any & oldValue, 
+                                  const std::any & newValue,
+                                  const std::string & title) override;
 
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 

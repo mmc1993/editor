@@ -59,7 +59,7 @@ void CompSprite::DecodeBinary(std::ifstream & is)
     tools::Deserialize(is, _anchor);
 }
 
-bool CompSprite::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
+bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     if (title == "Url" || title == "Size" || title == "Anchor")
     {

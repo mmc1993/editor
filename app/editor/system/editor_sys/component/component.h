@@ -59,8 +59,8 @@ public:
     //  组件名字
     virtual const std::string & GetName() = 0;
     //  Property修改时被调用
-    virtual bool OnModifyProperty(const std::any & value, 
-                                  const std::any & backup,
+    virtual bool OnModifyProperty(const std::any & oldValue, 
+                                  const std::any & newValue,
                                   const std::string & title) = 0;
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
