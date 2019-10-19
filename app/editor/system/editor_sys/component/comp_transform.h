@@ -38,6 +38,8 @@ public:
         const std::any & backup,
         const std::string & title) override;
 
+    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
+
 protected:
     virtual std::vector<Property> CollectProperty() override;
 
@@ -49,5 +51,5 @@ private:
     glm::vec2 _scale;
     glm::mat4 _matrix;
     glm::vec2 _position;
-    bool _isChange;
+    bool _update;
 };

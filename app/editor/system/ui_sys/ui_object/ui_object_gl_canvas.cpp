@@ -189,7 +189,11 @@ void UIObjectGLCanvas::DrawSelectRect()
         glBindVertexArray(0);
         glDisable(GL_BLEND);
 
-        FromRectSelectObjects(min, max);
+        if (FromRectSelectObjects(min, max))
+        {
+            AddOpMode(UIStateGLCanvas::Operation::kDrag,    true);
+            AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
+        }
     }
 }
 
@@ -230,6 +234,16 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
+void UIObjectGLCanvas::OptDrawSelects(const glm::vec2 & offset)
+{ 
+    auto state = GetState<UIStateGLCanvas>();
+    for (auto & object : state->mOperation.mSelectObjects)
+    {
+        auto coord = object->GetParent()->WorldToLocal(offset);
+        object->GetTransform()->AddPosition(coord.x, coord.y);
+    }
+}
+
 void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
 {
     auto state = GetState<UIStateGLCanvas>();
@@ -255,9 +269,9 @@ void UIObjectGLCanvas::OptSelectedClear()
 {
     auto state = GetState<UIStateGLCanvas>();
     state->mOperation.mSelectObjects.clear();
-    state->mOperation.mActiveObject= nullptr;
+    state->mOperation.mActiveObject = nullptr;
     state->mOperation.mActiveComponent = nullptr;
-    state->mOperation.mOpMode = UIStateGLCanvas::Operation::kDrag;
+    state->mOperation.mOpMode = 0;
 }
 
 interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
@@ -376,10 +390,22 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
     }
-    //  抬起左键结束选择
+    //  抬起左键结束拣选
     if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
+    }
+    //  抬起左键结束拖拽
+    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kDrag))
+    {
+        AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
+    }
+    //  拖动对象
+    if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 0)
+    {
+        auto prev = ProjectWorld(param.mMouse - param.mDelta);
+        auto curr = ProjectWorld(param.mMouse);
+        OptDrawSelects(curr - prev);
     }
 }
 
@@ -443,11 +469,13 @@ const SharePtr<GLObject>& UIObjectGLCanvas::GetRootObject()
     return Global::Ref().mEditorSys->GetProject()->GetRoot();
 }
 
-void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
+bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
 {
     auto state = GetState<UIStateGLCanvas>();
     if (min == max)
     {
+        state->mOperation.mActiveObject = nullptr;
+
         if (auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min)))
         {
             auto ret = std::find(state->mOperation.mSelectObjects.begin(), 
@@ -456,6 +484,7 @@ void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             {
                 Global::Ref().mEditorSys->OptSelectObject(hit, true);
             }
+            state->mOperation.mActiveObject = hit;
         }
         else
         {
@@ -485,6 +514,7 @@ void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             Global::Ref().mEditorSys->OptSelectObject(object, true, true);
         }
     }
+    return state->mOperation.mActiveObject != nullptr;
 }
 
 void UIObjectGLCanvas::FromRectSelectObjects(const SharePtr<GLObject> & object, const glm::vec2 & min, const glm::vec2 & max, std::vector<SharePtr<GLObject>> & output)

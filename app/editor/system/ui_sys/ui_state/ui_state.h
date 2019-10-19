@@ -145,7 +145,7 @@ public:
 
         //  ≥ı ºªØ
         Operation()
-            : mOpMode(OpModeEnum::kDrag), mScale(1)
+            : mOpMode(0), mScale(1)
         { }
     } mOperation;
 

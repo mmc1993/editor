@@ -1,7 +1,7 @@
 #include "comp_transform.h"
 
 CompTransform::CompTransform()
-    : _isChange(true)
+    : _update(true)
     , _angle(0      )
     , _scale(1, 1   )
     , _position(0, 0)
@@ -10,6 +10,7 @@ CompTransform::CompTransform()
     _trackPoints.push_back(glm::vec2(-10,  10));
     _trackPoints.push_back(glm::vec2(-10, -10));
     _trackPoints.push_back(glm::vec2( 10, -10));
+    ModifyState(StateEnum::kModifyTrackPoint, true);
 }
 
 CompTransform::~CompTransform()
@@ -44,20 +45,20 @@ void CompTransform::Position(float x, float y)
 {
     _position.x = x;
     _position.y = y;
-    _isChange = true;
+    _update = true;
 }
 
 void CompTransform::Angle(float r)
 {
     _angle = r;
-    _isChange = true;
+    _update = true;
 }
 
 void CompTransform::Scale(float x, float y)
 {
     _scale.x = x;
     _scale.y = y;
-    _isChange = true;
+    _update = true;
 }
 
 CompTransform & CompTransform::AddPosition(float x, float y)
@@ -151,18 +152,28 @@ std::vector<Component::Property> CompTransform::CollectProperty()
 bool CompTransform::OnModifyProperty(const std::any & value, const std::any & backup, const std::string & title)
 {
     std::cout << "Title " << title << std::endl;
-    _isChange = true;
+    _update = true;
     return true;
+}
+
+void CompTransform::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
+{ 
+    if (index == 0)
+    {
+        _position.x = point.x + 10;
+        _position.y = point.y + 10;
+        _update = true;
+    }
 }
 
 void CompTransform::UpdateMatrix()
 {
-    if (_isChange)
+    if (_update)
     {
         auto t = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
         auto s = glm::scale(glm::mat4(1), glm::vec3(_scale, 1));
         auto r = glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
         _matrix = t * r * s;
-        _isChange = false;
+        _update = false;
     }
 }

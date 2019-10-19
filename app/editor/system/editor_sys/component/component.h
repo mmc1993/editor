@@ -65,9 +65,9 @@ public:
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
     const std::vector<glm::vec2> & GetTrackPoints();
-    void ModifyTrackPoint(const size_t index, const glm::vec2 & point);
-    void InsertTrackPoint(const size_t index, const glm::vec2 & point);
-    void DeleteTrackPoint(const size_t index, const glm::vec2 & point);
+    void ModifyTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kModifyTrackPoint) { OnModifyTrackPoint(index, point); } }
+    void InsertTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kInsertTrackPoint) { OnInsertTrackPoint(index, point); } }
+    void DeleteTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kDeleteTrackPoint) { OnDeleteTrackPoint(index, point); } }
 
 protected:
     virtual std::vector<Property> CollectProperty() = 0;

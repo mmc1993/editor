@@ -151,6 +151,7 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
+    void OptDrawSelects(const glm::vec2 & offset);
     void OptSelected(const SharePtr<GLObject> & object, bool selected);
     void OptSelectedClear();
 
@@ -183,7 +184,7 @@ private:
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 
     const SharePtr<GLObject> & GetRootObject();
-    void FromRectSelectObjects(const glm::vec2 & min, 
+    bool FromRectSelectObjects(const glm::vec2 & min, 
                                const glm::vec2 & max);
     void FromRectSelectObjects(const SharePtr<GLObject> & object, 
                                const glm::vec2 & min, 
