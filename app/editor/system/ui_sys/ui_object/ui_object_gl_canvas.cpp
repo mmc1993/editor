@@ -445,16 +445,21 @@ const SharePtr<GLObject>& UIObjectGLCanvas::GetRootObject()
 
 void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
 {
+    auto state = GetState<UIStateGLCanvas>();
     if (min == max)
     {
-        auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min));
-        if (hit)
+        if (auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min)))
         {
-            Global::Ref().mEditorSys->OptSelectObject(hit, true, true);
+            auto ret = std::find(state->mOperation.mSelectObjects.begin(), 
+                                 state->mOperation.mSelectObjects.end(), hit);
+            if (ret == state->mOperation.mSelectObjects.end())
+            {
+                Global::Ref().mEditorSys->OptSelectObject(hit, true);
+            }
         }
         else
         {
-            Global::Ref().mEditorSys->OptSelectObject(hit, true, false);
+            Global::Ref().mEditorSys->OptSelectObject(hit, true);
         }
     }
     else
@@ -463,9 +468,21 @@ void UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
         FromRectSelectObjects(GetRootObject(), 
                               GetRootObject()->ParentToLocal(min), 
                               GetRootObject()->ParentToLocal(max), output);
-        if (!output.empty())
+        auto noexists = [&output] (const auto & object) 
         {
-            output.clear();
+            return output.end() == std::find(output.begin(), output.end(), object);
+        };
+        std::vector<SharePtr<GLObject>> unlocks;
+        std::copy_if(state->mOperation.mSelectObjects.begin(),
+                     state->mOperation.mSelectObjects.end(),
+                     std::back_inserter(unlocks), noexists);
+        for (auto & object : unlocks)
+        {
+            Global::Ref().mEditorSys->OptSelectObject(object, false);
+        }
+        for (auto & object : output)
+        {
+            Global::Ref().mEditorSys->OptSelectObject(object, true, true);
         }
     }
 }
