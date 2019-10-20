@@ -494,9 +494,11 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
     else
     {
         std::vector<SharePtr<GLObject>> output;
-        FromRectSelectObjects(GetRootObject(), 
-                              GetRootObject()->ParentToLocal(min), 
-                              GetRootObject()->ParentToLocal(max), output);
+        auto pt0 = GetRootObject()->ParentToLocal(min);
+        auto pt1 = GetRootObject()->ParentToLocal(glm::vec2(max.x, min.y));
+        auto pt2 = GetRootObject()->ParentToLocal(max);
+        auto pt3 = GetRootObject()->ParentToLocal(glm::vec2(min.x, max.y));
+        FromRectSelectObjects(GetRootObject(), pt0, pt1, pt2, pt3, output);
         auto noexists = [&output] (const auto & object) 
         {
             return output.end() == std::find(output.begin(), output.end(), object);
@@ -517,29 +519,35 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
     return state->mOperation.mActiveObject != nullptr;
 }
 
-void UIObjectGLCanvas::FromRectSelectObjects(const SharePtr<GLObject> & object, const glm::vec2 & min, const glm::vec2 & max, std::vector<SharePtr<GLObject>> & output)
+void UIObjectGLCanvas::FromRectSelectObjects(
+    const SharePtr<GLObject> & object, 
+    const glm::vec2 & pt0, 
+    const glm::vec2 & pt1, 
+    const glm::vec2 & pt2, 
+    const glm::vec2 & pt3, 
+    std::vector<SharePtr<GLObject>> & output)
 {
-    auto tmin = min;
-    auto tmax = max;
-    auto pred = [&tmin, &tmax] (const auto & com)
+    std::vector<glm::vec2> points(4);
+    auto pred = [&points] (const auto & com)
     { 
-        auto rect = glm::vec4(tmin.x, tmin.y, tmax.x - tmin.x, tmax.y - tmin.y);
         auto it = std::find_if(com->GetTrackPoints().begin(), com->GetTrackPoints().end(),
-            [&rect] (const glm::vec2 & point) { return tools::IsContains(rect, point); });
+            [&] (const auto & point) { return tools::IsContainsConvex(points, point); });
         return it != com->GetTrackPoints().end();
     };
 
     for (auto & children : object->GetObjects())
     {
-        tmin = children->ParentToLocal(min);
-        tmax = children->ParentToLocal(max);
+        points.at(0) = children->ParentToLocal(pt0);
+        points.at(1) = children->ParentToLocal(pt1);
+        points.at(2) = children->ParentToLocal(pt2);
+        points.at(3) = children->ParentToLocal(pt3);
         auto ret = std::find_if(children->GetComponents().begin(),
                                 children->GetComponents().end(), pred);
         if (ret != children->GetComponents().end())
         {
             output.push_back(children);
         }
-        FromRectSelectObjects(children, tmin, tmax, output);
+        FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
     }
 }
 

@@ -184,11 +184,15 @@ private:
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 
     const SharePtr<GLObject> & GetRootObject();
-    bool FromRectSelectObjects(const glm::vec2 & min, 
-                               const glm::vec2 & max);
-    void FromRectSelectObjects(const SharePtr<GLObject> & object, 
-                               const glm::vec2 & min, 
-                               const glm::vec2 & max,
-                               std::vector<SharePtr<GLObject>> & output);
+    bool FromRectSelectObjects(
+        const glm::vec2 & min, 
+        const glm::vec2 & max);
+    void FromRectSelectObjects(
+        const SharePtr<GLObject> & object, 
+        const glm::vec2 & pt0, 
+        const glm::vec2 & pt1, 
+        const glm::vec2 & pt2, 
+        const glm::vec2 & pt3, 
+        std::vector<SharePtr<GLObject>> & output);
     SharePtr<GLObject> FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit);
 };

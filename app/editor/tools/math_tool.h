@@ -149,7 +149,25 @@ namespace tools {
     }
 
     //  点是否在凸多边形内
-    //inline bool IsContainsCull
+    inline bool IsContainsConvex(const std::vector<glm::vec2> & points, const glm::vec2 & p)
+    {
+        ASSERT_LOG(points.size() > 2, "");
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & a = points.at(i                      );
+            auto & b = points.at((i + 1) % points.size());
+            auto & c = points.at((i + 2) % points.size());
+            auto ab = glm::vec3(b - a, 0);
+            auto cb = glm::vec3(c - b, 0);
+            auto ap = glm::vec3(p - a, 0);
+            auto cp = glm::vec3(p - c, 0);
+            if (glm::cross(ab, ap).z * glm::cross(cb, cp).z <= 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     //  点到线段最短距离
     inline glm::vec2 PointToSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)

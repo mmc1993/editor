@@ -890,9 +890,6 @@
     <ClInclude Include="editor\tools\file_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\tools\math_tool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\tools\serialize_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -981,6 +978,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_event.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\tools\math_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
