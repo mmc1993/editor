@@ -148,6 +148,9 @@ namespace tools {
         return (num & 1) == 1;
     }
 
+    //  点是否在凸多边形内
+    //inline bool IsContainsCull
+
     //  点到线段最短距离
     inline glm::vec2 PointToSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
@@ -256,7 +259,7 @@ namespace tools {
     }
 
     //  切割凹多边形
-    inline void StripCullPoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
+    inline void StripConvexPoints(const std::vector<glm::vec2> & points, std::vector<std::vector<glm::vec2>> & output)
     {
         static const auto CheckStripPoint = [] (const std::vector<glm::vec2> & points, size_t i)
         {
@@ -292,8 +295,8 @@ namespace tools {
                 std::vector<glm::vec2> binary[2];
                 auto [point, endA, endB] = CheckStripPoint(points,  i);
                 BinaryPoints(points, endA, point, endB, point, binary);
-                StripCullPoints(binary[0], output);
-                StripCullPoints(binary[1], output);
+                StripConvexPoints(binary[0], output);
+                StripConvexPoints(binary[1], output);
                 return;
             }
         }
@@ -301,10 +304,10 @@ namespace tools {
     }
 
     //  切割凸多边形
-    inline std::vector<std::vector<glm::vec2>> StripCullPoints(const std::vector<glm::vec2> & points)
+    inline std::vector<std::vector<glm::vec2>> StripConvexPoints(const std::vector<glm::vec2> & points)
     {
         std::vector<std::vector<glm::vec2>> result;
-        StripCullPoints(points, result);
+        StripConvexPoints(points, result);
         return std::move(result);
     }
 
