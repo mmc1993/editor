@@ -234,8 +234,16 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OptDrawSelects(const glm::vec2 & beg, const glm::vec2 & end)
+void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
 { 
+    static const auto IsSkip = [](
+        const SharePtr<GLObject> & object, 
+        const SharePtr<GLObject> & parent, 
+        const std::vector<GLObject> & objects)
+    {
+        
+    };
+
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
@@ -407,7 +415,7 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     {
         auto prev = ProjectWorld(param.mMouse - param.mDelta);
         auto curr = ProjectWorld(param.mMouse);
-        OptDrawSelects(prev, curr);
+        OptDragSelects(prev, curr);
     }
 }
 
