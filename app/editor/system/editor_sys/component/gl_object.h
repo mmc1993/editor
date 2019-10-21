@@ -43,8 +43,8 @@ public:
     void SetName(const std::string & name);
     const std::string & GetName() const;
 
-    void SetActive(bool active);
-    bool IsActive() const;
+    void AddState(StateEnum state, bool add);
+    bool HasState(StateEnum state);
 
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();

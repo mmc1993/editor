@@ -50,5 +50,4 @@ private:
     glm::vec2 _scale;
     glm::mat4 _matrix;
     glm::vec2 _position;
-    bool _update;
 };

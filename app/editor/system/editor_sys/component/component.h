@@ -11,10 +11,11 @@ class Component
     , public std::enable_shared_from_this<Component> {
 public:
     enum StateEnum {
-        kActive = 1 << 0,   //  激活
-        kInsertTrackPoint = 1 << 1,   //  支持插入控制点
-        kDeleteTrackPoint = 1 << 2,   //  支持删除控制点
-        kModifyTrackPoint = 1 << 3,   //  支持修改控制点
+        kActive = 1 << 0,             //  激活
+        kUpdate = 1 << 1,             //  刷新
+        kInsertTrackPoint = 1 << 2,   //  支持插入控制点
+        kDeleteTrackPoint = 1 << 3,   //  支持删除控制点
+        kModifyTrackPoint = 1 << 4,   //  支持修改控制点
     };
 
     struct Property {
@@ -44,13 +45,15 @@ public:
     virtual void OnDel() = 0;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
 
-    bool IsActive() { return _state & kActive; }
-	void SetActive(bool active) { ModifyState(kActive, active); }
-
-    void ModifyState(StateEnum state, bool add)
+    void AddState(StateEnum state, bool add)
     {
         if (add) _state |=  state;
         else     _state &= ~state;
+    }
+
+    bool HasState(StateEnum state)
+    {
+        return _state & state;
     }
 
     SharePtr<GLObject> GetOwner() { return _owner->shared_from_this(); }

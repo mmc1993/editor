@@ -1,8 +1,7 @@
 #include "comp_transform.h"
 
 CompTransform::CompTransform()
-    : _update(true)
-    , _angle(0      )
+    : _angle(0      )
     , _scale(1, 1   )
     , _position(0, 0)
 {
@@ -10,7 +9,8 @@ CompTransform::CompTransform()
     _trackPoints.push_back(glm::vec2(-10,  10));
     _trackPoints.push_back(glm::vec2(-10, -10));
     _trackPoints.push_back(glm::vec2( 10, -10));
-    ModifyState(StateEnum::kModifyTrackPoint, true);
+    AddState(StateEnum::kModifyTrackPoint, true);
+    AddState(StateEnum::kUpdate,           true);
 }
 
 CompTransform::~CompTransform()
@@ -45,20 +45,20 @@ void CompTransform::Position(float x, float y)
 {
     _position.x = x;
     _position.y = y;
-    _update = true;
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompTransform::Angle(float r)
 {
     _angle = r;
-    _update = true;
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompTransform::Scale(float x, float y)
 {
     _scale.x = x;
     _scale.y = y;
-    _update = true;
+    AddState(StateEnum::kUpdate, true);
 }
 
 CompTransform & CompTransform::AddPosition(float x, float y)
@@ -152,7 +152,7 @@ std::vector<Component::Property> CompTransform::CollectProperty()
 bool CompTransform::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     std::cout << "Title " << title << std::endl;
-    _update = true;
+    AddState(StateEnum::kUpdate, true);
     return true;
 }
 
@@ -162,18 +162,19 @@ void CompTransform::OnModifyTrackPoint(const size_t index, const glm::vec2 & poi
     {
         _position.x = point.x + 10;
         _position.y = point.y + 10;
-        _update = true;
+        AddState(StateEnum::kUpdate, true);
     }
 }
 
 void CompTransform::UpdateMatrix()
 {
-    if (_update)
+    if (HasState(StateEnum::kUpdate))
     {
+        AddState(StateEnum::kUpdate, false);
+
         auto t = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
         auto s = glm::scale(glm::mat4(1), glm::vec3(_scale, 1));
         auto r = glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
         _matrix = t * r * s;
-        _update = false;
     }
 }

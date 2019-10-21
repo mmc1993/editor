@@ -6,7 +6,6 @@
 CompSprite::CompSprite()
     : _size(0.0f, 0.0f)
     , _anchor(0.5f, 0.5f)
-    , _update(true)
 {
     _trackPoints.resize(4);
 
@@ -15,6 +14,8 @@ CompSprite::CompSprite()
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
+
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompSprite::OnAdd()
@@ -65,7 +66,7 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 {
     if (title == "Url" || title == "Size" || title == "Anchor")
     {
-        _update = true;
+        AddState(StateEnum::kUpdate, true);
     }
     return true;
 }
@@ -81,9 +82,9 @@ std::vector<Component::Property> CompSprite::CollectProperty()
 
 void CompSprite::Update()
 {
-    if (_update)
+    if (HasState(StateEnum::kUpdate))
     {
-        _update = false;
+        AddState(StateEnum::kUpdate, false);
 
         _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
         _size.x = (float)_texture->GetW();

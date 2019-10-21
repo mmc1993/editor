@@ -155,7 +155,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 
     for (auto component : _components)
     {
-        if (component->IsActive())
+        if (component->HasState(Component::StateEnum::kActive))
         {
             component->OnUpdate(canvas, dt);
         }
@@ -163,7 +163,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 
     for (auto object : _children)
     {
-        if (object->IsActive())
+        if (object->HasState(GLObject::StateEnum::kActive))
         {
             object->Update(canvas, dt);
         }
@@ -182,17 +182,15 @@ const std::string & GLObject::GetName() const
     return _name;
 }
 
-void GLObject::SetActive(bool active)
+void GLObject::AddState(StateEnum state, bool add)
 {
-    if (active)
-        _state |=  kActive;
-    else
-        _state &= ~kActive;
+    if (add) _state |=  state;
+    else     _state &= ~state;
 }
 
-bool GLObject::IsActive() const
+bool GLObject::HasState(StateEnum state)
 {
-    return _state & kActive;
+    return _state & state;
 }
 
 void GLObject::SetParent(GLObject * parent)
