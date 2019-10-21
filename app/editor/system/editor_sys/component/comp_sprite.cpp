@@ -33,7 +33,9 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mCallback   = std::bind(&CompSprite::OnRenderCallback, this, std::placeholders::_1);
+        command.mCallback   = std::bind(&CompSprite::OnRenderCallback, this, 
+                                        std::placeholders::_1, 
+                                        std::placeholders::_2);
         command.mTextures.push_back(std::make_pair("uniform_texture", _texture));
         canvas->Post(command);
     }
@@ -106,7 +108,7 @@ void CompSprite::Update()
     }
 }
 
-void CompSprite::OnRenderCallback(const interface::RenderCommand & command)
+void CompSprite::OnRenderCallback(const interface::RenderCommand & command, uint * pos)
 {
     auto & forward = (const interface::FowardCommand &)(command);
     forward.mProgram->BindUniformVector("uniform_size",   _size);

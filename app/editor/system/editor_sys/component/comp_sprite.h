@@ -22,7 +22,7 @@ protected:
 
 private:
     void Update();
-    void OnRenderCallback(const interface::RenderCommand & command);
+    void OnRenderCallback(const interface::RenderCommand & command, uint * pos);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
