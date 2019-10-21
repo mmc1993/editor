@@ -6,6 +6,7 @@
 CompSprite::CompSprite()
     : _size(0.0f, 0.0f)
     , _anchor(0.5f, 0.5f)
+    , _update(kTexture | kTrackPoint)
 {
     _trackPoints.resize(4);
 
@@ -64,9 +65,14 @@ void CompSprite::DecodeBinary(std::ifstream & is)
 
 bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
-    if (title == "Url" || title == "Size" || title == "Anchor")
+    AddState(StateEnum::kUpdate, true);
+    if (title == "URL")
     {
-        AddState(StateEnum::kUpdate, true);
+        _update |= kTexture;
+    }
+    if (title == "Size" || title == "Anchor")
+    {
+        _update |= kTrackPoint;
     }
     return true;
 }
@@ -74,7 +80,7 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
     return {
-        { interface::Serializer::StringValueTypeEnum::kAsset,   "Url",    &_url    },
+        { interface::Serializer::StringValueTypeEnum::kAsset,   "URL",    &_url    },
         { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
         { interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor }
     };
@@ -86,26 +92,33 @@ void CompSprite::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-        _size.x = (float)_texture->GetW();
-        _size.y = (float)_texture->GetH();
-        _trackPoints.at(0).x = -_size.x *      _anchor.x;
-        _trackPoints.at(0).y = -_size.y *      _anchor.y;
-        _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
-        _trackPoints.at(1).y = -_size.y *      _anchor.y;
-        _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
-        _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-        _trackPoints.at(3).x = -_size.x *      _anchor.x;
-        _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+        if (_update & kTexture)
+        {
+            _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
+            _size.x = (float)_texture->GetW();
+            _size.y = (float)_texture->GetH();
+        }
 
-        auto & offset = _texture->GetOffset();
+        if (_update & kTrackPoint)
+        {
+            _trackPoints.at(0).x = -_size.x *      _anchor.x;
+            _trackPoints.at(0).y = -_size.y *      _anchor.y;
+            _trackPoints.at(1).x = _size.x * (1 - _anchor.x);
+            _trackPoints.at(1).y = -_size.y *      _anchor.y;
+            _trackPoints.at(2).x = _size.x * (1 - _anchor.x);
+            _trackPoints.at(2).y = _size.y * (1 - _anchor.y);
+            _trackPoints.at(3).x = -_size.x *      _anchor.x;
+            _trackPoints.at(3).y = _size.y * (1 - _anchor.y);
 
-        std::vector<GLMesh::Vertex> vertexs;
-        vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
-        vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
-        vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));
-        vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.x, offset.w));
-        _mesh->Update(vertexs, {0, 1, 2, 0, 2, 3});
+            auto & offset=_texture->GetOffset();
+            std::vector<GLMesh::Vertex> vertexs;
+            vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
+            vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
+            vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));
+            vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.x, offset.w));
+            _mesh->Update(vertexs, { 0, 1, 2, 0, 2, 3 });
+        }
+        _update = 0;
     }
 }
 
