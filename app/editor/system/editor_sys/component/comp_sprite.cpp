@@ -15,8 +15,6 @@ CompSprite::CompSprite()
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
-
-    AddState(StateEnum::kUpdate, true);
 }
 
 void CompSprite::OnAdd()

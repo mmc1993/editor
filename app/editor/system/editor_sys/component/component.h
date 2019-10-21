@@ -39,7 +39,7 @@ public:
     //  创建组件
     static SharePtr<Component> Create(const std::string & name);
 
-	Component(): _owner(nullptr), _state(kActive) { }
+	Component(): _owner(nullptr), _state(kActive | kUpdate) { }
 	virtual ~Component() { }
     virtual void OnAdd() = 0;
     virtual void OnDel() = 0;

@@ -1,9 +1,23 @@
 #pragma once
 
 #include "component.h"
+#include "../../raw_sys/raw_sys.h"
 #include "../../interface/render.h"
 
 class CompTilemap : public Component {
+private:
+    enum UpdateEnum { 
+        kTilemap    = 1,
+        kTrackPoint = 2,
+    };
+
+    struct Atlas {
+        uint mSpace;
+        uint mOffset;
+        uint mIndexBase;
+        SharePtr<GLTexture> mTexture;
+    };
+
 public:
     CompTilemap();
     virtual void OnAdd() override;
@@ -22,17 +36,26 @@ protected:
 
 private:
     void Update();
-    void OnRenderCallback(const interface::RenderCommand & command);
-    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
-    virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
-    virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
+    void UpdateTilemap();
+    void UpdateVertexs(uint mapW, uint mapH, 
+                       uint tileW, uint tileH,
+                       const mmc::Json::Pointer & data,
+                       const std::vector<Atlas> & atlass,
+                       std::vector<uint>           & indexs,
+                       std::vector<GLMesh::Vertex> & points);
+    void UpdateAtlass(uint base, 
+                      const std::string & url, 
+                      std::vector<Atlas> & atlass);
+
+    //glm::vec4 
 
 private:
-    bool            _update;
     std::string     _url;
     glm::vec2       _size;
     glm::vec2       _anchor;
-    SharePtr<GLMesh>  _mesh;
-    SharePtr<GLTexture> _texture;
-    SharePtr<GLProgram> _program;
+    uint            _update;
+
+    SharePtr<GLMesh>                    _mesh;
+    std::vector<Atlas>                  _atlass;
+    SharePtr<GLProgram>                 _program;
 };

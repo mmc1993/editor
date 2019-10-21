@@ -1,29 +1,28 @@
-#include "comp_sprite.h"
-#include "../../raw_sys/raw.h"
-#include "../../raw_sys/raw_sys.h"
+#include "comp_tilemap.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
-CompSprite::CompSprite()
+CompTilemap::CompTilemap()
     : _size(0.0f, 0.0f)
     , _anchor(0.5f, 0.5f)
-    , _update(true)
+    , _update(kTilemap | kTrackPoint)
 {
     _trackPoints.resize(4);
 
     _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | GLMesh::Vertex::kUV);
+    _mesh->Init({}, {}, GLMesh::Vertex::kV | 
+                        GLMesh::Vertex::kUV);
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
 }
 
-void CompSprite::OnAdd()
+void CompTilemap::OnAdd()
 { }
 
-void CompSprite::OnDel()
+void CompTilemap::OnDel()
 { }
 
-void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
+void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     if (!_url.empty())
     {
@@ -33,42 +32,45 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mCallback   = std::bind(&CompSprite::OnRenderCallback, this, std::placeholders::_1);
-        command.mTextures.push_back(std::make_pair("uniform_texture", _texture));
+        //for (auto i = 0; i != _textures.size(); ++i)
+        //{
+        //    auto & tex = _textures.at(i);
+        //    auto   key = SFormat("uniform_texture{0}", i);
+        //    command.mTextures.push_back(std::make_pair(key, tex));
+        //}
         canvas->Post(command);
     }
 }
 
-const std::string & CompSprite::GetName()
+const std::string & CompTilemap::GetName()
 {
     static const std::string name = "Sprite";
     return name;
 }
 
-void CompSprite::EncodeBinary(std::ofstream & os)
+void CompTilemap::EncodeBinary(std::ofstream & os)
 {
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
     tools::Serialize(os, _anchor);
 }
 
-void CompSprite::DecodeBinary(std::ifstream & is)
+void CompTilemap::DecodeBinary(std::ifstream & is)
 {
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);
 }
 
-bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
+bool CompTilemap::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
-    if (title == "Url" || title == "Size" || title == "Anchor")
-    {
-        _update = true;
-    }
+    AddState(StateEnum::kUpdate, true);
+    if (title == "URL") _update |= kTilemap;
+    if (title == "Anchor") _update |= kTrackPoint;
     return true;
 }
 
-std::vector<Component::Property> CompSprite::CollectProperty()
+std::vector<Component::Property> CompTilemap::CollectProperty()
 {
     return {
         { interface::Serializer::StringValueTypeEnum::kAsset,   "Url",    &_url    },
@@ -77,51 +79,84 @@ std::vector<Component::Property> CompSprite::CollectProperty()
     };
 }
 
-void CompSprite::Update()
+void CompTilemap::Update()
 {
-    if (_update)
+    if (HasState(StateEnum::kUpdate))
     {
-        _update = false;
+        AddState(StateEnum::kUpdate, false);
 
-        _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-        _size.x = (float)_texture->GetW();
-        _size.y = (float)_texture->GetH();
-        _trackPoints.at(0).x = -_size.x *      _anchor.x;
-        _trackPoints.at(0).y = -_size.y *      _anchor.y;
-        _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
-        _trackPoints.at(1).y = -_size.y *      _anchor.y;
-        _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
-        _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-        _trackPoints.at(3).x = -_size.x *      _anchor.x;
-        _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+        if (_update & kTilemap)
+        {
+            UpdateTilemap();
+        }
 
-        auto & offset = _texture->GetOffset();
-
-        std::vector<GLMesh::Vertex> vertexs;
-        vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
-        vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
-        vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));
-        vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.x, offset.w));
-        _mesh->Update(vertexs, {0, 1, 2, 0, 2, 3});
+        if (_update & kTrackPoint)
+        {
+            _trackPoints.at(0).x = -_size.x *      _anchor.x;
+            _trackPoints.at(0).y = -_size.y *      _anchor.y;
+            _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
+            _trackPoints.at(1).y = -_size.y *      _anchor.y;
+            _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
+            _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
+            _trackPoints.at(3).x = -_size.x *      _anchor.x;
+            _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+        }
+        _update = 0;
     }
 }
 
-void CompSprite::OnRenderCallback(const interface::RenderCommand & command)
-{
-    auto & forward = (const interface::FowardCommand &)(command);
-    forward.mProgram->BindUniformVector("uniform_size",   _size);
-    forward.mProgram->BindUniformVector("uniform_anchor", _anchor);
+void CompTilemap::UpdateTilemap()
+{ 
+    auto tmx = mmc::Json::FromFile(_url);
+    ASSERT_LOG(tmx != nullptr, _url.c_str());
+
+    std::vector<Atlas> atlass;
+    auto folder = tools::GetFileFolder(_url);
+    for (auto & value : tmx->At("tilesets"))
+    {
+        UpdateAtlass((uint)value.mVal->At("firstgid")->ToNumber(), 
+            folder + value.mVal->At("source")->ToString(), atlass);
+    }
+
+    std::vector<uint>           indexs;
+    std::vector<GLMesh::Vertex> points;
+    auto mapW = (uint)tmx->At("width")->ToNumber();
+    auto mapH = (uint)tmx->At("height")->ToNumber();
+    auto tileW = (uint)tmx->At("tilewidth")->ToNumber();
+    auto tileH = (uint)tmx->At("tileheight")->ToNumber();
+    for (auto & layer : tmx->At("layers"))
+    {
+        UpdateVertexs(mapW, mapH, tileW, tileH, layer.mVal->At("data"), _atlass, indexs, points);
+    }
+
+    _mesh->Update(points, indexs);
 }
 
-void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
+void CompTilemap::UpdateAtlass(uint base, const std::string & url, std::vector<Atlas> & atlass)
 {
+    auto json = mmc::Json::FromFile(url);
+    ASSERT_LOG(json != nullptr, url.c_str());
+
+    Atlas atlas;
+    auto image = tools::GetFileFolder(url) + json->At("image")->ToString();
+    atlas.mTexture = Global::Ref().mRawSys->Get<GLTexture>(image);
+    atlas.mOffset = (uint)json->At("margin")->ToNumber();
+    atlas.mSpace = (uint)json->At("spacing")->ToNumber();
+    atlas.mIndexBase = base;
+    atlass.push_back(atlas);
 }
 
-void CompSprite::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
+void CompTilemap::UpdateVertexs(uint mapW, uint mapH,
+                                uint tileW, uint tileH, 
+                                const mmc::Json::Pointer & data, 
+                                const std::vector<Atlas> & atlass, 
+                                std::vector<uint>           & indexs,
+                                std::vector<GLMesh::Vertex> & points)
 {
-}
-
-void CompSprite::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
-{
+    for (auto i = 0; i != data->GetCount(); ++i)
+    {
+        auto x = i % mapW;
+        auto y = i / mapH;
+    }
 }
 
