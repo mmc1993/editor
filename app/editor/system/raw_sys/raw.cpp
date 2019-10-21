@@ -88,58 +88,33 @@ GLImage::~GLImage()
     glDeleteTextures(1, &mID);
 }
 
-void GLImage::Init(const void * data)
-{
-    glGenTextures(1, &mID);
-    glBindTexture(GL_TEXTURE_2D, mID);
-    glTexImage2D( GL_TEXTURE_2D, 0, mFormat, mW, mH, 0, mFormat, GL_UNSIGNED_BYTE, data);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    SetParam(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    SetParam(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-}
-
-bool GLImage::InitFromImage(const std::string & url)
+bool GLImage::Init(const std::string & url)
 {
     stbi_set_flip_vertically_on_load(true);
 
     int w, h, format;
-    auto data = stbi_load(url.c_str(), &w, &h, &format, 0);
-    if (data == nullptr)
+    if (auto data = stbi_load(url.c_str(), &w, &h, &format, 0))
     {
-        return false;
-    }
-    switch (format)
-    {
-    case 1: mFormat = GL_RED; break;
-    case 3: mFormat = GL_RGB; break;
-    case 4: mFormat = GL_RGBA; break;
-    }
-    mW = w;
-    mH = h;
-    Init(data);
-    stbi_image_free(data);
-    return true;
-}
+        mW = (uint)w;
+        mH = (uint)h;
+        switch (format)
+        {
+        case 1: mFormat = GL_RED; break;
+        case 3: mFormat = GL_RGB; break;
+        case 4: mFormat = GL_RGBA; break;
+        }
+        glGenTextures(1, &mID);
+        glBindTexture(GL_TEXTURE_2D, mID);
+        glTexImage2D( GL_TEXTURE_2D, 0, mFormat, mW, mH, 0, mFormat, GL_UNSIGNED_BYTE, data);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
-bool GLImage::InitFromAtlas(const std::string & url)
-{
-    auto dir  = tools::GetFileFolder(url);
-    auto name = tools::GetFolderName(url);
-    if (dir.empty() || name.empty())
-    {
-        return false;
+        SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        SetParam(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        SetParam(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        stbi_image_free(data);
     }
-
-    auto path = dir;
-    path.append(name);
-    path.append(".atlas");
-
-    auto json = mmc::Json::FromFile(path);
-    if (json == nullptr) { return false; }
-    return InitFromImage(dir + json->At("meta", "image")->ToString());
+    return mID != 0;
 }
 
 void GLImage::SetParam(int key, int val)
@@ -147,11 +122,6 @@ void GLImage::SetParam(int key, int val)
     glBindTexture(GL_TEXTURE_2D, mID);
     glTexParameteri(GL_TEXTURE_2D, key, val);
     glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-bool GLImage::Init(const std::string & url)
-{
-    return InitFromImage(url) || InitFromAtlas(url);
 }
 
 // ---
@@ -173,48 +143,49 @@ bool GLTexture::Init(const std::string & url)
 bool GLTexture::InitFromImage(const std::string & url)
 {
     if (!tools::IsFileExists(url)) { return false; }
-    _pointer = std::create_ptr<GLImage>();
-    if (_pointer->Init(url))
+    _refimg = std::create_ptr<GLImage>();
+    if (_refimg->Init(url))
     {
         _offset.x = 0.0f;
         _offset.y = 0.0f;
         _offset.z = 1.0f;
         _offset.w = 1.0f;
-        return true;
     }
-    return false;
+    ASSERT_LOG(_refimg != nullptr, url.c_str());
+    return _refimg != nullptr;
 }
 
 bool GLTexture::InitFromAtlas(const std::string & url)
 {
     ASSERT_LOG(tools::GetFileSuffix(url) == ".png", url.c_str());
+
     std::string         path;
     mmc::Json::Pointer atlas;
-    auto folder = tools::GetFileFolder(url);
+    auto folder  = tools::GetFileFolder(url);
     auto dirname = tools::GetFolderName(url);
     path.append(folder);
     path.append(dirname);
-    auto name = SFormat("{0}{1}.atlas", path, 0);
+    auto name = path + ".atlas";
     for (auto i = 0; tools::IsFileExists(name); ++i)
     {
         auto json = mmc::Json::FromFile(name);
         if (json == nullptr) { break; }
         if (json->HasKey("frames",url))
         { atlas = json; break; }
-
         name = SFormat("{0}{1}.atlas", path, i);
     }
 
     if (atlas != nullptr) 
     {
-        _pointer = Global::Ref().mRawSys->Get<GLImage>(name);
-        _offset.x = atlas->At(url, "frame", "x")->ToNumber() / _pointer->mW;
-        _offset.y = atlas->At(url, "frame", "y")->ToNumber() / _pointer->mH;
-        _offset.z = atlas->At(url, "frame", "w")->ToNumber() / _pointer->mW + _offset.x;
-        _offset.w = atlas->At(url, "frame", "h")->ToNumber() / _pointer->mH + _offset.y;
+        name = path + atlas->At("meta","image")->ToString();
+        _refimg = Global::Ref().mRawSys->Get<GLImage>(name);
+        _offset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / _refimg->mW;
+        _offset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / _refimg->mH;
+        _offset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / _refimg->mW + _offset.x;
+        _offset.w = atlas->At("frames", url, "frame", "h")->ToNumber() / _refimg->mH + _offset.y;
     }
 
-    return _pointer != nullptr;
+    return _refimg != nullptr;
 }
 
 GLProgram::GLProgram() : _use(GL_INVALID_INDEX)

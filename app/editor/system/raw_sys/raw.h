@@ -99,11 +99,6 @@ public:
     void SetParam(int key, int val);
     virtual bool Init(const std::string & url) override;
 
-private:
-    void Init(const void * data);
-    bool InitFromImage(const std::string & url);
-    bool InitFromAtlas(const std::string & url);
-
 public:
     uint mFormat, mID, mW, mH;
 };
@@ -129,11 +124,11 @@ public:
 public:
     GLTexture();
     ~GLTexture();
-    uint GetID() { return _pointer->mID; }
-    uint GetImageW() { return _pointer->mW; }
-    uint GetImageH() { return _pointer->mH; }
-    uint GetImageFormat() { return _pointer->mFormat; }
-    const glm::vec4 & GetOffset() { return _offset; }
+    uint GetID() { return _refimg->mID; }
+    uint GetImageW() { return _refimg->mW; }
+    uint GetImageH() { return _refimg->mH; }
+    uint GetImageFormat() { return _refimg->mFormat; }
+    const glm::vec4 & GetOffset() { return  _offset; }
     uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
     uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
 
@@ -144,7 +139,7 @@ private:
     bool InitFromAtlas(const std::string & url);
 
 private:
-    SharePtr<GLImage> _pointer;
+    SharePtr<GLImage> _refimg;
     glm::vec4         _offset;
 };
 
