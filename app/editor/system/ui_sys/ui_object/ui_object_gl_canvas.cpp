@@ -32,7 +32,7 @@ void UIObjectGLCanvas::HandlePostCommands()
                 GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, state->mRenderTextures[0]);
             command.mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
-            command.Call();
+            command.Call(nullptr);
             Post(command.mProgram, command.mTransform);
             glBindVertexArray(command.mMesh->GetVAO());
             glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
@@ -50,14 +50,14 @@ void UIObjectGLCanvas::HandleFowardCommands()
     {
         for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
         {
-            auto texNum = 0;
+            uint texNum = 0;
             command.mProgram->UsePass(i);
             for (auto & texture : command.mTextures)
             {
                 command.mProgram->BindUniformTex2D(
                     texture.first.c_str(), texture.second->GetID(), texNum++);
             }
-            command.Call();
+            command.Call(&texNum);
             Post(command.mProgram, command.mTransform);
             glBindVertexArray(command.mMesh->GetVAO());
             glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);

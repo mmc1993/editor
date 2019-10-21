@@ -10,8 +10,8 @@ class GLMaterial;
 
 namespace interface {
     struct RenderCommand {
-        std::function<void(const RenderCommand &)> mCallback;
-        void Call() { if (mCallback) mCallback(*this); }
+        std::function<void(const RenderCommand &, uint *)> mCallback;
+        void Call(uint * pos) { if (mCallback)mCallback(*this,pos); }
     };
 
     struct FowardCommand : public RenderCommand {

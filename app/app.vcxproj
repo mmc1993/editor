@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="editor\system\editor_sys\component\component.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_sprite.cpp" />
+    <ClCompile Include="editor\system\editor_sys\component\comp_tilemap.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_transform.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp" />
     <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp" />
@@ -57,6 +58,7 @@
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
     <ClInclude Include="editor\system\editor_sys\component\component.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_sprite.h" />
+    <ClInclude Include="editor\system\editor_sys\component\comp_tilemap.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_transform.h" />
     <ClInclude Include="editor\system\editor_sys\component\gl_object.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.h" />
