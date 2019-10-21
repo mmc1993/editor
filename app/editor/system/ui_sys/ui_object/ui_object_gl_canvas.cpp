@@ -236,21 +236,32 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
 
 void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
 { 
-    static const auto IsSkip = [](
-        const SharePtr<GLObject> & object, 
-        const SharePtr<GLObject> & parent, 
-        const std::vector<GLObject> & objects)
+    static const auto IsSkip = [] (
+        const SharePtr<GLObject>              & object, 
+        const std::vector<SharePtr<GLObject>> & objects)
     {
-        
+        auto parent = object->GetParent();
+        while (parent != nullptr)
+        {
+            if (std::find(objects.begin(), objects.end(), parent) != objects.end())
+            {
+                return true;
+            }
+            parent = parent->GetParent();
+        }
+        return false;
     };
 
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
-        auto a = object->GetParent()->WorldToLocal(beg);
-        auto b = object->GetParent()->WorldToLocal(end);
-        auto ab = b - a;
-        object->GetTransform()->AddPosition(ab.x, ab.y);
+        if (!IsSkip(object, state->mOperation.mSelectObjects))
+        {
+            auto a = object->GetParent()->WorldToLocal(beg);
+            auto b = object->GetParent()->WorldToLocal(end);
+            auto ab = b - a;
+            object->GetTransform()->AddPosition(ab.x, ab.y);
+        }
     }
 }
 
