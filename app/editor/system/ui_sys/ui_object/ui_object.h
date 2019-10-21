@@ -151,7 +151,7 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
-    void OptDrawSelects(const glm::vec2 & offset);
+    void OptDrawSelects(const glm::vec2 & beg, const glm::vec2 & end);
     void OptSelected(const SharePtr<GLObject> & object, bool selected);
     void OptSelectedClear();
 

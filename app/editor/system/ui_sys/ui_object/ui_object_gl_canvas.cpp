@@ -234,13 +234,15 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OptDrawSelects(const glm::vec2 & offset)
+void UIObjectGLCanvas::OptDrawSelects(const glm::vec2 & beg, const glm::vec2 & end)
 { 
     auto state = GetState<UIStateGLCanvas>();
     for (auto & object : state->mOperation.mSelectObjects)
     {
-        auto coord = object->GetParent()->WorldToLocal(offset);
-        object->GetTransform()->AddPosition(coord.x, coord.y);
+        auto a = object->GetParent()->WorldToLocal(beg);
+        auto b = object->GetParent()->WorldToLocal(end);
+        auto ab = b - a;
+        object->GetTransform()->AddPosition(ab.x, ab.y);
     }
 }
 
@@ -405,7 +407,7 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     {
         auto prev = ProjectWorld(param.mMouse - param.mDelta);
         auto curr = ProjectWorld(param.mMouse);
-        OptDrawSelects(curr - prev);
+        OptDrawSelects(prev, curr);
     }
 }
 
