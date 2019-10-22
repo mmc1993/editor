@@ -1,11 +1,13 @@
 #include "component.h"
 #include "comp_transform.h"
+#include "comp_tilemap.h"
 #include "comp_sprite.h"
 #include "../property/ui_property.h"
 
 static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
     std::make_pair("Transform", []() { return CastPtr<Component>(std::create_ptr<CompTransform>()); }),
-    std::make_pair("Sprite",    []() { return CastPtr<Component>(std::create_ptr<CompSprite>());    })
+    std::make_pair("Sprite",    []() { return CastPtr<Component>(std::create_ptr<CompSprite>());    }),
+    std::make_pair("Tilemap",   []() { return CastPtr<Component>(std::create_ptr<CompTilemap>());   }),
 };
 
 SharePtr<Component> Component::Create(const std::string & name)

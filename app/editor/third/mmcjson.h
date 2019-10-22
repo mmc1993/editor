@@ -142,7 +142,7 @@ namespace mmc {
                     string = ParseString(string + 1, value->_string);
                     value->_type = mmc::Json::Type::kSTRING;
                 }
-                else if (*string >= '0' && *string <= '9')
+                else if (*string >= '0' && *string <= '9' || *string == '-')
                 {
                     string = ParseNumber(string, value->_number);
                     value->_type = mmc::Json::Type::kNUMBER;
@@ -233,8 +233,9 @@ namespace mmc {
             {
                 Parser::Parse(buffer.c_str(), pointer);
             }
-            catch (const Error &)
+            catch (const Error & err)
             {
+                ASSERT_LOG(&err, "");
                 return nullptr;
             }
             return pointer;

@@ -240,14 +240,12 @@ void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & e
         const SharePtr<GLObject>              & object, 
         const std::vector<SharePtr<GLObject>> & objects)
     {
-        auto parent = object->GetParent();
-        while (parent != nullptr)
+        for (auto parent = object->GetParent(); parent != nullptr; parent = parent->GetParent())
         {
             if (std::find(objects.begin(), objects.end(), parent) != objects.end())
             {
                 return true;
             }
-            parent = parent->GetParent();
         }
         return false;
     };

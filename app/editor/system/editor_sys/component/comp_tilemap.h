@@ -12,9 +12,10 @@ private:
     };
 
     struct Atlas {
+        uint mBase;
         uint mSpace;
         uint mOffset;
-        uint mIndexBase;
+        uint mRow, mCol;
         SharePtr<GLTexture> mTexture;
     };
 
@@ -37,25 +38,24 @@ protected:
 private:
     void Update();
     void UpdateTilemap();
-    void UpdateVertexs(uint mapW, uint mapH, 
-                       uint tileW, uint tileH,
-                       const mmc::Json::Pointer & data,
-                       const std::vector<Atlas> & atlass,
-                       std::vector<uint>           & indexs,
-                       std::vector<GLMesh::Vertex> & points);
-    void UpdateAtlass(uint base, 
-                      const std::string & url, 
-                      std::vector<Atlas> & atlass);
-
-    //glm::vec4 
+    void UpdateVertexs(
+        uint mapW, uint mapH,
+        uint tileW, uint tileH,
+        const mmc::Json::Pointer & data,
+        const std::vector<Atlas> & atlass,
+        std::vector<uint>        & indexs,
+        std::vector<GLMesh::Vertex> & points);
+    glm::vec4 GetTileQuad(
+        uint idx, uint tileW, uint tileH, 
+        const std::vector<Atlas> & atlass,
+        uint & atlasIndex);
 
 private:
     std::string     _url;
     glm::vec2       _size;
-    glm::vec2       _anchor;
     uint            _update;
 
     SharePtr<GLMesh>                    _mesh;
-    std::vector<Atlas>                  _atlass;
     SharePtr<GLProgram>                 _program;
+    std::vector<SharePtr<GLTexture>>    _textures;
 };

@@ -2,6 +2,7 @@
     "Order": [
         "Transform",
         "Graphics/Sprite",
+        "Graphics/Tilemap",
         "Graphics/LightSource"
     ],
     "List": {

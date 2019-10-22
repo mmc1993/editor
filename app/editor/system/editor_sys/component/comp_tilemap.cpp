@@ -3,17 +3,17 @@
 
 CompTilemap::CompTilemap()
     : _size(0.0f, 0.0f)
-    , _anchor(0.5f, 0.5f)
     , _update(kTilemap | kTrackPoint)
 {
     _trackPoints.resize(4);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({}, {}, GLMesh::Vertex::kV | 
+                        GLMesh::Vertex::kC |
                         GLMesh::Vertex::kUV);
 
     _program = std::create_ptr<GLProgram>();
-    _program->Init(tools::GL_PROGRAM_SPRITE);
+    _program->Init(tools::GL_PROGRAM_TILEMAP);
 }
 
 void CompTilemap::OnAdd()
@@ -32,19 +32,19 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        //for (auto i = 0; i != _textures.size(); ++i)
-        //{
-        //    auto & tex = _textures.at(i);
-        //    auto   key = SFormat("uniform_texture{0}", i);
-        //    command.mTextures.push_back(std::make_pair(key, tex));
-        //}
+        for (auto i = 0; i != _textures.size(); ++i)
+        {
+            auto & tex = _textures.at(i);
+            auto   key = SFormat("uniform_texture{0}", i);
+            command.mTextures.push_back(std::make_pair(key, tex));
+        }
         canvas->Post(command);
     }
 }
 
 const std::string & CompTilemap::GetName()
 {
-    static const std::string name = "Sprite";
+    static const std::string name = "Tilemap";
     return name;
 }
 
@@ -52,14 +52,12 @@ void CompTilemap::EncodeBinary(std::ofstream & os)
 {
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
-    tools::Serialize(os, _anchor);
 }
 
 void CompTilemap::DecodeBinary(std::ifstream & is)
 {
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
-    tools::Deserialize(is, _anchor);
 }
 
 bool CompTilemap::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -75,7 +73,6 @@ std::vector<Component::Property> CompTilemap::CollectProperty()
     return {
         { interface::Serializer::StringValueTypeEnum::kAsset,   "Url",    &_url    },
         { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor }
     };
 }
 
@@ -92,14 +89,10 @@ void CompTilemap::Update()
 
         if (_update & kTrackPoint)
         {
-            _trackPoints.at(0).x = -_size.x *      _anchor.x;
-            _trackPoints.at(0).y = -_size.y *      _anchor.y;
-            _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
-            _trackPoints.at(1).y = -_size.y *      _anchor.y;
-            _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
-            _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-            _trackPoints.at(3).x = -_size.x *      _anchor.x;
-            _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+            _trackPoints.at(0).x = 0;       _trackPoints.at(0).y = 0;
+            _trackPoints.at(1).x = _size.x; _trackPoints.at(1).y = 0;
+            _trackPoints.at(2).x = _size.x; _trackPoints.at(2).y = _size.y;
+            _trackPoints.at(3).x = 0;       _trackPoints.at(3).y = _size.y;
         }
         _update = 0;
     }
@@ -114,8 +107,20 @@ void CompTilemap::UpdateTilemap()
     auto folder = tools::GetFileFolder(_url);
     for (auto & value : tmx->At("tilesets"))
     {
-        UpdateAtlass((uint)value.mVal->At("firstgid")->ToNumber(), 
-            folder + value.mVal->At("source")->ToString(), atlass);
+        auto atlasURL = folder + value.mVal->At("source")->ToString();
+        auto baseIndex = (uint)value.mVal->At("firstgid")->ToNumber();
+        auto atlasJson = mmc::Json::FromFile(atlasURL);
+        ASSERT_LOG(atlasJson != nullptr, atlasURL.c_str());
+
+        Atlas atlas;
+        auto image = tools::GetFileFolder(atlasURL) + atlasJson->At("image")->ToString();
+        atlas.mTexture = Global::Ref().mRawSys->Get<GLTexture>(image);
+        atlas.mOffset = (uint)atlasJson->At("margin")->ToNumber();
+        atlas.mSpace = (uint)atlasJson->At("spacing")->ToNumber();
+        atlas.mCol =   (uint)atlasJson->At("columns")->ToNumber();
+        atlas.mRow =   (uint)atlasJson->At("tilecount")->ToNumber() / atlas.mCol;
+        atlas.mBase = baseIndex;
+        atlass.push_back(atlas);
     }
 
     std::vector<uint>           indexs;
@@ -126,37 +131,72 @@ void CompTilemap::UpdateTilemap()
     auto tileH = (uint)tmx->At("tileheight")->ToNumber();
     for (auto & layer : tmx->At("layers"))
     {
-        UpdateVertexs(mapW, mapH, tileW, tileH, layer.mVal->At("data"), _atlass, indexs, points);
+        UpdateVertexs(mapW, mapH, tileW, tileH, layer.mVal->At("data"), atlass, indexs, points);
     }
 
+    for (auto & atlas : atlass)
+    {
+        _textures.push_back(atlas.mTexture);
+    }
+    _size.x = (float)mapW * (float)tileW;
+    _size.y = (float)mapH * (float)tileH;
     _mesh->Update(points, indexs);
 }
 
-void CompTilemap::UpdateAtlass(uint base, const std::string & url, std::vector<Atlas> & atlass)
-{
-    auto json = mmc::Json::FromFile(url);
-    ASSERT_LOG(json != nullptr, url.c_str());
-
-    Atlas atlas;
-    auto image = tools::GetFileFolder(url) + json->At("image")->ToString();
-    atlas.mTexture = Global::Ref().mRawSys->Get<GLTexture>(image);
-    atlas.mOffset = (uint)json->At("margin")->ToNumber();
-    atlas.mSpace = (uint)json->At("spacing")->ToNumber();
-    atlas.mIndexBase = base;
-    atlass.push_back(atlas);
-}
-
-void CompTilemap::UpdateVertexs(uint mapW, uint mapH,
-                                uint tileW, uint tileH, 
-                                const mmc::Json::Pointer & data, 
-                                const std::vector<Atlas> & atlass, 
-                                std::vector<uint>           & indexs,
-                                std::vector<GLMesh::Vertex> & points)
+void CompTilemap::UpdateVertexs(
+    uint mapW,  uint mapH, 
+    uint tileW, uint tileH, 
+    const mmc::Json::Pointer & data, 
+    const std::vector<Atlas> & atlass, 
+    std::vector<uint>        & indexs, 
+    std::vector<GLMesh::Vertex> & points)
 {
     for (auto i = 0; i != data->GetCount(); ++i)
     {
-        auto x = i % mapW;
-        auto y = i / mapH;
+        if (auto index = (uint)data->At(i)->ToNumber(); index!= 0)
+        {
+            uint atlasIndex = 0;
+            auto uv = GetTileQuad(index, tileW, tileH, atlass, atlasIndex);
+
+            glm::vec4 quad;
+            quad.x =                      (float)(i % mapW * tileW);
+            quad.y = (mapH - 1) * tileH - (float)(i / mapW * tileH);
+            quad.z = quad.x + tileW;
+            quad.w = quad.y + tileH;
+
+            points.emplace_back(glm::vec2(quad.x, quad.y), glm::vec4((float)atlasIndex), glm::vec2(uv.x, uv.y));
+            points.emplace_back(glm::vec2(quad.z, quad.y), glm::vec4((float)atlasIndex), glm::vec2(uv.z, uv.y));
+            points.emplace_back(glm::vec2(quad.z, quad.w), glm::vec4((float)atlasIndex), glm::vec2(uv.z, uv.w));
+            points.emplace_back(glm::vec2(quad.x, quad.y), glm::vec4((float)atlasIndex), glm::vec2(uv.x, uv.y));
+            points.emplace_back(glm::vec2(quad.z, quad.w), glm::vec4((float)atlasIndex), glm::vec2(uv.z, uv.w));
+            points.emplace_back(glm::vec2(quad.x, quad.w), glm::vec4((float)atlasIndex), glm::vec2(uv.x, uv.w));
+            indexs.emplace_back(indexs.size());
+            indexs.emplace_back(indexs.size());
+            indexs.emplace_back(indexs.size());
+            indexs.emplace_back(indexs.size());
+            indexs.emplace_back(indexs.size());
+            indexs.emplace_back(indexs.size());
+        }
     }
+}
+
+glm::vec4 CompTilemap::GetTileQuad(
+    uint idx, uint tileW, uint tileH, 
+    const std::vector<Atlas> & atlass, 
+    uint & atlasIndex)
+{
+    for (auto i = 0; i != atlass.size(); atlasIndex = i++)
+    {
+        if (idx < atlass.at(i).mBase) { break; }
+    }
+    glm::vec4 quad;
+    auto & atlas = atlass.at(atlasIndex);
+    auto x =                  (idx - atlas.mBase) % atlas.mCol;
+    auto y = atlas.mRow - 1 - (idx - atlas.mBase) / atlas.mCol;
+    quad.x = (float)(x * tileW + x * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetW();
+    quad.y = (float)(y * tileH + y * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetH();
+    quad.z = quad.x + (float)tileW / atlas.mTexture->GetW();
+    quad.w = quad.y + (float)tileH / atlas.mTexture->GetH();
+    return quad;
 }
 

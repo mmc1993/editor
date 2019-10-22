@@ -34,11 +34,11 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"atlas\/atlas0.json"
+         "source":"atlas/atlas0.json"
         }, 
         {
          "firstgid":49,
-         "source":"atlas\/atlas1.json"
+         "source":"atlas/atlas1.json"
         }],
  "tilewidth":32,
  "type":"map",
