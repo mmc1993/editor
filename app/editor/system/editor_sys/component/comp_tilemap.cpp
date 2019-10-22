@@ -63,8 +63,15 @@ void CompTilemap::DecodeBinary(std::ifstream & is)
 bool CompTilemap::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "URL") _update |= kTilemap;
-    if (title == "Anchor") _update |= kTrackPoint;
+    if (title == "URL")
+    {
+        _update |= kTilemap;
+        _update |= kTrackPoint;
+    }
+    if (title == "Size")
+    {
+        return false;
+    }
     return true;
 }
 
