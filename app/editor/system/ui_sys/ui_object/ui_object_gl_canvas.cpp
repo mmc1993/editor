@@ -392,7 +392,15 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
     {
-        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.2f * param.mWheel), 0.2f, 3.0f);
+		//	TODO_
+        auto oldS = state->mOperation.mScale;
+        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.1f * param.mWheel), 0.1f, 5.0f);
+        auto newS = state->mOperation.mScale;
+
+        //auto target = ProjectWorld(param.mMouse);
+        auto target = glm::vec2(0, 100);
+        state->mOperation.mCoord.x -= target.x * (newS - oldS);
+        state->mOperation.mCoord.y += target.y * (newS - oldS);
     }
     //  单击左键选择模式
     if (param.mAct == 3 && param.mKey == 0 && !HasOpMode(UIStateGLCanvas::Operation::kSelect))

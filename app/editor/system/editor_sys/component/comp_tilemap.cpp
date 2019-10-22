@@ -117,8 +117,8 @@ void CompTilemap::UpdateTilemap()
         atlas.mTexture = Global::Ref().mRawSys->Get<GLTexture>(image);
         atlas.mOffset = (uint)atlasJson->At("margin")->ToNumber();
         atlas.mSpace = (uint)atlasJson->At("spacing")->ToNumber();
-        atlas.mCol =   (uint)atlasJson->At("columns")->ToNumber();
-        atlas.mRow =   (uint)atlasJson->At("tilecount")->ToNumber() / atlas.mCol;
+        atlas.mCol = (uint)atlasJson->At("columns")->ToNumber();
+        atlas.mRow = (uint)atlasJson->At("tilecount")->ToNumber() / atlas.mCol;
         atlas.mBase = baseIndex;
         atlass.push_back(atlas);
     }
