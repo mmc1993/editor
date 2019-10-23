@@ -121,21 +121,21 @@ void CompTilemap::UpdateTilemap()
 
         Atlas atlas;
         auto image = tools::GetFileFolder(atlasURL) + atlasJson->At("image")->ToString();
-        atlas.mTexture = Global::Ref().mRawSys->Get<GLTexture>(image);
-        atlas.mOffset = (uint)atlasJson->At("margin")->ToNumber();
-        atlas.mSpace = (uint)atlasJson->At("spacing")->ToNumber();
-        atlas.mCol = (uint)atlasJson->At("columns")->ToNumber();
-        atlas.mRow = (uint)atlasJson->At("tilecount")->ToNumber() / atlas.mCol;
+        atlas.mTexture  = Global::Ref().mRawSys->Get<GLTexture>(image);
+        atlas.mOffset   = (uint)atlasJson->At(  "margin"      )->ToNumber();
+        atlas.mSpace    = (uint)atlasJson->At(  "spacing"     )->ToNumber();
+        atlas.mCol      = (uint)atlasJson->At(  "columns"     )->ToNumber();
+        atlas.mRow      = (uint)atlasJson->At(  "tilecount"   )->ToNumber() / atlas.mCol;
         atlas.mBase = baseIndex;
         atlass.push_back(atlas);
     }
 
     std::vector<uint>           indexs;
     std::vector<GLMesh::Vertex> points;
-    auto mapW = (uint)tmx->At("width")->ToNumber();
-    auto mapH = (uint)tmx->At("height")->ToNumber();
-    auto tileW = (uint)tmx->At("tilewidth")->ToNumber();
-    auto tileH = (uint)tmx->At("tileheight")->ToNumber();
+    auto mapW   = (uint)tmx->At(    "width"         )->ToNumber();
+    auto mapH   = (uint)tmx->At(    "height"        )->ToNumber();
+    auto tileW  = (uint)tmx->At(    "tilewidth"     )->ToNumber();
+    auto tileH  = (uint)tmx->At(    "tileheight"    )->ToNumber();
     for (auto & layer : tmx->At("layers"))
     {
         UpdateVertexs(mapW, mapH, tileW, tileH, layer.mVal->At("data"), atlass, indexs, points);
