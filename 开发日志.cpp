@@ -41,10 +41,10 @@ ok  //  parser_tool.h 放进 Serializer
 ok  //  UIEventEnum 剥离
 
 
-需要序列化的对象:
-    Project
-    GLObject
-    Component
+// 需要序列化的对象:
+//     Project
+//     GLObject
+//     Component
 
 
 拖放参数:
@@ -61,33 +61,33 @@ ok  //  UIEventEnum 剥离
         glm::vec2 mEndWorld;
     }
 
-使用智能指针
+// 使用智能指针
 
-为GLObject生成唯一ID
-EditorSys只操作GLObject
+// 为GLObject生成唯一ID
+// EditorSys只操作GLObject
 
 //  图集/图片合并
 //  资源缓存改用WeakPtr
 
-//  GLCanvas
-//      双击 -> 进入编辑
-//      Esc -> 退出编辑
+ GLCanvas
+     双击 -> 进入编辑
+     Esc -> 退出编辑
 
-//  编辑模式:
-//      绘制边框, 显示控制点
-//      左键双击边框 -> 新增控制点
-//      左键单击控制点 -> 选中控制点
-//      左键按住控制点 -> 拖动控制点
-//      右键按住控制点 -> 新增控制点
-//      Delete        -> 删除控制点
+ 编辑模式:
+     绘制边框, 显示控制点
+     左键双击边框 -> 新增控制点
+     左键单击控制点 -> 选中控制点
+     左键按住控制点 -> 拖动控制点
+     右键按住控制点 -> 新增控制点
+     Delete        -> 删除控制点
 
-//  拖动模式:
-//      绘制边框
-//      左键按住边框内 -> 拖动对象
-//      Delete        -> 删除对象
+ 拖动模式:
+     绘制边框
+     左键按住边框内 -> 拖动对象
+     Delete        -> 删除对象
 
-精灵
-瓦片地图
+// 精灵
+// 瓦片地图
 光照
 阴影
 资源管理器
