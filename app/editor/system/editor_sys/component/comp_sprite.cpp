@@ -123,15 +123,21 @@ void CompSprite::Update()
 
 void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    AddState(StateEnum::kUpdate, true);
-    switch (index)
-    {
-    case 0: break;
-    case 1: break;
-    case 2: break;
-    case 3: break;
-    }
-    _update |= kTrackPoint;
+    //auto point0 = _trackPoints.at(0);
+    //auto point1 = _trackPoints.at(1);
+    //auto point2 = _trackPoints.at(2);
+    //auto point3 = _trackPoints.at(3);
+    //_trackPoints.at(index) = point;
+
+    //AddState(StateEnum::kUpdate, true);
+    //switch (index)
+    //{
+    //case 0: break;
+    //case 1: break;
+    //case 2: break;
+    //case 3: break;
+    //}
+    //_update |= kTrackPoint;
 }
 
 void CompSprite::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
