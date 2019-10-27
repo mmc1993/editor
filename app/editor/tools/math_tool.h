@@ -6,6 +6,12 @@ namespace glm {
     {
         return a + v * (b - a);
     }
+
+    template <class T>
+    float length_sqrt(const T & vec)
+    {
+        return glm::dot(vec, vec);
+    }
 }
 
 namespace tools {

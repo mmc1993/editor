@@ -241,13 +241,13 @@ void UIObjectGLCanvas::OpEditObject()
 
 void UIObjectGLCanvas::OpEditObject(const glm::vec2 & screen)
 { 
-    if (const auto[object, comp, idx] = FromPointSelectTrackPoint(ProjectWorld(screen)); object != nullptr)
-    {
-        auto state = GetState<UIStateGLCanvas>();
-        state->mOperation.mEditObject       = object;
-        state->mOperation.mEditComponent    = comp;
-        state->mOperation.mEditTrackPoint   = idx;
-    }
+    //if (const auto[object, comp, idx] = FromPointSelectTrackPoint(ProjectWorld(screen)); object != nullptr)
+    //{
+    //    auto state = GetState<UIStateGLCanvas>();
+    //    state->mOperation.mEditObject       = object;
+    //    state->mOperation.mEditComponent    = comp;
+    //    state->mOperation.mEditTrackPoint   = idx;
+    //}
 }
 
 void UIObjectGLCanvas::OpEditObject(const SharePtr<GLObject> & object)
@@ -485,13 +485,34 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  编辑模式
     if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
     {
+        ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
         //  左键双击新增顶点
-
-
+        if (param.mAct == 4 && param.mKey == 0)
+        {
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            if (num == 0 || num == 2)
+            {
+                comp->InsertTrackPoint(index, coord);
+            }
+        }
         //  左键单击选中顶点
-
+        if (param.mAct == 3 && param.mKey == 0)
+        {
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            state->mOperation.mEditTrackPoint = index;
+            state->mOperation.mEditComponent = comp;
+        }
         //  左键按下拖动顶点
-
+        if (param.mAct == 1 && param.mKey == 0)
+        {
+            auto & comp = state->mOperation.mEditComponent;
+            auto index = state->mOperation.mEditTrackPoint;
+            ASSERT_LOG(comp != nullptr, "");
+            ASSERT_LOG(index < comp->GetTrackPoints().size(), "");
+            const auto & coord = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mDelta));
+            const auto & point = comp->GetTrackPoints().at(index);
+            comp->ModifyTrackPoint(index, point + coord);
+        }
     }
     return true;
 }
@@ -668,30 +689,66 @@ SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObje
     return nullptr;
 }
 
-std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> UIObjectGLCanvas::FromPointSelectTrackPoint(const glm::vec2 & world)
+std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoordSelectTrackPoint(const glm::vec2 & world)
 {
+    //  返回值:
+    //      没有击中追踪点 -1
+    //      击中追踪点中心  1
+    //      击中追踪点之间  2
+    //      击中追踪点附近  0
     auto state = GetState<UIStateGLCanvas>();
     ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
 
-    auto coord = state->mOperation.mEditObject->WorldToLocal(world);
-    const auto pred = [&coord] (const glm::vec2 & point)
+    const auto & coord = state->mOperation.mEditObject->WorldToLocal(world);
+    const auto & comps = state->mOperation.mEditObject->GetComponents();
+    for (auto it = comps.rbegin(); it != comps.rend(); ++it)
     {
-        return tools::IsCantains(point, (float)VAL_TrackPointSize, coord);
-    };
-    
-    auto & components = state->mOperation.mEditObject->GetComponents();
-    for (auto it = components.rbegin(); it != components.rend(); ++it)
-    {
-        auto pointIter = std::find_if(
-            (*it)->GetTrackPoints().rbegin(),
-            (*it)->GetTrackPoints().rend(), pred);
-        if ((*it)->GetTrackPoints().rend() != pointIter)
+        for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
         {
-            return std::make_tuple(
-                state->mOperation.mEditObject, *it, std::distance(
-                (*it)->GetTrackPoints().begin(), pointIter.base()));
+            auto j = (i + 1) % (*it)->GetTrackPoints().size();
+            const auto & a = (*it)->GetTrackPoints().at(i);
+            const auto & b = (*it)->GetTrackPoints().at(j);
+            if (tools::IsCantains(a, (float)VAL_TrackPointSize, coord))
+            {
+                return std::make_tuple(1, *it, coord, (uint)i);
+            }
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(a - coord))
+            {
+                return std::make_tuple(0, *it, coord, (uint)i);
+            }
+            if (VAL_TrackPointLine * VAL_TrackPointLine >= glm::length_sqrt(tools::PointToSegment(coord, a, b)))
+            {
+                return std::make_tuple(2, *it, coord, (uint)j);
+            }
         }
     }
-    return std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint>();
+    return std::make_tuple(-1, nullptr, glm::vec2(), (uint)-1);
 }
+
+//std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> UIObjectGLCanvas::FromPointSelectTrackPoint(const glm::vec2 & world)
+//{
+//    auto state = GetState<UIStateGLCanvas>();
+//    ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
+//
+//    auto coord = state->mOperation.mEditObject->WorldToLocal(world);
+//    const auto pred = [&coord] (const glm::vec2 & point)
+//    {
+//        return tools::IsCantains(point, (float)VAL_TrackPointSize, coord);
+//    };
+//    
+//    auto & components = state->mOperation.mEditObject->GetComponents();
+//    for (auto it = components.rbegin(); it != components.rend(); ++it)
+//    {
+//        auto pointIter = std::find_if(
+//            (*it)->GetTrackPoints().rbegin(),
+//            (*it)->GetTrackPoints().rend(), pred);
+//        if ((*it)->GetTrackPoints().rend() != pointIter)
+//        {
+//            return std::make_tuple(
+//                state->mOperation.mEditObject, *it, std::distance(
+//                (*it)->GetTrackPoints().begin(), pointIter.base()));
+//        }
+//    }
+//    return std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint>();
+//}
 

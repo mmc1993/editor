@@ -1,4 +1,5 @@
 #include "comp_sprite.h"
+#include "comp_transform.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
 #include "../../ui_sys/ui_object/ui_object.h"
@@ -11,10 +12,13 @@ CompSprite::CompSprite()
     _trackPoints.resize(4);
 
     _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | GLMesh::Vertex::kUV);
+    _mesh->Init({}, {}, GLMesh::Vertex::kV | 
+                        GLMesh::Vertex::kUV);
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
+
+    AddState(StateEnum::kModifyTrackPoint, true);
 }
 
 void CompSprite::OnAdd()
@@ -33,9 +37,6 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mCallback   = std::bind(&CompSprite::OnRenderCallback, this, 
-                                        std::placeholders::_1, 
-                                        std::placeholders::_2);
         command.mTextures.push_back(std::make_pair("uniform_texture", _texture));
         canvas->Post(command);
     }
@@ -99,13 +100,13 @@ void CompSprite::Update()
 
         if (_update & kTrackPoint)
         {
-            _trackPoints.at(0).x = -_size.x *      _anchor.x;
-            _trackPoints.at(0).y = -_size.y *      _anchor.y;
+            _trackPoints.at(0).x = -_size.x *     _anchor.x;
+            _trackPoints.at(0).y = -_size.y *     _anchor.y;
             _trackPoints.at(1).x = _size.x * (1 - _anchor.x);
-            _trackPoints.at(1).y = -_size.y *      _anchor.y;
+            _trackPoints.at(1).y = -_size.y *     _anchor.y;
             _trackPoints.at(2).x = _size.x * (1 - _anchor.x);
             _trackPoints.at(2).y = _size.y * (1 - _anchor.y);
-            _trackPoints.at(3).x = -_size.x *      _anchor.x;
+            _trackPoints.at(3).x = -_size.x *     _anchor.x;
             _trackPoints.at(3).y = _size.y * (1 - _anchor.y);
 
             auto & offset=_texture->GetOffset();
@@ -120,15 +121,17 @@ void CompSprite::Update()
     }
 }
 
-void CompSprite::OnRenderCallback(const interface::RenderCommand & command, uint * pos)
-{
-    auto & forward = (const interface::FowardCommand &)(command);
-    forward.mProgram->BindUniformVector("uniform_size",   _size);
-    forward.mProgram->BindUniformVector("uniform_anchor", _anchor);
-}
-
 void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    AddState(StateEnum::kUpdate, true);
+    switch (index)
+    {
+    case 0: break;
+    case 1: break;
+    case 2: break;
+    case 3: break;
+    }
+    _update |= kTrackPoint;
 }
 
 void CompSprite::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)

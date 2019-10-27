@@ -200,5 +200,11 @@ private:
                                const glm::vec2 & local3, 
                                std::vector<SharePtr<GLObject>> & output);
     SharePtr<GLObject> FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local);
-    std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> FromPointSelectTrackPoint(const glm::vec2 & world);
+    //std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> FromPointSelectTrackPoint(const glm::vec2 & world);
+
+    //uint FromPointSelectTrackPoint(const glm::vec2 & world, 
+    //                               glm::vec2 & point, 
+    //                               uint & aIndex, uint & bIndex,
+    //                               SharePtr<Component> & comp);
+    std::tuple<iint, SharePtr<Component>, glm::vec2, uint> FromCoordSelectTrackPoint(const glm::vec2 & world);
 };
