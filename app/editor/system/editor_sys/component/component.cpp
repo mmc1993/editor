@@ -34,6 +34,8 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
             result.push_back(std::create_ptr<UIPropertyInt>(*(int *)property.mMember, property.mName, modifyfunc)); break;
         case interface::Serializer::StringValueTypeEnum::kBool:
             result.push_back(std::create_ptr<UIPropertyBool>(*(bool *)property.mMember, property.mName, modifyfunc)); break;
+        case interface::Serializer::StringValueTypeEnum::kFlag:
+            result.push_back(std::create_ptr<UIPropertyFlag>(*(uint *)property.mMember, property.mName, modifyfunc, std::any_cast<uint>(property.mExtend))); break;
         case interface::Serializer::StringValueTypeEnum::kFloat:
             result.push_back(std::create_ptr<UIPropertyFloat>(*(float *)property.mMember, property.mName, modifyfunc)); break;
         case interface::Serializer::StringValueTypeEnum::kString:
@@ -56,5 +58,12 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
 const std::vector<glm::vec2> & Component::GetTrackPoints()
 {
     return _trackPoints;
+}
+
+std::vector<Component::Property> Component::CollectProperty()
+{
+    return {
+        {interface::Serializer::StringValueTypeEnum::kFlag, "Active", &_state, (uint)StateEnum::kActive},
+    };
 }
 

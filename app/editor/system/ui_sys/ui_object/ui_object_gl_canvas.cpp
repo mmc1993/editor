@@ -557,22 +557,27 @@ void UIObjectGLCanvas::FromRectSelectObjects(
     { 
         auto it = std::find_if(com->GetTrackPoints().begin(), com->GetTrackPoints().end(),
             [&] (const auto & point) { return tools::IsContainsConvex(points, point); });
-        return it != com->GetTrackPoints().end();
+        return com->HasState(Component::kActive)
+            && it != com->GetTrackPoints().end();
     };
 
     for (auto & children : object->GetObjects())
     {
-        points.at(0) = children->ParentToLocal(pt0);
-        points.at(1) = children->ParentToLocal(pt1);
-        points.at(2) = children->ParentToLocal(pt2);
-        points.at(3) = children->ParentToLocal(pt3);
-        auto ret = std::find_if(children->GetComponents().begin(),
-                                children->GetComponents().end(), pred);
-        if (ret != children->GetComponents().end())
+        if (children->HasState(GLObject::StateEnum::kActive))
         {
-            output.push_back(children);
+            points.at(0) = children->ParentToLocal(pt0);
+            points.at(1) = children->ParentToLocal(pt1);
+            points.at(2) = children->ParentToLocal(pt2);
+            points.at(3) = children->ParentToLocal(pt3);
+            auto ret = std::find_if(
+                children->GetComponents().begin(),
+                children->GetComponents().end(), pred);
+            if (ret != children->GetComponents().end())
+            {
+                output.push_back(children);
+            }
+            FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
         }
-        FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
     }
 }
 
@@ -581,22 +586,23 @@ SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObje
     auto thit = hit;
     auto pred = [&thit] (const auto & com)
     { 
-        return tools::IsContains(com->GetTrackPoints(), thit); 
+        return com->HasState(Component::StateEnum::kActive)
+            && tools::IsContains(com->GetTrackPoints(), thit); 
     };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
     {
-        thit = (*it)->ParentToLocal(hit);
+        if (object->HasState(GLObject::StateEnum::kActive))
+        {
+            thit = (*it)->ParentToLocal(hit);
 
-        if (auto ret = FromPointSelectObject(*it, thit))
-        {
-            return ret;
-        }
-        auto ret = std::find_if(
-            (*it)->GetComponents().begin(), 
-            (*it)->GetComponents().end(), pred);
-        if (ret != (*it)->GetComponents().end())
-        {
-            return *it;
+            if (auto ret = FromPointSelectObject(*it, thit))
+            {
+                return ret;
+            }
+            auto ret = std::find_if(
+                (*it)->GetComponents().begin(), 
+                (*it)->GetComponents().end(), pred);
+            if (ret != (*it)->GetComponents().end()) { return *it; }
         }
     }
     return nullptr;

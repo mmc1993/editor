@@ -77,11 +77,11 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
-    return {
-        { interface::Serializer::StringValueTypeEnum::kAsset,   "URL",    &_url    },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor }
-    };
+    auto props = Component::CollectProperty();
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "URL", &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size", &_size);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor);
+    return std::move(props);
 }
 
 void CompSprite::Update()

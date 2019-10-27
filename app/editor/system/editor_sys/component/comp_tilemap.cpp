@@ -77,10 +77,10 @@ bool CompTilemap::OnModifyProperty(const std::any & oldValue, const std::any & n
 
 std::vector<Component::Property> CompTilemap::CollectProperty()
 {
-    return {
-        { interface::Serializer::StringValueTypeEnum::kAsset,   "Url",    &_url    },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
-    };
+    auto props = Component::CollectProperty();
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "Url", &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size", &_size);
+    return std::move(props);
 }
 
 void CompTilemap::Update()

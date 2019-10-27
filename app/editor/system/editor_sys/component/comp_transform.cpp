@@ -142,11 +142,10 @@ const std::string & CompTransform::GetName()
 
 std::vector<Component::Property> CompTransform::CollectProperty()
 {
-    return {
-        {   interface::Serializer::StringValueTypeEnum::kVector2,  "Poosition", &_position  },
-        {   interface::Serializer::StringValueTypeEnum::kVector2,  "Scale",     &_scale     },
-        {   interface::Serializer::StringValueTypeEnum::kFloat,    "Angle",     &_angle     }
-    };
+    auto props = Component::CollectProperty();
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Poosition", &_position);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat  , "Angle"    , &_angle);
+    return std::move(props);
 }
 
 bool CompTransform::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)

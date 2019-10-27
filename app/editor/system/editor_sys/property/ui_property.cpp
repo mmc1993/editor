@@ -29,6 +29,21 @@ bool UIPropertyBool::OnEnter()
     return true;
 }
 
+bool UIPropertyFlag::OnEnter()
+{
+    UIPropertyObject::OnEnter();
+
+    auto flag = (GetNewValue() & _mask) == _mask;
+    if (ImGui::Checkbox(ImID(this).c_str(), &flag))
+    {
+        if (flag) { GetNewValue() |=  _mask; }
+        else      { GetNewValue() &= ~_mask; }
+        Modify();
+    }
+    ImGui::Columns(1);
+    return true;
+}
+
 bool UIPropertyFloat::OnEnter()
 {
     UIPropertyObject::OnEnter();
