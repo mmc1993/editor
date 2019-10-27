@@ -151,7 +151,13 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
-    void OpDragSelects(const glm::vec2 & beg, const glm::vec2 & end);
+    void OpEditObject(const glm::vec2 & screen);
+    void OpEditObject(const glm::vec2 & screen,
+                      const SharePtr<GLObject> & object,
+                      const SharePtr<Component> & comp = nullptr,
+                      const uint trackPointIndex = std::numeric_limits<uint>::max());
+    void OpDragSelects(const glm::vec2 & worldBeg, 
+                      const glm::vec2 & worldEnd);
     void OpSelected(const SharePtr<GLObject> & object, bool selected);
     void OpSelectedClear();
 
@@ -183,16 +189,15 @@ private:
     bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op);
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 
-    const SharePtr<GLObject> & GetRootObject();
-    bool FromRectSelectObjects(
-        const glm::vec2 & min, 
-        const glm::vec2 & max);
-    void FromRectSelectObjects(
-        const SharePtr<GLObject> & object, 
-        const glm::vec2 & pt0, 
-        const glm::vec2 & pt1, 
-        const glm::vec2 & pt2, 
-        const glm::vec2 & pt3, 
-        std::vector<SharePtr<GLObject>> & output);
-    SharePtr<GLObject> FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit);
+    const SharePtr<GLObject> & GetProjectRoot();
+    bool FromRectSelectObjects(const glm::vec2 & worldMin, 
+                               const glm::vec2 & worldMax);
+    void FromRectSelectObjects(const SharePtr<GLObject> & object, 
+                               const glm::vec2 & local0, 
+                               const glm::vec2 & local1, 
+                               const glm::vec2 & local2, 
+                               const glm::vec2 & local3, 
+                               std::vector<SharePtr<GLObject>> & output);
+    SharePtr<GLObject> FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local);
+    std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> FromPointSelectTrackPoint(const glm::vec2 & world);
 };

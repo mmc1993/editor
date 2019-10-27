@@ -132,9 +132,9 @@ public:
         };
 
         //  激活的对象
-        SharePtr<GLObject>  mActiveObject;
-        SharePtr<Component> mActiveComponent;
-        size_t              mTrackPointIndex;
+        SharePtr<GLObject>  mEditObject;
+        SharePtr<Component> mEditComponent;
+        size_t              mEditTrackPoint;
 
         glm::vec4                       mSelectRect;
         std::vector<SharePtr<GLObject>> mSelectObjects;

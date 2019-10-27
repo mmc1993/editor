@@ -234,7 +234,27 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
+void UIObjectGLCanvas::OpEditObject(const glm::vec2 & screen)
+{ 
+    auto coord = ProjectWorld(screen);
+    //auto object = FromPointSelectTrackPoint(
+    //    GetProjectRoot(), 
+    //    GetProjectRoot()->ParentToLocal(point));
+    //if (object != nullptr) { OpEditObject(coord, object); }
+}
+
+void UIObjectGLCanvas::OpEditObject(const glm::vec2 & screen, const SharePtr<GLObject>& object, const SharePtr<Component>& comp, const uint trackPointIndex)
+{ 
+    ASSERT_LOG(object != nullptr, "");
+    ASSERT_LOG(comp == nullptr || trackPointIndex != (uint)~0, "");
+    ASSERT_LOG(trackPointIndex == (uint)~0 || comp != nullptr, "");
+
+    AddOpMode(UIStateGLCanvas::Operation::kEdit, true);
+    auto state = GetState<UIStateGLCanvas>();
+    state->mOperation.mEditObject = object;
+}
+
+void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & worldBeg, const glm::vec2 & worldEnd)
 { 
     static const auto IsSkip = [] (
         const SharePtr<GLObject>              & object, 
@@ -255,8 +275,8 @@ void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & beg, const glm::vec2 & en
     {
         if (!IsSkip(object, state->mOperation.mSelectObjects))
         {
-            auto a = object->GetParent()->WorldToLocal(beg);
-            auto b = object->GetParent()->WorldToLocal(end);
+            auto a = object->GetParent()->WorldToLocal(worldBeg);
+            auto b = object->GetParent()->WorldToLocal(worldEnd);
             auto ab = b - a;
             object->GetTransform()->AddPosition(ab.x, ab.y);
         }
@@ -288,9 +308,10 @@ void UIObjectGLCanvas::OpSelectedClear()
 {
     auto state = GetState<UIStateGLCanvas>();
     state->mOperation.mSelectObjects.clear();
-    state->mOperation.mActiveObject = nullptr;
-    state->mOperation.mActiveComponent = nullptr;
+
     state->mOperation.mOpMode = 0;
+    state->mOperation.mEditObject = nullptr;
+    state->mOperation.mEditComponent = nullptr;
 }
 
 interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
@@ -488,20 +509,18 @@ void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool
     else     state->mOperation.mOpMode &= ~op;
 }
 
-const SharePtr<GLObject>& UIObjectGLCanvas::GetRootObject()
+const SharePtr<GLObject>& UIObjectGLCanvas::GetProjectRoot()
 {
     ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
     return Global::Ref().mEditorSys->GetProject()->GetRoot();
 }
 
-bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
+bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & worldMin, const glm::vec2 & worldMax)
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (min == max)
+    if (worldMin == worldMax)
     {
-        state->mOperation.mActiveObject = nullptr;
-
-        if (auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min)))
+        if (auto hit = FromCoordSelectObject(GetProjectRoot(), GetProjectRoot()->ParentToLocal(worldMin)))
         {
             auto ret = std::find(state->mOperation.mSelectObjects.begin(), 
                                  state->mOperation.mSelectObjects.end(), hit);
@@ -509,7 +528,7 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             {
                 Global::Ref().mEditorSys->OptSelectObject(hit, true);
             }
-            state->mOperation.mActiveObject = hit;
+            return true;    //  命中了一个Object
         }
         else
         {
@@ -519,11 +538,11 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
     else
     {
         std::vector<SharePtr<GLObject>> output;
-        auto pt0 = GetRootObject()->ParentToLocal(min);
-        auto pt1 = GetRootObject()->ParentToLocal(glm::vec2(max.x, min.y));
-        auto pt2 = GetRootObject()->ParentToLocal(max);
-        auto pt3 = GetRootObject()->ParentToLocal(glm::vec2(min.x, max.y));
-        FromRectSelectObjects(GetRootObject(), pt0, pt1, pt2, pt3, output);
+        auto pt0 = GetProjectRoot()->ParentToLocal(worldMin);
+        auto pt1 = GetProjectRoot()->ParentToLocal(glm::vec2(worldMax.x, worldMin.y));
+        auto pt2 = GetProjectRoot()->ParentToLocal(worldMax);
+        auto pt3 = GetProjectRoot()->ParentToLocal(glm::vec2(worldMin.x, worldMax.y));
+        FromRectSelectObjects(GetProjectRoot(), pt0, pt1, pt2, pt3, output);
         auto noexists = [&output] (const auto & object) 
         {
             return output.end() == std::find(output.begin(), output.end(), object);
@@ -541,15 +560,15 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             Global::Ref().mEditorSys->OptSelectObject(object, true, true);
         }
     }
-    return state->mOperation.mActiveObject != nullptr;
+    return false;
 }
 
 void UIObjectGLCanvas::FromRectSelectObjects(
     const SharePtr<GLObject> & object, 
-    const glm::vec2 & pt0, 
-    const glm::vec2 & pt1, 
-    const glm::vec2 & pt2, 
-    const glm::vec2 & pt3, 
+    const glm::vec2 & local0, 
+    const glm::vec2 & local1, 
+    const glm::vec2 & local2, 
+    const glm::vec2 & local3, 
     std::vector<SharePtr<GLObject>> & output)
 {
     std::vector<glm::vec2> points(4);
@@ -565,10 +584,10 @@ void UIObjectGLCanvas::FromRectSelectObjects(
     {
         if (children->HasState(GLObject::StateEnum::kActive))
         {
-            points.at(0) = children->ParentToLocal(pt0);
-            points.at(1) = children->ParentToLocal(pt1);
-            points.at(2) = children->ParentToLocal(pt2);
-            points.at(3) = children->ParentToLocal(pt3);
+            points.at(0) = children->ParentToLocal(local0);
+            points.at(1) = children->ParentToLocal(local1);
+            points.at(2) = children->ParentToLocal(local2);
+            points.at(3) = children->ParentToLocal(local3);
             auto ret = std::find_if(
                 children->GetComponents().begin(),
                 children->GetComponents().end(), pred);
@@ -581,9 +600,9 @@ void UIObjectGLCanvas::FromRectSelectObjects(
     }
 }
 
-SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit)
+SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local)
 {
-    auto thit = hit;
+    auto thit = local;
     auto pred = [&thit] (const auto & com)
     { 
         return com->HasState(Component::StateEnum::kActive) && 
@@ -593,9 +612,9 @@ SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObje
     {
         if (object->HasState(GLObject::StateEnum::kActive))
         {
-            thit = (*it)->ParentToLocal(hit);
+            thit = (*it)->ParentToLocal(local);
 
-            if (auto ret = FromPointSelectObject(*it, thit))
+            if (auto ret = FromCoordSelectObject(*it, thit))
             {
                 return ret;
             }
@@ -607,3 +626,4 @@ SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObje
     }
     return nullptr;
 }
+
