@@ -422,14 +422,12 @@ bool UIObjectGLCanvas::OnEventMenu(const UIEvent::Menu & param)
 
 bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
 {
-    bool ready = false;
     auto state = GetState<UIStateGLCanvas>();
     //  按下中间拖动舞台
     if (param.mAct == 1 && param.mKey == 2)
     {
         state->mOperation.mCoord.x -= param.mDelta.x;
         state->mOperation.mCoord.y += param.mDelta.y;
-        ready = true;
     }
     //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
@@ -441,7 +439,6 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         auto target = ProjectWorld(param.mMouse);
         state->mOperation.mCoord.x += (origin.x - target.x) * newS;
         state->mOperation.mCoord.y += (origin.y - target.y) * newS;
-        ready = true;
     }
     //  单击左键选择模式
     if (param.mAct == 3 && param.mKey == 0 && !HasOpMode(UIStateGLCanvas::Operation::kSelect))
@@ -451,26 +448,22 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
         AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
-        ready = true;
     }
     //  按下左键选择模式
     if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         state->mOperation.mSelectRect.z = param.mMouse.x;
         state->mOperation.mSelectRect.w = param.mMouse.y;
-        ready = true;
     }
     //  抬起左键结束拣选
     if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
-        ready = true;
     }
     //  抬起左键结束拖拽
     if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kDrag))
     {
         AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
-        ready = true;
     }
     //  拖动对象
     if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 0)
@@ -478,9 +471,8 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         auto prev = ProjectWorld(param.mMouse - param.mDelta);
         auto curr = ProjectWorld(param.mMouse);
         OpDragSelects(prev, curr);
-        ready = true;
     }
-    return ready;
+    return true;
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatView()
