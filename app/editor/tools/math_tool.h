@@ -17,6 +17,13 @@ namespace tools {
             && rect.x + rect.z >= point.x
             && rect.y + rect.w >= point.y;
     }
+    
+    //  圆是否包含点
+    inline bool IsCantains(const glm::vec2 & center, const float radius, const glm::vec2 & point)
+    {
+        auto diff = point - center;
+        return glm::dot(diff, diff) <= radius * radius;
+    }
 
     //  是否在边上
     inline int IsOnRect(const glm::vec4 & rect, const glm::vec2 & point, float border = 0)

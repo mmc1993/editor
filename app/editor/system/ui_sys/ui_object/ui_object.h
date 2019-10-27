@@ -151,11 +151,9 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  交互操作
+    void OpEditObject();
     void OpEditObject(const glm::vec2 & screen);
-    void OpEditObject(const glm::vec2 & screen,
-                      const SharePtr<GLObject> & object,
-                      const SharePtr<Component> & comp = nullptr,
-                      const uint trackPointIndex = std::numeric_limits<uint>::max());
+    void OpEditObject(const SharePtr<GLObject> & object);
     void OpDragSelects(const glm::vec2 & worldBeg, 
                       const glm::vec2 & worldEnd);
     void OpSelected(const SharePtr<GLObject> & object, bool selected);
@@ -176,9 +174,9 @@ private:
     virtual void OnResetLayout() override;
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
-    void OnEventKey(const UIEvent::Key & param);
-    void OnEventMenu(const UIEvent::Menu & param);
-    void OnEventMouse(const UIEvent::Mouse & param);
+    bool OnEventKey(const UIEvent::Key & param);
+    bool OnEventMenu(const UIEvent::Menu & param);
+    bool OnEventMouse(const UIEvent::Mouse & param);
 
     //  工具函数
     glm::mat4 GetMatView();

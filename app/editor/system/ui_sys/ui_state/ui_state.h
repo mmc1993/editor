@@ -62,7 +62,8 @@ public:
 
     //   Û±ÍΩπµ„
     struct MouseFocus {
-        WeakPtr<UIObject> mObject;
+        WeakPtr<UIObject> mFocus;
+        WeakPtr<UIObject> mDown;
         int               mKey;
     } mMouseFocus;
 
