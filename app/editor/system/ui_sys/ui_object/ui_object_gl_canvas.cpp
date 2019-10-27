@@ -586,8 +586,8 @@ SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObje
     auto thit = hit;
     auto pred = [&thit] (const auto & com)
     { 
-        return com->HasState(Component::StateEnum::kActive)
-            && tools::IsContains(com->GetTrackPoints(), thit); 
+        return com->HasState(Component::StateEnum::kActive) && 
+               tools::IsContains(com->GetTrackPoints(), thit);
     };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
     {
