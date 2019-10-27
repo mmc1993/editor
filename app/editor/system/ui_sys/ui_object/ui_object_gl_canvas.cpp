@@ -189,11 +189,7 @@ void UIObjectGLCanvas::DrawSelectRect()
         glBindVertexArray(0);
         glDisable(GL_BLEND);
 
-        if (FromRectSelectObjects(min, max))
-        {
-            AddOpMode(UIStateGLCanvas::Operation::kDrag,    true);
-            AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
-        }
+        FromRectSelectObjects(min, max);
     }
 }
 
@@ -440,37 +436,62 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mCoord.x += (origin.x - target.x) * newS;
         state->mOperation.mCoord.y += (origin.y - target.y) * newS;
     }
-    //  单击左键选择模式
-    if (param.mAct == 3 && param.mKey == 0 && !HasOpMode(UIStateGLCanvas::Operation::kSelect))
+
+    //  非编辑模式
+    if (!HasOpMode(UIStateGLCanvas::Operation::kEdit))
     {
-        state->mOperation.mSelectRect.x = param.mMouse.x;
-        state->mOperation.mSelectRect.y = param.mMouse.y;
-        state->mOperation.mSelectRect.z = param.mMouse.x;
-        state->mOperation.mSelectRect.w = param.mMouse.y;
-        AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
+        //  单击左键选中对象
+        if (!HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 3 && param.mKey == 0)
+        {
+            state->mOperation.mSelectRect.x = param.mMouse.x;
+            state->mOperation.mSelectRect.y = param.mMouse.y;
+            state->mOperation.mSelectRect.z = param.mMouse.x;
+            state->mOperation.mSelectRect.w = param.mMouse.y;
+            const auto & coord = ProjectWorld(param.mMouse);
+            if (FromRectSelectObjects(coord, coord))
+            {
+                AddOpMode(UIStateGLCanvas::Operation::kDrag, true);
+            }
+            else
+            {
+                AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
+            }
+        }
+        //  按下左键选择对象
+        if (HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 1 && param.mKey == 0)
+        {
+            state->mOperation.mSelectRect.z = param.mMouse.x;
+            state->mOperation.mSelectRect.w = param.mMouse.y;
+        }
+        //  抬起左键结束选择
+        if (HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 2 && param.mKey == 0)
+        {
+            AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
+        }
+        //   按住左键拖动对象
+        if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 1 && param.mKey == 0)
+        {
+            auto prev = ProjectWorld(param.mMouse - param.mDelta);
+            auto curr = ProjectWorld(param.mMouse);
+            OpDragSelects(prev, curr);
+        }
+        //  抬起左键结束拖拽
+        if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 2 && param.mKey == 0)
+        {
+            AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
+        }
     }
-    //  按下左键选择模式
-    if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
+
+    //  编辑模式
+    if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
     {
-        state->mOperation.mSelectRect.z = param.mMouse.x;
-        state->mOperation.mSelectRect.w = param.mMouse.y;
-    }
-    //  抬起左键结束拣选
-    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
-    {
-        AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
-    }
-    //  抬起左键结束拖拽
-    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kDrag))
-    {
-        AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
-    }
-    //  拖动对象
-    if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 0)
-    {
-        auto prev = ProjectWorld(param.mMouse - param.mDelta);
-        auto curr = ProjectWorld(param.mMouse);
-        OpDragSelects(prev, curr);
+        //  左键双击新增顶点
+
+
+        //  左键单击选中顶点
+
+        //  左键按下拖动顶点
+
     }
     return true;
 }

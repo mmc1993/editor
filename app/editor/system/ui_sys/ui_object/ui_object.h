@@ -178,7 +178,10 @@ private:
     bool OnEventMenu(const UIEvent::Menu & param);
     bool OnEventMouse(const UIEvent::Mouse & param);
 
-    //  ¹¤¾ßº¯Êý
+    bool OpTrackPointInsert();
+    bool OpTrackPointDelete();
+    bool OpTrackPointModify();
+
     glm::mat4 GetMatView();
     glm::mat4 GetMatProj();
     glm::mat4 GetMatViewProj();
