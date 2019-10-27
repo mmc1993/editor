@@ -151,9 +151,9 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
-    void OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end);
-    void OptSelected(const SharePtr<GLObject> & object, bool selected);
-    void OptSelectedClear();
+    void OpDragSelects(const glm::vec2 & beg, const glm::vec2 & end);
+    void OpSelected(const SharePtr<GLObject> & object, bool selected);
+    void OpSelectedClear();
 
 private:
     void HandleFowardCommands();

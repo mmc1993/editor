@@ -234,7 +234,7 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
+void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
 { 
     static const auto IsSkip = [] (
         const SharePtr<GLObject>              & object, 
@@ -263,7 +263,7 @@ void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & e
     }
 }
 
-void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
+void UIObjectGLCanvas::OpSelected(const SharePtr<GLObject> & object, bool selected)
 {
     auto state = GetState<UIStateGLCanvas>();
     auto it = std::find(state->mOperation.mSelectObjects.begin(),
@@ -284,7 +284,7 @@ void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selec
     }
 }
 
-void UIObjectGLCanvas::OptSelectedClear()
+void UIObjectGLCanvas::OpSelectedClear()
 {
     auto state = GetState<UIStateGLCanvas>();
     state->mOperation.mSelectObjects.clear();
@@ -430,7 +430,7 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     {
         auto prev = ProjectWorld(param.mMouse - param.mDelta);
         auto curr = ProjectWorld(param.mMouse);
-        OptDragSelects(prev, curr);
+        OpDragSelects(prev, curr);
     }
 }
 
