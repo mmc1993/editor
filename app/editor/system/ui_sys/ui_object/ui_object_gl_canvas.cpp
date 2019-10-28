@@ -499,19 +499,18 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         if (param.mAct == 3 && param.mKey == 0)
         {
             auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
-            state->mOperation.mEditTrackPoint = index;
-            state->mOperation.mEditComponent = comp;
+            state->mOperation.mEditTrackPoint = num == 1? index: (uint)-1;
+            state->mOperation.mEditComponent = num == 1? comp: nullptr;
         }
         //  左键按下拖动顶点
-        if (param.mAct == 1 && param.mKey == 0)
+        if (param.mAct == 1 && param.mKey == 0 && state->mOperation.mEditComponent)
         {
             auto & comp = state->mOperation.mEditComponent;
             auto index = state->mOperation.mEditTrackPoint;
-            ASSERT_LOG(comp != nullptr, "");
             ASSERT_LOG(index < comp->GetTrackPoints().size(), "");
-            const auto & coord = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mDelta));
-            const auto & point = comp->GetTrackPoints().at(index);
-            comp->ModifyTrackPoint(index, point + coord);
+            auto prev = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse - param.mDelta));
+            auto curr = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse               ));
+            comp->ModifyTrackPoint(index, comp->GetTrackPoints().at(index) + (curr - prev));
         }
     }
     return true;
@@ -703,20 +702,26 @@ std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoo
     const auto & comps = state->mOperation.mEditObject->GetComponents();
     for (auto it = comps.rbegin(); it != comps.rend(); ++it)
     {
+        //  优先判断是否击中顶点
+        for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
+        {
+            const auto & point = (*it)->GetTrackPoints().at(i);
+            if (tools::IsCantains(point, (float)VAL_TrackPointSize, coord))
+            {
+                return std::make_tuple(1, *it, coord, (uint)i);
+            }
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(point - coord))
+            {
+                return std::make_tuple(0, *it, coord, (uint)i + 1);
+            }
+        }
+        //  其次判断是否击中线段
         for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
         {
             auto j = (i + 1) % (*it)->GetTrackPoints().size();
             const auto & a = (*it)->GetTrackPoints().at(i);
             const auto & b = (*it)->GetTrackPoints().at(j);
-            if (tools::IsCantains(a, (float)VAL_TrackPointSize, coord))
-            {
-                return std::make_tuple(1, *it, coord, (uint)i);
-            }
-            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(a - coord))
-            {
-                return std::make_tuple(0, *it, coord, (uint)i);
-            }
-            if (VAL_TrackPointLine * VAL_TrackPointLine >= glm::length_sqrt(tools::PointToSegment(coord, a, b)))
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(tools::PointToSegment(coord, a, b)))
             {
                 return std::make_tuple(2, *it, coord, (uint)j);
             }

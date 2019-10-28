@@ -12,8 +12,8 @@ CompSprite::CompSprite()
     _trackPoints.resize(4);
 
     _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | 
-                        GLMesh::Vertex::kUV);
+    _mesh->Init({},{}, GLMesh::Vertex::kV | 
+                       GLMesh::Vertex::kUV);
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
@@ -93,21 +93,25 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
+            auto first = _texture == nullptr;
             _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-            _size.x = (float)_texture->GetW();
-            _size.y = (float)_texture->GetH();
+            if (first)
+            {
+                _size.x = (float)_texture->GetW();
+                _size.y = (float)_texture->GetH();
+            }
         }
 
         if (_update & kTrackPoint)
         {
-            _trackPoints.at(0).x = -_size.x *     _anchor.x;
-            _trackPoints.at(0).y = -_size.y *     _anchor.y;
-            _trackPoints.at(1).x = _size.x * (1 - _anchor.x);
-            _trackPoints.at(1).y = -_size.y *     _anchor.y;
-            _trackPoints.at(2).x = _size.x * (1 - _anchor.x);
-            _trackPoints.at(2).y = _size.y * (1 - _anchor.y);
-            _trackPoints.at(3).x = -_size.x *     _anchor.x;
-            _trackPoints.at(3).y = _size.y * (1 - _anchor.y);
+            _trackPoints.at(0).x = -_size.x *      _anchor.x;
+            _trackPoints.at(0).y = -_size.y *      _anchor.y;
+            _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
+            _trackPoints.at(1).y = -_size.y *      _anchor.y;
+            _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
+            _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
+            _trackPoints.at(3).x = -_size.x *      _anchor.x;
+            _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
             auto & offset=_texture->GetOffset();
             std::vector<GLMesh::Vertex> vertexs;
@@ -123,21 +127,44 @@ void CompSprite::Update()
 
 void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    //auto point0 = _trackPoints.at(0);
-    //auto point1 = _trackPoints.at(1);
-    //auto point2 = _trackPoints.at(2);
-    //auto point3 = _trackPoints.at(3);
-    //_trackPoints.at(index) = point;
+    glm::vec2 min, max;
+    switch (index)
+    {
+    case 0:
+        min.x = std::min(point.x, _trackPoints.at(2).x);
+        min.y = std::min(point.y, _trackPoints.at(2).y);
+        max.x = _trackPoints.at(2).x;
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 1:
+        min.x = _trackPoints.at(0).x;
+        min.y = std::min(point.y, _trackPoints.at(3).y);
+        max.x = std::max(point.x, _trackPoints.at(3).x);
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 2:
+        min.x = _trackPoints.at(0).x;
+        min.y = _trackPoints.at(0).y;
+        max.x = std::max(point.x, _trackPoints.at(0).x);
+        max.y = std::max(point.y, _trackPoints.at(0).y);
+        break;
+    case 3:
+        min.x = std::min(point.x, _trackPoints.at(1).x);
+        min.y = _trackPoints.at(0).y;
+        max.x = _trackPoints.at(2).x;
+        max.y = std::max(point.y, _trackPoints.at(1).y);
+        break;
+    }
 
-    //AddState(StateEnum::kUpdate, true);
-    //switch (index)
-    //{
-    //case 0: break;
-    //case 1: break;
-    //case 2: break;
-    //case 3: break;
-    //}
-    //_update |= kTrackPoint;
+    _size.x = max.x - min.x;
+    _size.y = max.y - min.y;
+
+    auto coord = GetOwner()->LocalToParent(_size * _anchor + min);
+    GetOwner()->GetTransform()->Position(coord.x, coord.y);
+
+    _update |= kTrackPoint;
+
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompSprite::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
