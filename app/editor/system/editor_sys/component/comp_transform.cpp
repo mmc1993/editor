@@ -131,7 +131,7 @@ glm::vec2 CompTransform::GetWorldPosition()
 
 glm::mat4 CompTransform::GetAngleMatrix()
 {
-    return glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
+    return glm::rotate(glm::mat4(1), glm::radians(_angle), glm::vec3(0, 0, 1));
 }
 
 const std::string & CompTransform::GetName()
@@ -157,24 +157,15 @@ bool CompTransform::OnModifyProperty(const std::any & oldValue, const std::any &
 }
 
 void CompTransform::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
-{ 
-    if (index == 0)
-    {
-        _position.x = point.x + 10;
-        _position.y = point.y + 10;
-        AddState(StateEnum::kUpdate, true);
-    }
-}
+{ }
 
 void CompTransform::UpdateMatrix()
 {
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-
-        auto t = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
-        auto s = glm::scale(glm::mat4(1), glm::vec3(_scale, 1));
-        auto r = glm::rotate(glm::mat4(1), _angle, glm::vec3(0, 0, 1));
-        _matrix = t * r * s;
+        _matrix = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
+        _matrix = glm::rotate(_matrix, glm::radians(_angle), glm::vec3(0, 0, 1));
+        _matrix = glm::scale(_matrix, glm::vec3(_scale, 1));
     }
 }

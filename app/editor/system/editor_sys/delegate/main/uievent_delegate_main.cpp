@@ -358,6 +358,7 @@ void UIEventDelegateMainStage::OnEventFreeProject()
 
 void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
+    CastPtr<UIObjectGLCanvas>(GetOwner())->OpEditObject(nullptr);
     CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelected(object, select);
 }
 

@@ -141,7 +141,7 @@ class UIObjectGLCanvas : public UIObject {
 private:
     static const auto VAL_TrackPointLine    = 2;            //  追踪点线宽
     static const auto VAL_TrackPointSize    = 10;           //  追踪点大小
-    static const auto VAL_TrackPointColor   = 0x22B14C;     //  追踪点颜色
+    static const glm::vec4 VAL_TrackPointColors[32];        //  追踪点颜色
 
 public:
     UIObjectGLCanvas();
@@ -151,11 +151,9 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  交互操作
-    void OpEditObject();
-    void OpEditObject(const glm::vec2 & screen);
     void OpEditObject(const SharePtr<GLObject> & object);
     void OpDragSelects(const glm::vec2 & worldBeg, 
-                      const glm::vec2 & worldEnd);
+                       const glm::vec2 & worldEnd);
     void OpSelected(const SharePtr<GLObject> & object, bool selected);
     void OpSelectedClear();
 
@@ -178,10 +176,6 @@ private:
     bool OnEventMenu(const UIEvent::Menu & param);
     bool OnEventMouse(const UIEvent::Mouse & param);
 
-    bool OpTrackPointInsert();
-    bool OpTrackPointDelete();
-    bool OpTrackPointModify();
-
     glm::mat4 GetMatView();
     glm::mat4 GetMatProj();
     glm::mat4 GetMatViewProj();
@@ -200,11 +194,5 @@ private:
                                const glm::vec2 & local3, 
                                std::vector<SharePtr<GLObject>> & output);
     SharePtr<GLObject> FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local);
-    //std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> FromPointSelectTrackPoint(const glm::vec2 & world);
-
-    //uint FromPointSelectTrackPoint(const glm::vec2 & world, 
-    //                               glm::vec2 & point, 
-    //                               uint & aIndex, uint & bIndex,
-    //                               SharePtr<Component> & comp);
     std::tuple<iint, SharePtr<Component>, glm::vec2, uint> FromCoordSelectTrackPoint(const glm::vec2 & world);
 };

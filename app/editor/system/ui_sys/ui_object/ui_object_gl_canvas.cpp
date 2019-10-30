@@ -7,6 +7,13 @@
 #include "../../editor_sys/component/component.h"
 #include "../../editor_sys/component/comp_transform.h"
 
+const glm::vec4 UIObjectGLCanvas::VAL_TrackPointColors[32] = {
+    glm::vec4{ 0.60f, 0.85f, 0.91f, 1.0f },
+    glm::vec4{ 0.60f, 0.85f, 0.91f, 1.0f },
+    glm::vec4{ 0.60f, 0.85f, 0.91f, 1.0f },
+    glm::vec4{ 0.60f, 0.85f, 0.91f, 1.0f },
+};
+
 UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 {
     auto state = GetState<UIStateGLCanvas>();
@@ -117,15 +124,22 @@ void UIObjectGLCanvas::DrawTrackPoint()
     glPointSize((float)VAL_TrackPointSize);
     for (auto & object : state->mOperation.mSelectObjects)
     {
-        uint seed = VAL_TrackPointColor;
         for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
             std::vector<GLMesh::Vertex> points;
-            glm::vec4 color = tools::GetRandomColor(seed);
             auto & component = object->GetComponents().at(i0);
             auto & trackPoints = component->GetTrackPoints();
             for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
-            {points.emplace_back(trackPoints.at(i1), color);}
+            {
+                if (state->mOperation.mEditComponent == component && state->mOperation.mEditTrackPoint == i1)
+                {
+                    points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0] * 0.5f);
+                }
+                else
+                {
+                    points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0]);
+                }
+            }
 
             auto & mesh = GetMeshBuffer(i0);
             mesh->Update(points, {});
@@ -230,30 +244,21 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OpEditObject()
-{ 
-    AddOpMode(UIStateGLCanvas::Operation::kEdit, false);
-    auto state = GetState<UIStateGLCanvas>();
-    state->mOperation.mEditObject       = nullptr;
-    state->mOperation.mEditComponent    = nullptr;
-    state->mOperation.mEditTrackPoint   = std::numeric_limits<uint>::max();
-}
-
-void UIObjectGLCanvas::OpEditObject(const glm::vec2 & screen)
-{ 
-    //if (const auto[object, comp, idx] = FromPointSelectTrackPoint(ProjectWorld(screen)); object != nullptr)
-    //{
-    //    auto state = GetState<UIStateGLCanvas>();
-    //    state->mOperation.mEditObject       = object;
-    //    state->mOperation.mEditComponent    = comp;
-    //    state->mOperation.mEditTrackPoint   = idx;
-    //}
-}
-
 void UIObjectGLCanvas::OpEditObject(const SharePtr<GLObject> & object)
-{ 
-    AddOpMode(UIStateGLCanvas::Operation::kEdit, true);
-    GetState<UIStateGLCanvas>()->mOperation.mEditObject = object;
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (object != nullptr)
+    {
+        AddOpMode(UIStateGLCanvas::Operation::kEdit, true);
+        state->mOperation.mEditObject = object;
+    }
+    else
+    {
+        AddOpMode(UIStateGLCanvas::Operation::kEdit, false);
+        state->mOperation.mEditObject       = nullptr;
+        state->mOperation.mEditComponent    = nullptr;
+        state->mOperation.mEditTrackPoint   = std::numeric_limits<uint>::max();
+    }
 }
 
 void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & worldBeg, const glm::vec2 & worldEnd)
@@ -400,7 +405,7 @@ bool UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
     {
         if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
         {
-            OpEditObject();
+            OpEditObject(nullptr);
         }
         else if (state->mOperation.mSelectObjects.size() == 1)
         {
@@ -729,31 +734,3 @@ std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoo
     }
     return std::make_tuple(-1, nullptr, glm::vec2(), (uint)-1);
 }
-
-//std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> UIObjectGLCanvas::FromPointSelectTrackPoint(const glm::vec2 & world)
-//{
-//    auto state = GetState<UIStateGLCanvas>();
-//    ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
-//
-//    auto coord = state->mOperation.mEditObject->WorldToLocal(world);
-//    const auto pred = [&coord] (const glm::vec2 & point)
-//    {
-//        return tools::IsCantains(point, (float)VAL_TrackPointSize, coord);
-//    };
-//    
-//    auto & components = state->mOperation.mEditObject->GetComponents();
-//    for (auto it = components.rbegin(); it != components.rend(); ++it)
-//    {
-//        auto pointIter = std::find_if(
-//            (*it)->GetTrackPoints().rbegin(),
-//            (*it)->GetTrackPoints().rend(), pred);
-//        if ((*it)->GetTrackPoints().rend() != pointIter)
-//        {
-//            return std::make_tuple(
-//                state->mOperation.mEditObject, *it, std::distance(
-//                (*it)->GetTrackPoints().begin(), pointIter.base()));
-//        }
-//    }
-//    return std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint>();
-//}
-
