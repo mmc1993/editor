@@ -352,13 +352,26 @@ namespace tools {
         return std::move(result);
     }
 
-    //  返回一个固定随机颜色
-    inline glm::vec4 GetRandomColor(size_t & seed)
+    //  判断多边形是否存在闭环
+    inline bool IsExistClosePath(const std::vector<glm::vec2> & points)
     {
-        seed = (seed >> 3) | ((seed & 0x7) << 29);
-        return glm::vec4(
-            (seed & 0xff) / 255.0f,
-            ((seed & 0xff00) >> 8) / 255.0f,
-            ((seed & 0xff0000) >> 16) / 255.0f, 1.0f);
+        if (points.size() > 3)
+        {
+            for (auto i0 = 2; i0 != points.size(); ++i0)
+            {
+                auto i1 = (i0 + 1) % points.size();
+                for (auto j0 = 0; j0 != points.size(); ++j0)
+                {
+                    auto j1 = (j0 + 1) % points.size();
+                    if (i0 != 0 && IsCrossSegment(
+                        points.at(i0), points.at(i1),
+                        points.at(j0), points.at(j1)))
+                    {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
