@@ -355,23 +355,30 @@ namespace tools {
     //  判断多边形是否存在闭环
     inline bool IsExistClosePath(const std::vector<glm::vec2> & points)
     {
-        if (points.size() > 3)
+        if (points.size() <= 4)
         {
-            for (auto i0 = 2; i0 != points.size(); ++i0)
+            return false;
+        }
+        for (auto i0 = 2; i0 != points.size(); ++i0)
+        {
+            auto i1 = (i0 + 1) % points.size();
+            for (auto j0 = 0; j0 != points.size(); ++j0)
             {
-                auto i1 = (i0 + 1) % points.size();
-                for (auto j0 = 0; j0 != points.size(); ++j0)
+                auto j1 = (j0 + 1) % points.size();
+                if (i0 != 0 && IsCrossSegment(
+                    points.at(i0), points.at(i1),
+                    points.at(j0), points.at(j1)))
                 {
-                    auto j1 = (j0 + 1) % points.size();
-                    if (i0 != 0 && IsCrossSegment(
-                        points.at(i0), points.at(i1),
-                        points.at(j0), points.at(j1)))
-                    {
-                        return true;
-                    }
+                    return true;
                 }
             }
         }
         return false;
+    }
+
+    //  生成多边形外环
+    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border)
+    {
+        ASSERT_LOG(!IsExistClosePath(points), "");
     }
 }
