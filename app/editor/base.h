@@ -37,6 +37,7 @@ using uint = unsigned int;
 #include "third/stb_image.h"
 #include "third/glm/glm.hpp"
 #include "third/glm/gtc/type_ptr.hpp"
+#include "third/glm/gtx/exterior_product.hpp"
 #include "third/glm/gtc/matrix_transform.hpp"
 
 //  tools

@@ -84,7 +84,7 @@ namespace tools {
             && p.x <= std::max(a.x, b.x)
             && p.y >= std::min(a.y, b.y)
             && p.y <= std::max(a.y, b.y)
-            && glm::cross(glm::vec3(p - a, 0), glm::vec3(b - p, 0)).z == 0.0f;
+            && glm::cross(p - a, b - p) == 0.0f;
     }
 
     //  点是否在线段上
@@ -105,11 +105,11 @@ namespace tools {
     {
         assert(crossA != nullptr);
         assert(crossB != nullptr);
-        auto cross = glm::cross(glm::vec3(b - a, 0), glm::vec3(d - c, 0)).z;
+        auto cross = glm::cross(b - a, d - c);
         if (cross != 0.0)
         {
-            *crossA = glm::cross(glm::vec3(d - c, 0), glm::vec3(a - c, 0)).z / cross;
-            *crossB = glm::cross(glm::vec3(b - a, 0), glm::vec3(a - c, 0)).z / cross;
+            *crossA = glm::cross(d - c, a - c) / cross;
+            *crossB = glm::cross(b - a, a - c) / cross;
             return true;
         }
         return false;
@@ -118,10 +118,10 @@ namespace tools {
     //  线段相交
     inline bool IsCrossSegment(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d)
     {
-        auto ab = glm::vec3(b - a, 0);
-        auto cd = glm::vec3(d - c, 0);
-        return glm::cross(ab, glm::vec3(c - a, 0)).z * glm::cross(ab, glm::vec3(d - a, 0)).z <= 0
-            && glm::cross(cd, glm::vec3(a - c, 0)).z * glm::cross(cd, glm::vec3(b - c, 0)).z <= 0;
+        auto ab = b - a;
+        auto cd = d - c;
+        return glm::cross(ab, c - a) * glm::cross(ab, d - a) <= 0
+            && glm::cross(cd, a - c) * glm::cross(cd, b - c) <= 0;
     }
 
     //  线段交点
@@ -170,11 +170,7 @@ namespace tools {
             auto & a = points.at(i                      );
             auto & b = points.at((i + 1) % points.size());
             auto & c = points.at((i + 2) % points.size());
-            auto ab = glm::vec3(b - a, 0);
-            auto cb = glm::vec3(c - b, 0);
-            auto ap = glm::vec3(p - a, 0);
-            auto cp = glm::vec3(p - c, 0);
-            if (glm::cross(ab, ap).z * glm::cross(cb, cp).z <= 0)
+            if (glm::cross(b - a, p - a) * glm::cross(c - b, p - c) <= 0)
             {
                 return false;
             }
@@ -210,9 +206,9 @@ namespace tools {
             {
                 auto prev = (i + points.size() - 1) % points.size();
                 auto next = (i + 1) % points.size();
-                auto a = glm::vec3(points.at(i) - points.at(prev), 0);
-                auto b = glm::vec3(points.at(next) - points.at(i), 0);
-                auto z = glm::cross(a, b).z;
+                auto a = points.at(i) - points.at(prev);
+                auto b = points.at(next) - points.at(i);
+                auto z = glm::cross(a, b);
                 if (z != 0) { ret = z; min = i; }
             }
         }
@@ -319,9 +315,7 @@ namespace tools {
             auto & a = points.at(i);
             auto & b = points.at((i + 1) % points.size());
             auto & c = points.at((i + 2) % points.size());
-            auto ab = glm::vec3(b - a, 0);
-            auto bc = glm::vec3(c - b, 0);
-            if (glm::cross(ab, bc).z * normal < 0)
+            if (glm::cross(b - a, c - b) * normal < 0)
             {
                 std::vector<glm::vec2> binary[2];
                 auto [point, endA, endB] = CheckStripPoint(points,  i);
