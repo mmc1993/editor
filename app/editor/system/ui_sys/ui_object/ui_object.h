@@ -151,9 +151,13 @@ public:
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
     //  交互操作
-    void OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end);
-    void OptSelected(const SharePtr<GLObject> & object, bool selected);
-    void OptSelectedClear();
+    void OpEditObject();
+    void OpEditObject(const glm::vec2 & screen);
+    void OpEditObject(const SharePtr<GLObject> & object);
+    void OpDragSelects(const glm::vec2 & worldBeg, 
+                      const glm::vec2 & worldEnd);
+    void OpSelected(const SharePtr<GLObject> & object, bool selected);
+    void OpSelectedClear();
 
 private:
     void HandleFowardCommands();
@@ -170,11 +174,14 @@ private:
     virtual void OnResetLayout() override;
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
-    void OnEventKey(const UIEvent::Key & param);
-    void OnEventMenu(const UIEvent::Menu & param);
-    void OnEventMouse(const UIEvent::Mouse & param);
+    bool OnEventKey(const UIEvent::Key & param);
+    bool OnEventMenu(const UIEvent::Menu & param);
+    bool OnEventMouse(const UIEvent::Mouse & param);
 
-    //  工具函数
+    bool OpTrackPointInsert();
+    bool OpTrackPointDelete();
+    bool OpTrackPointModify();
+
     glm::mat4 GetMatView();
     glm::mat4 GetMatProj();
     glm::mat4 GetMatViewProj();
@@ -183,16 +190,21 @@ private:
     bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op);
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 
-    const SharePtr<GLObject> & GetRootObject();
-    bool FromRectSelectObjects(
-        const glm::vec2 & min, 
-        const glm::vec2 & max);
-    void FromRectSelectObjects(
-        const SharePtr<GLObject> & object, 
-        const glm::vec2 & pt0, 
-        const glm::vec2 & pt1, 
-        const glm::vec2 & pt2, 
-        const glm::vec2 & pt3, 
-        std::vector<SharePtr<GLObject>> & output);
-    SharePtr<GLObject> FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit);
+    const SharePtr<GLObject> & GetProjectRoot();
+    bool FromRectSelectObjects(const glm::vec2 & worldMin, 
+                               const glm::vec2 & worldMax);
+    void FromRectSelectObjects(const SharePtr<GLObject> & object, 
+                               const glm::vec2 & local0, 
+                               const glm::vec2 & local1, 
+                               const glm::vec2 & local2, 
+                               const glm::vec2 & local3, 
+                               std::vector<SharePtr<GLObject>> & output);
+    SharePtr<GLObject> FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local);
+    //std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> FromPointSelectTrackPoint(const glm::vec2 & world);
+
+    //uint FromPointSelectTrackPoint(const glm::vec2 & world, 
+    //                               glm::vec2 & point, 
+    //                               uint & aIndex, uint & bIndex,
+    //                               SharePtr<Component> & comp);
+    std::tuple<iint, SharePtr<Component>, glm::vec2, uint> FromCoordSelectTrackPoint(const glm::vec2 & world);
 };

@@ -6,6 +6,12 @@ namespace glm {
     {
         return a + v * (b - a);
     }
+
+    template <class T>
+    float length_sqrt(const T & vec)
+    {
+        return glm::dot(vec, vec);
+    }
 }
 
 namespace tools {
@@ -16,6 +22,13 @@ namespace tools {
             && rect.y <= point.y
             && rect.x + rect.z >= point.x
             && rect.y + rect.w >= point.y;
+    }
+    
+    //  圆是否包含点
+    inline bool IsCantains(const glm::vec2 & center, const float radius, const glm::vec2 & point)
+    {
+        auto diff = point - center;
+        return glm::dot(diff, diff) <= radius * radius;
     }
 
     //  是否在边上

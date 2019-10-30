@@ -189,11 +189,7 @@ void UIObjectGLCanvas::DrawSelectRect()
         glBindVertexArray(0);
         glDisable(GL_BLEND);
 
-        if (FromRectSelectObjects(min, max))
-        {
-            AddOpMode(UIStateGLCanvas::Operation::kDrag,    true);
-            AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
-        }
+        FromRectSelectObjects(min, max);
     }
 }
 
@@ -234,7 +230,33 @@ void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4
     program->BindUniformNumber("uniform_game_time", glfwGetTime());
 }
 
-void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & end)
+void UIObjectGLCanvas::OpEditObject()
+{ 
+    AddOpMode(UIStateGLCanvas::Operation::kEdit, false);
+    auto state = GetState<UIStateGLCanvas>();
+    state->mOperation.mEditObject       = nullptr;
+    state->mOperation.mEditComponent    = nullptr;
+    state->mOperation.mEditTrackPoint   = std::numeric_limits<uint>::max();
+}
+
+void UIObjectGLCanvas::OpEditObject(const glm::vec2 & screen)
+{ 
+    //if (const auto[object, comp, idx] = FromPointSelectTrackPoint(ProjectWorld(screen)); object != nullptr)
+    //{
+    //    auto state = GetState<UIStateGLCanvas>();
+    //    state->mOperation.mEditObject       = object;
+    //    state->mOperation.mEditComponent    = comp;
+    //    state->mOperation.mEditTrackPoint   = idx;
+    //}
+}
+
+void UIObjectGLCanvas::OpEditObject(const SharePtr<GLObject> & object)
+{ 
+    AddOpMode(UIStateGLCanvas::Operation::kEdit, true);
+    GetState<UIStateGLCanvas>()->mOperation.mEditObject = object;
+}
+
+void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & worldBeg, const glm::vec2 & worldEnd)
 { 
     static const auto IsSkip = [] (
         const SharePtr<GLObject>              & object, 
@@ -255,15 +277,15 @@ void UIObjectGLCanvas::OptDragSelects(const glm::vec2 & beg, const glm::vec2 & e
     {
         if (!IsSkip(object, state->mOperation.mSelectObjects))
         {
-            auto a = object->GetParent()->WorldToLocal(beg);
-            auto b = object->GetParent()->WorldToLocal(end);
+            auto a = object->GetParent()->WorldToLocal(worldBeg);
+            auto b = object->GetParent()->WorldToLocal(worldEnd);
             auto ab = b - a;
             object->GetTransform()->AddPosition(ab.x, ab.y);
         }
     }
 }
 
-void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selected)
+void UIObjectGLCanvas::OpSelected(const SharePtr<GLObject> & object, bool selected)
 {
     auto state = GetState<UIStateGLCanvas>();
     auto it = std::find(state->mOperation.mSelectObjects.begin(),
@@ -284,13 +306,14 @@ void UIObjectGLCanvas::OptSelected(const SharePtr<GLObject> & object, bool selec
     }
 }
 
-void UIObjectGLCanvas::OptSelectedClear()
+void UIObjectGLCanvas::OpSelectedClear()
 {
     auto state = GetState<UIStateGLCanvas>();
     state->mOperation.mSelectObjects.clear();
-    state->mOperation.mActiveObject = nullptr;
-    state->mOperation.mActiveComponent = nullptr;
+
     state->mOperation.mOpMode = 0;
+    state->mOperation.mEditObject = nullptr;
+    state->mOperation.mEditComponent = nullptr;
 }
 
 interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
@@ -360,27 +383,40 @@ inline bool UIObjectGLCanvas::OnCallEventMessage(UIEventEnum e, const UIEvent::E
     switch (e)
     {
     case UIEventEnum::kKey:
-        OnEventKey((const UIEvent::Key &)param);
-        return true;
+        return OnEventKey((const UIEvent::Key &)param);
     case UIEventEnum::kMenu:
-        OnEventMenu((const UIEvent::Menu &)param);
-        return true;
+        return OnEventMenu((const UIEvent::Menu &)param);
     case UIEventEnum::kMouse:
-        OnEventMouse((const UIEvent::Mouse &)param);
-        return true;
+        return OnEventMouse((const UIEvent::Mouse &)param);
     }
     return false;
 }
 
-void UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
+bool UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
 {
+    auto ready = false;
+    auto state = GetState<UIStateGLCanvas>();
+    if (param.mState == 0 && param.mAct == 2 && param.mKey == GLFW_KEY_ENTER)
+    {
+        if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
+        {
+            OpEditObject();
+        }
+        else if (state->mOperation.mSelectObjects.size() == 1)
+        {
+            OpEditObject(state->mOperation.mSelectObjects.front());
+        }
+        ready = true;
+    }
+    return ready;
 }
 
-void UIObjectGLCanvas::OnEventMenu(const UIEvent::Menu & param)
+bool UIObjectGLCanvas::OnEventMenu(const UIEvent::Menu & param)
 {
+    return false;
 }
 
-void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
+bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
 {
     auto state = GetState<UIStateGLCanvas>();
     //  按下中间拖动舞台
@@ -400,38 +436,84 @@ void UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         state->mOperation.mCoord.x += (origin.x - target.x) * newS;
         state->mOperation.mCoord.y += (origin.y - target.y) * newS;
     }
-    //  单击左键选择模式
-    if (param.mAct == 3 && param.mKey == 0 && !HasOpMode(UIStateGLCanvas::Operation::kSelect))
+
+    //  非编辑模式
+    if (!HasOpMode(UIStateGLCanvas::Operation::kEdit))
     {
-        state->mOperation.mSelectRect.x = param.mMouse.x;
-        state->mOperation.mSelectRect.y = param.mMouse.y;
-        state->mOperation.mSelectRect.z = param.mMouse.x;
-        state->mOperation.mSelectRect.w = param.mMouse.y;
-        AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
+        //  单击左键选中对象
+        if (!HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 3 && param.mKey == 0)
+        {
+            state->mOperation.mSelectRect.x = param.mMouse.x;
+            state->mOperation.mSelectRect.y = param.mMouse.y;
+            state->mOperation.mSelectRect.z = param.mMouse.x;
+            state->mOperation.mSelectRect.w = param.mMouse.y;
+            const auto & coord = ProjectWorld(param.mMouse);
+            if (FromRectSelectObjects(coord, coord))
+            {
+                AddOpMode(UIStateGLCanvas::Operation::kDrag, true);
+            }
+            else
+            {
+                AddOpMode(UIStateGLCanvas::Operation::kSelect, true);
+            }
+        }
+        //  按下左键选择对象
+        if (HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 1 && param.mKey == 0)
+        {
+            state->mOperation.mSelectRect.z = param.mMouse.x;
+            state->mOperation.mSelectRect.w = param.mMouse.y;
+        }
+        //  抬起左键结束选择
+        if (HasOpMode(UIStateGLCanvas::Operation::kSelect) && param.mAct == 2 && param.mKey == 0)
+        {
+            AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
+        }
+        //   按住左键拖动对象
+        if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 1 && param.mKey == 0)
+        {
+            auto prev = ProjectWorld(param.mMouse - param.mDelta);
+            auto curr = ProjectWorld(param.mMouse);
+            OpDragSelects(prev, curr);
+        }
+        //  抬起左键结束拖拽
+        if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 2 && param.mKey == 0)
+        {
+            AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
+        }
     }
-    //  按下左键选择模式
-    if (param.mAct == 1 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
+
+    //  编辑模式
+    if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
     {
-        state->mOperation.mSelectRect.z = param.mMouse.x;
-        state->mOperation.mSelectRect.w = param.mMouse.y;
+        ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
+        //  左键双击新增顶点
+        if (param.mAct == 4 && param.mKey == 0)
+        {
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            if (num == 0 || num == 2)
+            {
+                comp->InsertTrackPoint(index, coord);
+            }
+        }
+        //  左键单击选中顶点
+        if (param.mAct == 3 && param.mKey == 0)
+        {
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            state->mOperation.mEditTrackPoint = num == 1? index: (uint)-1;
+            state->mOperation.mEditComponent = num == 1? comp: nullptr;
+        }
+        //  左键按下拖动顶点
+        if (param.mAct == 1 && param.mKey == 0 && state->mOperation.mEditComponent)
+        {
+            auto & comp = state->mOperation.mEditComponent;
+            auto index = state->mOperation.mEditTrackPoint;
+            ASSERT_LOG(index < comp->GetTrackPoints().size(), "");
+            auto prev = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse - param.mDelta));
+            auto curr = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse               ));
+            comp->ModifyTrackPoint(index, comp->GetTrackPoints().at(index) + (curr - prev));
+        }
     }
-    //  抬起左键结束拣选
-    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kSelect))
-    {
-        AddOpMode(UIStateGLCanvas::Operation::kSelect, false);
-    }
-    //  抬起左键结束拖拽
-    if (param.mAct == 2 && param.mKey == 0 && HasOpMode(UIStateGLCanvas::Operation::kDrag))
-    {
-        AddOpMode(UIStateGLCanvas::Operation::kDrag, false);
-    }
-    //  拖动对象
-    if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 0)
-    {
-        auto prev = ProjectWorld(param.mMouse - param.mDelta);
-        auto curr = ProjectWorld(param.mMouse);
-        OptDragSelects(prev, curr);
-    }
+    return true;
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatView()
@@ -457,9 +539,9 @@ glm::mat4 UIObjectGLCanvas::GetMatViewProj()
 glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & pt)
 {
     const auto & coord = ToLocalCoord(pt);
-    glm::vec4 port(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto result = glm::unProject(glm::vec3(coord.x, port.w - coord.y, 0),
-                                 glm::mat4(1), GetMatProj(), port      );
+    glm::vec4 portView(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto result = glm::unProject(glm::vec3(coord.x, portView.w - coord.y, 0),
+                                 glm::mat4(1), GetMatProj(), portView      );
     return glm::inverse(GetMatView()) * glm::vec4(result, 1);
 }
 
@@ -488,20 +570,18 @@ void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool
     else     state->mOperation.mOpMode &= ~op;
 }
 
-const SharePtr<GLObject>& UIObjectGLCanvas::GetRootObject()
+const SharePtr<GLObject>& UIObjectGLCanvas::GetProjectRoot()
 {
     ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
     return Global::Ref().mEditorSys->GetProject()->GetRoot();
 }
 
-bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::vec2 & max)
+bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & worldMin, const glm::vec2 & worldMax)
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (min == max)
+    if (worldMin == worldMax)
     {
-        state->mOperation.mActiveObject = nullptr;
-
-        if (auto hit = FromPointSelectObject(GetRootObject(), GetRootObject()->ParentToLocal(min)))
+        if (auto hit = FromCoordSelectObject(GetProjectRoot(), GetProjectRoot()->ParentToLocal(worldMin)))
         {
             auto ret = std::find(state->mOperation.mSelectObjects.begin(), 
                                  state->mOperation.mSelectObjects.end(), hit);
@@ -509,7 +589,7 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             {
                 Global::Ref().mEditorSys->OptSelectObject(hit, true);
             }
-            state->mOperation.mActiveObject = hit;
+            return true;    //  命中了一个Object
         }
         else
         {
@@ -519,11 +599,11 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
     else
     {
         std::vector<SharePtr<GLObject>> output;
-        auto pt0 = GetRootObject()->ParentToLocal(min);
-        auto pt1 = GetRootObject()->ParentToLocal(glm::vec2(max.x, min.y));
-        auto pt2 = GetRootObject()->ParentToLocal(max);
-        auto pt3 = GetRootObject()->ParentToLocal(glm::vec2(min.x, max.y));
-        FromRectSelectObjects(GetRootObject(), pt0, pt1, pt2, pt3, output);
+        auto pt0 = GetProjectRoot()->ParentToLocal(worldMin);
+        auto pt1 = GetProjectRoot()->ParentToLocal(glm::vec2(worldMax.x, worldMin.y));
+        auto pt2 = GetProjectRoot()->ParentToLocal(worldMax);
+        auto pt3 = GetProjectRoot()->ParentToLocal(glm::vec2(worldMin.x, worldMax.y));
+        FromRectSelectObjects(GetProjectRoot(), pt0, pt1, pt2, pt3, output);
         auto noexists = [&output] (const auto & object) 
         {
             return output.end() == std::find(output.begin(), output.end(), object);
@@ -541,15 +621,15 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & min, const glm::v
             Global::Ref().mEditorSys->OptSelectObject(object, true, true);
         }
     }
-    return state->mOperation.mActiveObject != nullptr;
+    return false;
 }
 
 void UIObjectGLCanvas::FromRectSelectObjects(
     const SharePtr<GLObject> & object, 
-    const glm::vec2 & pt0, 
-    const glm::vec2 & pt1, 
-    const glm::vec2 & pt2, 
-    const glm::vec2 & pt3, 
+    const glm::vec2 & local0, 
+    const glm::vec2 & local1, 
+    const glm::vec2 & local2, 
+    const glm::vec2 & local3, 
     std::vector<SharePtr<GLObject>> & output)
 {
     std::vector<glm::vec2> points(4);
@@ -557,47 +637,123 @@ void UIObjectGLCanvas::FromRectSelectObjects(
     { 
         auto it = std::find_if(com->GetTrackPoints().begin(), com->GetTrackPoints().end(),
             [&] (const auto & point) { return tools::IsContainsConvex(points, point); });
-        return it != com->GetTrackPoints().end();
+        return com->HasState(Component::kActive)
+            && it != com->GetTrackPoints().end();
     };
 
     for (auto & children : object->GetObjects())
     {
-        points.at(0) = children->ParentToLocal(pt0);
-        points.at(1) = children->ParentToLocal(pt1);
-        points.at(2) = children->ParentToLocal(pt2);
-        points.at(3) = children->ParentToLocal(pt3);
-        auto ret = std::find_if(children->GetComponents().begin(),
-                                children->GetComponents().end(), pred);
-        if (ret != children->GetComponents().end())
+        if (children->HasState(GLObject::StateEnum::kActive))
         {
-            output.push_back(children);
+            points.at(0) = children->ParentToLocal(local0);
+            points.at(1) = children->ParentToLocal(local1);
+            points.at(2) = children->ParentToLocal(local2);
+            points.at(3) = children->ParentToLocal(local3);
+            auto ret = std::find_if(
+                children->GetComponents().begin(),
+                children->GetComponents().end(), pred);
+            if (ret != children->GetComponents().end())
+            {
+                output.push_back(children);
+            }
+            FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
         }
-        FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
     }
 }
 
-SharePtr<GLObject> UIObjectGLCanvas::FromPointSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & hit)
+SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObject> & object, const glm::vec2 & local)
 {
-    auto thit = hit;
+    auto thit = local;
     auto pred = [&thit] (const auto & com)
     { 
-        return tools::IsContains(com->GetTrackPoints(), thit); 
+        return com->HasState(Component::StateEnum::kActive) && 
+               tools::IsContains(com->GetTrackPoints(), thit);
     };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
     {
-        thit = (*it)->ParentToLocal(hit);
+        if (object->HasState(GLObject::StateEnum::kActive))
+        {
+            thit = (*it)->ParentToLocal(local);
 
-        if (auto ret = FromPointSelectObject(*it, thit))
-        {
-            return ret;
-        }
-        auto ret = std::find_if(
-            (*it)->GetComponents().begin(), 
-            (*it)->GetComponents().end(), pred);
-        if (ret != (*it)->GetComponents().end())
-        {
-            return *it;
+            if (auto ret = FromCoordSelectObject(*it, thit))
+            {
+                return ret;
+            }
+            auto ret = std::find_if(
+                (*it)->GetComponents().begin(), 
+                (*it)->GetComponents().end(), pred);
+            if (ret != (*it)->GetComponents().end()) { return *it; }
         }
     }
     return nullptr;
 }
+
+std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoordSelectTrackPoint(const glm::vec2 & world)
+{
+    //  返回值:
+    //      没有击中追踪点 -1
+    //      击中追踪点中心  1
+    //      击中追踪点之间  2
+    //      击中追踪点附近  0
+    auto state = GetState<UIStateGLCanvas>();
+    ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
+
+    const auto & coord = state->mOperation.mEditObject->WorldToLocal(world);
+    const auto & comps = state->mOperation.mEditObject->GetComponents();
+    for (auto it = comps.rbegin(); it != comps.rend(); ++it)
+    {
+        //  优先判断是否击中顶点
+        for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
+        {
+            const auto & point = (*it)->GetTrackPoints().at(i);
+            if (tools::IsCantains(point, (float)VAL_TrackPointSize, coord))
+            {
+                return std::make_tuple(1, *it, coord, (uint)i);
+            }
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(point - coord))
+            {
+                return std::make_tuple(0, *it, coord, (uint)i + 1);
+            }
+        }
+        //  其次判断是否击中线段
+        for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
+        {
+            auto j = (i + 1) % (*it)->GetTrackPoints().size();
+            const auto & a = (*it)->GetTrackPoints().at(i);
+            const auto & b = (*it)->GetTrackPoints().at(j);
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(tools::PointToSegment(coord, a, b)))
+            {
+                return std::make_tuple(2, *it, coord, (uint)j);
+            }
+        }
+    }
+    return std::make_tuple(-1, nullptr, glm::vec2(), (uint)-1);
+}
+
+//std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint> UIObjectGLCanvas::FromPointSelectTrackPoint(const glm::vec2 & world)
+//{
+//    auto state = GetState<UIStateGLCanvas>();
+//    ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
+//
+//    auto coord = state->mOperation.mEditObject->WorldToLocal(world);
+//    const auto pred = [&coord] (const glm::vec2 & point)
+//    {
+//        return tools::IsCantains(point, (float)VAL_TrackPointSize, coord);
+//    };
+//    
+//    auto & components = state->mOperation.mEditObject->GetComponents();
+//    for (auto it = components.rbegin(); it != components.rend(); ++it)
+//    {
+//        auto pointIter = std::find_if(
+//            (*it)->GetTrackPoints().rbegin(),
+//            (*it)->GetTrackPoints().rend(), pred);
+//        if ((*it)->GetTrackPoints().rend() != pointIter)
+//        {
+//            return std::make_tuple(
+//                state->mOperation.mEditObject, *it, std::distance(
+//                (*it)->GetTrackPoints().begin(), pointIter.base()));
+//        }
+//    }
+//    return std::tuple<SharePtr<GLObject>, SharePtr<Component>, uint>();
+//}
+

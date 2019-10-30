@@ -353,12 +353,12 @@ void UIEventDelegateMainStage::OnEventOpenProject()
 
 void UIEventDelegateMainStage::OnEventFreeProject()
 {
-    CastPtr<UIObjectGLCanvas>(GetOwner())->OptSelectedClear();
+    CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelectedClear();
 }
 
 void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
-    CastPtr<UIObjectGLCanvas>(GetOwner())->OptSelected(object, select);
+    CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelected(object, select);
 }
 
 bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

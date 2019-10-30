@@ -22,6 +22,7 @@ public:
         interface::Serializer::StringValueTypeEnum mType;
         std::string                                mName;
         void *                                     mMember;
+        std::any                                   mExtend;
 
         Property()
             : mType(interface::Serializer::StringValueTypeEnum::kErr)
@@ -30,8 +31,12 @@ public:
 
         Property(
             interface::Serializer::StringValueTypeEnum type, 
-            const std::string & name, void * member)
-            : mType(type), mName(name), mMember(member)
+            const std::string & name, void * member,
+            const std::any extend = std::any())
+            : mType(type)
+            , mName(name)
+            , mMember(member)
+            , mExtend(extend)
         { }
     };
 
@@ -73,7 +78,7 @@ public:
     void DeleteTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kDeleteTrackPoint) { OnDeleteTrackPoint(index, point); } }
 
 protected:
-    virtual std::vector<Property> CollectProperty() = 0;
+    virtual std::vector<Property> CollectProperty();
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) {};
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) {};
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) {};

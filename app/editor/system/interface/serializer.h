@@ -12,6 +12,7 @@ public:
         kErr,           //  无效
         kInt,           //  整数
         kBool,          //  布尔
+        kFlag,          //  标志
         kFloat,         //  浮点
         kString,        //  字符串
         kVector2,       //  向量2

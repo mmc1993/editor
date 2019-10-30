@@ -124,6 +124,23 @@ public:
 };
 
 // ---
+//   Ù–‘ UIPropertyFlag
+// ---
+class UIPropertyFlag : public UIPropertyObject<uint> {
+public:
+    UIPropertyFlag(
+        uint & value,
+        const std::string & title,
+        const Handler_t & handler, uint mask)
+        : UIPropertyObject<uint>(value, title, handler), _mask(mask)
+    { }
+
+    virtual bool OnEnter() override;
+private:
+    uint _mask;
+};
+
+// ---
 //   Ù–‘ UIPropertyFloat
 // ---
 class UIPropertyFloat : public UIPropertyObject<float> {

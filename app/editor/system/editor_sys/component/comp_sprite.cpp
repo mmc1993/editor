@@ -1,4 +1,5 @@
 #include "comp_sprite.h"
+#include "comp_transform.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
 #include "../../ui_sys/ui_object/ui_object.h"
@@ -11,10 +12,13 @@ CompSprite::CompSprite()
     _trackPoints.resize(4);
 
     _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | GLMesh::Vertex::kUV);
+    _mesh->Init({},{}, GLMesh::Vertex::kV | 
+                       GLMesh::Vertex::kUV);
 
     _program = std::create_ptr<GLProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
+
+    AddState(StateEnum::kModifyTrackPoint, true);
 }
 
 void CompSprite::OnAdd()
@@ -33,9 +37,6 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mCallback   = std::bind(&CompSprite::OnRenderCallback, this, 
-                                        std::placeholders::_1, 
-                                        std::placeholders::_2);
         command.mTextures.push_back(std::make_pair("uniform_texture", _texture));
         canvas->Post(command);
     }
@@ -77,11 +78,11 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
-    return {
-        { interface::Serializer::StringValueTypeEnum::kAsset,   "URL",    &_url    },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Size",   &_size   },
-        { interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor }
-    };
+    auto props = Component::CollectProperty();
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "URL", &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size", &_size);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor);
+    return std::move(props);
 }
 
 void CompSprite::Update()
@@ -92,21 +93,25 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
+            auto first = _texture == nullptr;
             _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-            _size.x = (float)_texture->GetW();
-            _size.y = (float)_texture->GetH();
+            if (first)
+            {
+                _size.x = (float)_texture->GetW();
+                _size.y = (float)_texture->GetH();
+            }
         }
 
         if (_update & kTrackPoint)
         {
             _trackPoints.at(0).x = -_size.x *      _anchor.x;
             _trackPoints.at(0).y = -_size.y *      _anchor.y;
-            _trackPoints.at(1).x = _size.x * (1 - _anchor.x);
+            _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
             _trackPoints.at(1).y = -_size.y *      _anchor.y;
-            _trackPoints.at(2).x = _size.x * (1 - _anchor.x);
-            _trackPoints.at(2).y = _size.y * (1 - _anchor.y);
+            _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
+            _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
             _trackPoints.at(3).x = -_size.x *      _anchor.x;
-            _trackPoints.at(3).y = _size.y * (1 - _anchor.y);
+            _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
             auto & offset=_texture->GetOffset();
             std::vector<GLMesh::Vertex> vertexs;
@@ -120,15 +125,46 @@ void CompSprite::Update()
     }
 }
 
-void CompSprite::OnRenderCallback(const interface::RenderCommand & command, uint * pos)
-{
-    auto & forward = (const interface::FowardCommand &)(command);
-    forward.mProgram->BindUniformVector("uniform_size",   _size);
-    forward.mProgram->BindUniformVector("uniform_anchor", _anchor);
-}
-
 void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    glm::vec2 min, max;
+    switch (index)
+    {
+    case 0:
+        min.x = std::min(point.x, _trackPoints.at(2).x);
+        min.y = std::min(point.y, _trackPoints.at(2).y);
+        max.x = _trackPoints.at(2).x;
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 1:
+        min.x = _trackPoints.at(0).x;
+        min.y = std::min(point.y, _trackPoints.at(3).y);
+        max.x = std::max(point.x, _trackPoints.at(3).x);
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 2:
+        min.x = _trackPoints.at(0).x;
+        min.y = _trackPoints.at(0).y;
+        max.x = std::max(point.x, _trackPoints.at(0).x);
+        max.y = std::max(point.y, _trackPoints.at(0).y);
+        break;
+    case 3:
+        min.x = std::min(point.x, _trackPoints.at(1).x);
+        min.y = _trackPoints.at(0).y;
+        max.x = _trackPoints.at(2).x;
+        max.y = std::max(point.y, _trackPoints.at(1).y);
+        break;
+    }
+
+    _size.x = max.x - min.x;
+    _size.y = max.y - min.y;
+
+    auto coord = GetOwner()->LocalToParent(_size * _anchor + min);
+    GetOwner()->GetTransform()->Position(coord.x, coord.y);
+
+    _update |= kTrackPoint;
+
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompSprite::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
