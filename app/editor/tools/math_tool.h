@@ -373,6 +373,25 @@ namespace tools {
     //  生成多边形外环
     inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border)
     {
+        std::vector<glm::vec2> result;
         ASSERT_LOG(!IsExistClosePath(points), "");
+        auto order = CalePointsOrder(points);
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & a = points.at(i);
+            auto & b = points.at((i + 1) % points.size());
+            auto & c = points.at((i + 2) % points.size());
+            result.push_back(b);
+
+            if (auto ab = b - a, bc = c - b; order * glm::cross(ab, bc) < 0)
+            {
+                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border);
+            }
+            else
+            {
+                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border);
+            }
+        }
+        return std::move(result);
     }
 }
