@@ -73,6 +73,20 @@ void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+void GLMesh::Draw(uint primitive)
+{
+    glBindVertexArray(GetVAO());
+    if (GetECount() == 0)
+    {
+        glDrawArrays(primitive, 0, GetVCount());
+    }
+    else
+    {
+        glDrawElements(primitive, GetECount(), GL_UNSIGNED_INT, nullptr);
+    }
+    glBindVertexArray(0);
+}
+
 // ---
 //  GLImage
 // ---

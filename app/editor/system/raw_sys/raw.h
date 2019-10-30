@@ -78,6 +78,7 @@ public:
         uint vUsage = GL_STATIC_DRAW, 
         uint eUsage = GL_STATIC_DRAW);
 
+    void Draw(uint primitive);
     uint GetVAO() const { return _vao; }
     uint GetVBO() const { return _vbo; }
     uint GetEBO() const { return _ebo; }

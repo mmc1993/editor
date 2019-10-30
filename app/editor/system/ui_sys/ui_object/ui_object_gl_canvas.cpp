@@ -41,9 +41,7 @@ void UIObjectGLCanvas::HandlePostCommands()
             command.mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
             command.Call(nullptr);
             Post(command.mProgram, command.mTransform);
-            glBindVertexArray(command.mMesh->GetVAO());
-            glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
-            glBindVertexArray(0);
+            command.mMesh->Draw(GL_TRIANGLES);
         }
     }
 }
@@ -66,9 +64,7 @@ void UIObjectGLCanvas::HandleFowardCommands()
             }
             command.Call(&texNum);
             Post(command.mProgram, command.mTransform);
-            glBindVertexArray(command.mMesh->GetVAO());
-            glDrawElements(GL_TRIANGLES, command.mMesh->GetECount(), GL_UNSIGNED_INT, nullptr);
-            glBindVertexArray(0);
+            command.mMesh->Draw(GL_TRIANGLES);
         }
     }
 }
@@ -145,16 +141,13 @@ void UIObjectGLCanvas::DrawTrackPoint()
             mesh->Update(points, {});
 
             state->mGLProgramSolidFill->UsePass(0);
-            Post(  state->mGLProgramSolidFill,
-                    object->GetWorldMatrix());
-            glBindVertexArray(mesh->GetVAO());
-            glDrawArrays(GL_LINE_LOOP, 0, mesh->GetVCount());
+            Post(state->mGLProgramSolidFill,
+                 object->GetWorldMatrix());
+            mesh->Draw(GL_LINE_LOOP);
             if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
             {
-                glBindVertexArray(mesh->GetVAO());
-                glDrawArrays(GL_POINTS, 0, mesh->GetVCount());
+                mesh->Draw(GL_POINTS);
             }
-            glBindVertexArray(0);
         }
     }
 }
@@ -193,14 +186,8 @@ void UIObjectGLCanvas::DrawSelectRect()
         glEnable(GL_BLEND);
         Post(state->mGLProgramSolidFill, glm::mat4(1));
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glBindVertexArray(mesh0->GetVAO());
-        glDrawArrays(GL_TRIANGLES, 0, mesh0->GetVCount());
-
-        glBindVertexArray(mesh1->GetVAO());
-        glDrawArrays(GL_LINE_LOOP, 0, mesh1->GetVCount());
-
-        glBindVertexArray(0);
+        mesh0->Draw(GL_TRIANGLES);
+        mesh1->Draw(GL_LINE_LOOP);
         glDisable(GL_BLEND);
 
         FromRectSelectObjects(min, max);
