@@ -157,6 +157,9 @@ public:
     void OpSelected(const SharePtr<GLObject> & object, bool selected);
     void OpSelectedClear();
 
+    glm::vec2 ProjectScreen(const glm::vec2 & world);
+    glm::vec2 ProjectWorld(const glm::vec2 & screen);
+
 private:
     void HandleFowardCommands();
     void HandlePostCommands();
@@ -179,8 +182,6 @@ private:
     glm::mat4 GetMatView();
     glm::mat4 GetMatProj();
     glm::mat4 GetMatViewProj();
-    glm::vec2 ProjectScreen(const glm::vec2 & world);
-    glm::vec2 ProjectWorld(const glm::vec2 & screen);
     SharePtr<GLMesh> & GetMeshBuffer(size_t idx);
     bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op);
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);

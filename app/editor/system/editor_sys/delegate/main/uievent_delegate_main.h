@@ -2,6 +2,7 @@
 
 #include "../../../../include.h"
 #include "../../component/component.h"
+#include "../../component/comp_transform.h"
 #include "../../../event_sys/event_sys.h"
 #include "../../../cfg_sys/cfg_sys.h"
 #include "../../../ui_sys/ui_sys.h"

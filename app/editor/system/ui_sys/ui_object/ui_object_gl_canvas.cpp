@@ -315,6 +315,22 @@ void UIObjectGLCanvas::OpSelectedClear()
     state->mOperation.mEditComponent = nullptr;
 }
 
+glm::vec2 UIObjectGLCanvas::ProjectScreen(const glm::vec2 & world)
+{
+    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto coord = glm::project(glm::vec3(world, 0),
+            GetMatView(), GetMatProj(), viewPort);
+    return  glm::vec2(coord.x, GetState()->Move.w - coord.y);
+}
+
+glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
+{
+    glm::vec3 coord(screen.x, GetState()->Move.w - screen.y, 0);
+    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto result = glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
+    return result;
+}
+
 interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack;
@@ -533,22 +549,6 @@ glm::mat4 UIObjectGLCanvas::GetMatProj()
 glm::mat4 UIObjectGLCanvas::GetMatViewProj()
 {
     return GetMatProj() * GetMatView();
-}
-
-glm::vec2 UIObjectGLCanvas::ProjectScreen(const glm::vec2 & world)
-{
-    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto coord = glm::project(glm::vec3(world, 0),
-            GetMatView(), GetMatProj(), viewPort);
-    return  glm::vec2(coord.x, GetState()->Move.w - coord.y);
-}
-
-glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
-{
-    glm::vec3 coord(screen.x, GetState()->Move.w - screen.y, 0);
-    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto result = glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
-    return result;
 }
 
 SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)

@@ -189,6 +189,12 @@ void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject>& o
 {
     auto uiobject = NewObject(object->GetID(), object->GetName());
     _id2obj.at(object->GetParent()->GetID())->AddObject(uiobject);
+
+    auto stage = CastPtr<UIObjectGLCanvas>(GetOwner()->GetParent()->GetObject({"C_3"}));
+    auto coord = glm::vec2(stage->GetState()->Move.z * 0.5f, 
+                           stage->GetState()->Move.w * 0.5f);
+    coord = object->GetParent()->WorldToLocal(stage->ProjectWorld(coord));
+    object->GetTransform()->Position(coord.x, coord.y);
 }
 
 void UIEventDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& object)
