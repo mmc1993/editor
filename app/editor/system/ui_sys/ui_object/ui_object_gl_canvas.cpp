@@ -545,10 +545,10 @@ glm::vec2 UIObjectGLCanvas::ProjectScreen(const glm::vec2 & world)
 
 glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
 {
+    glm::vec3 coord(screen.x, GetState()->Move.w - screen.y, 0);
     glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto result = glm::unProject(glm::vec3(screen.x, viewPort.w - screen.y, 0),
-                                 glm::mat4(1), GetMatProj(), viewPort        );
-    return glm::inverse(GetMatView()) * glm::vec4(result, 1);
+    auto result = glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
+    return result;
 }
 
 SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
