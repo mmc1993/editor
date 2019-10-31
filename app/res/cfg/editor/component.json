@@ -1,9 +1,9 @@
 {
     "Order": [
         "Transform",
+        "Graphics/Light",
         "Graphics/Sprite",
-        "Graphics/Tilemap",
-        "Graphics/LightSource"
+        "Graphics/Tilemap"
     ],
     "List": {
         "Transform": {
@@ -40,7 +40,7 @@
                 }
             ]
         },
-        "Graphics/LightSource": {
+        "Graphics/Light": {
             "Desc": "光源组件",
             "Propertys": [
                 {

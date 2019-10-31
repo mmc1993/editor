@@ -45,7 +45,7 @@ namespace tools {
 
     //  点到四边形距离
     //      返回距离及最接近的边
-    inline std::pair<float, int> RectInDistance(const glm::vec4 & rect, const glm::vec2 & point)
+    inline std::pair<float, int> PointToRectEdge(const glm::vec4 & rect, const glm::vec2 & point)
     {
         auto t = std::abs(point.y - rect.y);
         auto b = std::abs(point.y - rect.y - rect.w);
@@ -131,6 +131,21 @@ namespace tools {
         {
             return *crossA >= 0.0f && *crossA <= 1.0f
                 && *crossB >= 0.0f && *crossB <= 1.0f;
+        }
+        return false;
+    }
+
+    //  线段与多边形相交
+    inline bool IsCrossSegment(const glm::vec2 & a, const glm::vec2 & b, const std::vector<glm::vec2> & points)
+    {
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & c = points.at(i                      );
+            auto & d = points.at((i + 1) % points.size());
+            if (IsCrossSegment(a, b, c, d))
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -333,6 +348,20 @@ namespace tools {
     {
         std::vector<std::vector<glm::vec2>> result;
         StripConvexPoints(points, result);
+        return std::move(result);
+    }
+
+    //  切割三角形
+    inline std::vector<std::array<glm::vec2, 3>> StripTrianglePoints(const std::vector<glm::vec2> & points)
+    {
+        std::vector<std::array<glm::vec2, 3>> result;
+        for (auto i = 1; i != points.size() - 1; ++i)
+        {
+            result.emplace_back();
+            result.back().at(0) = points.at(0);
+            result.back().at(1) = points.at(i);
+            result.back().at(2) = points.at(i + 1);
+        }
         return std::move(result);
     }
 

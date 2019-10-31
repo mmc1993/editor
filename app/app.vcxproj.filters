@@ -114,6 +114,9 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_tilemap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_light.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -987,6 +990,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\comp_tilemap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_light.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
