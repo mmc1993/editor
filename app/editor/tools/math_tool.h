@@ -407,18 +407,18 @@ namespace tools {
         auto order = CalePointsOrder(points);
         for (auto i = 0; i != points.size(); ++i)
         {
-            auto & a = points.at(i);
-            auto & b = points.at((i + 1) % points.size());
-            auto & c = points.at((i + 2) % points.size());
+            auto & a = points.at((i + points.size() - 1) % points.size());
+            auto & b = points.at( i                     );
+            auto & c = points.at((i + 1) % points.size());
             result.push_back(b);
 
             if (auto ab = b - a, bc = c - b; order * glm::cross(ab, bc) < 0)
             {
-                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border);
+                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border + b);
             }
             else
             {
-                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border);
+                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border + b);
             }
         }
         return std::move(result);

@@ -7,8 +7,10 @@ CompLight::CompLight()
     , _update(kTrackPoint | kBorder)
     , _color(1.0f, 1.0f, 1.0f, 0.5f)
 {
-    _trackPoints.emplace_back(0,  0);
-    _trackPoints.emplace_back(0, 30);
+    _trackPoints.emplace_back(-30, -30);
+    _trackPoints.emplace_back( 30, -30);
+    _trackPoints.emplace_back( 30,  30);
+    _trackPoints.emplace_back(-30,  30);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({},{}, GLMesh::Vertex::kV | 
@@ -82,10 +84,11 @@ void CompLight::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        std::vector<uint>           indexs;
-        std::vector<GLMesh::Vertex> points;
         if (_trackPoints.size() == 2)
         {
+            std::vector<uint>           indexs;
+            std::vector<GLMesh::Vertex> points;
+
             auto radius = glm::length(_trackPoints.at(1) - _trackPoints.at(0));
             for (auto i = 0; i != 360; i += 20)
             {
@@ -127,16 +130,30 @@ void CompLight::Update()
         }
         else
         {
-            //for (auto & convex : tools::StripConvexPoints(_trackPoints))
-            //{
-            //    for (auto & triangle : tools::StripTrianglePoints(convex))
-            //    {
-            //        points.emplace_back(triangle.at(0), _color);
-            //        points.emplace_back(triangle.at(1), _color);
-            //        points.emplace_back(triangle.at(2), _color);
-            //    }
-            //}
-            //auto outer = tools::GenOuterRing(_trackPoints, _border);
+            std::vector<GLMesh::Vertex> points;
+            for (auto & convex : tools::StripConvexPoints(_trackPoints))
+            {
+                for (auto & triangle : tools::StripTrianglePoints(convex))
+                {
+                    points.emplace_back(triangle.at(0), _color);
+                    points.emplace_back(triangle.at(1), _color);
+                    points.emplace_back(triangle.at(2), _color);
+                }
+            }
+            auto outer  = tools::GenOuterRing(_trackPoints, _border);
+            auto color  = glm::vec4(_color.x, _color.y, _color.z, 0);
+            auto middle = outer.size() / 2;
+            for (auto i = 0; i != middle; ++i)
+            {
+                points.emplace_back(outer.at(2 * i),                     _color);
+                points.emplace_back(outer.at(2 * i + 1),                  color);
+                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+
+                points.emplace_back(outer.at(2 * i),                     _color);
+                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+                points.emplace_back(outer.at(2 * ((i + 1) % middle)),    _color);
+            }
+            _mesh->Update(points, {});
         }
     }
 }
@@ -147,6 +164,7 @@ void CompLight::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 
 void CompLight::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
 }
 
 void CompLight::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
