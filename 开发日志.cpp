@@ -91,3 +91,5 @@ ok  //  UIEventEnum 剥离
 阴影
 资源管理器
 资源选择框
+
+BlendFunc SrcAlpha One

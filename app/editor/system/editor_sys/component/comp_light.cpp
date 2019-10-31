@@ -7,10 +7,8 @@ CompLight::CompLight()
     , _update(kTrackPoint | kBorder)
     , _color(1.0f, 1.0f, 1.0f, 0.5f)
 {
-    _trackPoints.emplace_back(-30, -30);
-    _trackPoints.emplace_back( 30, -30);
-    _trackPoints.emplace_back( 30,  30);
-    _trackPoints.emplace_back(-30,  30);
+    _trackPoints.emplace_back(0,  0);
+    _trackPoints.emplace_back(0, 30);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({},{}, GLMesh::Vertex::kV | 
@@ -90,7 +88,7 @@ void CompLight::Update()
             std::vector<GLMesh::Vertex> points;
 
             auto radius = glm::length(_trackPoints.at(1) - _trackPoints.at(0));
-            for (auto i = 0; i != 360; i += 20)
+            for (auto i = 0; i != 360; i += 10)
             {
                 auto x = std::cos(glm::radians((float)i));
                 auto y = std::sin(glm::radians((float)i));
@@ -102,7 +100,7 @@ void CompLight::Update()
                 points.emplace_back(glm::vec2(
                     x * (radius + _border) + _trackPoints.at(0).x, 
                     y * (radius + _border) + _trackPoints.at(0).y), 
-                    glm::vec4(_color.x, _color.y, _color.z, 0));
+                    glm::vec4(0));
             }
             ASSERT_LOG(points.size() % 2 == 0, "");
 
@@ -160,6 +158,8 @@ void CompLight::Update()
 
 void CompLight::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    _trackPoints.at(index) = point;
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompLight::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)

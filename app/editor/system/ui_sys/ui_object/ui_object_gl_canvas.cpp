@@ -535,9 +535,17 @@ glm::mat4 UIObjectGLCanvas::GetMatViewProj()
     return GetMatProj() * GetMatView();
 }
 
-glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & pt)
+glm::vec2 UIObjectGLCanvas::ProjectScreen(const glm::vec2 & world)
 {
-    const auto & coord = ToLocalCoord(pt);
+    glm::vec4 portView(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto coord = glm::project(glm::vec3(world, 0),
+            glm::mat4(1), GetMatProj(), portView);
+    return  glm::vec2(coord);
+}
+
+glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
+{
+    const auto & coord = ToLocalCoord(screen);
     glm::vec4 portView(0, 0, GetState()->Move.z, GetState()->Move.w);
     auto result = glm::unProject(glm::vec3(coord.x, portView.w - coord.y, 0),
                                  glm::mat4(1), GetMatProj(), portView      );
