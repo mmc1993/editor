@@ -3,7 +3,9 @@
 #include "../../ui_sys/ui_object/ui_object.h"
 
 CompLight::CompLight()
-    : _update(kTrackPoint | kBorder)
+    : _border(20)
+    , _update(kTrackPoint | kBorder)
+    , _color(1.0f, 1.0f, 1.0f, 0.5f)
 {
     _trackPoints.emplace_back(0,  0);
     _trackPoints.emplace_back(0, 30);
