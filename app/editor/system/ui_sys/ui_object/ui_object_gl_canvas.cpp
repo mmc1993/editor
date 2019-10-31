@@ -164,8 +164,8 @@ void UIObjectGLCanvas::DrawSelectRect()
     if (HasOpMode(UIStateGLCanvas::Operation::kSelect))
     {
         auto state = GetState<UIStateGLCanvas>();
-        auto min = ProjectWorld(glm::vec2(state->mOperation.mSelectRect.x, state->mOperation.mSelectRect.y));
-        auto max = ProjectWorld(glm::vec2(state->mOperation.mSelectRect.z, state->mOperation.mSelectRect.w));
+        auto min = ProjectWorld(ToLocalCoord(glm::vec2(state->mOperation.mSelectRect.x, state->mOperation.mSelectRect.y)));
+        auto max = ProjectWorld(ToLocalCoord(glm::vec2(state->mOperation.mSelectRect.z, state->mOperation.mSelectRect.w)));
         if (min.x > max.x) std::swap(min.x, max.x);
         if (min.y > max.y) std::swap(min.y, max.y);
 
@@ -427,11 +427,11 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
     {
-        auto origin = ProjectWorld(param.mMouse);
+        auto origin = ProjectWorld(ToLocalCoord(param.mMouse));
         auto oldS   = state->mOperation.mScale;
         state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.05f * param.mWheel), 0.05f, 5.0f);
         auto newS   = state->mOperation.mScale;
-        auto target = ProjectWorld(param.mMouse);
+        auto target = ProjectWorld(ToLocalCoord(param.mMouse));
         state->mOperation.mCoord.x += (origin.x - target.x) * newS;
         state->mOperation.mCoord.y += (origin.y - target.y) * newS;
     }
@@ -446,7 +446,7 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
             state->mOperation.mSelectRect.y = param.mMouse.y;
             state->mOperation.mSelectRect.z = param.mMouse.x;
             state->mOperation.mSelectRect.w = param.mMouse.y;
-            const auto & coord = ProjectWorld(param.mMouse);
+            const auto & coord = ProjectWorld(ToLocalCoord(param.mMouse));
             if (FromRectSelectObjects(coord, coord))
             {
                 AddOpMode(UIStateGLCanvas::Operation::kDrag, true);
@@ -470,8 +470,8 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         //   按住左键拖动对象
         if (HasOpMode(UIStateGLCanvas::Operation::kDrag) && param.mAct == 1 && param.mKey == 0)
         {
-            auto prev = ProjectWorld(param.mMouse - param.mDelta);
-            auto curr = ProjectWorld(param.mMouse);
+            auto prev = ProjectWorld(ToLocalCoord(param.mMouse - param.mDelta));
+            auto curr = ProjectWorld(ToLocalCoord(param.mMouse               ));
             OpDragSelects(prev, curr);
         }
         //  抬起左键结束拖拽
@@ -488,7 +488,7 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         //  左键双击新增顶点
         if (param.mAct == 4 && param.mKey == 0)
         {
-            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ToLocalCoord(param.mMouse));
             if (num == 0 || num == 2)
             {
                 comp->InsertTrackPoint(index, coord);
@@ -497,7 +497,7 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
         //  左键单击选中顶点
         if (param.mAct == 3 && param.mKey == 0)
         {
-            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ProjectWorld(param.mMouse));
+            auto[num, comp, coord, index] = FromCoordSelectTrackPoint(ToLocalCoord(param.mMouse));
             state->mOperation.mEditTrackPoint = num == 1? index: (uint)-1;
             state->mOperation.mEditComponent = num == 1? comp: nullptr;
         }
@@ -507,8 +507,8 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
             auto & comp = state->mOperation.mEditComponent;
             auto index = state->mOperation.mEditTrackPoint;
             ASSERT_LOG(index < comp->GetTrackPoints().size(), "");
-            auto prev = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse - param.mDelta));
-            auto curr = comp->GetOwner()->WorldToLocal(ProjectWorld(param.mMouse               ));
+            auto prev = comp->GetOwner()->WorldToLocal(ProjectWorld(ToLocalCoord(param.mMouse - param.mDelta)));
+            auto curr = comp->GetOwner()->WorldToLocal(ProjectWorld(ToLocalCoord(param.mMouse               )));
             comp->ModifyTrackPoint(index, comp->GetTrackPoints().at(index) + (curr - prev));
         }
     }
@@ -537,18 +537,17 @@ glm::mat4 UIObjectGLCanvas::GetMatViewProj()
 
 glm::vec2 UIObjectGLCanvas::ProjectScreen(const glm::vec2 & world)
 {
-    glm::vec4 portView(0, 0, GetState()->Move.z, GetState()->Move.w);
+    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
     auto coord = glm::project(glm::vec3(world, 0),
-            glm::mat4(1), GetMatProj(), portView);
-    return  glm::vec2(coord);
+            GetMatView(), GetMatProj(), viewPort);
+    return  glm::vec2(coord.x, GetState()->Move.w - coord.y);
 }
 
 glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
 {
-    const auto & coord = ToLocalCoord(screen);
-    glm::vec4 portView(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto result = glm::unProject(glm::vec3(coord.x, portView.w - coord.y, 0),
-                                 glm::mat4(1), GetMatProj(), portView      );
+    glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
+    auto result = glm::unProject(glm::vec3(screen.x, viewPort.w - screen.y, 0),
+                                 glm::mat4(1), GetMatProj(), viewPort        );
     return glm::inverse(GetMatView()) * glm::vec4(result, 1);
 }
 
@@ -695,7 +694,7 @@ SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObje
     return nullptr;
 }
 
-std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoordSelectTrackPoint(const glm::vec2 & world)
+std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoordSelectTrackPoint(const glm::vec2 & screen)
 {
     //  返回值:
     //      没有击中追踪点 -1
@@ -705,32 +704,32 @@ std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoo
     auto state = GetState<UIStateGLCanvas>();
     ASSERT_LOG(state->mOperation.mEditObject != nullptr, "");
 
-    const auto & coord = state->mOperation.mEditObject->WorldToLocal(world);
     const auto & comps = state->mOperation.mEditObject->GetComponents();
     for (auto it = comps.rbegin(); it != comps.rend(); ++it)
     {
         //  优先判断是否击中顶点
         for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
         {
-            const auto & point = (*it)->GetTrackPoints().at(i);
-            if (tools::IsCantains(point, (float)VAL_TrackPointSize, coord))
+            const auto coord = ProjectScreen(state->mOperation.mEditObject->LocalToWorld((*it)->GetTrackPoints().at(i)));
+
+            if (tools::IsCantains(coord, (float)VAL_TrackPointSize, screen))
             {
-                return std::make_tuple(1, *it, coord, (uint)i);
+                return std::make_tuple(1, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)i);
             }
-            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(point - coord))
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(screen - coord))
             {
-                return std::make_tuple(0, *it, coord, (uint)i + 1);
+                return std::make_tuple(0, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)i + 1);
             }
         }
         //  其次判断是否击中线段
         for (auto i = 0u; i != (*it)->GetTrackPoints().size(); ++i)
         {
             auto j = (i + 1) % (*it)->GetTrackPoints().size();
-            const auto & a = (*it)->GetTrackPoints().at(i);
-            const auto & b = (*it)->GetTrackPoints().at(j);
-            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(tools::PointToSegment(coord, a, b)))
+            const auto a = ProjectScreen(state->mOperation.mEditObject->LocalToWorld((*it)->GetTrackPoints().at(i)));
+            const auto b = ProjectScreen(state->mOperation.mEditObject->LocalToWorld((*it)->GetTrackPoints().at(j)));
+            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(tools::PointToSegment(screen, a, b)))
             {
-                return std::make_tuple(2, *it, coord, (uint)j);
+                return std::make_tuple(2, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)j);
             }
         }
     }
