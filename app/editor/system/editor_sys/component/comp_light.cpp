@@ -165,6 +165,7 @@ void CompLight::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 void CompLight::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
     _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
+    AddState(StateEnum::kUpdate, true);
 }
 
 void CompLight::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)

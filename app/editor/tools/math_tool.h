@@ -196,16 +196,14 @@ namespace tools {
     //  点到线段最短距离
     inline glm::vec2 PointToSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
-        auto ab = glm::vec3(b - a, 0);
-        auto ap = glm::vec3(p - a, 0);
-        auto bp = glm::vec3(p - b, 0);
+        auto ab = b - a, ap = p - a, bp = p - b;
         if      (glm::dot(ap, ab) <= 0) { return -ap; }
         else if (glm::dot(bp, ab) >= 0) { return -bp; }
-        else
-        {
+        else 
+        { 
             auto l = glm::length(ab);
-            auto s = glm::dot(ap, ab) / l;
-            return s / l * ab;
+            auto s = glm::dot(ab, ap) / l;
+            return s / l * ab - ap;
         }
     }
 
@@ -316,7 +314,8 @@ namespace tools {
                 auto & d = points.at((j + 1) % points.size());
                 if (IsCrossLine(a, b, c, d, &crossA, &crossB))
                 {
-                    if (crossA > 1 && crossA < minC)
+                    if (crossB >=0 && crossB <= 1 &&
+                        crossA > 1 && crossA < minC)
                     { minC = crossA; minI = j; }
                 }
             }
@@ -385,11 +384,11 @@ namespace tools {
         for (auto i0 = 2; i0 != points.size(); ++i0)
         {
             auto i1 = (i0 + 1) % points.size();
-            for (auto j0 = 0; j0 != points.size(); ++j0)
+            for (auto j0 = 0; j0 != i0-1; ++j0)
             {
                 auto j1 = (j0 + 1) % points.size();
-                if (i0 != 0 && IsCrossSegment(
-                    points.at(i0), points.at(i1),
+                if (i1 != j0 && IsCrossSegment(
+                    points.at(i0), points.at(i1), 
                     points.at(j0), points.at(j1)))
                 {
                     return true;
@@ -412,13 +411,15 @@ namespace tools {
             auto & c = points.at((i + 1) % points.size());
             result.push_back(b);
 
-            if (auto ab = b - a, bc = c - b; order * glm::cross(ab, bc) < 0)
+            auto ab = glm::normalize(b - a);
+            auto cb = glm::normalize(b - c);
+            if (order * glm::cross(ab, -cb) < 0)
             {
-                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border + b);
+                result.push_back(-glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
             }
             else
             {
-                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border + b);
+                result.push_back(+glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
             }
         }
         return std::move(result);

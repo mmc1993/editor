@@ -716,7 +716,7 @@ std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoo
             {
                 return std::make_tuple(1, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)i);
             }
-            if (VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(screen - coord))
+            if (2 * VAL_TrackPointSize * VAL_TrackPointSize >= glm::length_sqrt(screen - coord))
             {
                 return std::make_tuple(0, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)i + 1);
             }
