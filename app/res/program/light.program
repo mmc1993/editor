@@ -34,9 +34,7 @@ Pass Beg
             vec2 size = textureSize(uniform_screen, 0);
             float u = gl_FragCoord.x / size.x;
             float v = gl_FragCoord.y / size.y;
-            vec4 color = texture(uniform_screen, vec2(0, 0));
-            color_.r = color.r;
-            color_.a = 1;
+            color_ = texture(uniform_screen, vec2(u, v)) * v_out_.mColor;
         }
     FShader End
 Pass End

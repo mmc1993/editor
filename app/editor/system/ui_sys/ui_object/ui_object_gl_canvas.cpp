@@ -23,9 +23,11 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 void UIObjectGLCanvas::HandlePostCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetAttachment(GL_READ_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[0]);
-    tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, state->mRenderTextures[1]);
-    glBlitFramebuffer(0, 0, (iint)state->Move.z, (iint)state->Move.w, 0, 0, (iint)state->Move.z, (iint)state->Move.w, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+    if (state->mPostCommands.front().mType != interface::PostCommand::kSwap)
+    {
+        std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+    }
+
     for (auto & command : state->mPostCommands)
     {
         for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
@@ -38,7 +40,8 @@ void UIObjectGLCanvas::HandlePostCommands()
             tools::RenderTargetAttachment(
                 GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, state->mRenderTextures[0]);
-            command.mProgram->BindUniformTex2D("uniform_screen", state->mRenderTextures[1], 0);
+            command.mProgram->BindUniformTex2D("uniform_screen", 
+                                  state->mRenderTextures[1], 0);
             command.Call(nullptr);
             Post(command.mProgram, command.mTransform);
             command.mMesh->Draw(GL_TRIANGLES);
@@ -49,8 +52,6 @@ void UIObjectGLCanvas::HandlePostCommands()
 void UIObjectGLCanvas::HandleFowardCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                  GL_TEXTURE_2D, state->mRenderTextures[0]);
     for (auto & command : state->mFowardCommands)
     {
         for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
@@ -79,11 +80,20 @@ void UIObjectGLCanvas::CallCommands()
     auto state = GetState<UIStateGLCanvas>();
 
     tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
+
+    //  Çå¿ÕÀëÆÁBuffer
     tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                   GL_TEXTURE_2D, state->mRenderTextures[0]);
-    glClearColor(0, 0, 0, 1);
+    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+                                  GL_TEXTURE_2D, state->mRenderTextures[1]);
+    uint buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+    glDrawBuffers(2, buffers);
+    glClearColor(0,0,0, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+    buffers[1] = GL_NONE;
+    glDrawBuffers(2, buffers);
 
+    //  ¿ªÊ¼äÖÈ¾
     iint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
@@ -113,9 +123,6 @@ void UIObjectGLCanvas::CallCommands()
 void UIObjectGLCanvas::DrawTrackPoint()
 {
     auto state = GetState<UIStateGLCanvas>();
-    tools::RenderTargetAttachment(
-        GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-        GL_TEXTURE_2D, state->mRenderTextures[0]);
     glLineWidth((float)VAL_TrackPointLine);
     glPointSize((float)VAL_TrackPointSize);
     for (auto & object : state->mOperation.mSelectObjects)
