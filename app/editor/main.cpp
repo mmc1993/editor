@@ -46,18 +46,15 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
+    std::atan2(0,  1);
+    std::atan2(0, -1);
+    std::atan2( 1, 0);
+    std::atan2(-1, 0);
+
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())
         return 1;
-
-    std::vector<glm::vec2> points{
-        { 0,  0 },
-        { 10, 0 },
-        { 10, 10 },
-        { 0,  10 },
-    };
-    auto outer = tools::GenOuterRing(points, 5, 0);
 
     // Decide GL+GLSL versions
 #if __APPLE__
