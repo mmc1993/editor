@@ -398,33 +398,6 @@ namespace tools {
         return false;
     }
 
-    //  生成多边形外环
-    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 0)
-    {
-        std::vector<glm::vec2> result;
-        ASSERT_LOG(!IsExistClosePath(points), "");
-        auto order = CalePointsOrder(points);
-        for (auto i = 0; i != points.size(); ++i)
-        {
-            auto & a = points.at((i + points.size() - 1) % points.size());
-            auto & b = points.at( i                     );
-            auto & c = points.at((i + 1) % points.size());
-            result.push_back(b);
-
-            auto ab = glm::normalize(b - a);
-            auto cb = glm::normalize(b - c);
-            if (order * glm::cross(ab, -cb) < 0)
-            {
-                result.push_back(-glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
-            }
-            else
-            {
-                result.push_back(+glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
-            }
-        }
-        return std::move(result);
-    }
-
     //  生成圆角
     inline std::vector<glm::vec2> GenRounding(const glm::vec2 & dir0, const glm::vec2 & dir1, float len, float smooth)
     {
@@ -433,15 +406,37 @@ namespace tools {
         std::vector<glm::vec2> result;
         auto rad0 = std::acos(dir0.x / glm::length(dir0));
         auto rad1 = std::acos(dir1.x / glm::length(dir1));
-        if (auto count = (rad1 - rad0) / unit * smooth; count >= 2)
+        if (auto count = (int)((rad1 - rad0) / unit * smooth); count >= 2)
         {
             auto step = (rad1 - rad0) / count;
             for (auto i = 1; i != count; ++i)
             {
+                rad0 += step;
                 result.emplace_back(
-                    std::cos(rad0 + step) * len,
-                    std::sin(rad0 + step) * len);
+                    std::cos(rad0) * len,
+                    std::sin(rad0) * len);
             }
+        }
+        return std::move(result);
+    }
+
+    //  生成多边形外环
+    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 0)
+    {
+        std::vector<glm::vec2> result;
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & a = points.at((i + points.size() - 1) % points.size());
+            auto & b = points.at( i                     );
+            auto & c = points.at((i + 1) % points.size());
+            auto ab = glm::normalize(b - a) * border;
+            auto cb = glm::normalize(b - c) * border;
+            result.push_back(b); result.push_back(b + cb);
+            for (auto & p : GenRounding(cb, ab, border, smooth))
+            {
+                result.push_back(b + p);
+            }
+            result.push_back(b + ab); result.push_back(b); 
         }
         return std::move(result);
     }

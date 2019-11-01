@@ -138,19 +138,40 @@ void CompLight::Update()
                     points.emplace_back(triangle.at(2), _color);
                 }
             }
-            auto outer  = tools::GenOuterRing(_trackPoints, _border);
-            auto color  = glm::vec4(_color.x, _color.y, _color.z, 0);
-            auto middle = outer.size() / 2;
-            for (auto i = 0; i != middle; ++i)
+            auto color = glm::vec4(_color.x, _color.y, _color.z, 0.5f);
+            auto outer = tools::GenOuterRing(_trackPoints, _border);
+            for (auto index = 0; index != outer.size(); ++index)
             {
-                points.emplace_back(outer.at(2 * i),                     _color);
-                points.emplace_back(outer.at(2 * i + 1),                  color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+                for (auto & p = outer.at(index++); p != outer.at(index + 1); ++index)
+                {
+                    points.emplace_back(p, _color);
+                    points.emplace_back(p + outer.at(index    ), color);
+                    points.emplace_back(p + outer.at(index + 1), color);
+                }
+                auto & a = outer.at(index);
+                auto & b = outer.at(index - 1);
+                auto & c = outer.at((index + 1) % outer.size());
+                auto & d = outer.at((index + 2) % outer.size());
+                points.emplace_back(a, _color);
+                points.emplace_back(c + d, color);
+                points.emplace_back(a + b, color);
 
-                points.emplace_back(outer.at(2 * i),                     _color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle)),    _color);
+                points.emplace_back(a, _color);
+                points.emplace_back(c, _color);
+                points.emplace_back(c + d,  color);
             }
+
+            //auto middle = outer.size() / 2;
+            //for (auto i = 0; i != middle; ++i)
+            //{
+            //    points.emplace_back(outer.at(2 * i),                     _color);
+            //    points.emplace_back(outer.at(2 * i + 1),                  color);
+            //    points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+
+            //    points.emplace_back(outer.at(2 * i),                     _color);
+            //    points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+            //    points.emplace_back(outer.at(2 * ((i + 1) % middle)),    _color);
+            //}
             _mesh->Update(points, {});
         }
     }

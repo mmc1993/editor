@@ -51,6 +51,14 @@ int main(int, char**)
     if (!glfwInit())
         return 1;
 
+    std::vector<glm::vec2> points{
+        { 0,  0 },
+        { 10, 0 },
+        { 10, 10 },
+        { 0,  10 },
+    };
+    auto outer = tools::GenOuterRing(points, 5, 0);
+
     // Decide GL+GLSL versions
 #if __APPLE__
     // GL 3.2 + GLSL 150
