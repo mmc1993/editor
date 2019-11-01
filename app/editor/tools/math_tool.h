@@ -220,7 +220,7 @@ namespace tools {
         {
             auto l = 1 / glm::length(ab);
             auto s = l * glm::dot(ap,ab);
-            return l * s * ab;
+            return l * s * ab - ap;
         }
     }
 
@@ -428,13 +428,15 @@ namespace tools {
             auto & c = points.at((i + 1) % points.size());
             result.push_back(b);
 
-            if (auto ab = b - a, bc = c - b; order * glm::cross(ab, bc) < 0)
+            auto ab = glm::normalize(b - a);
+            auto cb = glm::normalize(b - c);
+            if (order * glm::cross(ab, -cb) < 0)
             {
-                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border + b);
+                result.push_back(-glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
             }
             else
             {
-                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border + b);
+                result.push_back(+glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
             }
         }
         return std::move(result);
@@ -443,19 +445,35 @@ namespace tools {
     //  生成凸包
     inline std::vector<glm::vec2> GenConvexPoints(std::vector<glm::vec2> points)
     {
-        const auto min = std::min_element(points.begin(), points.end(), 
+        if (points.size() < 3) { return points; }
+
+        const auto min = *std::min_element(points.begin(), points.end(), 
             [] (const auto & a, const auto & b) { return a.y < b.y; });
 
         std::sort(points.begin(), points.end(), 
             [&min] (const auto & a, const auto & b)
             { 
-                auto mina = a - *min;
-                auto minb = b - *min;
+                auto mina = a - min;
+                auto minb = b - min;
                 return std::atan2(mina.y, mina.x) < std::atan2(minb.y, minb.x);
             });
 
-        
         std::vector<glm::vec2> result;
-
+        result.push_back(points.at(0));
+        result.push_back(points.at(1));
+        result.push_back(points.at(2));
+        for (auto i = 3; i != points.size(); ++i)
+        {
+            auto a = std::next(result.rbegin(), 1);
+            auto b = std::next(result.rbegin(), 0);
+            while (0 > glm::cross(*b - *a, points.at(i) - *b))
+            {
+                result.pop_back();
+                a = std::next(result.rbegin(), 1);
+                b = std::next(result.rbegin(), 0);
+            }
+            result.push_back(points.at(i));
+        }
+        return std::move(result);
     }
 }

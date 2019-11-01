@@ -129,17 +129,16 @@ void CompLight::Update()
         else
         {
             std::vector<GLMesh::Vertex> points;
-            for (auto & convex : tools::StripConvexPoints(_trackPoints))
+            auto convex = tools::GenConvexPoints(_trackPoints);
+            for (auto i = 1; i != convex.size() - 1; ++i)
             {
-                for (auto & triangle : tools::StripTrianglePoints(convex))
-                {
-                    points.emplace_back(triangle.at(0), _color);
-                    points.emplace_back(triangle.at(1), _color);
-                    points.emplace_back(triangle.at(2), _color);
-                }
+                points.emplace_back(convex.at(0), _color);
+                points.emplace_back(convex.at(i), _color);
+                points.emplace_back(convex.at(i + 1), _color);
             }
+
             auto color = glm::vec4(_color.x, _color.y, _color.z, 0);
-            auto outer = tools::GenOuterRing(_trackPoints, _border);
+            auto outer = tools::GenOuterRing(convex, _border);
             auto middle = outer.size() / 2;
             for (auto i = 0; i != middle; ++i)
             {
