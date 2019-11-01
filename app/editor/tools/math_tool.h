@@ -150,6 +150,23 @@ namespace tools {
         return false;
     }
 
+    //  线段与多边形相交(穿过)
+    inline bool IsCrossSegmentPast(const glm::vec2 & a, const glm::vec2 & b, const std::vector<glm::vec2> & points)
+    {
+        auto crossA = 0.0f, crossB = 0.0f;
+        for (auto i = 0; i != points.size(); ++i)
+        {
+            auto & c = points.at(i                      );
+            auto & d = points.at((i + 1) % points.size());
+            if (IsCrossSegment(a, b, c, d, &crossA, &crossB)
+                && crossA != 0.0f && crossA != 1.0f)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //  点是否在多边形内
     inline bool IsContains(const std::vector<glm::vec2> & points, const glm::vec2 & a)
     {
@@ -199,11 +216,11 @@ namespace tools {
         auto ab = b - a, ap = p - a, bp = p - b;
         if      (glm::dot(ap, ab) <= 0) { return -ap; }
         else if (glm::dot(bp, ab) >= 0) { return -bp; }
-        else 
-        { 
-            auto l = glm::length(ab);
-            auto s = glm::dot(ab, ap) / l;
-            return s / l * ab - ap;
+        else
+        {
+            auto l = 1 / glm::length(ab);
+            auto s = l * glm::dot(ap,ab);
+            return l * s * ab;
         }
     }
 
@@ -398,49 +415,47 @@ namespace tools {
         return false;
     }
 
-    //  生成圆角
-    inline std::vector<glm::vec2> GenRounding(const glm::vec2 & dir0, const glm::vec2 & dir1, float len, float smooth)
-    {
-        static const auto unit = glm::pi<float>() / 180.0f;
-
-        std::vector<glm::vec2> result;
-        auto rad0 = std::acos(dir0.x / glm::length(dir0));
-        auto rad1 = std::acos(dir1.x / glm::length(dir1));
-        if (auto count = (int)((rad1 - rad0) / unit * smooth); count >= 2)
-        {
-            auto step = (rad1 - rad0) / count;
-            for (auto i = 1; i != count; ++i)
-            {
-                rad0 += step;
-                result.emplace_back(
-                    std::cos(rad0) * len,
-                    std::sin(rad0) * len);
-            }
-        }
-        return std::move(result);
-    }
-
     //  生成多边形外环
-    inline std::vector<std::pair<glm::vec2, std::vector<glm::vec2>>> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 0)
+    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border)
     {
-        std::vector<std::pair<glm::vec2, std::vector<glm::vec2>>> result;
+        std::vector<glm::vec2> result;
+        ASSERT_LOG(!IsExistClosePath(points), "");
+        auto order = CalePointsOrder(points);
         for (auto i = 0; i != points.size(); ++i)
         {
             auto & a = points.at((i + points.size() - 1) % points.size());
             auto & b = points.at( i                     );
             auto & c = points.at((i + 1) % points.size());
-            auto ab = glm::normalize(b - a) * border;
-            auto cb = glm::normalize(b - c) * border;
+            result.push_back(b);
 
-            result.emplace_back();
-            result.back().first = b;
-            result.back().second.emplace_back(b + cb);
-            for (auto & p : GenRounding(cb, ab, border, smooth))
+            if (auto ab = b - a, bc = c - b; order * glm::cross(ab, bc) < 0)
             {
-                result.back().second.emplace_back(b + p);
+                result.push_back(-glm::normalize((ab - bc) * 0.5f) * border + b);
             }
-            result.back().second.emplace_back(b + ab);
+            else
+            {
+                result.push_back(+glm::normalize((ab - bc) * 0.5f) * border + b);
+            }
         }
         return std::move(result);
+    }
+
+    //  生成凸包
+    inline std::vector<glm::vec2> GenConvexPoints(std::vector<glm::vec2> points)
+    {
+        const auto min = std::min_element(points.begin(), points.end(), 
+            [] (const auto & a, const auto & b) { return a.y < b.y; });
+
+        std::sort(points.begin(), points.end(), 
+            [&min] (const auto & a, const auto & b)
+            { 
+                auto mina = a - *min;
+                auto minb = b - *min;
+                return std::atan2(mina.y, mina.x) < std::atan2(minb.y, minb.x);
+            });
+
+        
+        std::vector<glm::vec2> result;
+
     }
 }
