@@ -421,9 +421,9 @@ namespace tools {
     }
 
     //  生成多边形外环
-    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 0)
+    inline std::vector<std::pair<glm::vec2, std::vector<glm::vec2>>> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 0)
     {
-        std::vector<glm::vec2> result;
+        std::vector<std::pair<glm::vec2, std::vector<glm::vec2>>> result;
         for (auto i = 0; i != points.size(); ++i)
         {
             auto & a = points.at((i + points.size() - 1) % points.size());
@@ -431,12 +431,15 @@ namespace tools {
             auto & c = points.at((i + 1) % points.size());
             auto ab = glm::normalize(b - a) * border;
             auto cb = glm::normalize(b - c) * border;
-            result.push_back(b); result.push_back(b + cb);
+
+            result.emplace_back();
+            result.back().first = b;
+            result.back().second.emplace_back(b + cb);
             for (auto & p : GenRounding(cb, ab, border, smooth))
             {
-                result.push_back(b + p);
+                result.back().second.emplace_back(b + p);
             }
-            result.push_back(b + ab); result.push_back(b); 
+            result.back().second.emplace_back(b + ab);
         }
         return std::move(result);
     }

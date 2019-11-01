@@ -138,27 +138,29 @@ void CompLight::Update()
                     points.emplace_back(triangle.at(2), _color);
                 }
             }
-            auto color = glm::vec4(_color.x, _color.y, _color.z, 0.5f);
+            auto color = glm::vec4(_color.x, _color.y, _color.z, 0.1f);
             auto outer = tools::GenOuterRing(_trackPoints, _border);
-            for (auto index = 0; index != outer.size(); ++index)
+            for (auto i = 0; i != outer.size(); ++i)
             {
-                for (auto & p = outer.at(index++); p != outer.at(index + 1); ++index)
-                {
-                    points.emplace_back(p, _color);
-                    points.emplace_back(p + outer.at(index    ), color);
-                    points.emplace_back(p + outer.at(index + 1), color);
-                }
-                auto & a = outer.at(index);
-                auto & b = outer.at(index - 1);
-                auto & c = outer.at((index + 1) % outer.size());
-                auto & d = outer.at((index + 2) % outer.size());
+                //const auto & ps = outer.at(i).second;
+                //for (auto j = 0u; j != ps.size() - 1; ++j)
+                //{
+                //    points.emplace_back(outer.at(i).first, _color);
+                //    points.emplace_back(outer.at(i).first + ps.at(j), color);
+                //    points.emplace_back(outer.at(i).first + ps.at(j + 1), color);
+                //}
+
+                auto & a = outer.at(i).first;
+                auto & b = outer.at(i).second.back();
+                auto & c = outer.at((i + 1) % outer.size()).first;
+                auto & d = outer.at((i + 1) % outer.size()).second.back();
                 points.emplace_back(a, _color);
                 points.emplace_back(c + d, color);
                 points.emplace_back(a + b, color);
 
                 points.emplace_back(a, _color);
                 points.emplace_back(c, _color);
-                points.emplace_back(c + d,  color);
+                points.emplace_back(c + d, color);
             }
 
             //auto middle = outer.size() / 2;
