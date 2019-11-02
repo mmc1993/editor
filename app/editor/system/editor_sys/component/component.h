@@ -66,6 +66,8 @@ public:
 
     //  组件名字
     virtual const std::string & GetName() = 0;
+    virtual void EncodeBinary(std::ofstream & os) override;
+    virtual void DecodeBinary(std::ifstream & is) override;
     //  Property修改时被调用
     virtual bool OnModifyProperty(const std::any & oldValue, 
                                   const std::any & newValue,

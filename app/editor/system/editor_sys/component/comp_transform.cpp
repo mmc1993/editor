@@ -29,6 +29,7 @@ void CompTransform::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 
 void CompTransform::EncodeBinary(std::ofstream & os)
 {
+    Component::EncodeBinary(os);
     tools::Serialize(os, _angle);
     tools::Serialize(os, _scale);
     tools::Serialize(os, _position);
@@ -36,6 +37,7 @@ void CompTransform::EncodeBinary(std::ofstream & os)
 
 void CompTransform::DecodeBinary(std::ifstream & is)
 {
+    Component::DecodeBinary(is);
     tools::Deserialize(is, _angle);
     tools::Deserialize(is, _scale);
     tools::Deserialize(is, _position);

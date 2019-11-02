@@ -50,6 +50,7 @@ const std::string & CompSprite::GetName()
 
 void CompSprite::EncodeBinary(std::ofstream & os)
 {
+    Component::EncodeBinary(os);
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
     tools::Serialize(os, _anchor);
@@ -57,6 +58,7 @@ void CompSprite::EncodeBinary(std::ofstream & os)
 
 void CompSprite::DecodeBinary(std::ifstream & is)
 {
+    Component::DecodeBinary(is);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);

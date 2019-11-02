@@ -48,6 +48,7 @@ const std::string & CompLight::GetName()
 
 void CompLight::EncodeBinary(std::ofstream & os)
 {
+    Component::EncodeBinary(os);
     tools::Serialize(os, _color);
     tools::Serialize(os, _border);
     tools::Serialize(os, _trackPoints);
@@ -55,6 +56,7 @@ void CompLight::EncodeBinary(std::ofstream & os)
 
 void CompLight::DecodeBinary(std::ifstream & is)
 {
+    Component::DecodeBinary(is);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _border);
     tools::Deserialize(is, _trackPoints);

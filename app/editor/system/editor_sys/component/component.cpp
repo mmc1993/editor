@@ -19,6 +19,16 @@ SharePtr<Component> Component::Create(const std::string & name)
     return it->second();
 }
 
+void Component::EncodeBinary(std::ofstream & os)
+{ 
+    tools::Serialize(os, _state);
+}
+
+void Component::DecodeBinary(std::ifstream & is)
+{ 
+    tools::Deserialize(is, _state);
+}
+
 std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
 {
     auto modifyfunc = std::bind(

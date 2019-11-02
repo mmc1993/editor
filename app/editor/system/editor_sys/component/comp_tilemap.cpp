@@ -50,12 +50,14 @@ const std::string & CompTilemap::GetName()
 
 void CompTilemap::EncodeBinary(std::ofstream & os)
 {
+    Component::EncodeBinary(os);
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
 }
 
 void CompTilemap::DecodeBinary(std::ifstream & is)
 {
+    Component::DecodeBinary(is);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
 }
