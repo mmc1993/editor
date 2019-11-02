@@ -168,8 +168,8 @@ void CompTilemap::UpdateVertexs(
             glm::vec4 quad;
             quad.x =                      (float)(i % mapW * tileW);
             quad.y = (mapH - 1) * tileH - (float)(i / mapW * tileH);
-            quad.z = quad.x + tileW;
-            quad.w = quad.y + tileH;
+            quad.z = quad.x + tileW + 0.5f;
+            quad.w = quad.y + tileH + 0.5f;
 
             points.emplace_back(glm::vec2(quad.x, quad.y), glm::vec4((float)atlasIndex), glm::vec2(uv.x, uv.y));
             points.emplace_back(glm::vec2(quad.z, quad.y), glm::vec4((float)atlasIndex), glm::vec2(uv.z, uv.y));
@@ -202,8 +202,8 @@ glm::vec4 CompTilemap::GetTileQuad(
     auto y = atlas.mRow - 1 - (idx - atlas.mBase) / atlas.mCol;
     quad.x = (float)(x * tileW + x * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetW();
     quad.y = (float)(y * tileH + y * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetH();
-    quad.z = quad.x + (float)tileW / atlas.mTexture->GetW();
-    quad.w = quad.y + (float)tileH / atlas.mTexture->GetH();
+    quad.z = quad.x + (float)tileW                                 / atlas.mTexture->GetW();
+    quad.w = quad.y + (float)tileH                                 / atlas.mTexture->GetH();
     return quad;
 }
 

@@ -395,14 +395,17 @@ void UIObjectGLCanvas::OnResetLayout()
 
 inline bool UIObjectGLCanvas::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
-    switch (e)
+    if (Global::Ref().mEditorSys->IsOpenProject())
     {
-    case UIEventEnum::kKey:
-        return OnEventKey((const UIEvent::Key &)param);
-    case UIEventEnum::kMenu:
-        return OnEventMenu((const UIEvent::Menu &)param);
-    case UIEventEnum::kMouse:
-        return OnEventMouse((const UIEvent::Mouse &)param);
+        switch (e)
+        {
+        case UIEventEnum::kKey:
+            return OnEventKey((const UIEvent::Key &)param);
+        case UIEventEnum::kMenu:
+            return OnEventMenu((const UIEvent::Menu &)param);
+        case UIEventEnum::kMouse:
+            return OnEventMouse((const UIEvent::Mouse &)param);
+        }
     }
     return false;
 }
