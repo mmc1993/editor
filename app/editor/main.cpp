@@ -46,11 +46,6 @@ static void glfw_error_callback(int error, const char* description)
 
 int main(int, char**)
 {
-    std::atan2(0,  1);
-    std::atan2(0, -1);
-    std::atan2( 1, 0);
-    std::atan2(-1, 0);
-
     // Setup window
     glfwSetErrorCallback(glfw_error_callback);
     if (!glfwInit())

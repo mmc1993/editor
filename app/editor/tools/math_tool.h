@@ -77,6 +77,12 @@ namespace tools {
         return std::abs(f1 - f0) <= FLT_EPSILON;
     }
 
+    inline bool Equal(const glm::vec2 & v0, const glm::vec2 & v1)
+    {
+        return Equal(v0.x, v1.x)
+            && Equal(v0.y, v1.y);
+    }
+
     //  点是否在线段上
     inline bool IsOnSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
@@ -415,29 +421,52 @@ namespace tools {
         return false;
     }
 
-    //  生成多边形外环
-    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border)
+    //  生成圆角
+    inline std::vector<glm::vec2> GenRounding(const glm::vec2 & dir0, const glm::vec2 & dir1, float radius, float smooth)
     {
+        std::vector<glm::vec2> result;
+        auto v0 = glm::normalize(dir0) * smooth;
+        auto v1 = glm::normalize(dir1) * smooth;
+        auto count = glm::length(v1 - v0);
+        if ((uint)count >= 2)
+        {
+            auto step = (v1 - v0) / count;
+            for (auto i = 1; i != (uint)count - 1; ++i)
+            {
+                result.emplace_back(glm::normalize(v0 += step) * radius);
+            }
+        }
+        return std::move(result);
+    }
+
+    //  生成多边形外环
+    inline std::vector<glm::vec2> GenOuterRing(const std::vector<glm::vec2> & points, float border, float smooth = 1)
+    {
+        glm::vec3 zAxis(0, 0, 1);
         std::vector<glm::vec2> result;
         ASSERT_LOG(!IsExistClosePath(points), "");
         auto order = CalePointsOrder(points);
         for (auto i = 0; i != points.size(); ++i)
         {
-            auto & a = points.at((i + points.size() - 1) % points.size());
-            auto & b = points.at( i                     );
-            auto & c = points.at((i + 1) % points.size());
-            result.push_back(b);
+            auto & a = points.at(i);
+            auto & b = points.at((i + 1) % points.size());
+            auto & c = points.at((i + 2) % points.size());
+            auto ab0 = glm::vec2(glm::normalize(glm::cross(glm::vec3(b - a, 0), zAxis)) * border);
+            auto bc0 = glm::vec2(glm::normalize(glm::cross(glm::vec3(c - b, 0), zAxis)) * border);
 
-            auto ab = glm::normalize(b - a);
-            auto cb = glm::normalize(b - c);
-            if (order * glm::cross(ab, -cb) < 0)
+            result.push_back(a);
+            result.push_back(a + ab0);
+            if (order < 0) { result.back() = -result.back(); }
+
+            result.push_back(b);
+            result.push_back(b + ab0);
+            if (order < 0) { result.back() = -result.back(); }
+
+            for (auto & p : GenRounding(ab0, bc0, border, smooth))
             {
-                result.push_back(-glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
+                result.push_back(b + p);
             }
-            else
-            {
-                result.push_back(+glm::normalize(glm::lerp(ab, cb, 0.5f)) * border + b);
-            }
+            result.push_back(a);
         }
         return std::move(result);
     }

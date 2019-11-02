@@ -137,18 +137,40 @@ void CompLight::Update()
                 points.emplace_back(convex.at(i + 1), _color);
             }
 
-            auto color = glm::vec4(_color.x, _color.y, _color.z, 0);
-            auto outer = tools::GenOuterRing(convex, _border);
-            auto middle = outer.size() / 2;
-            for (auto i = 0; i != middle; ++i)
+            auto color = glm::vec4(_color.x, _color.y, _color.z, 0.0f);
+            auto outer = tools::GenOuterRing(convex, _border, 30);
+            for (auto i = 0; i != outer.size(); ++i)
             {
-                points.emplace_back(outer.at(2 * i),                     _color);
-                points.emplace_back(outer.at(2 * i + 1),                  color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
+                auto & a0 = outer.at(i++);
+                auto & a1 = outer.at(i++);
+                auto & b0 = outer.at(i++);
+                auto & b1 = outer.at(i++);
+                points.emplace_back(a0, _color);
+                points.emplace_back(a1,  color);
+                points.emplace_back(b1,  color);
 
-                points.emplace_back(outer.at(2 * i),                     _color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle) + 1), color);
-                points.emplace_back(outer.at(2 * ((i + 1) % middle)),    _color);
+                points.emplace_back(a0, _color);
+                points.emplace_back(b1,  color);
+                points.emplace_back(b0, _color);
+
+                if (!tools::Equal(outer.at(i), a0))
+                {
+                    points.emplace_back(b0, _color);
+                    points.emplace_back(b1,  color);
+                    for (; !tools::Equal(outer.at(i), a0); ++i)
+                    {
+                        points.emplace_back(outer.at(i), color);
+                        points.emplace_back(b0,         _color);
+                        points.emplace_back(outer.at(i), color);
+                    }
+                    points.emplace_back(outer.at((i + 2) % outer.size()), color);
+                }
+                else
+                {
+                    points.emplace_back(b0, _color);
+                    points.emplace_back(b1,  color);
+                    points.emplace_back(outer.at((i + 2) % outer.size()), color);
+                }
             }
             _mesh->Update(points, {});
         }
