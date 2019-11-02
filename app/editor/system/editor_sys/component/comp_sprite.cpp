@@ -21,12 +21,6 @@ CompSprite::CompSprite()
     AddState(StateEnum::kModifyTrackPoint, true);
 }
 
-void CompSprite::OnAdd()
-{ }
-
-void CompSprite::OnDel()
-{ }
-
 void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     if (!_url.empty())

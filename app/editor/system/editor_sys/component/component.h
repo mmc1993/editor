@@ -46,8 +46,8 @@ public:
 
 	Component(): _owner(nullptr), _state(kActive | kUpdate) { }
 	virtual ~Component() { }
-    virtual void OnAdd() = 0;
-    virtual void OnDel() = 0;
+    virtual void OnAdd();
+    virtual void OnDel();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
 
     void AddState(StateEnum state, bool add)

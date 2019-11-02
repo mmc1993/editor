@@ -16,12 +16,6 @@ CompTilemap::CompTilemap()
     _program->Init(tools::GL_PROGRAM_TILEMAP);
 }
 
-void CompTilemap::OnAdd()
-{ }
-
-void CompTilemap::OnDel()
-{ }
-
 void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     if (!_url.empty())

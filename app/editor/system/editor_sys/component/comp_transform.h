@@ -6,8 +6,6 @@ class CompTransform : public Component {
 public:
     CompTransform();
     ~CompTransform();
-    virtual void OnAdd() override;
-    virtual void OnDel() override;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual void EncodeBinary(std::ofstream & os) override;

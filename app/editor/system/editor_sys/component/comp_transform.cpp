@@ -16,12 +16,6 @@ CompTransform::CompTransform()
 CompTransform::~CompTransform()
 { }
 
-void CompTransform::OnAdd()
-{ }
-
-void CompTransform::OnDel()
-{ }
-
 void CompTransform::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     UpdateMatrix();

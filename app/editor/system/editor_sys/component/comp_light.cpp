@@ -22,12 +22,6 @@ CompLight::CompLight()
     AddState(StateEnum::kModifyTrackPoint, true);
 }
 
-void CompLight::OnAdd()
-{ }
-
-void CompLight::OnDel()
-{ }
-
 void CompLight::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     Update();

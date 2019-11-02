@@ -12,8 +12,6 @@ private:
 
 public:
     CompSprite();
-    virtual void OnAdd() override;
-    virtual void OnDel() override;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual const std::string & GetName() override;

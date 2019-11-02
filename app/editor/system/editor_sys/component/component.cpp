@@ -19,6 +19,14 @@ SharePtr<Component> Component::Create(const std::string & name)
     return it->second();
 }
 
+void Component::OnAdd()
+{ 
+    AddState(StateEnum::kUpdate, true);
+}
+
+void Component::OnDel()
+{ }
+
 void Component::EncodeBinary(std::ofstream & os)
 { 
     tools::Serialize(os, _state);
