@@ -36,6 +36,7 @@ BlendFunc SrcAlpha One
             float u = gl_FragCoord.x / size.x;
             float v = gl_FragCoord.y / size.y;
             color_ = texture(uniform_screen, vec2(u, v)) * v_out_.mColor;
+            // color_ = vec4(1, 1, 1, 1);
         }
     FShader End
 Pass End
