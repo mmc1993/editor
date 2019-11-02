@@ -45,6 +45,7 @@ void UIObjectGLCanvas::HandlePostCommands()
             command.Call(nullptr);
             Post(command.mProgram, command.mTransform);
             command.mMesh->Draw(GL_TRIANGLES);
+            // command.mMesh->Draw(GL_LINES);
         }
     }
 }
