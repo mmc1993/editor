@@ -45,6 +45,9 @@ void UIObjectGLCanvas::HandlePostCommands()
             command.Call(nullptr);
             Post(command.mProgram, command.mTransform);
             command.mMesh->Draw(GL_TRIANGLES);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            //command.mMesh->Draw(GL_TRIANGLES);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
 }

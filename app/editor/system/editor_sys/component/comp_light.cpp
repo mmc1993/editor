@@ -134,7 +134,7 @@ void CompLight::Update()
             }
 
             auto color = glm::vec4(_color.x, _color.y, _color.z, 0);
-            auto outer = tools::GenOuterRing(convex, _border, 30);
+            auto outer = tools::GenOuterRing(convex, _border, 10.0);
             for (auto i = 0; i != outer.size(); ++i)
             {
                 auto & a0 = outer.at(i++);

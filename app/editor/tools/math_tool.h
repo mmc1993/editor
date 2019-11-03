@@ -431,7 +431,7 @@ namespace tools {
         if ((uint)count >= 2)
         {
             auto step = (v1 - v0) / count;
-            for (auto i = 1; i != (uint)count - 1; ++i)
+            for (auto i = 1; i != (uint)count; ++i)
             {
                 result.emplace_back(glm::normalize(v0 += step) * radius);
             }
@@ -453,14 +453,13 @@ namespace tools {
             auto & c = points.at((i + 2) % points.size());
             auto ab0 = glm::vec2(glm::normalize(glm::cross(glm::vec3(b - a, 0), zAxis)) * border);
             auto bc0 = glm::vec2(glm::normalize(glm::cross(glm::vec3(c - b, 0), zAxis)) * border);
+            if (order < 0) { ab0 = -ab0;  bc0 = -bc0; }
 
             result.push_back(a);
             result.push_back(a + ab0);
-            if (order < 0) { result.back() = -result.back(); }
 
             result.push_back(b);
             result.push_back(b + ab0);
-            if (order < 0) { result.back() = -result.back(); }
 
             for (auto & p : GenRounding(ab0, bc0, border, smooth))
             {
