@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Resource" version="1.1">
+    <Resource type="ResourceSkin" name="res/atlas/icon/a (1).png" size="162 106" texture="atlas.png">
+        <BasisSkin type="SubSkin" offset="0 0 162 106" align="Stretch">
+            <State name="normal" offset="0 0 162 106"/>
+        </BasisSkin>
+    </Resource>
+</MyGUI>

@@ -1,0 +1,152 @@
+02:09:39  |  Platform  |  Info  |  * Initialise: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  43
+02:09:39  |  Platform  |  Info  |  RenderManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  71
+02:09:39  |  Platform  |  Info  |  * Initialise: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  27
+02:09:39  |  Platform  |  Info  |  DataManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  35
+02:09:39  |  Core  |  Info  |  * Initialise: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  75
+02:09:39  |  Core  |  Info  |  * MyGUI version 3.2.0.4384M  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  82
+02:09:39  |  Core  |  Info  |  * Initialise: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  48
+02:09:39  |  Core  |  Info  |  ResourceManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  56
+02:09:39  |  Core  |  Info  |  * Initialise: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  49
+02:09:39  |  Core  |  Info  |  LayerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  57
+02:09:39  |  Core  |  Info  |  * Initialise: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  67
+02:09:39  |  Core  |  Info  |  WidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  98
+02:09:39  |  Core  |  Info  |  * Initialise: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  58
+02:09:39  |  Core  |  Info  |  InputManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  78
+02:09:39  |  Core  |  Info  |  * Initialise: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  49
+02:09:39  |  Core  |  Info  |  SubWidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  69
+02:09:39  |  Core  |  Info  |  * Initialise: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  53
+02:09:39  |  Core  |  Info  |  SkinManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  61
+02:09:39  |  Core  |  Info  |  * Initialise: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  48
+02:09:39  |  Core  |  Info  |  FontManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  57
+02:09:39  |  Core  |  Info  |  * Initialise: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  46
+02:09:39  |  Core  |  Info  |  ControllerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  56
+02:09:39  |  Core  |  Info  |  * Initialise: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  60
+02:09:39  |  Core  |  Info  |  PointerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  78
+02:09:39  |  Core  |  Info  |  * Initialise: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  87
+02:09:39  |  Core  |  Info  |  ClipboardManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  101
+02:09:39  |  Core  |  Info  |  * Initialise: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  45
+02:09:39  |  Core  |  Info  |  LayoutManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  50
+02:09:39  |  Core  |  Info  |  * Initialise: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  41
+02:09:39  |  Core  |  Info  |  DynLibManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  45
+02:09:39  |  Core  |  Info  |  * Initialise: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  45
+02:09:39  |  Core  |  Info  |  PluginManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  49
+02:09:39  |  Core  |  Info  |  * Initialise: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  45
+02:09:39  |  Core  |  Info  |  LanguageManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  49
+02:09:39  |  Core  |  Info  |  * Initialise: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  40
+02:09:39  |  Core  |  Info  |  FactoryManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  42
+02:09:39  |  Core  |  Info  |  * Initialise: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  48
+02:09:39  |  Core  |  Info  |  ToolTipManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  60
+02:09:39  |  Core  |  Info  |  Load ini file 'EditorTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'EditorLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MessageBoxResources.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MessageBoxLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MessageBoxIcons.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_Fonts.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using texture size 128 x 256.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  674
+02:09:39  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using real height 17 pixels.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  675
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_Images.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_CommonSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeImages.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTemplates.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_Pointers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'SelectionSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'TextureViewerSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'EditorReplaceSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'FrameworkSkin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'MyGUI_Layers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'EditorSettings.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Gui successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  133
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'arrow'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'beam'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'size_left'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'size_right'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'size_horz'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'size_vert'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'hand'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Warning  |  dublicate resource name 'link'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+02:09:39  |  Core  |  Info  |  destroy layer 'Wallpaper'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:09:39  |  Core  |  Error  |  Language 'Chinese (Simplified)' is not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  125
+02:09:39  |  Core  |  Info  |  Load ini file 'Widgets.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'WidgetsBackwardCompatibility.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'Values.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'Ignore.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'Hotkeys.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'SkinReplaces.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'EditorPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Load ini file 'StrangeButtonPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Loading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+02:09:39  |  Core  |  Info  |  Installing plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  151
+02:09:39  |  Plugin  |  Info  |  initialize  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  35
+02:09:39  |  Core  |  Info  |  Plugin successfully installed  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  158
+02:09:39  |  Core  |  Info  |  Load ini file 'HikariWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Loading library Plugin_HikariWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+02:09:39  |  Core  |  Error  |  Plugin 'Plugin_HikariWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+02:09:39  |  Core  |  Info  |  Load ini file 'BerkeliumWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+02:09:39  |  Core  |  Info  |  Loading library Plugin_BerkeliumWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+02:09:39  |  Core  |  Error  |  Plugin 'Plugin_BerkeliumWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+02:09:39  |  Platform  |  Warning  |  Cannot locate resource unnamed.xml in resource group General or any other group.  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  59
+02:09:39  |  Core  |  Error  |  ResourceManager : 'unnamed.xml', not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  153
+02:09:39  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318
+02:09:39  |  Core  |  Warning  |  Widget with name 'Projection' not found. [PositionSelectorControl.layout]  |  D:/my-gui/trunk/Common\BaseLayout/BaseLayout.h  |  55
+02:10:43  |  Core  |  Info  |  * Shutdown: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  147
+02:10:43  |  Core  |  Info  |  * Shutdown: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  85
+02:10:43  |  Core  |  Info  |  PointerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  101
+02:10:43  |  Core  |  Info  |  * Shutdown: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  85
+02:10:43  |  Core  |  Info  |  InputManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  90
+02:10:43  |  Core  |  Info  |  * Shutdown: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  68
+02:10:43  |  Core  |  Info  |  SkinManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  73
+02:10:43  |  Core  |  Info  |  * Shutdown: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  76
+02:10:43  |  Core  |  Info  |  SubWidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  96
+02:10:43  |  Core  |  Info  |  * Shutdown: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  64
+02:10:43  |  Core  |  Info  |  destroy layer 'Background'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Back'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'LayoutEditor_Widgets'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'LayoutEditor_MainPane'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'LayoutEditor_Rectangle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Overlapped'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Middle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Modal'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Main'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Popup'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'FadeMiddle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Info'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'ToolTip'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'DragAndDrop'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'FadeBusy'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Pointer'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Fade'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  destroy layer 'Statistic'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+02:10:43  |  Core  |  Info  |  LayerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  75
+02:10:43  |  Core  |  Info  |  * Shutdown: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  64
+02:10:43  |  Core  |  Info  |  FontManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  71
+02:10:43  |  Core  |  Info  |  * Shutdown: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  63
+02:10:43  |  Core  |  Info  |  ControllerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  74
+02:10:43  |  Core  |  Info  |  * Shutdown: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  108
+02:10:43  |  Core  |  Info  |  ClipboardManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  110
+02:10:43  |  Core  |  Info  |  * Shutdown: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  57
+02:10:43  |  Core  |  Info  |  LayoutManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  62
+02:10:43  |  Core  |  Info  |  * Shutdown: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  56
+02:10:43  |  Core  |  Info  |  Uninstalling plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  165
+02:10:43  |  Plugin  |  Info  |  shutdown  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  43
+02:10:43  |  Core  |  Info  |  Plugin successfully uninstalled  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  173
+02:10:43  |  Core  |  Info  |  PluginManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  61
+02:10:43  |  Core  |  Info  |  * Shutdown: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  52
+02:10:43  |  Core  |  Info  |  Unloading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  64
+02:10:43  |  Core  |  Info  |  DynLibManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  59
+02:10:43  |  Core  |  Info  |  * Shutdown: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  56
+02:10:43  |  Core  |  Info  |  LanguageManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  60
+02:10:43  |  Core  |  Info  |  * Shutdown: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  63
+02:10:43  |  Core  |  Info  |  ResourceManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  73
+02:10:43  |  Core  |  Info  |  * Shutdown: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  49
+02:10:43  |  Core  |  Info  |  FactoryManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  51
+02:10:43  |  Core  |  Info  |  * Shutdown: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  67
+02:10:43  |  Core  |  Info  |  ToolTipManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  72
+02:10:43  |  Core  |  Info  |  * Shutdown: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  105
+02:10:43  |  Core  |  Info  |  WidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  114
+02:10:43  |  Core  |  Info  |  Gui successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  190
+02:10:43  |  Platform  |  Info  |  * Shutdown: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  78
+02:10:43  |  Platform  |  Info  |  RenderManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  86
+02:10:43  |  Platform  |  Info  |  * Shutdown: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  42
+02:10:43  |  Platform  |  Info  |  DataManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  44
