@@ -80,13 +80,13 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
-            std::make_pair("Layout",        0),
-            std::make_pair("TreeBox",       1),
-            std::make_pair("TextBox",       2),
-            std::make_pair("ImageBox",      3),
-            std::make_pair("ComboBox",      4),
-            std::make_pair("UICanvas",      5),
-            std::make_pair("GLCanvas",      6),
+            std::make_pair("Layout",        1),
+            std::make_pair("TreeBox",       2),
+            std::make_pair("TextBox",       3),
+            std::make_pair("ImageBox",      4),
+            std::make_pair("ComboBox",      5),
+            std::make_pair("UICanvas",      6),
+            std::make_pair("GLCanvas",      7),
         }),
     std::make_pair("TextAlign", std::map<std::string, int>
         {
@@ -108,10 +108,13 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
 static const std::map<std::string, std::map<std::string, std::string>> VALUE_STRING_2_REPLACE {
     std::make_pair("Type", std::map<std::string, std::string>
         {
-            std::make_pair("Caption", "Name"),
-            std::make_pair("Widget", "Layout"),
-            std::make_pair("ListBox", "TreeBox"),
-            std::make_pair("EditBox", "TextBox"),
+            std::make_pair("Caption",       "Name"),
+            std::make_pair("Window",        "Layout"),
+            std::make_pair("ListBox",       "TreeBox"),
+            std::make_pair("EditBox",       "TextBox"),
+            std::make_pair("ScrollBar",     "GLCanvas"),
+            std::make_pair("TabControl",    "ImageBox"),
+            std::make_pair("ScrollView",    "UICanvas"),
         })
 };
 
@@ -294,19 +297,19 @@ void Main(const std::string & xmlURL, const std::string & jsonURL)
 //  程序入口
 int main(int argc, char **argv)
 {
-    //if (argc != 3)
-    //{
-    //    std::cout 
-    //        << SFormat(
-    //        "> 参数!\n"
-    //        "  1: 输入路径(.xml)\n"
-    //        "  2: 输出路径(.json)\n")
-    //        << std::endl;
-    //}
-    //else
-    //{
-    //    Main(argv[1], argv[2]);
-    //}
-    Main("../../res/ui/window.layout", "../../res/ui/window.json");
+    if (argc != 3)
+    {
+        std::cout 
+            << SFormat(
+            "> 参数!\n"
+            "  1: 输入路径(.xml)\n"
+            "  2: 输出路径(.json)\n")
+            << std::endl;
+    }
+    else
+    {
+        Main(argv[1], argv[2]);
+    }
+    //Main("../../res/ui/window.layout", "../../res/ui/window.json");
     return 0;
 }

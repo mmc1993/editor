@@ -1,27 +1,44 @@
 {
 	"__Property": {
 		"Type": "1",
-		"Skin": "PanelSkin",
+		"Skin": "Window",
 		"Move": "0 0 1280 720",
 		"Align": "384",
 		"Name": "Root",
-		"IsWindow": "ok",
-		"IsFullScreen": "ok",
-        "StretchMin": "10, 10",
-        "IsShowMenuBar": "ok",
-        "MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic",
+		"IsCanMove": "false",
+		"IsCanDragFree": "false",
+		"IsCanStretch": "true",
+		"IsFullScreen": "true",
+		"IsShowBorder": "false",
+		"IsShowMenuBar": "true",
+		"IsShowNav": "false",
+		"IsShowScrollBar": "true",
+		"IsShowTitleBar": "false",
+		"IsWindow": "true",
+		"StretchMin": "32 32",
+		"MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic",
 		"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_global"
 	},
 	"__Children": [
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "PanelSkin",
-				"Move": "0 0 300 720",
+				"Skin": "Window",
+				"Move": "0 25 300 620",
 				"Align": "384",
-				"Name": "C_0",
-				"StretchMin": "300 720",
-				"IsCanStretch": "ok",
+				"Name": "ObjectList",
+				"BorderNumber": "1",
+				"IsCanDragFree": "true",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "true",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "300 620",
 				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_obj_list"
 			},
 			"__Children": [
@@ -31,71 +48,32 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "PanelSkin",
-				"Move": "300 550 980 170",
+				"Skin": "Window",
+				"Move": "300 25 740 620",
 				"Align": "384",
-				"Name": "C_1",
-				"StretchMin": "980 170",
-                "IsCanStretch": "ok",
-				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_res_list"
+				"Name": "ObjectStage",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "740 620"
 			},
 			"__Children": [
 				{
 					"__Property": {
-						"Type": "1",
-						"Skin": "PanelSkin",
-						"Move": "0 0 980 40",
-						"Align": "26",
-						"Name": "C_0",
-						"IsCanStretch": "no"
-					},
-					"__Children": [
-						{
-							"__Property": {
-								"Type": "3",
-								"Skin": "TextBox",
-								"Move": "15 12 50 15",
-								"Align": "72",
-								"Name": "Import"
-							},
-							"__Children": [
-								
-							]
-						},
-						{
-							"__Property": {
-								"Type": "3",
-								"Skin": "TextBox",
-								"Move": "80 12 65 15",
-								"Align": "72",
-								"Name": "Refresh"
-							},
-							"__Children": [
-								
-							]
-						},
-						{
-							"__Property": {
-								"Type": "3",
-								"Skin": "TextBox",
-								"Move": "690 12 225 15",
-								"Align": "80",
-								"Name": "Serach",
-								"IsEditBox": "ok"
-							},
-							"__Children": [
-								
-							]
-						}
-					]
-				},
-				{
-					"__Property": {
-						"Type": "1",
-						"Skin": "PanelSkin",
-						"Move": "0 40 980 130",
+						"Type": "7",
+						"Skin": "ScrollBarH",
+						"Move": "0 0 740 620",
 						"Align": "30",
-						"Name": "C_1"
+						"Name": "Canvas",
+						"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
 					},
 					"__Children": [
 						
@@ -106,12 +84,21 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "PanelSkin",
-				"Move": "980 0 300 550",
-				"Align": "384",
-				"Name": "C_2",
-				"StretchMin": "300 550",
-				"IsCanStretch": "ok",
+				"Skin": "Window",
+				"Move": "1040 25 230 620",
+				"Name": "ObjectComp",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "230 620",
 				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_com_list"
 			},
 			"__Children": [
@@ -120,14 +107,23 @@
 		},
 		{
 			"__Property": {
-				"Type": "7",
-				"Skin": "PanelSkin",
-				"Move": "300 0 680 550",
-				"Align": "384",
-				"Name": "C_3",
-				"StretchMin": "680 550",
-                "IsCanStretch": "ok",
-				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
+				"Type": "1",
+				"Skin": "Window",
+				"Move": "0 645 1270 40",
+				"Align": "28",
+				"Name": "EditState",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "false",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "1270 40"
 			},
 			"__Children": [
 				
