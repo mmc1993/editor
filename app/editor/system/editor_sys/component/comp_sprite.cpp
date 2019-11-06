@@ -61,7 +61,7 @@ void CompSprite::DecodeBinary(std::ifstream & is)
 bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "URL")
+    if (title == "Url")
     {
         _update |= kTexture;
     }
@@ -75,7 +75,7 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "URL", &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "Url", &_url);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size", &_size);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Anchor", &_anchor);
     return std::move(props);

@@ -59,6 +59,11 @@ void CompLight::DecodeBinary(std::ifstream & is)
 bool CompLight::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
+    if (title == "Border")
+    {
+        _border = std::max(0.0f, std::any_cast<float>(newValue));
+        return false;
+    }
     return true;
 }
 

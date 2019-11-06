@@ -59,19 +59,19 @@ protected:
     T & GetOldValue() { return GetState<UIPropertyState<T>>()->mOldValue; }
     T & GetValue() { return GetState<UIPropertyState<T>>()->mValue; }
 
-    bool Modify()
+    void Modify()
     {
-        auto ret = GetState<UIPropertyState<T>>()->mHandler(GetOldValue(), GetNewValue(), GetTitle());
-        if (ret) 
+        if (auto ret = GetState<UIPropertyState<T>>()->mHandler(
+            GetOldValue(), GetNewValue(), GetTitle()); ret)
         {
-            GetValue() = GetNewValue(); 
+            GetValue() = GetNewValue();
             GetOldValue() = GetValue();
         }
-        else 
+        else
         {
             GetNewValue() = GetValue();
+            GetOldValue() = GetValue();
         }
-        return ret;
     }
 
     virtual bool OnEnter() override

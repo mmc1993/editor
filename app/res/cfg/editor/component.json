@@ -3,7 +3,8 @@
         "Transform",
         "Graphics/Light",
         "Graphics/Sprite",
-        "Graphics/Tilemap"
+        "Graphics/Tilemap",
+        "Graphics/Segment"
     ],
     "List": {
         "Transform": {
