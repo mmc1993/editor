@@ -102,7 +102,7 @@ void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point
 void CompSegment::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
-    _trackPoints.insert(_trackPoints.begin() + 1, point);
+    _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
 }
 
 void CompSegment::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
@@ -110,7 +110,7 @@ void CompSegment::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point
     AddState(StateEnum::kUpdate, true);
     if (_trackPoints.size() > 1)
     {
-        _trackPoints.erase(_trackPoints.begin() + index);
+        _trackPoints.erase(std::next(_trackPoints.begin(), index));
     }
 }
 
