@@ -5,10 +5,10 @@ CompTransform::CompTransform()
     , _scale(1, 1   )
     , _position(0, 0)
 {
-    _trackPoints.push_back(glm::vec2( 10,  10));
-    _trackPoints.push_back(glm::vec2(-10,  10));
     _trackPoints.push_back(glm::vec2(-10, -10));
     _trackPoints.push_back(glm::vec2( 10, -10));
+    _trackPoints.push_back(glm::vec2( 10,  10));
+    _trackPoints.push_back(glm::vec2(-10,  10));
     AddState(StateEnum::kModifyTrackPoint, true);
     AddState(StateEnum::kUpdate,           true);
 }

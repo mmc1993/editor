@@ -75,6 +75,7 @@ namespace tools {
     //  Ô¤ÖÃ×ÅÉ«Æ÷
     const char * const GL_PROGRAM_SOLID_FILL = "res/program/solid_fill.program";
     const char * const GL_PROGRAM_TILEMAP    = "res/program/tilemap.program";
+    const char * const GL_PROGRAM_SEGMENT    = "res/program/segment.program";
     const char * const GL_PROGRAM_SPRITE     = "res/program/sprite.program";
     const char * const GL_PROGRAM_LIGHT      = "res/program/light.program";
 
