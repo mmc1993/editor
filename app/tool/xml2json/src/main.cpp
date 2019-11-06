@@ -47,28 +47,36 @@ static const std::map<std::string, std::map<std::string, int>> VALUE_STRING_2_NU
             std::make_pair("Default",               (int)UIAlignEnum::kDEFAULT),
             std::make_pair("Stretch",               (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("Center",                (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kSTRETCH_V),
+
             std::make_pair("Left Top",              (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_T),
             std::make_pair("Left Bottom",           (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_B),
             std::make_pair("Left VStretch",         (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("Left VCenter",          (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCENTER_V),
+
             std::make_pair("Right Top",             (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_T),
             std::make_pair("Right Bottom",          (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_B),
             std::make_pair("Right VStretch",        (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("Right VCenter",         (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCENTER_V),
+
             std::make_pair("HStretch Top",          (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCLING_T),
             std::make_pair("HStretch Bottom",       (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCLING_B),
             std::make_pair("HStretch VStretch",     (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("HStretch VCenter",      (int)UIAlignEnum::kSTRETCH_H | (int)UIAlignEnum::kCENTER_V),
+
             std::make_pair("HCenter Top",           (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCLING_T),
             std::make_pair("HCenter Bottom",        (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCLING_B),
             std::make_pair("HCenter VStretch",      (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kSTRETCH_V),
             std::make_pair("HCenter VCenter",       (int)UIAlignEnum::kCENTER_H | (int)UIAlignEnum::kCENTER_V),
-            std::make_pair("Left Right",            (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
+
             std::make_pair("Top Bottom",            (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B),
-            std::make_pair("Top Left Right",        (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
             std::make_pair("Top Bottom Left",       (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L),
             std::make_pair("Top Bottom Right",      (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_R),
             std::make_pair("Top Bottom Left Right", (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B | (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
+
+            std::make_pair("Left Right",            (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R),
+            std::make_pair("Left Right Top",        (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_T),
+            std::make_pair("Left Right Bottom",     (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_B),
+            std::make_pair("Left Right Top Bottom", (int)UIAlignEnum::kCLING_L | (int)UIAlignEnum::kCLING_R | (int)UIAlignEnum::kCLING_T | (int)UIAlignEnum::kCLING_B),
         }),
     std::make_pair("Type", std::map<std::string, int>
         {
@@ -242,7 +250,7 @@ void ParerChildren(TiXmlElement * xml, mmc::JsonValue::Value json)
             {
                 CheckHashField(json, JSON_PROPERTY)->Insert(
                     mmc::JsonValue::FromValue(ele->Attribute("value")), 
-                    ele->Attribute("key"));
+                                              ele->Attribute("key"));
             }
             else if (strcmp("Widget", ele->Value()) == 0)
             {
