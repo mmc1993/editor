@@ -5,8 +5,6 @@
 	<Value name="Align">
 		<Property key="#{ColourDefault}[DEFAULT]"/>
 		<Property key="Default"/>
-		<Property key="Stretch"/>
-		<Property key="Center"/>
 
 		<Property key="Left Top"/>
 		<Property key="Left Bottom"/>
@@ -29,11 +27,14 @@
 		<Property key="HCenter VCenter"/>
 
 		<Property key="Left Right"/>
+		<Property key="Left Right Top"/>
+		<Property key="Left Right Bottom"/>
+
 		<Property key="Top Bottom"/>
-		<Property key="Top Left Right"/>
 		<Property key="Top Bottom Left"/>
 		<Property key="Top Bottom Right"/>
-		<Property key="Top Bottom Left Right"/>
+
+		<Property key="Left Right Top Bottom"/>
 	</Value>
 
 	<Value name="TextAlign">
