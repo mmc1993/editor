@@ -207,3 +207,30 @@
 00:38:02: Texture: AlphaSlider.png: Loading 1 faces(PF_A8R8G8B8,2x128x1) with 0 generated mipmaps from Image. Internal format is PF_A8R8G8B8,2x128x1.
 00:38:02: OGRE EXCEPTION(6:FileNotFoundException): Cannot locate resource unnamed.xml in resource group General or any other group. in ResourceGroupManager::openResource at ..\..\..\libs\ogre\OgreMain\src\OgreResourceGroupManager.cpp (line 753)
 00:38:02: Texture: Wallpaper.png: Loading 1 faces(PF_R8G8B8,1024x1024x1) with 0 generated mipmaps from Image. Internal format is PF_X8R8G8B8,1024x1024x1.
+00:42:24: DefaultWorkQueue('Root') shutting down on thread 012A7280.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 07314D90 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 07314A60 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 0135C1F8 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 0135C3D8 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 0135C228 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 0135C2B8 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 07314CA0 stopped.
+00:42:24: DefaultWorkQueue('Root')::WorkerFunc - thread 07314B50 stopped.
+00:42:24: *-*-* OGRE Shutdown
+00:42:24: Unregistering ResourceManager for type Compositor
+00:42:24: Unregistering ResourceManager for type Font
+00:42:24: Unregistering ResourceManager for type Skeleton
+00:42:24: Unregistering ResourceManager for type Mesh
+00:42:24: Unregistering ResourceManager for type HighLevelGpuProgram
+00:42:24: Uninstalling plugin: GL RenderSystem
+00:42:24: Unregistering ResourceManager for type GpuProgram
+00:42:24: *** Stopping Win32GL Subsystem ***
+00:42:24: Unregistering ResourceManager for type Texture
+00:42:24: Plugin successfully uninstalled
+00:42:24: Unloading library .\RenderSystem_GL
+00:42:24: Uninstalling plugin: D3D9 RenderSystem
+00:42:24: D3D9 : Shutting down cleanly.
+00:42:24: D3D9 : Direct3D9 Rendering Subsystem destroyed.
+00:42:24: Plugin successfully uninstalled
+00:42:24: Unloading library .\RenderSystem_Direct3D9
+00:42:24: Unregistering ResourceManager for type Material
