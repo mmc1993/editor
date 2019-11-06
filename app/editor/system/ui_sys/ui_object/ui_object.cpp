@@ -418,47 +418,46 @@ void UIObject::DispatchEventDrag()
 {
     if (ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows))
     {
-        if (ImGui::IsMouseDown(0))
+        auto state = GetState<UIStateLayout>();
+        if (ImGui::IsMouseClicked(0))
         {
-            auto state = GetState<UIStateLayout>();
-            if (state->mDrag.mDragObj == nullptr)
+            //  锁定目标
+            state->mDrag.mBegWorld = ImGui::GetMousePos();
+            state->mDrag.mEndWorld = ImGui::GetMousePos();
+            UIEvent::Drag drag(0, state->mDrag.mBegWorld);
+            state->mDrag.mDragObj = DispatchEventDrag(drag).get();
+        }
+
+        if (state->mDrag.mDragObj != nullptr)
+        {
+            //  拖动目标
+            auto hitFreeObject = DispatchEventDrag(
+                UIEvent::Drag(1, state->mDrag.mBegWorld, 
+                state->mDrag.mDragObj->shared_from_this()));
+            state->mDrag.mEndWorld = ImGui::GetMousePos();
+            if (state->mDrag.mFreeObj == nullptr)
             {
-                //  锁定目标
-                state->mDrag.mBegWorld = ImGui::GetMousePos();
-                state->mDrag.mEndWorld = ImGui::GetMousePos();
-                UIEvent::Drag drag(0, state->mDrag.mBegWorld);
-                state->mDrag.mDragObj = DispatchEventDrag(drag).get();
+                state->mDrag.mFreeObj = hitFreeObject.get();
             }
             else
             {
-                //  拖动目标
-                auto hitFreeObject = DispatchEventDrag(
-                    UIEvent::Drag(1, state->mDrag.mBegWorld, 
-                    state->mDrag.mDragObj->shared_from_this()));
-                state->mDrag.mEndWorld = ImGui::GetMousePos();
-                if (state->mDrag.mFreeObj == nullptr)
+                auto [distance, direct] = tools::PointToRectEdge(
+                    state->mDrag.mFreeObj->ToWorldRect(),
+                    state->mDrag.mEndWorld);
+                if (distance == 0 || distance > 10)
                 {
+                    //  在目标内|脱离目标
                     state->mDrag.mFreeObj = hitFreeObject.get();
+                    state->mDrag.mDirect = DirectEnum::kNone;
                 }
                 else
                 {
-                    auto [distance, direct] = tools::PointToRectEdge(
-                        state->mDrag.mFreeObj->ToWorldRect(),
-                        state->mDrag.mEndWorld);
-                    if (distance == 0 || distance > 10)
-                    {
-                        //  在目标内|脱离目标
-                        state->mDrag.mFreeObj = hitFreeObject.get();
-                        state->mDrag.mDirect = DirectEnum::kNone;
-                    }
-                    else
-                    {
-                        //  目标边缘
-                        state->mDrag.mDirect = (DirectEnum)direct;
-                    }
+                    //  目标边缘
+                    state->mDrag.mDirect = (DirectEnum)direct;
                 }
             }
         }
+
         if (ImGui::IsMouseReleased(0))
         {
             //  释放目标
