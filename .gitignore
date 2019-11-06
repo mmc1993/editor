@@ -1,8 +1,7 @@
 /app/.vs
-/backup/imgui-master/examples/.vs
-/backup/tinyxml/.vs
+/backup/imgui-master
+/backup/tinyxml
 /app/Debug
-/backup
 /app/tool/xml2json/Debug
 /app/tool/xml2json/.vs
 /app/tool/xml2json/xml2json.VC.db
