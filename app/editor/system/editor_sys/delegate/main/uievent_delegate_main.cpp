@@ -122,8 +122,8 @@ SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::str
     raw->Insert(mmc::Json::Hash(), "__Property");
     raw->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
     raw->Insert(mmc::Json::FromValue("0"), "__Property", "Align");
-    raw->Insert(mmc::Json::FromValue("ok"), "__Property", "IsCanDragMove");
-    raw->Insert(mmc::Json::FromValue("ok"), "__Property", "IsCanDragFree");
+    raw->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragMove");
+    raw->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragFree");
     raw->Insert(mmc::Json::FromValue(name), "__Property", "Name");
     auto object = UIParser::Parse(raw);
     _id2obj.insert(std::make_pair(id, object));

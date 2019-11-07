@@ -216,7 +216,6 @@ void UIObject::Render(float dt, bool visible)
     state->LSkin_ = state->LSkin;
 }
 
-
 glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
 {
     auto move = GetState()->Move;

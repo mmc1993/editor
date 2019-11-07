@@ -132,31 +132,33 @@ void UIObjectGLCanvas::DrawTrackPoint()
     {
         for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
-            std::vector<GLMesh::Vertex> points;
-            auto & component = object->GetComponents().at(i0);
-            auto & trackPoints = component->GetTrackPoints();
-            for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
+            if (object->GetComponents().at(i0)->HasState(Component::StateEnum::kActive))
             {
-                if (state->mOperation.mEditComponent == component && state->mOperation.mEditTrackPoint == i1)
+                std::vector<GLMesh::Vertex> points;
+                auto & component = object->GetComponents().at(i0);
+                auto & trackPoints = component->GetTrackPoints();
+                for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
                 {
-                    points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0] * 0.5f);
+                    if (state->mOperation.mEditComponent == component && state->mOperation.mEditTrackPoint == i1)
+                    {
+                        points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0] * 0.5f);
+                    }
+                    else
+                    {
+                        points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0]);
+                    }
                 }
-                else
+                
+                auto & mesh = GetMeshBuffer(i0);
+                mesh->Update(points, {});
+
+                state->mGLProgramSolidFill->UsePass(0);
+                Post(state->mGLProgramSolidFill, object->GetWorldMatrix());
+                mesh->Draw(GL_LINE_LOOP);
+                if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
                 {
-                    points.emplace_back(trackPoints.at(i1), VAL_TrackPointColors[i0]);
+                    mesh->Draw(GL_POINTS);
                 }
-            }
-
-            auto & mesh = GetMeshBuffer(i0);
-            mesh->Update(points, {});
-
-            state->mGLProgramSolidFill->UsePass(0);
-            Post(state->mGLProgramSolidFill,
-                 object->GetWorldMatrix());
-            mesh->Draw(GL_LINE_LOOP);
-            if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
-            {
-                mesh->Draw(GL_POINTS);
             }
         }
     }
