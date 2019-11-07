@@ -605,6 +605,7 @@ bool UIObjectLayout::OnEnter()
     if ( state->IsShowMenuBar)      { flag |= ImGuiWindowFlags_MenuBar; }
     if (!state->IsShowTitleBar)     { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollbar; }
+    if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollWithMouse; }
     if ( state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_HorizontalScrollbar; }
 
     auto ret = false;

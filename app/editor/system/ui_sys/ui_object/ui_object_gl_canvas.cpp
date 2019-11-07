@@ -678,7 +678,7 @@ SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObje
     auto thit = local;
     auto pred = [&thit] (const auto & com)
     { 
-        return com->HasState(Component::StateEnum::kActive) && 
+        return com->HasState(Component::StateEnum::kActive) &&
                tools::IsContains(com->GetTrackPoints(), thit);
     };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)

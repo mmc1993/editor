@@ -8,10 +8,10 @@
         <Property key="IsShowBorder" value="false"/>
         <Property key="IsShowMenuBar" value="true"/>
         <Property key="IsShowNav" value="false"/>
-        <Property key="IsShowScrollBar" value="true"/>
+        <Property key="IsShowScrollBar" value="false"/>
         <Property key="IsShowTitleBar" value="false"/>
         <Property key="IsWindow" value="true"/>
-        <Property key="StretchMin" value="32 32"/>
+        <Property key="StretchMin" value="1280 720"/>
         <Property key="MenuBar" value="Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic"/>
         <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_global"/>
         <Widget type="Window" skin="Window" position="0 0 1280 25" align="Left Right Top" name="EditorMenu">
@@ -26,7 +26,7 @@
             <Property key="IsShowScrollBar" value="false"/>
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="1270 40"/>
+            <Property key="StretchMin" value="1280 25"/>
         </Widget>
         <Widget type="Window" skin="Window" position="0 680 1280 40" align="Left Right Bottom" name="EditorState">
             <Property key="BorderNumber" value="1"/>
@@ -40,7 +40,7 @@
             <Property key="IsShowScrollBar" value="false"/>
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="1270 40"/>
+            <Property key="StretchMin" value="1280 40"/>
         </Widget>
         <Widget type="Window" skin="Window" position="0 25 300 655" align="HStretch VStretch" name="EditorObjList">
             <Property key="BorderNumber" value="1"/>

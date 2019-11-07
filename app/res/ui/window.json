@@ -12,10 +12,10 @@
 		"IsShowBorder": "false",
 		"IsShowMenuBar": "true",
 		"IsShowNav": "false",
-		"IsShowScrollBar": "true",
+		"IsShowScrollBar": "false",
 		"IsShowTitleBar": "false",
 		"IsWindow": "true",
-		"StretchMin": "32 32",
+		"StretchMin": "1280 720",
 		"MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic",
 		"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_global"
 	},
@@ -38,7 +38,7 @@
 				"IsShowScrollBar": "false",
 				"IsShowTitleBar": "false",
 				"IsWindow": "false",
-				"StretchMin": "1270 40"
+				"StretchMin": "1280 25"
 			},
 			"__Children": [
 				
@@ -62,7 +62,7 @@
 				"IsShowScrollBar": "false",
 				"IsShowTitleBar": "false",
 				"IsWindow": "false",
-				"StretchMin": "1270 40"
+				"StretchMin": "1280 40"
 			},
 			"__Children": [
 				
