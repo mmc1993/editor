@@ -5,6 +5,12 @@
 
 class CompSegment : public Component {
 public:
+    enum UpdateEnum {
+        kTexture = 1,
+        kPolygon = 2,
+    };
+
+public:
     CompSegment();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
@@ -25,9 +31,13 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
+    uint                _update;
     float               _smooth;
     float               _width;
     glm::vec4           _color;
+    std::string         _url;
+
     SharePtr<GLMesh>    _mesh;
+    SharePtr<GLTexture> _texture;
     SharePtr<GLProgram> _program;
 };
