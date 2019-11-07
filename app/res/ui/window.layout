@@ -14,54 +14,21 @@
         <Property key="StretchMin" value="32 32"/>
         <Property key="MenuBar" value="Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic"/>
         <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_global"/>
-        <Widget type="Window" skin="Window" position="0 25 300 620" align="HStretch VStretch" name="ObjectList">
-            <Property key="BorderNumber" value="1"/>
-            <Property key="IsCanDragFree" value="true"/>
-            <Property key="IsCanMove" value="false"/>
-            <Property key="IsCanStretch" value="true"/>
-            <Property key="IsFullScreen" value="false"/>
-            <Property key="IsShowBorder" value="true"/>
-            <Property key="IsShowMenuBar" value="false"/>
-            <Property key="IsShowNav" value="false"/>
-            <Property key="IsShowScrollBar" value="true"/>
-            <Property key="IsShowTitleBar" value="false"/>
-            <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="300 620"/>
-            <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_obj_list"/>
-        </Widget>
-        <Widget type="Window" skin="Window" position="300 25 740 620" align="HStretch VStretch" name="ObjectStage">
+        <Widget type="Window" skin="Window" position="0 0 1280 25" align="Left Right Top" name="EditorMenu">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
-            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsCanStretch" value="false"/>
             <Property key="IsFullScreen" value="false"/>
-            <Property key="IsShowBorder" value="true"/>
+            <Property key="IsShowBorder" value="false"/>
             <Property key="IsShowMenuBar" value="false"/>
             <Property key="IsShowNav" value="false"/>
             <Property key="IsShowScrollBar" value="false"/>
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="740 620"/>
-            <Widget type="ScrollBar" skin="ScrollBarH" position="0 0 740 620" align="Left Right Top Bottom" name="Canvas">
-                <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_stage"/>
-            </Widget>
+            <Property key="StretchMin" value="1270 40"/>
         </Widget>
-        <Widget type="Window" skin="Window" position="1040 25 230 620" name="ObjectComp">
-            <Property key="BorderNumber" value="1"/>
-            <Property key="IsCanDragFree" value="false"/>
-            <Property key="IsCanMove" value="false"/>
-            <Property key="IsCanStretch" value="true"/>
-            <Property key="IsFullScreen" value="false"/>
-            <Property key="IsShowBorder" value="true"/>
-            <Property key="IsShowMenuBar" value="false"/>
-            <Property key="IsShowNav" value="false"/>
-            <Property key="IsShowScrollBar" value="false"/>
-            <Property key="IsShowTitleBar" value="false"/>
-            <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="230 620"/>
-            <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_com_list"/>
-        </Widget>
-        <Widget type="Window" skin="Window" position="0 645 1270 40" align="Left Right Bottom" name="EditState">
+        <Widget type="Window" skin="Window" position="0 680 1280 40" align="Left Right Bottom" name="EditorState">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
@@ -74,6 +41,53 @@
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="1270 40"/>
+        </Widget>
+        <Widget type="Window" skin="Window" position="0 25 300 655" align="HStretch VStretch" name="EditorObjList">
+            <Property key="BorderNumber" value="1"/>
+            <Property key="IsCanDragFree" value="true"/>
+            <Property key="IsCanMove" value="false"/>
+            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsFullScreen" value="false"/>
+            <Property key="IsShowBorder" value="true"/>
+            <Property key="IsShowMenuBar" value="false"/>
+            <Property key="IsShowNav" value="false"/>
+            <Property key="IsShowScrollBar" value="true"/>
+            <Property key="IsShowTitleBar" value="false"/>
+            <Property key="IsWindow" value="false"/>
+            <Property key="StretchMin" value="300 655"/>
+            <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_obj_list"/>
+        </Widget>
+        <Widget type="Window" skin="Window" position="1040 25 240 655" align="HStretch VStretch" name="EditorObjComp">
+            <Property key="BorderNumber" value="1"/>
+            <Property key="IsCanDragFree" value="false"/>
+            <Property key="IsCanMove" value="false"/>
+            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsFullScreen" value="false"/>
+            <Property key="IsShowBorder" value="true"/>
+            <Property key="IsShowMenuBar" value="false"/>
+            <Property key="IsShowNav" value="false"/>
+            <Property key="IsShowScrollBar" value="false"/>
+            <Property key="IsShowTitleBar" value="false"/>
+            <Property key="IsWindow" value="false"/>
+            <Property key="StretchMin" value="240 655"/>
+            <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_com_list"/>
+        </Widget>
+        <Widget type="Window" skin="Window" position="300 25 740 655" align="HStretch VStretch" name="EditorObjStage">
+            <Property key="BorderNumber" value="1"/>
+            <Property key="IsCanDragFree" value="false"/>
+            <Property key="IsCanMove" value="false"/>
+            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsFullScreen" value="false"/>
+            <Property key="IsShowBorder" value="true"/>
+            <Property key="IsShowMenuBar" value="false"/>
+            <Property key="IsShowNav" value="false"/>
+            <Property key="IsShowScrollBar" value="false"/>
+            <Property key="IsShowTitleBar" value="false"/>
+            <Property key="IsWindow" value="false"/>
+            <Property key="StretchMin" value="740 655"/>
+            <Widget type="ScrollBar" skin="ScrollBarH" position="0 0 740 655" align="Left Right Top Bottom" name="Canvas">
+                <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_stage"/>
+            </Widget>
         </Widget>
     </Widget>
 </MyGUI>

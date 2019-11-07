@@ -1,216 +1,216 @@
-00:38:02  |  Platform  |  Info  |  * Initialise: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  43
-00:38:02  |  Platform  |  Info  |  RenderManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  71
-00:38:02  |  Platform  |  Info  |  * Initialise: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  27
-00:38:02  |  Platform  |  Info  |  DataManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  35
-00:38:02  |  Core  |  Info  |  * Initialise: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  75
-00:38:02  |  Core  |  Info  |  * MyGUI version 3.2.0.4384M  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  82
-00:38:02  |  Core  |  Info  |  * Initialise: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  48
-00:38:02  |  Core  |  Info  |  ResourceManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  56
-00:38:02  |  Core  |  Info  |  * Initialise: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  49
-00:38:02  |  Core  |  Info  |  LayerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  57
-00:38:02  |  Core  |  Info  |  * Initialise: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  67
-00:38:02  |  Core  |  Info  |  WidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  98
-00:38:02  |  Core  |  Info  |  * Initialise: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  58
-00:38:02  |  Core  |  Info  |  InputManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  78
-00:38:02  |  Core  |  Info  |  * Initialise: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  49
-00:38:02  |  Core  |  Info  |  SubWidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  69
-00:38:02  |  Core  |  Info  |  * Initialise: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  53
-00:38:02  |  Core  |  Info  |  SkinManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  61
-00:38:02  |  Core  |  Info  |  * Initialise: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  48
-00:38:02  |  Core  |  Info  |  FontManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  57
-00:38:02  |  Core  |  Info  |  * Initialise: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  46
-00:38:02  |  Core  |  Info  |  ControllerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  56
-00:38:02  |  Core  |  Info  |  * Initialise: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  60
-00:38:02  |  Core  |  Info  |  PointerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  78
-00:38:02  |  Core  |  Info  |  * Initialise: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  87
-00:38:02  |  Core  |  Info  |  ClipboardManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  101
-00:38:02  |  Core  |  Info  |  * Initialise: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  45
-00:38:02  |  Core  |  Info  |  LayoutManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  50
-00:38:02  |  Core  |  Info  |  * Initialise: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  41
-00:38:02  |  Core  |  Info  |  DynLibManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  45
-00:38:02  |  Core  |  Info  |  * Initialise: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  45
-00:38:02  |  Core  |  Info  |  PluginManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  49
-00:38:02  |  Core  |  Info  |  * Initialise: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  45
-00:38:02  |  Core  |  Info  |  LanguageManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  49
-00:38:02  |  Core  |  Info  |  * Initialise: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  40
-00:38:02  |  Core  |  Info  |  FactoryManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  42
-00:38:02  |  Core  |  Info  |  * Initialise: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  48
-00:38:02  |  Core  |  Info  |  ToolTipManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  60
-00:38:02  |  Core  |  Info  |  Load ini file 'EditorTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'EditorLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MessageBoxResources.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MessageBoxLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MessageBoxIcons.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_Fonts.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using texture size 128 x 256.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  674
-00:38:02  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using real height 17 pixels.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  675
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_Images.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_CommonSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeImages.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTemplates.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_Pointers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'SelectionSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'TextureViewerSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'EditorReplaceSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'FrameworkSkin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'MyGUI_Layers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'EditorSettings.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Gui successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  133
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'arrow'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'beam'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'size_left'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'size_right'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'size_horz'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'size_vert'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'hand'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Warning  |  dublicate resource name 'link'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
-00:38:02  |  Core  |  Info  |  destroy layer 'Wallpaper'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:38:02  |  Core  |  Error  |  Language 'Chinese (Simplified)' is not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  125
-00:38:02  |  Core  |  Info  |  Load ini file 'Widgets.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'WidgetsBackwardCompatibility.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'Values.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'Ignore.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'Hotkeys.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'SkinReplaces.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'EditorPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Load ini file 'StrangeButtonPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Loading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-00:38:02  |  Core  |  Info  |  Installing plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  151
-00:38:02  |  Plugin  |  Info  |  initialize  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  35
-00:38:02  |  Core  |  Info  |  Plugin successfully installed  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  158
-00:38:02  |  Core  |  Info  |  Load ini file 'HikariWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Loading library Plugin_HikariWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-00:38:02  |  Core  |  Error  |  Plugin 'Plugin_HikariWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
-00:38:02  |  Core  |  Info  |  Load ini file 'BerkeliumWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
-00:38:02  |  Core  |  Info  |  Loading library Plugin_BerkeliumWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
-00:38:02  |  Core  |  Error  |  Plugin 'Plugin_BerkeliumWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
-00:38:02  |  Platform  |  Warning  |  Cannot locate resource unnamed.xml in resource group General or any other group.  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  59
-00:38:02  |  Core  |  Error  |  ResourceManager : 'unnamed.xml', not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  153
-00:38:02  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318
-00:38:02  |  Core  |  Warning  |  Widget with name 'Projection' not found. [PositionSelectorControl.layout]  |  D:/my-gui/trunk/Common\BaseLayout/BaseLayout.h  |  55
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'MenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:06  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:18  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:26  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:36  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:38:53  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
-00:42:24  |  Core  |  Info  |  * Shutdown: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  147
-00:42:24  |  Core  |  Info  |  * Shutdown: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  85
-00:42:24  |  Core  |  Info  |  PointerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  101
-00:42:24  |  Core  |  Info  |  * Shutdown: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  85
-00:42:24  |  Core  |  Info  |  InputManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  90
-00:42:24  |  Core  |  Info  |  * Shutdown: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  68
-00:42:24  |  Core  |  Info  |  SkinManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  73
-00:42:24  |  Core  |  Info  |  * Shutdown: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  76
-00:42:24  |  Core  |  Info  |  SubWidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  96
-00:42:24  |  Core  |  Info  |  * Shutdown: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  64
-00:42:24  |  Core  |  Info  |  destroy layer 'Background'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Back'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'LayoutEditor_Widgets'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'LayoutEditor_MainPane'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'LayoutEditor_Rectangle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Overlapped'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Middle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Modal'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Main'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Popup'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'FadeMiddle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Info'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'ToolTip'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'DragAndDrop'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'FadeBusy'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Pointer'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Fade'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  destroy layer 'Statistic'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
-00:42:24  |  Core  |  Info  |  LayerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  75
-00:42:24  |  Core  |  Info  |  * Shutdown: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  64
-00:42:24  |  Core  |  Info  |  FontManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  71
-00:42:24  |  Core  |  Info  |  * Shutdown: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  63
-00:42:24  |  Core  |  Info  |  ControllerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  74
-00:42:24  |  Core  |  Info  |  * Shutdown: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  108
-00:42:24  |  Core  |  Info  |  ClipboardManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  110
-00:42:24  |  Core  |  Info  |  * Shutdown: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  57
-00:42:24  |  Core  |  Info  |  LayoutManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  62
-00:42:24  |  Core  |  Info  |  * Shutdown: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  56
-00:42:24  |  Core  |  Info  |  Uninstalling plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  165
-00:42:24  |  Plugin  |  Info  |  shutdown  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  43
-00:42:24  |  Core  |  Info  |  Plugin successfully uninstalled  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  173
-00:42:24  |  Core  |  Info  |  PluginManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  61
-00:42:24  |  Core  |  Info  |  * Shutdown: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  52
-00:42:24  |  Core  |  Info  |  Unloading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  64
-00:42:24  |  Core  |  Info  |  DynLibManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  59
-00:42:24  |  Core  |  Info  |  * Shutdown: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  56
-00:42:24  |  Core  |  Info  |  LanguageManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  60
-00:42:24  |  Core  |  Info  |  * Shutdown: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  63
-00:42:24  |  Core  |  Info  |  ResourceManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  73
-00:42:24  |  Core  |  Info  |  * Shutdown: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  49
-00:42:24  |  Core  |  Info  |  FactoryManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  51
-00:42:24  |  Core  |  Info  |  * Shutdown: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  67
-00:42:24  |  Core  |  Info  |  ToolTipManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  72
-00:42:24  |  Core  |  Info  |  * Shutdown: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  105
-00:42:24  |  Core  |  Info  |  WidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  114
-00:42:24  |  Core  |  Info  |  Gui successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  190
-00:42:24  |  Platform  |  Info  |  * Shutdown: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  78
-00:42:24  |  Platform  |  Info  |  RenderManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  86
-00:42:24  |  Platform  |  Info  |  * Shutdown: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  42
-00:42:24  |  Platform  |  Info  |  DataManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  44
+10:43:23  |  Platform  |  Info  |  * Initialise: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  43
+10:43:23  |  Platform  |  Info  |  RenderManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  71
+10:43:23  |  Platform  |  Info  |  * Initialise: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  27
+10:43:23  |  Platform  |  Info  |  DataManager successfully initialized  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  35
+10:43:23  |  Core  |  Info  |  * Initialise: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  75
+10:43:23  |  Core  |  Info  |  * MyGUI version 3.2.0.4384M  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  82
+10:43:23  |  Core  |  Info  |  * Initialise: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  48
+10:43:23  |  Core  |  Info  |  ResourceManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  56
+10:43:23  |  Core  |  Info  |  * Initialise: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  49
+10:43:23  |  Core  |  Info  |  LayerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  57
+10:43:23  |  Core  |  Info  |  * Initialise: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  67
+10:43:23  |  Core  |  Info  |  WidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  98
+10:43:23  |  Core  |  Info  |  * Initialise: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  58
+10:43:23  |  Core  |  Info  |  InputManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  78
+10:43:23  |  Core  |  Info  |  * Initialise: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  49
+10:43:23  |  Core  |  Info  |  SubWidgetManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  69
+10:43:23  |  Core  |  Info  |  * Initialise: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  53
+10:43:23  |  Core  |  Info  |  SkinManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  61
+10:43:23  |  Core  |  Info  |  * Initialise: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  48
+10:43:23  |  Core  |  Info  |  FontManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  57
+10:43:23  |  Core  |  Info  |  * Initialise: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  46
+10:43:23  |  Core  |  Info  |  ControllerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  56
+10:43:23  |  Core  |  Info  |  * Initialise: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  60
+10:43:23  |  Core  |  Info  |  PointerManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  78
+10:43:23  |  Core  |  Info  |  * Initialise: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  87
+10:43:23  |  Core  |  Info  |  ClipboardManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  101
+10:43:23  |  Core  |  Info  |  * Initialise: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  45
+10:43:23  |  Core  |  Info  |  LayoutManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  50
+10:43:23  |  Core  |  Info  |  * Initialise: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  41
+10:43:23  |  Core  |  Info  |  DynLibManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  45
+10:43:23  |  Core  |  Info  |  * Initialise: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  45
+10:43:23  |  Core  |  Info  |  PluginManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  49
+10:43:23  |  Core  |  Info  |  * Initialise: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  45
+10:43:23  |  Core  |  Info  |  LanguageManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  49
+10:43:23  |  Core  |  Info  |  * Initialise: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  40
+10:43:23  |  Core  |  Info  |  FactoryManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  42
+10:43:23  |  Core  |  Info  |  * Initialise: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  48
+10:43:23  |  Core  |  Info  |  ToolTipManager successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  60
+10:43:23  |  Core  |  Info  |  Load ini file 'EditorTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'EditorLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MessageBoxResources.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MessageBoxLanguage.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MessageBoxIcons.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_Fonts.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using texture size 128 x 256.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  674
+10:43:23  |  Core  |  Info  |  ResourceTrueTypeFont: Font 'DejaVuSansFont.15' using real height 17 pixels.  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceTrueTypeFont.cpp  |  675
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_Images.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_CommonSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTheme.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeImages.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_BlackOrangeTemplates.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_Pointers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'SelectionSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'TextureViewerSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'EditorReplaceSkins.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'FrameworkSkin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'MyGUI_Layers.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'EditorSettings.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Gui successfully initialized  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  133
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'arrow'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'beam'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'size_left'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'size_right'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'size_horz'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'size_vert'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'hand'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Warning  |  dublicate resource name 'link'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  101
+10:43:23  |  Core  |  Info  |  destroy layer 'Wallpaper'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:23  |  Core  |  Error  |  Language 'Chinese (Simplified)' is not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  125
+10:43:23  |  Core  |  Info  |  Load ini file 'Widgets.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'WidgetsBackwardCompatibility.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'Values.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'Ignore.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'Hotkeys.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'SkinReplaces.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'EditorPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Load ini file 'StrangeButtonPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Loading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+10:43:23  |  Core  |  Info  |  Installing plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  151
+10:43:23  |  Plugin  |  Info  |  initialize  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  35
+10:43:23  |  Core  |  Info  |  Plugin successfully installed  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  158
+10:43:23  |  Core  |  Info  |  Load ini file 'HikariWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Loading library Plugin_HikariWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+10:43:23  |  Core  |  Error  |  Plugin 'Plugin_HikariWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+10:43:23  |  Core  |  Info  |  Load ini file 'BerkeliumWidgetPlugin.xml'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  130
+10:43:23  |  Core  |  Info  |  Loading library Plugin_BerkeliumWidget.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  49
+10:43:23  |  Core  |  Error  |  Plugin 'Plugin_BerkeliumWidget.dll' not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  73
+10:43:23  |  Platform  |  Warning  |  Cannot locate resource unnamed.xml in resource group General or any other group.  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  59
+10:43:23  |  Core  |  Error  |  ResourceManager : 'unnamed.xml', not found  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  153
+10:43:23  |  LayoutEditor  |  Error  |  'Failed to open XML file' ,  file='C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release\test' ,  line=0 ,  col=0  |  ..\..\..\..\my-gui\trunk\Tools\LayoutEditor\ProjectControl.cpp  |  318
+10:43:23  |  Core  |  Warning  |  Widget with name 'Projection' not found. [PositionSelectorControl.layout]  |  D:/my-gui/trunk/Common\BaseLayout/BaseLayout.h  |  55
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'MenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'EventDelegate' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'BorderNumber' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanDragFree' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanMove' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsCanStretch' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsFullScreen' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowBorder' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowMenuBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowNav' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowScrollBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsShowTitleBar' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'IsWindow' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:30  |  Core  |  Warning  |  Widget property 'StretchMin' not found []  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Widget.cpp  |  1178
+10:43:46  |  Core  |  Info  |  * Shutdown: Gui  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  147
+10:43:46  |  Core  |  Info  |  * Shutdown: PointerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  85
+10:43:46  |  Core  |  Info  |  PointerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PointerManager.cpp  |  101
+10:43:46  |  Core  |  Info  |  * Shutdown: InputManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  85
+10:43:46  |  Core  |  Info  |  InputManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_InputManager.cpp  |  90
+10:43:46  |  Core  |  Info  |  * Shutdown: SkinManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  68
+10:43:46  |  Core  |  Info  |  SkinManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SkinManager.cpp  |  73
+10:43:46  |  Core  |  Info  |  * Shutdown: SubWidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  76
+10:43:46  |  Core  |  Info  |  SubWidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_SubWidgetManager.cpp  |  96
+10:43:46  |  Core  |  Info  |  * Shutdown: LayerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  64
+10:43:46  |  Core  |  Info  |  destroy layer 'Background'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Back'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'LayoutEditor_Widgets'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'LayoutEditor_MainPane'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'LayoutEditor_Rectangle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Overlapped'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Middle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Modal'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Main'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Popup'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'FadeMiddle'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Info'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'ToolTip'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'DragAndDrop'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'FadeBusy'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Pointer'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Fade'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  destroy layer 'Statistic'  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  207
+10:43:46  |  Core  |  Info  |  LayerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayerManager.cpp  |  75
+10:43:46  |  Core  |  Info  |  * Shutdown: FontManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  64
+10:43:46  |  Core  |  Info  |  FontManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FontManager.cpp  |  71
+10:43:46  |  Core  |  Info  |  * Shutdown: ControllerManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  63
+10:43:46  |  Core  |  Info  |  ControllerManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ControllerManager.cpp  |  74
+10:43:46  |  Core  |  Info  |  * Shutdown: ClipboardManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  108
+10:43:46  |  Core  |  Info  |  ClipboardManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ClipboardManager.cpp  |  110
+10:43:46  |  Core  |  Info  |  * Shutdown: LayoutManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  57
+10:43:46  |  Core  |  Info  |  LayoutManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LayoutManager.cpp  |  62
+10:43:46  |  Core  |  Info  |  * Shutdown: PluginManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  56
+10:43:46  |  Core  |  Info  |  Uninstalling plugin: Plugin  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  165
+10:43:46  |  Plugin  |  Info  |  shutdown  |  ..\..\..\..\my-gui\trunk\Plugins\Plugin_StrangeButton\Plugin.cpp  |  43
+10:43:46  |  Core  |  Info  |  Plugin successfully uninstalled  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  173
+10:43:46  |  Core  |  Info  |  PluginManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_PluginManager.cpp  |  61
+10:43:46  |  Core  |  Info  |  * Shutdown: DynLibManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  52
+10:43:46  |  Core  |  Info  |  Unloading library Plugin_StrangeButton.dll  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLib.cpp  |  64
+10:43:46  |  Core  |  Info  |  DynLibManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_DynLibManager.cpp  |  59
+10:43:46  |  Core  |  Info  |  * Shutdown: LanguageManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  56
+10:43:46  |  Core  |  Info  |  LanguageManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_LanguageManager.cpp  |  60
+10:43:46  |  Core  |  Info  |  * Shutdown: ResourceManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  63
+10:43:46  |  Core  |  Info  |  ResourceManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ResourceManager.cpp  |  73
+10:43:46  |  Core  |  Info  |  * Shutdown: FactoryManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  49
+10:43:46  |  Core  |  Info  |  FactoryManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_FactoryManager.cpp  |  51
+10:43:46  |  Core  |  Info  |  * Shutdown: ToolTipManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  67
+10:43:46  |  Core  |  Info  |  ToolTipManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_ToolTipManager.cpp  |  72
+10:43:46  |  Core  |  Info  |  * Shutdown: WidgetManager  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  105
+10:43:46  |  Core  |  Info  |  WidgetManager successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_WidgetManager.cpp  |  114
+10:43:46  |  Core  |  Info  |  Gui successfully shutdown  |  ..\..\..\my-gui\trunk\MyGUIEngine\src\MyGUI_Gui.cpp  |  190
+10:43:46  |  Platform  |  Info  |  * Shutdown: RenderManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  78
+10:43:46  |  Platform  |  Info  |  RenderManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreRenderManager.cpp  |  86
+10:43:46  |  Platform  |  Info  |  * Shutdown: DataManager  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  42
+10:43:46  |  Platform  |  Info  |  DataManager successfully shutdown  |  ..\..\..\..\..\my-gui\trunk\Platforms\Ogre\OgrePlatform\src\MyGUI_OgreDataManager.cpp  |  44

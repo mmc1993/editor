@@ -35,8 +35,8 @@
         <Property key="TextureSize" value="1280 720"/>
     </Workspace>
     <Files>
-        <Property key="RecentFiles.0" value="C:\MyWork\Git\editor\backup\MYGUI_3.2.0_win32\bin\release\unnamed.layout"/>
-        <Property key="RecentFiles.1" value="C:\MyWork\Git\editor\app\res\ui\window.layout"/>
+        <Property key="RecentFiles.0" value="C:\MyWork\Git\editor\app\res\ui\window.layout"/>
+        <Property key="RecentFiles.1" value="C:\MyWork\Git\editor\backup\MYGUI_3.2.0_win32\bin\release\unnamed.layout"/>
         <Property key="RecentFolder" value="C:\MyWork\Git\editor\app\res\ui"/>
         <Property key="RecentFolders.0" value="C:\MyWork\Git\editor\app\res\ui"/>
         <Property key="RecentFolders.1" value="C:\MyWork\Git\editor\MYGUI_3.2.0_win32\bin\release"/>

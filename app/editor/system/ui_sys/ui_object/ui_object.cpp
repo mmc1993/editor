@@ -19,7 +19,7 @@ SharePtr<UIObject> UIObject::GetObject(const std::initializer_list<std::string> 
             [&name](const SharePtr<UIObject> & object) {
                 return object->GetState()->Name == name;
             });
-        if (it == _children.end())
+        if (it == query->GetObjects().end())
         {
             return nullptr;
         }

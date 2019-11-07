@@ -24,22 +24,21 @@
 			"__Property": {
 				"Type": "1",
 				"Skin": "Window",
-				"Move": "0 25 300 620",
-				"Align": "384",
-				"Name": "ObjectList",
+				"Move": "0 0 1280 25",
+				"Align": "26",
+				"Name": "EditorMenu",
 				"BorderNumber": "1",
-				"IsCanDragFree": "true",
+				"IsCanDragFree": "false",
 				"IsCanMove": "false",
-				"IsCanStretch": "true",
+				"IsCanStretch": "false",
 				"IsFullScreen": "false",
-				"IsShowBorder": "true",
+				"IsShowBorder": "false",
 				"IsShowMenuBar": "false",
 				"IsShowNav": "false",
-				"IsShowScrollBar": "true",
+				"IsShowScrollBar": "false",
 				"IsShowTitleBar": "false",
 				"IsWindow": "false",
-				"StretchMin": "300 620",
-				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_obj_list"
+				"StretchMin": "1270 40"
 			},
 			"__Children": [
 				
@@ -49,69 +48,9 @@
 			"__Property": {
 				"Type": "1",
 				"Skin": "Window",
-				"Move": "300 25 740 620",
-				"Align": "384",
-				"Name": "ObjectStage",
-				"BorderNumber": "1",
-				"IsCanDragFree": "false",
-				"IsCanMove": "false",
-				"IsCanStretch": "true",
-				"IsFullScreen": "false",
-				"IsShowBorder": "true",
-				"IsShowMenuBar": "false",
-				"IsShowNav": "false",
-				"IsShowScrollBar": "false",
-				"IsShowTitleBar": "false",
-				"IsWindow": "false",
-				"StretchMin": "740 620"
-			},
-			"__Children": [
-				{
-					"__Property": {
-						"Type": "7",
-						"Skin": "ScrollBarH",
-						"Move": "0 0 740 620",
-						"Align": "30",
-						"Name": "Canvas",
-						"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
-					},
-					"__Children": [
-						
-					]
-				}
-			]
-		},
-		{
-			"__Property": {
-				"Type": "1",
-				"Skin": "Window",
-				"Move": "1040 25 230 620",
-				"Name": "ObjectComp",
-				"BorderNumber": "1",
-				"IsCanDragFree": "false",
-				"IsCanMove": "false",
-				"IsCanStretch": "true",
-				"IsFullScreen": "false",
-				"IsShowBorder": "true",
-				"IsShowMenuBar": "false",
-				"IsShowNav": "false",
-				"IsShowScrollBar": "false",
-				"IsShowTitleBar": "false",
-				"IsWindow": "false",
-				"StretchMin": "230 620",
-				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_com_list"
-			},
-			"__Children": [
-				
-			]
-		},
-		{
-			"__Property": {
-				"Type": "1",
-				"Skin": "Window",
-				"Move": "0 645 1270 40",
+				"Move": "0 680 1280 40",
 				"Align": "28",
-				"Name": "EditState",
+				"Name": "EditorState",
 				"BorderNumber": "1",
 				"IsCanDragFree": "false",
 				"IsCanMove": "false",
@@ -127,6 +66,92 @@
 			},
 			"__Children": [
 				
+			]
+		},
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "Window",
+				"Move": "0 25 300 655",
+				"Align": "384",
+				"Name": "EditorObjList",
+				"BorderNumber": "1",
+				"IsCanDragFree": "true",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "true",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "300 655",
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_obj_list"
+			},
+			"__Children": [
+				
+			]
+		},
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "Window",
+				"Move": "1040 25 240 655",
+				"Align": "384",
+				"Name": "EditorObjComp",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "240 655",
+				"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_com_list"
+			},
+			"__Children": [
+				
+			]
+		},
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "Window",
+				"Move": "300 25 740 655",
+				"Align": "384",
+				"Name": "EditorObjStage",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "740 655"
+			},
+			"__Children": [
+				{
+					"__Property": {
+						"Type": "7",
+						"Skin": "ScrollBarH",
+						"Move": "0 0 740 655",
+						"Align": "30",
+						"Name": "Canvas",
+						"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_stage"
+					},
+					"__Children": [
+						
+					]
+				}
 			]
 		}
 	]

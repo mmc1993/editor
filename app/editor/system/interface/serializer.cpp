@@ -11,7 +11,10 @@ bool interface::Serializer::FromStringParse(StringValueTypeEnum type, const std:
         return true;
     case interface::Serializer::StringValueTypeEnum::kBool:
         {
-            *((bool *)out) = val.at(0) == 'o' && val.at(1) == 'k';
+            *((bool *)out) = val.at(0) == 't'
+                          && val.at(1) == 'r'
+                          && val.at(2) == 'u'
+                          && val.at(3) == 'e';
         }
         return true;
     case interface::Serializer::StringValueTypeEnum::kFloat:
