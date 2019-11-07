@@ -191,8 +191,8 @@ void UIObject::ApplyLayout()
 
 void UIObject::Render(float dt, bool visible)
 {
+    auto state = GetState();
     _visible = visible;
-
     ApplyLayout();
 
     auto ret = false;
@@ -203,16 +203,30 @@ void UIObject::Render(float dt, bool visible)
         UpdateSize();
     }
 
-    for (auto child : _children)
+    if (state->IsSameline && !_children.empty())
     {
-        child->Render(dt, ret);
+        if (_children.size() > 1)
+        {
+            _children.at(0)->Render(dt, ret);
+        }
+        for (auto i = 1; i != _children.size(); ++i)
+        {
+            ImGui::SameLine();
+            _children.at(i)->Render(dt, ret);
+        }
+    }
+    else
+    {
+        for (auto child : _children)
+        {
+            child->Render(dt, ret);
+        }
     }
 
     if (visible) { OnLeave(ret); }
 
     //  刷新备份数据
-    auto state = GetState();
-    state->Move_ = state->Move;
+    state->Move_  = state->Move;
     state->LSkin_ = state->LSkin;
 }
 

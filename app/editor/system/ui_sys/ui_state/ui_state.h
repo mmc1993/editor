@@ -19,6 +19,7 @@ public:
     bool IsShowNav          = false;    //  导航
     bool IsEditBox          = false;    //  编辑
     bool IsCanMove          = false;    //  可移动
+    bool IsSameline         = false;    //  不换行
     bool IsShowBorder       = true;     //  显示边框
     bool IsCanStretch       = true;     //  可拉伸
     bool IsFullScreen       = false;    //  全屏
