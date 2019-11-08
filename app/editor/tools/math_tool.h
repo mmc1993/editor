@@ -504,4 +504,12 @@ namespace tools {
         }
         return std::move(result);
     }
+
+    //  随机数
+    inline float Random(float min, float max)
+    {
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        return std::uniform_real_distribution<float>(min, max)(gen);
+    }
 }

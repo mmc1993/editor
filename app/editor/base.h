@@ -13,6 +13,7 @@ using uint = unsigned int;
 #include <iterator>
 #include <algorithm>
 #include <functional>
+#include <random>
 #include <memory>
 #include <queue>
 #include <unordered_map>

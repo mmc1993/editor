@@ -110,6 +110,11 @@ void CompSegment::Update()
     }
 }
 
+void CompSegment::UpdateSeg()
+{
+
+}
+
 void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
