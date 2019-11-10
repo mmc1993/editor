@@ -120,6 +120,9 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_lightning.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_segment.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -999,6 +1002,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\comp_lightning.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_segment.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

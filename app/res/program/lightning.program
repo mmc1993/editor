@@ -5,8 +5,10 @@ Pass Beg
 
         layout(location = 0) in vec2 a_v_;
         layout(location = 1) in vec4 a_c_;
+        layout(location = 2) in vec2 a_uv_;
 
         out V_OUT_ {
+            vec2 mUV;
             vec4 mColor;
         } v_out_;
 
@@ -15,6 +17,7 @@ Pass Beg
         void main()
         {
             v_out_.mColor   = a_c_;
+            v_out_.mUV      = a_uv_;
             gl_Position     = uniform_matrix_mvp * vec4(a_v_, 0, 1);
         }
     VShader End
@@ -23,14 +26,18 @@ Pass Beg
         #version 330 core
 
         in V_OUT_ {
+            vec2 mUV;
             vec4 mColor;
         } v_out_;
 
         out vec4 color_;
 
+        uniform sampler2D texture0;
+
         void main()
         {
-            color_ = v_out_.mColor;
+            vec4 color = texture(texture0, v_out_.mUV);
+            color_ = color * v_out_.mColor;
         }
     FShader End
 Pass End

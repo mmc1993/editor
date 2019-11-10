@@ -4,6 +4,7 @@
         "Graphics/Light",
         "Graphics/Sprite",
         "Graphics/Tilemap",
+        "Graphics/Segment",
         "Graphics/Lightning"
     ],
     "List": {

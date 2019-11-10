@@ -2,6 +2,7 @@
 #include "comp_transform.h"
 #include "comp_lightning.h"
 #include "comp_tilemap.h"
+#include "comp_segment.h"
 #include "comp_sprite.h"
 #include "comp_light.h"
 #include "../property/ui_property.h"
@@ -10,6 +11,7 @@ static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
     std::make_pair("Transform", []() { return CastPtr<Component>(std::create_ptr<CompTransform>()); }),
     std::make_pair("Lightning", []() { return CastPtr<Component>(std::create_ptr<CompLightning>()); }),
     std::make_pair("Tilemap",   []() { return CastPtr<Component>(std::create_ptr<CompTilemap>());   }),
+    std::make_pair("Segment",   []() { return CastPtr<Component>(std::create_ptr<CompSegment>());   }),
     std::make_pair("Sprite",    []() { return CastPtr<Component>(std::create_ptr<CompSprite>());    }),
     std::make_pair("Light",     []() { return CastPtr<Component>(std::create_ptr<CompLight>());     }),
 
