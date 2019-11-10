@@ -7,6 +7,7 @@
 CompSegment::CompSegment()
     : _color(1)
     , _width(1)
+    , _stage(1)
     , _smooth(0)
 {
     _trackPoints.emplace_back(0, 0 );
@@ -45,6 +46,7 @@ void CompSegment::EncodeBinary(std::ofstream & os)
 {
     Component::EncodeBinary(os);
     tools::Serialize(os, _width);
+    tools::Serialize(os, _stage);
     tools::Serialize(os, _color);
     tools::Serialize(os, _smooth);
     tools::Serialize(os, _trackPoints);
@@ -54,6 +56,7 @@ void CompSegment::DecodeBinary(std::ifstream & is)
 {
     Component::DecodeBinary(is);
     tools::Deserialize(is, _width);
+    tools::Deserialize(is, _stage);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _smooth);
     tools::Deserialize(is, _trackPoints);
@@ -62,6 +65,19 @@ void CompSegment::DecodeBinary(std::ifstream & is)
 bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
+    if (title == "Width")
+    {
+        _width = std::max(1.0f, std::any_cast<float>(newValue));
+        return false;
+    }
+    else if (title == "Stage")
+    {
+        if (std::any_cast<float>(newValue) > 0)
+        {
+            _stage = std::any_cast<float>(newValue);
+        }
+        return false;
+    }
     return true;
 }
 
@@ -69,6 +85,7 @@ std::vector<Component::Property> CompSegment::CollectProperty()
 {
     auto props = Component::CollectProperty();
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Width", &_width);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Stage", &_stage);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color", &_color);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
     return std::move(props);
@@ -87,7 +104,27 @@ void CompSegment::Update()
 
 void CompSegment::GenSegm(const std::vector<glm::vec2> & segments, std::vector<glm::vec2> & output)
 {
-    output = segments;
+    static const auto pi2 = glm::pi<float>() * 0.5f;
+
+    glm::vec2 offset(0);
+    for (auto i = 0; i != segments.size() - 1; ++i)
+    {
+        auto & a = segments.at(i    );
+        auto & b = segments.at(i + 1);
+        glm::vec2 next = a;
+        for (auto s = 0.0f; s != 1.0f; s = std::min(1.0f, s + _stage))
+        {
+            output.emplace_back(next);
+            auto x = glm::lerp(a, b, s);
+            auto y = s < 0.3f? s / 0.3f
+                       : (1 - s) / 0.7f;
+            y = std::cos(pi2 - pi2 * y);
+            next = x + y * offset;
+        }
+        output.emplace_back(b);
+
+        offset = glm::normalize(b - next) * _smooth;
+    }
 }
 
 void CompSegment::GenMesh(const std::vector<glm::vec2> & segments)
