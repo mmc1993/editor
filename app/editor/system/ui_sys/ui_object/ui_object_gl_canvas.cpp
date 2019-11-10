@@ -69,6 +69,9 @@ void UIObjectGLCanvas::HandleFowardCommands()
             command.Call(&texNum);
             Post(command.mProgram, command.mTransform);
             command.mMesh->Draw(GL_TRIANGLES);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            //command.mMesh->Draw(GL_TRIANGLES);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
 }
@@ -651,7 +654,7 @@ void UIObjectGLCanvas::FromRectSelectObjects(
     { 
         auto it = std::find_if(com->GetTrackPoints().begin(), com->GetTrackPoints().end(),
             [&] (const auto & point) { return tools::IsContainsConvex(points, point); });
-        return com->HasState(Component::kActive)
+        return com->HasState(Component::StateEnum::kActive)
             && it != com->GetTrackPoints().end();
     };
 

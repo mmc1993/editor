@@ -10,7 +10,7 @@ class Component
     : public interface::Serializer 
     , public std::enable_shared_from_this<Component> {
 public:
-    enum StateEnum {
+    enum class StateEnum {
         kActive = 1 << 0,             //  激活
         kUpdate = 1 << 1,             //  刷新
         kInsertTrackPoint = 1 << 2,   //  支持插入控制点
@@ -44,7 +44,10 @@ public:
     //  创建组件
     static SharePtr<Component> Create(const std::string & name);
 
-	Component(): _owner(nullptr), _state(kActive | kUpdate) { }
+	Component()
+        : _owner(nullptr)
+        , _state((uint)StateEnum::kActive | 
+                 (uint)StateEnum::kUpdate) { }
 	virtual ~Component() { }
     virtual void OnAdd();
     virtual void OnDel();
@@ -52,13 +55,13 @@ public:
 
     void AddState(StateEnum state, bool add)
     {
-        if (add) _state |=  state;
-        else     _state &= ~state;
+        if (add) _state |=  (uint)state;
+        else     _state &= ~(uint)state;
     }
 
     bool HasState(StateEnum state)
     {
-        return _state & state;
+        return _state & (uint)state;
     }
 
     SharePtr<GLObject> GetOwner() { return _owner->shared_from_this(); }
@@ -75,9 +78,9 @@ public:
     std::vector<SharePtr<UIObject>> CreateUIPropertys();
 
     const std::vector<glm::vec2> & GetTrackPoints();
-    void ModifyTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kModifyTrackPoint) { OnModifyTrackPoint(index, point); } }
-    void InsertTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kInsertTrackPoint) { OnInsertTrackPoint(index, point); } }
-    void DeleteTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & kDeleteTrackPoint) { OnDeleteTrackPoint(index, point); } }
+    void ModifyTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & (uint)StateEnum::kModifyTrackPoint) { OnModifyTrackPoint(index, point); } }
+    void InsertTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & (uint)StateEnum::kInsertTrackPoint) { OnInsertTrackPoint(index, point); } }
+    void DeleteTrackPoint(const size_t index, const glm::vec2 & point) { if (_state & (uint)StateEnum::kDeleteTrackPoint) { OnDeleteTrackPoint(index, point); } }
 
 protected:
     virtual std::vector<Property> CollectProperty();

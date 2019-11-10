@@ -130,6 +130,7 @@ public:
     uint GetImageH() { return _refimg->mH; }
     uint GetImageFormat() { return _refimg->mFormat; }
     const glm::vec4 & GetOffset() { return  _offset; }
+    SharePtr<GLImage> & GetRefImage() { return _refimg; }
     uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
     uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
 

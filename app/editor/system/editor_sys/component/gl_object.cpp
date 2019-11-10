@@ -59,10 +59,10 @@ void GLObject::DecodeBinary(std::ifstream & is)
     tools::Deserialize(is, _name);
     //  组件
     size_t count;
-    std::string name;
     tools::Deserialize(is, count);
     for (auto i = 0; i != count; ++i)
     {
+        std::string name;
         tools::Deserialize(is, name);
         auto comp = Component::Create(name);
         comp->DecodeBinary(is);
@@ -71,6 +71,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
     SetTransform(GetComponent<CompTransform>());
 
     //  子节点
+    count = 0;
     tools::Deserialize(is, count);
     for (auto i = 0; i != count; ++i)
     {

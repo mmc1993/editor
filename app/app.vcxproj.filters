@@ -117,7 +117,7 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\editor_sys\component\comp_segment.cpp">
+    <ClCompile Include="editor\system\editor_sys\component\comp_lightning.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -998,7 +998,7 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_light.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\component\comp_segment.h">
+    <ClInclude Include="editor\system\editor_sys\component\comp_lightning.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

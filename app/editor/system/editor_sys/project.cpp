@@ -14,7 +14,7 @@ void Project::New(const std::string & url)
 void Project::Load(const std::string & url)
 {
     ASSERT_LOG(_root == nullptr, url.c_str());
-    std::ifstream is(url);
+    std::ifstream is(url, std::ios::binary);
     ASSERT_LOG(is, url.c_str());
     tools::Deserialize(is,_acc);
     _root.reset(new GLObject());
@@ -39,7 +39,7 @@ void Project::Load(const std::string & url)
 void Project::Save(const std::string & url)
 {
     ASSERT_LOG(_root != nullptr, url.c_str());
-    std::ofstream os(url.empty()? _url : url);
+    std::ofstream os(url.empty()? _url : url, std::ios::binary);
     tools::Serialize(os, _acc);
     _root->EncodeBinary(os);
     os.close();

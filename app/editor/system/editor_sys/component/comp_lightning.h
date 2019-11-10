@@ -3,15 +3,27 @@
 #include "component.h"
 #include "../../interface/render.h"
 
-class CompSegment : public Component {
+class CompLightning : public Component {
 public:
     enum UpdateEnum {
         kTexture = 1,
         kPolygon = 2,
     };
 
+    struct Segment {
+        glm::vec2 mStart;
+        glm::vec2 mEnded;
+        uint mBranch;
+
+        Segment(const glm::vec2 & start, const glm::vec2 & ended, uint branch)
+            : mStart(start)
+            , mEnded(ended)
+            , mBranch(branch)
+        { }
+    };
+
 public:
-    CompSegment();
+    CompLightning();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual const std::string & GetName() override;
@@ -26,15 +38,17 @@ protected:
 
 private:
     void Update();
-    void UpdateSeg();
-    void UpdateMesh();
+    void GenMesh(float scale, const std::vector<Segment> & segments);
+    void GenSegm(float width,
+        std::queue<Segment> & input, 
+        std::vector<Segment> & output);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
     uint                _update;
-    float               _smooth;
+    float               _scale;
     float               _width;
     glm::vec4           _color;
     std::string         _url;
