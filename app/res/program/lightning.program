@@ -38,9 +38,9 @@ Pass Beg
         {
             vec4 color = texture(texture0, v_out_.mUV);
             color_ = color * v_out_.mColor;
-            if (color.a < 0.5f)
+            if (color.a < 0.8f)
             {
-                color_.a *= 0.3f;
+                color_.a *= 0.5f;
             }
         }
     FShader End
