@@ -7,7 +7,8 @@ class CompLightning : public Component {
 public:
     enum UpdateEnum {
         kTexture = 1,
-        kPolygon = 2,
+        kSegment = 2,
+        kMesh    = 4,
     };
 
     struct Segment {
@@ -56,4 +57,5 @@ private:
     SharePtr<GLMesh>    _mesh;
     SharePtr<GLTexture> _texture;
     SharePtr<GLProgram> _program;
+    std::vector<Segment> _segments;
 };

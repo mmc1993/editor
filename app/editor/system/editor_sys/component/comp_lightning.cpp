@@ -8,7 +8,7 @@ CompLightning::CompLightning()
     : _color(1)
     , _scale(1)
     , _width(1)
-    , _update(kTexture | kPolygon)
+    , _update(kTexture | kSegment | kMesh)
 {
     _trackPoints.emplace_back(0, 0  );
     _trackPoints.emplace_back(0, 100);
@@ -73,11 +73,15 @@ bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any &
     if (title == "Url")
     {
         _update |= kTexture;
-        _update |= kPolygon;
     }
-    else
+    else if (title == "Width")
     {
-        _update |= kPolygon;
+        _update |= kSegment;
+    }
+    else if (title == "Scale" 
+          || title == "Color")
+    {
+        _update |= kMesh;
     }
     return true;
 }
@@ -98,35 +102,37 @@ void CompLightning::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (_update | kTexture && !_url.empty())
+        if (!_url.empty() && _update & kTexture)
         {
             _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
             _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
-        if (_update | kPolygon && !_url.empty())
+        if (!_url.empty() && _update & kSegment)
         {
-            if (_trackPoints.size() > 1)
+            std::queue<Segment> input;
+            for (auto i = 0; i != _trackPoints.size() - 1; ++i)
             {
-                std::queue<Segment> input;
-                std::vector<Segment> output;
-                for (auto i = 0; i != _trackPoints.size() - 1; ++i)
-                {
-                    auto & a = _trackPoints.at(i    );
-                    auto & b = _trackPoints.at(i + 1);
-                    input.emplace(a, b, 0);
-                }
-                GenSegm(_width, input, output);
-                GenMesh(_scale,        output);
+                auto & a = _trackPoints.at(i    );
+                auto & b = _trackPoints.at(i + 1);
+                input.emplace(a, b, 0);
             }
+            GenSegm(_width, input, _segments);
         }
+
+        if (!_url.empty() && (_update & (kSegment | kMesh)))
+        {
+            GenMesh(_scale, _segments);
+        }
+
         _update = 0;
     }
 }
 
 void CompLightning::GenSegm(float width, std::queue<Segment> & input, std::vector<Segment> & output)
 {
+    output.clear();
     while (!input.empty())
     {
         auto & segment = input.front();
@@ -141,10 +147,10 @@ void CompLightning::GenSegm(float width, std::queue<Segment> & input, std::vecto
         }
         else
         {
-            if (tools::Random(0.0f, 1.0f) < std::pow(0.05f, segment.mBranch + 1) - 0.01f)
+            if (tools::Random(0.0f, 1.0f) < std::pow(0.06f, segment.mBranch + 1) - 0.01f)
             {
                 //  产生分支
-                auto ended = glm::lerp(segment.mStart, segment.mEnded, 10.0f);
+                auto ended = glm::lerp(segment.mStart, segment.mEnded, 5.0f);
                 auto length = glm::length(ended - segment.mStart);
                 auto offset = glm::vec2(tools::Random(-length, length),
                                         tools::Random(-length, length));
@@ -186,14 +192,14 @@ void CompLightning::GenMesh(float scale, const std::vector<Segment> & segments)
 void CompLightning::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
-    _update |= UpdateEnum::kPolygon;
+    _update |= UpdateEnum::kSegment;
     _trackPoints.at(index) = point;
 }
 
 void CompLightning::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
-    _update |= UpdateEnum::kPolygon;
+    _update |= UpdateEnum::kSegment;
     _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
 }
 
@@ -202,7 +208,7 @@ void CompLightning::OnDeleteTrackPoint(const size_t index, const glm::vec2 & poi
     AddState(StateEnum::kUpdate, true);
     if (_trackPoints.size() > 1)
     {
-        _update |= UpdateEnum::kPolygon;
+        _update |= UpdateEnum::kSegment;
         _trackPoints.erase(std::next(_trackPoints.begin(), index));
     }
 }
