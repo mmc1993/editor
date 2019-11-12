@@ -7,11 +7,11 @@
 CompSegment::CompSegment()
     : _color(1)
     , _width(1)
-    , _stage(1)
-    , _smooth(0)
+    , _smooth(1.0f)
+    , _update(kSegment | kMesh)
 {
     _trackPoints.emplace_back(0, 0 );
-    _trackPoints.emplace_back(0, 500);
+    _trackPoints.emplace_back(0, 100);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({},{}, GLMesh::Vertex::kV | 
@@ -46,7 +46,6 @@ void CompSegment::EncodeBinary(std::ofstream & os)
 {
     Component::EncodeBinary(os);
     tools::Serialize(os, _width);
-    tools::Serialize(os, _stage);
     tools::Serialize(os, _color);
     tools::Serialize(os, _smooth);
     tools::Serialize(os, _trackPoints);
@@ -56,7 +55,6 @@ void CompSegment::DecodeBinary(std::ifstream & is)
 {
     Component::DecodeBinary(is);
     tools::Deserialize(is, _width);
-    tools::Deserialize(is, _stage);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _smooth);
     tools::Deserialize(is, _trackPoints);
@@ -65,16 +63,16 @@ void CompSegment::DecodeBinary(std::ifstream & is)
 bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "Width")
+    if (title == "Width" || title == "Color")
     {
-        _width = std::max(1.0f, std::any_cast<float>(newValue));
-        return false;
+        _update |= kMesh;
     }
-    else if (title == "Stage")
+    else if (title == "Smooth")
     {
-        if (std::any_cast<float>(newValue) > 0)
+        if (auto value = std::any_cast<float>(newValue); value != 0)
         {
-            _stage = std::any_cast<float>(newValue);
+            _smooth = value;
+            _update |= kSegment;
         }
         return false;
     }
@@ -85,7 +83,6 @@ std::vector<Component::Property> CompSegment::CollectProperty()
 {
     auto props = Component::CollectProperty();
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Width", &_width);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Stage", &_stage);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color", &_color);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
     return std::move(props);
@@ -96,48 +93,85 @@ void CompSegment::Update()
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        std::vector<glm::vec2> segments;
-        GenSegm(_trackPoints, segments);
-        GenMesh(segments);
-    }
-}
-
-void CompSegment::GenSegm(const std::vector<glm::vec2> & segments, std::vector<glm::vec2> & output)
-{
-    auto & a    = segments.at(0);
-    auto & b    = segments.at(1);
-    auto sAixs  = glm::normalize(b - a);
-    output.emplace_back(a);
-
-    for (auto i = 0; i != segments.size() - 1; ++i)
-    {
-        auto & a = segments.at(i    );
-        auto & b = segments.at(i + 1);
-
-        auto stepLen = glm::length(b - a) / _stage;
-        auto stepDir = glm::normalize(b - a);
-        auto stepDirect = stepDir  * stepLen;
-
-        for (auto s = 0; s != _stage; ++s)
+        if (_update & kSegment)
         {
-            auto dir = glm::normalize(b - output.back());
-            sAixs    = glm::normalize(sAixs + dir);
-            auto len = glm::dot(stepDirect, sAixs);
-            output.emplace_back(sAixs * len + output.back());
+            GenSegm();
+        }
+        if (_update & (kSegment | kMesh))
+        {
+            GenMesh();
         }
     }
 }
 
-void CompSegment::GenMesh(const std::vector<glm::vec2> & segments)
+void CompSegment::GenSegm()
+{
+    if (_smooth != 1.0f)
+    {
+        _segments.clear();
+        auto points = _trackPoints;
+        std::sort(points.begin(), points.end(), 
+            [](const auto & a, const auto & b) { return a.x < b.x; });
+        auto iter = std::unique(points.begin(), points.end(), 
+            [](const auto & a, const auto & b) { return a.x == b.x; });
+        points.erase(iter,  points.end());
+        if (points.size() < 2) { return; }
+
+        auto beg = points.front().x;
+        auto end = points.back().x;
+        auto distance  = end - beg;
+        auto step  = distance * _smooth;
+        auto count = int(1.0f / _smooth);
+        for (auto i = 0; i != count; ++i)
+        {
+            auto y = 0.0f;
+            auto x = beg + i * step;
+            for (auto i0 = 0; i0 != points.size(); ++i0)
+            {
+                auto selfY = points.at(i0).y;
+                auto m0 = 1.0f; //  ·Ö×Ó
+                auto m1 = 1.0f; //  ·ÖÄ¸
+                for (auto i1 = 0; i1 != points.size(); ++i1)
+                {
+                    if (i0 != i1)
+                    {
+                        m0 *= (x -               points.at(i1).x);
+                        m1 *= (points.at(i0).x - points.at(i1).x);
+                    }
+                }
+                y += m0 / m1 * selfY;
+            }
+            _segments.emplace_back(x, y);
+        }
+        _segments.emplace_back(points.back());
+    }
+    else
+    {
+        _segments = _trackPoints;
+    }
+}
+
+void CompSegment::GenMesh()
 {
     std::vector<GLMesh::Vertex> points;
     std::vector<uint>           indexs;
-    for (auto i = 0; i != segments.size() - 1; ++i)
+    for (auto i = 0; i != _segments.size() - 1; ++i)
     {
-        auto & a = segments.at(i    );
-        auto & b = segments.at(i + 1);
-        auto dir = glm::vec2(+(b - a).y, -(b - a).x);
-        auto offset = glm::normalize(dir) * _width * 0.5f;
+        auto & a = _segments.at(i    );
+        auto & b = _segments.at(i + 1);
+        auto dir = glm::vec2(+(b -a).y, -(b -a).x);
+        auto offset = glm::normalize(dir) * _width;
+
+        if (i != 0)
+        {
+            indexs.emplace_back(points.size() - 3);
+            indexs.emplace_back(points.size());
+            indexs.emplace_back(points.size() + 3);
+
+            indexs.emplace_back(points.size() - 3);
+            indexs.emplace_back(points.size() + 3);
+            indexs.emplace_back(points.size() - 2);
+        }
 
         indexs.emplace_back(points.size());
         indexs.emplace_back(points.size() + 1);
@@ -157,21 +191,24 @@ void CompSegment::GenMesh(const std::vector<glm::vec2> & segments)
 
 void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    _update |= kSegment;
     AddState(StateEnum::kUpdate, true);
     _trackPoints.at(index) = point;
 }
 
 void CompSegment::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
+    _update |= kSegment;
     AddState(StateEnum::kUpdate, true);
     _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
 }
 
 void CompSegment::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    AddState(StateEnum::kUpdate, true);
     if (_trackPoints.size() > 1)
     {
+        _update |= kSegment;
+        AddState(StateEnum::kUpdate, true);
         _trackPoints.erase(std::next(_trackPoints.begin(), index));
     }
 }

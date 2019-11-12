@@ -5,6 +5,12 @@
 
 class CompSegment : public Component {
 public:
+    enum UpdateEnum {
+        kSegment = 1,
+        kMesh    = 2,
+    };
+
+public:
     CompSegment();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
@@ -20,18 +26,20 @@ protected:
 
 private:
     void Update();
+    void GenSegm();
+    void GenMesh();
     void GenMesh(const std::vector<glm::vec2> & segments);
-    void GenSegm(const std::vector<glm::vec2> & segments, std::vector<glm::vec2> & output);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    float               _smooth;    //  Æ½»¬
     float               _width;     //  Ïß¿í
-    float               _stage;     //  ½×¶Î
     glm::vec4           _color;
+    float               _smooth;
+    uint                _update;
 
     SharePtr<GLMesh>    _mesh;
     SharePtr<GLProgram> _program;
+    std::vector<glm::vec2> _segments;
 };
