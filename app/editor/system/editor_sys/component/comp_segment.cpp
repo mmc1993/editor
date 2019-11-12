@@ -104,26 +104,27 @@ void CompSegment::Update()
 
 void CompSegment::GenSegm(const std::vector<glm::vec2> & segments, std::vector<glm::vec2> & output)
 {
-    static const auto pi2 = glm::pi<float>() * 0.5f;
+    auto & a    = segments.at(0);
+    auto & b    = segments.at(1);
+    auto sAixs  = glm::normalize(b - a);
+    output.emplace_back(a);
 
-    glm::vec2 offset(0);
     for (auto i = 0; i != segments.size() - 1; ++i)
     {
         auto & a = segments.at(i    );
         auto & b = segments.at(i + 1);
-        glm::vec2 next = a;
-        for (auto s = 0.0f; s != 1.0f; s = std::min(1.0f, s + _stage))
-        {
-            output.emplace_back(next);
-            auto x = glm::lerp(a, b, s);
-            auto y = s < 0.3f? s / 0.3f
-                       : (1 - s) / 0.7f;
-            y = std::cos(pi2 - pi2 * y);
-            next = x + y * offset;
-        }
-        output.emplace_back(b);
 
-        offset = glm::normalize(b - next) * _smooth;
+        auto stepLen = glm::length(b - a) / _stage;
+        auto stepDir = glm::normalize(b - a);
+        auto stepDirect = stepDir  * stepLen;
+
+        for (auto s = 0; s != _stage; ++s)
+        {
+            auto dir = glm::normalize(b - output.back());
+            sAixs    = glm::normalize(sAixs + dir);
+            auto len = glm::dot(stepDirect, sAixs);
+            output.emplace_back(sAixs * len + output.back());
+        }
     }
 }
 

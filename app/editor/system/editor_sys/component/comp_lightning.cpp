@@ -10,8 +10,8 @@ CompLightning::CompLightning()
     , _width(1)
     , _update(kTexture | kPolygon)
 {
-    _trackPoints.emplace_back(0, 0 );
-    _trackPoints.emplace_back(0, 50);
+    _trackPoints.emplace_back(0, 0  );
+    _trackPoints.emplace_back(0, 100);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({},{}, GLMesh::Vertex::kV | 
