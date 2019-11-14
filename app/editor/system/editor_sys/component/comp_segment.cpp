@@ -69,11 +69,9 @@ bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & n
     }
     else if (title == "Smooth")
     {
-        if (auto value = std::any_cast<float>(newValue); value > 0)
-        {
-            _smooth = value;
-            _update |= kSegment;
-        }
+        auto value = std::any_cast<float>(newValue);
+        _smooth = std::clamp(value, 0.01f, 1.0f);
+        _update |= kSegment;
         return false;
     }
     return true;
@@ -145,8 +143,8 @@ void CompSegment::GenSegm()
         {
             auto t = s * _smooth;
             auto beg = glm::lerp(ctrlPoints.at(0), ctrlPoints.at(1), t);
-            auto end = glm::lerp(ctrlPoints.at(2), ctrlPoints.at(3), t);
-            for (auto i = 3; i != ctrlPoints.size() - 2; ++i)
+            auto end = glm::lerp(ctrlPoints.at(1), ctrlPoints.at(2), t);
+            for (auto i = 2; i != ctrlPoints.size() - 1; ++i)
             {
                 auto & a = ctrlPoints.at(i    );
                 auto & b = ctrlPoints.at(i + 1);
@@ -155,8 +153,15 @@ void CompSegment::GenSegm()
             }
             _segments.emplace_back(glm::lerp(beg, end, t));
         }
+        _segments.emplace_back(ctrlPoints.back());
     }
 
+
+    for (auto & point : ctrlPoints)
+    {
+        _segments.emplace_back(point);
+    }
+    
 
     //  ¿≠ø®¿ »’≤Â÷µ
     //if (_smooth != 1.0f)
