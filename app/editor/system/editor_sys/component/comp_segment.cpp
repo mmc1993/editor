@@ -105,14 +105,16 @@ void CompSegment::Update()
 void CompSegment::GenSegm()
 {
     //  ±´Èû¶û²åÖµ
-    std::vector<glm::vec2> ctrlPoints{ _trackPoints.front() };
+    std::vector<glm::vec2> ctrlPoints;
+
     if (_trackPoints.size() > 2)
     {
-        for (auto i = 0; i != _trackPoints.size() - 2; ++i)
+        auto size = _trackPoints.size();
+        for (auto i = 0; i != size; ++i)
         {
-            auto & a = _trackPoints.at(i    );
-            auto & b = _trackPoints.at(i + 1);
-            auto & c = _trackPoints.at(i + 2);
+            auto & a = _trackPoints.at((i + size - 1) % size);
+            auto & b = _trackPoints.at(i                    );
+            auto & c = _trackPoints.at((i + 1)        % size);
 
             auto mid0 = glm::lerp(a, b, 0.5f);
             auto mid1 = glm::lerp(b, c, 0.5f);
@@ -126,7 +128,6 @@ void CompSegment::GenSegm()
             ctrlPoints.emplace_back(mid1 + offset);
         }
     }
-    ctrlPoints.emplace_back(_trackPoints.back());
 
     _segments.clear();
     if (ctrlPoints.size() == 2)
@@ -138,30 +139,20 @@ void CompSegment::GenSegm()
     else
     {
         //  N´Î±´Èû¶ûÇúÏß
-        auto count = iint(1.0f / _smooth);
-        for (auto s = 0; s != count; ++s)
+        for (auto i = 0; i != _trackPoints.size() - 1; ++i)
         {
-            auto t = s * _smooth;
-            auto beg = glm::lerp(ctrlPoints.at(0), ctrlPoints.at(1), t);
-            auto end = glm::lerp(ctrlPoints.at(1), ctrlPoints.at(2), t);
-            for (auto i = 2; i != ctrlPoints.size() - 1; ++i)
+            auto & a = _trackPoints.at(i    );
+            auto & b = ctrlPoints.at((i * 2) + 1);
+            auto & c = ctrlPoints.at((i + 1) * 2);
+            auto & d = _trackPoints.at(i + 1);
+            auto count = iint(1.0f / _smooth);
+            for (auto s = 0; s != count; ++s)
             {
-                auto & a = ctrlPoints.at(i    );
-                auto & b = ctrlPoints.at(i + 1);
-                beg = glm::lerp(beg, end, t);
-                end = glm::lerp(a, b, t);
+                DrawBezier(a, b, c, d, s * _smooth);
             }
-            _segments.emplace_back(glm::lerp(beg, end, t));
         }
-        _segments.emplace_back(ctrlPoints.back());
+        _segments.emplace_back(_trackPoints.back());
     }
-
-
-    for (auto & point : ctrlPoints)
-    {
-        _segments.emplace_back(point);
-    }
-    
 
     //  À­¿¨ÀÊÈÕ²åÖµ
     //if (_smooth != 1.0f)
@@ -245,6 +236,16 @@ void CompSegment::GenMesh()
         points.emplace_back(a - offset, _color);
     }
     _mesh->Update(points, indexs);
+}
+
+void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d, float t)
+{
+    auto p0 = glm::lerp(a, b, t);
+    auto p1 = glm::lerp(b, c, t);
+    auto p2 = glm::lerp(c, d, t);
+    auto p3 = glm::lerp(p0, p1, t);
+    auto p4 = glm::lerp(p1, p2, t);
+    _segments.emplace_back(glm::lerp(p3, p4, t));
 }
 
 void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
