@@ -1,19 +1,19 @@
-ok çª—å£èœå•
-ok å¼¹å‡ºèœå•
-ok æ‹‰ä¼¸æ–¹å‘åˆ¤æ–­
+ok ´°¿Ú²Ëµ¥
+ok µ¯³ö²Ëµ¥
+ok À­Éì·½ÏòÅÐ¶Ï
 
 
-å¯¹è±¡
-ç»„ä»¶
+¶ÔÏó
+×é¼þ
 
 
-å›¾å±‚
-å¯¹è±¡:
-    ç»„ä»¶0
-    ç»„ä»¶1
-    ç»„ä»¶2
+Í¼²ã
+¶ÔÏó:
+    ×é¼þ0
+    ×é¼þ1
+    ×é¼þ2
 
-//  å·¥ç¨‹ç±»
+//  ¹¤³ÌÀà
 class Project {
 public:
     GLOBject * mRoot;
@@ -26,28 +26,28 @@ public:
     void Free();
 }
 
-//  æä¾›äºŒè¿›åˆ¶åºåˆ—åŒ–/ååºåˆ—åŒ–
-//  æä¾›å­—ç¬¦ä¸²åºåˆ—åŒ–/ååºåˆ—åŒ–
-//  åºåˆ—åŒ–æŽ¥å£
+//  Ìá¹©¶þ½øÖÆÐòÁÐ»¯/·´ÐòÁÐ»¯
+//  Ìá¹©×Ö·û´®ÐòÁÐ»¯/·´ÐòÁÐ»¯
+//  ÐòÁÐ»¯½Ó¿Ú
 class Serializer {
 public:
     virtual void Encode(std::ofstream & os) = 0;
     virtual void Decode(std::ifstream & is) = 0;
 }
 
-ok  //  event_enum æ”¾è¿› EventSys
-ok  //  event_listen æ”¾è¿› EventSys
-ok  //  parser_tool.h æ”¾è¿› Serializer
-ok  //  UIEventEnum å‰¥ç¦»
+ok  //  event_enum ·Å½ø EventSys
+ok  //  event_listen ·Å½ø EventSys
+ok  //  parser_tool.h ·Å½ø Serializer
+ok  //  UIEventEnum °þÀë
 
 
-// éœ€è¦åºåˆ—åŒ–çš„å¯¹è±¡:
+// ÐèÒªÐòÁÐ»¯µÄ¶ÔÏó:
 //     Project
 //     GLObject
 //     Component
 
 
-æ‹–æ”¾å‚æ•°:
+ÍÏ·Å²ÎÊý:
     bool IsCanDrag,
 
     struct Drag {
@@ -61,34 +61,41 @@ ok  //  UIEventEnum å‰¥ç¦»
         glm::vec2 mEndWorld;
     }
 
-// ä½¿ç”¨æ™ºèƒ½æŒ‡é’ˆ
+// Ê¹ÓÃÖÇÄÜÖ¸Õë
 
-// ä¸ºGLObjectç”Ÿæˆå”¯ä¸€ID
-// EditorSysåªæ“ä½œGLObject
+// ÎªGLObjectÉú³ÉÎ¨Ò»ID
+// EditorSysÖ»²Ù×÷GLObject
 
-//  å›¾é›†/å›¾ç‰‡åˆå¹¶
-//  èµ„æºç¼“å­˜æ”¹ç”¨WeakPtr
+//  Í¼¼¯/Í¼Æ¬ºÏ²¢
+//  ×ÊÔ´»º´æ¸ÄÓÃWeakPtr
 
  GLCanvas
-    åˆ‡æ¢æ¨¡å¼: å›žè½¦
+    ÇÐ»»Ä£Ê½: »Ø³µ
 
-ç¼–è¾‘æ¨¡å¼:
-    ç»˜åˆ¶è¾¹æ¡†, æ˜¾ç¤ºæŽ§åˆ¶ç‚¹
-    å·¦é”®åŒå‡»è¾¹æ¡† -> æ–°å¢žæŽ§åˆ¶ç‚¹
-    å·¦é”®å•å‡»æŽ§åˆ¶ç‚¹ -> é€‰ä¸­æŽ§åˆ¶ç‚¹
-    å·¦é”®æŒ‰ä½æŽ§åˆ¶ç‚¹ -> æ‹–åŠ¨æŽ§åˆ¶ç‚¹
-    å³é”®æŒ‰ä½æŽ§åˆ¶ç‚¹ -> æ–°å¢žæŽ§åˆ¶ç‚¹
-    Delete        -> åˆ é™¤æŽ§åˆ¶ç‚¹
+±à¼­Ä£Ê½:
+    »æÖÆ±ß¿ò, ÏÔÊ¾¿ØÖÆµã
+    ×ó¼üË«»÷±ß¿ò -> ÐÂÔö¿ØÖÆµã
+    ×ó¼üµ¥»÷¿ØÖÆµã -> Ñ¡ÖÐ¿ØÖÆµã
+    ×ó¼ü°´×¡¿ØÖÆµã -> ÍÏ¶¯¿ØÖÆµã
+    ÓÒ¼ü°´×¡¿ØÖÆµã -> ÐÂÔö¿ØÖÆµã
+    Delete        -> É¾³ý¿ØÖÆµã
 
- æ‹–åŠ¨æ¨¡å¼:
-     ç»˜åˆ¶è¾¹æ¡†
-     å·¦é”®æŒ‰ä½è¾¹æ¡†å†… -> æ‹–åŠ¨å¯¹è±¡
-     Delete        -> åˆ é™¤å¯¹è±¡
+ ÍÏ¶¯Ä£Ê½:
+     »æÖÆ±ß¿ò
+     ×ó¼ü°´×¡±ß¿òÄÚ -> ÍÏ¶¯¶ÔÏó
+     Delete        -> É¾³ý¶ÔÏó
 
-// ç²¾çµ
-// ç“¦ç‰‡åœ°å›¾
-å…‰ç…§
-é˜´å½±
-èµ„æºç®¡ç†å™¨
-èµ„æºé€‰æ‹©æ¡†
-
+// ¾«Áé
+// ÍßÆ¬µØÍ¼
+// ¹âÕÕ
+±´Èû¶ûÇúÏß
+¿ÉÊÓÇø²Ã¼ô
+×ÊÔ´Ñ¡Ôñ¿ò
+×ÊÔ´¹ÜÀíÆ÷
+¶ÔÏóÍÏ·Å
+¶ÔÏóËø¶¨
+¶ÔÏó¿É¼û
+·Ö²ãäÖÈ¾
+µ¼º½Íø¸ñ
+µØÐÎÆÆ»µ
+Á£×Ó
