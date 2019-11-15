@@ -5,51 +5,7 @@
         "Graphics/Sprite",
         "Graphics/Tilemap",
         "Graphics/Segment",
-        "Graphics/Lightning"
-    ],
-    "List": {
-        "Transform": {
-            "Desc": "变换组件",
-            "Propertys": [
-                {
-                    "Name": "Position",
-                    "Type": "Vec2"
-                },
-                {
-                    "Name": "Rotate",
-                    "Type": "Float"
-                },
-                {
-                    "Name": "Scale",
-                    "Type": "Vec2"
-                }
-            ]
-        },
-        "Graphics/Sprite": {
-            "Desc": "精灵组件",
-            "Propertys": [
-                {
-                    "Name": "Shader",
-                    "Type": "String"
-                },
-                {
-                    "Name": "Image",
-                    "Type": "String"
-                },
-                {
-                    "Name": "Quad",
-                    "Type": "Vec4"
-                }
-            ]
-        },
-        "Graphics/Light": {
-            "Desc": "光源组件",
-            "Propertys": [
-                {
-                    "Name": "Color",
-                    "Type": "Color"
-                }
-            ]
-        }
-    }
+        "Graphics/Lightning",
+        "Utility/Polygon"
+    ]
 }
