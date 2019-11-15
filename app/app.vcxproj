@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="editor\system\editor_sys\component\component.cpp" />
+    <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_light.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_lightning.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_polygon.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
     <ClInclude Include="editor\system\editor_sys\component\component.h" />
+    <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_light.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_lightning.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_polygon.h" />

@@ -126,6 +126,9 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_polygon.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -1011,6 +1014,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\comp_polygon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
