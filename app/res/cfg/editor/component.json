@@ -6,6 +6,7 @@
         "Graphics/Tilemap",
         "Graphics/Segment",
         "Graphics/Lightning",
+        "Graphics/FieldOfView",
         "Utility/Polygon"
     ]
 }

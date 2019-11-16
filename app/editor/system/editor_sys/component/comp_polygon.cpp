@@ -6,8 +6,16 @@
 
 CompPolygon::CompPolygon()
 {
-    _segments.emplace_back(0, 0);
-    _trackPoints.emplace_back(0, 0);
+    _segments.emplace_back(-50, -50);
+    _segments.emplace_back( 50, -50);
+    _segments.emplace_back( 50,  50);
+    _segments.emplace_back(-50,  50);
+
+    _trackPoints.emplace_back(-50, -50);
+    _trackPoints.emplace_back( 50, -50);
+    _trackPoints.emplace_back( 50,  50);
+    _trackPoints.emplace_back(-50,  50);
+
     AddState(StateEnum::kModifyTrackPoint, true);
     AddState(StateEnum::kInsertTrackPoint, true);
     AddState(StateEnum::kDeleteTrackPoint, true);
@@ -26,12 +34,14 @@ const std::string & CompPolygon::GetName()
 void CompPolygon::EncodeBinary(std::ofstream & os)
 {
     Component::EncodeBinary(os);
+    tools::Serialize(os, _segments);
     tools::Serialize(os, _trackPoints);
 }
 
 void CompPolygon::DecodeBinary(std::ifstream & is)
 {
     Component::DecodeBinary(is);
+    tools::Deserialize(is, _segments);
     tools::Deserialize(is, _trackPoints);
 }
 
@@ -61,10 +71,8 @@ void CompPolygon::OnInsertTrackPoint(const size_t index, const glm::vec2 & point
 
 void CompPolygon::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    if (_trackPoints.size() > 1)
-    {
-        _segments.erase(std::next(_segments.begin(), index));
-        _trackPoints.erase(std::next(_trackPoints.begin(), index));
-    }
+    AddState(StateEnum::kUpdate, true);
+    _segments.erase(std::next(_segments.begin(), index));
+    _trackPoints.erase(std::next(_trackPoints.begin(), index));
 }
 

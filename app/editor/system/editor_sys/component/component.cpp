@@ -1,4 +1,5 @@
 #include "component.h"
+#include "comp_field_of_view.h"
 #include "comp_transform.h"
 #include "comp_lightning.h"
 #include "comp_tilemap.h"
@@ -9,13 +10,14 @@
 #include "../property/ui_property.h"
 
 static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
-    std::make_pair("Transform", []() { return CastPtr<Component>(std::create_ptr<CompTransform>()); }),
-    std::make_pair("Lightning", []() { return CastPtr<Component>(std::create_ptr<CompLightning>()); }),
-    std::make_pair("Polygon",   []() { return CastPtr<Component>(std::create_ptr<CompPolygon>());   }),
-    std::make_pair("Tilemap",   []() { return CastPtr<Component>(std::create_ptr<CompTilemap>());   }),
-    std::make_pair("Segment",   []() { return CastPtr<Component>(std::create_ptr<CompSegment>());   }),
-    std::make_pair("Sprite",    []() { return CastPtr<Component>(std::create_ptr<CompSprite>());    }),
-    std::make_pair("Light",     []() { return CastPtr<Component>(std::create_ptr<CompLight>());     }),
+    std::make_pair("FieldOfView",   []() { return CastPtr<Component>(std::create_ptr<CompFieldOfView>());   }),
+    std::make_pair("Transform",     []() { return CastPtr<Component>(std::create_ptr<CompTransform>());     }),
+    std::make_pair("Lightning",     []() { return CastPtr<Component>(std::create_ptr<CompLightning>());     }),
+    std::make_pair("Polygon",       []() { return CastPtr<Component>(std::create_ptr<CompPolygon>());       }),
+    std::make_pair("Tilemap",       []() { return CastPtr<Component>(std::create_ptr<CompTilemap>());       }),
+    std::make_pair("Segment",       []() { return CastPtr<Component>(std::create_ptr<CompSegment>());       }),
+    std::make_pair("Sprite",        []() { return CastPtr<Component>(std::create_ptr<CompSprite>());        }),
+    std::make_pair("Light",         []() { return CastPtr<Component>(std::create_ptr<CompLight>());         }),
 
 };
 

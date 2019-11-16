@@ -16,12 +16,27 @@ public:
                                   const std::string & title) override;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
+protected:
+    virtual std::vector<Property> CollectProperty() override;
+
 private:
     void Update();
+    void GenView();
+    void GenMesh();
+    glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point, glm::vec2 * next);
+    glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
+
+    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
+    virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
+    virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
     std::string                         _url;
+    glm::vec4                           _color;
+    float                               _distance;
+
     SharePtr<GLMesh>                    _mesh;
     SharePtr<GLProgram>                 _program;
+    std::vector<glm::vec2>              _segments;
     std::vector<SharePtr<CompPolygon>>  _polygons;
 };
