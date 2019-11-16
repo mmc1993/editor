@@ -26,14 +26,11 @@ private:
     glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point, glm::vec2 * next);
     glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
 
-    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
-    virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
-    virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
-
 private:
     std::string                         _url;
     glm::vec4                           _color;
-    float                               _distance;
+    float                               _sceneW;
+    float                               _sceneH;
 
     SharePtr<GLMesh>                    _mesh;
     SharePtr<GLProgram>                 _program;

@@ -6,21 +6,16 @@
 
 CompFieldOfView::CompFieldOfView()
     : _color(1.0f)
-    , _distance(1.0f)
+    , _sceneW(0)
+    , _sceneH(0)
 {
-    _trackPoints.emplace_back(0,   -10);
-    _trackPoints.emplace_back(-50, 100);
-    _trackPoints.emplace_back( 50, 100);
-
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({}, {}, GLMesh::Vertex::kV | 
                         GLMesh::Vertex::kC);
 
     _program = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_LIGHT);
 
-    AddState(StateEnum::kModifyTrackPoint, true);
-    AddState(StateEnum::kInsertTrackPoint, true);
-    AddState(StateEnum::kDeleteTrackPoint, true);
+    AddState(StateEnum::kActive, false);
 }
 
 const std::string & CompFieldOfView::GetName()
@@ -34,7 +29,8 @@ void CompFieldOfView::EncodeBinary(std::ofstream & os)
     Component::EncodeBinary(os);
     tools::Serialize(os, _url);
     tools::Serialize(os, _color);
-    tools::Serialize(os, _distance);
+    tools::Serialize(os, _sceneW);
+    tools::Serialize(os, _sceneH);
     tools::Serialize(os, _trackPoints);
 }
 
@@ -43,7 +39,8 @@ void CompFieldOfView::DecodeBinary(std::ifstream & is)
     Component::DecodeBinary(is);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _color);
-    tools::Deserialize(is, _distance);
+    tools::Deserialize(is, _sceneW);
+    tools::Deserialize(is, _sceneH);
     tools::Deserialize(is, _trackPoints);
 }
 
@@ -80,7 +77,8 @@ std::vector<Component::Property> CompFieldOfView::CollectProperty()
     auto props = Component::CollectProperty();
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Url",      &_url);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color",    &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,  "Distance", &_distance);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,  "SceneW",   &_sceneW);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,  "SceneH",   &_sceneH);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kBool,   "Debug",    &debug);
     return std::move(props);
 }
@@ -106,6 +104,8 @@ void CompFieldOfView::Update()
 
 void CompFieldOfView::GenView()
 {
+    const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
+
     std::vector<glm::vec2> segments;
     for (auto & polygon : _polygons)
     {
@@ -113,20 +113,35 @@ void CompFieldOfView::GenView()
         {
             const auto & a = polygon->GetSegments().at(i          );
             const auto & b = polygon->GetSegments().at((i + 1) % n);
-            auto worldA = polygon->GetOwner()->LocalToWorld(a);
-            auto worldB = polygon->GetOwner()->LocalToWorld(b);
-            segments.emplace_back(GetOwner()->WorldToLocal(worldA));
-            segments.emplace_back(GetOwner()->WorldToLocal(worldB));
+            auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
+            auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
+            segments.emplace_back(worldA);
+            segments.emplace_back(worldB);
         }
     }
 
-    for (auto i = 0u, n = _trackPoints.size(); i != _trackPoints.size(); ++i)
-    {
-        segments.push_back(_trackPoints.at(i          ));
-        segments.push_back(_trackPoints.at((i + 1) % n));
-    }
-    
-    ASSERT_LOG(0 == std::count(segments.begin(), segments.end(), glm::vec2(0)), "");
+    segments.emplace_back(_sceneW * -0.5f, _sceneH * -0.5f);
+    segments.emplace_back(_sceneW *  0.5f, _sceneH * -0.5f);
+
+    segments.emplace_back(_sceneW *  0.5f, _sceneH * -0.5f);
+    segments.emplace_back(_sceneW *  0.5f, _sceneH *  0.5f);
+
+    segments.emplace_back(_sceneW *  0.5f, _sceneH *  0.5f);
+    segments.emplace_back(_sceneW * -0.5f, _sceneH *  0.5f);
+
+    segments.emplace_back(_sceneW * -0.5f, _sceneH *  0.5f);
+    segments.emplace_back(_sceneW * -0.5f, _sceneH * -0.5f);
+
+    ASSERT_LOG(
+    std::all_of(segments.begin(), segments.end(), 
+        [this] (const auto & point) 
+        { 
+            return point.x >= _sceneW * -0.5f
+                && point.x <= _sceneW *  0.5f
+                && point.y >= _sceneH * -0.5f
+                && point.y <= _sceneH *  0.5f;
+        }), "");
+
 
     _segments.clear();
     glm::vec2 next = _segments.emplace_back(0.0f);
@@ -135,16 +150,14 @@ void CompFieldOfView::GenView()
         auto point = RayPoint(segments, segments.at(i), &next);
         if (tools::Equal(point, segments.at(i)))
         {
-            if (glm::cross(point, next - point) < 0)
             {
                 //  向左延长
-                auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 10.0f;
+                auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
                 _segments.emplace_back(RayPoint(segments, point + offset));
             }
-            else
             {
                 //  向右延长
-                auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 10.0f;
+                auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
                 _segments.emplace_back(RayPoint(segments, point + offset));
             }
         }
@@ -173,24 +186,31 @@ void CompFieldOfView::GenMesh()
 {
     std::vector<GLMesh::Vertex> points;
     std::vector<uint>           indexs;
-    for (auto i = 0; i != _segments.size(); ++i)
+    auto color = glm::vec4(_color.r, 0, 
+                           0, 0.0000f);
+    std::vector<glm::vec2> extends;
+
+    auto count = _segments.size() - 1;
+    for (auto i = 0; i != count; ++i)
     {
-        auto & p = _segments.at(i);
-        auto   s = 1.0f - std::max(0.0f,glm::length(p) / _distance);
-        glm::vec4 color{_color.r, _color.g, _color.b, _color.a * s};
-        points.emplace_back(p, color);
-
-        if (i > 1)
+        auto & a = _segments.at((i + count - 1) % count + 1);
+        auto & b = _segments.at( i                      + 1);
+        auto & c = _segments.at((i         + 1) % count + 1);
+        if (auto ab = b - a, cb = b - c; glm::cross(ab, cb) >= 0)
         {
-            indexs.emplace_back(0    );
-            indexs.emplace_back(i - 1);
-            indexs.emplace_back(i    );
+            extends.emplace_back(b);
+            extends.emplace_back(glm::normalize((glm::normalize(ab) + 
+                                 glm::normalize(cb)) * 0.5f) * 10.0f);
         }
-    }
 
-    indexs.emplace_back(0                );
-    indexs.emplace_back(points.size() - 1);
-    indexs.emplace_back(1                );
+        points.emplace_back(b, _color);
+
+        indexs.emplace_back(count          );
+        indexs.emplace_back(i              );
+        indexs.emplace_back((i + 1) % count);
+    }
+    points.emplace_back(_segments.front(), _color);
+
 
     _mesh->Update(points, indexs, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }
@@ -245,17 +265,3 @@ glm::vec2 CompFieldOfView::RayPoint(const std::vector<glm::vec2>& segments, cons
     return result;
 }
 
-void CompFieldOfView::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
-{
-    _trackPoints.at(index) = point;
-}
-
-void CompFieldOfView::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
-{
-    _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
-}
-
-void CompFieldOfView::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
-{
-    _trackPoints.erase(std::next(_trackPoints.begin(), index));
-}

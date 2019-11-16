@@ -8,13 +8,13 @@ CompPolygon::CompPolygon()
 {
     _segments.emplace_back(-50, -50);
     _segments.emplace_back( 50, -50);
-    _segments.emplace_back( 50,  50);
-    _segments.emplace_back(-50,  50);
+    //_segments.emplace_back( 50,  50);
+    //_segments.emplace_back(-50,  50);
 
     _trackPoints.emplace_back(-50, -50);
     _trackPoints.emplace_back( 50, -50);
-    _trackPoints.emplace_back( 50,  50);
-    _trackPoints.emplace_back(-50,  50);
+    //_trackPoints.emplace_back( 50,  50);
+    //_trackPoints.emplace_back(-50,  50);
 
     AddState(StateEnum::kModifyTrackPoint, true);
     AddState(StateEnum::kInsertTrackPoint, true);
