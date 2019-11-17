@@ -23,8 +23,8 @@ private:
     void Update();
     void GenView();
     void GenMesh();
-    glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point, glm::vec2 * next);
-    glm::vec2 RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
+    glm::vec2 RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
+    glm::vec2 RayExtended(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
 
 private:
     std::string                         _url;

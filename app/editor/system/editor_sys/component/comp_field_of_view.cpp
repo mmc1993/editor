@@ -142,23 +142,22 @@ void CompFieldOfView::GenView()
                 && point.y <= _sceneH *  0.5f;
         }), "");
 
-
     _segments.clear();
-    glm::vec2 next = _segments.emplace_back(0.0f);
+    _segments.emplace_back(0.0f);
     for (auto i = 0; i != segments.size(); i += 2)
     {
-        auto point = RayPoint(segments, segments.at(i), &next);
+        auto point = RayTracking(segments, segments.at(i));
         if (tools::Equal(point, segments.at(i)))
         {
             {
                 //  向左延长
                 auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
-                _segments.emplace_back(RayPoint(segments, point + offset));
+                _segments.emplace_back(RayExtended(segments, point + offset));
             }
             {
                 //  向右延长
                 auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
-                _segments.emplace_back(RayPoint(segments, point + offset));
+                _segments.emplace_back(RayExtended(segments, point + offset));
             }
         }
         _segments.emplace_back(point);
@@ -185,10 +184,7 @@ void CompFieldOfView::GenView()
 void CompFieldOfView::GenMesh()
 {
     std::vector<GLMesh::Vertex> points;
-    std::vector<uint>           indexs;
-    auto color = glm::vec4(_color.r, 0, 
-                           0, 0.0000f);
-    std::vector<glm::vec2> extends;
+    std::vector<glm::vec2>      extends;
 
     auto count = _segments.size() - 1;
     for (auto i = 0; i != count; ++i)
@@ -196,53 +192,68 @@ void CompFieldOfView::GenMesh()
         auto & a = _segments.at((i + count - 1) % count + 1);
         auto & b = _segments.at( i                      + 1);
         auto & c = _segments.at((i         + 1) % count + 1);
-        if (auto ab = b - a, cb = b - c; glm::cross(ab, cb) >= 0)
+        if (auto ab = b - a, cb = b - c; std::abs(glm::cross(ab, cb)) > 0.01f)
         {
             extends.emplace_back(b);
-            extends.emplace_back(glm::normalize((glm::normalize(ab) + 
-                                 glm::normalize(cb)) * 0.5f) * 10.0f);
+            auto extend = glm::normalize((glm::normalize(ab) +
+                                          glm::normalize(cb)) * 0.5f);
+            extend *= (glm::cross(ab, cb) < 0 ? +50.0f : -50.0f);
+            extends.emplace_back(b + extend);
         }
 
+        points.emplace_back(_segments.front(), _color);
         points.emplace_back(b, _color);
-
-        indexs.emplace_back(count          );
-        indexs.emplace_back(i              );
-        indexs.emplace_back((i + 1) % count);
+        points.emplace_back(c, _color);
     }
-    points.emplace_back(_segments.front(), _color);
 
+    auto color = glm::vec4( 0, 0, 
+                            0, 0.0000f);
+    for (auto i = 0u, n = extends.size(); i != n; i += 2)
+    {
+        auto j = (i + 2) % n;
+        auto & p0 = extends.at(i    );
+        auto & e0 = extends.at(i + 1);
+        auto & p1 = extends.at(j);
+        auto & e1 = extends.at(j + 1);
 
-    _mesh->Update(points, indexs, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
+        points.emplace_back(p0, _color);
+        points.emplace_back(e0,  color);
+        points.emplace_back(e1,  color);
+
+        points.emplace_back(p0, _color);
+        points.emplace_back(e1,  color);
+        points.emplace_back(p1, _color);
+    }
+
+    _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }
 
-glm::vec2 CompFieldOfView::RayPoint(const std::vector<glm::vec2> & segments, const glm::vec2 & point, glm::vec2 * next)
+glm::vec2 CompFieldOfView::RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point)
 {
-    const glm::vec2 zero(0, 0);
+    static const glm::vec2 zero(0, 0);
 
-    glm::vec2 result;
+    glm::vec2 result = point;
     auto crossA = 0.0f;
     auto crossB = 0.0f;
-    auto crossC = std::numeric_limits<float>::max();
+    auto crossC = 1.0f;
     for (auto i = 0u, count = segments.size(); i != count; i += 2)
     {
         auto & a = segments.at(i    );
         auto & b = segments.at(i + 1);
-        if (tools::IsCrossSegment(zero, point, a, b, &crossA, &crossB))
+        if (tools::IsCrossSegment(zero, point, a, b, &crossA, &crossB)
+            && crossA < crossC 
+            && point != a 
+            && point != b)
         {
-            if (crossA < crossC)
-            {
-                result = glm::lerp(zero, point, crossC = crossA);
-                *next = b;
-            }
+            result = glm::lerp(zero, point, crossC = crossA);
         }
     }
-    ASSERT_LOG(std::numeric_limits<float>::max() != crossC, "");
     return result;
 }
 
-glm::vec2 CompFieldOfView::RayPoint(const std::vector<glm::vec2>& segments, const glm::vec2 & point)
+glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, const glm::vec2 & point)
 {
-    const glm::vec2 zero(0, 0);
+    static const glm::vec2 zero(0, 0);
 
     glm::vec2 result;
     auto crossA = 0.0f;
@@ -252,13 +263,11 @@ glm::vec2 CompFieldOfView::RayPoint(const std::vector<glm::vec2>& segments, cons
     {
         auto & a = segments.at(i    );
         auto & b = segments.at(i + 1);
-        if (tools::IsCrossLine(zero, point, a, b, &crossA, &crossB))
+        if (tools::IsCrossLine(zero, point, a, b, &crossA, &crossB)
+            && crossA >  0.0f && crossA < crossC
+            && crossB >= 0.0f && crossB <= 1.0f)
         {
-            if (crossA > 0 && crossA < crossC &&
-                crossB >= 0.0f && crossB <= 1.0f)
-            {
-                result = glm::lerp(zero, point, crossC = crossA);
-            }
+            result = glm::lerp(zero, point, crossC = crossA);
         }
     }
     ASSERT_LOG(crossC != std::numeric_limits<float>::max(), "");
