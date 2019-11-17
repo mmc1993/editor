@@ -144,7 +144,7 @@ void CompFieldOfView::GenView()
             else if (b.x >= 0 && b.y <  0) q1 = 3;
 
             return q0 != q1 ? q0 < q1
-                : glm::cross(a, b) >= 0;
+                : glm::cross(a, b) > 0;
         });
 }
 
@@ -173,24 +173,24 @@ void CompFieldOfView::GenMesh()
         points.emplace_back(c, _color);
     }
 
-    auto color = glm::vec4(_color.r, _color.g, 
-                           _color.b, 1.0000f);
-    for (auto i = 0u, n = extends.size(); i != n; i += 2)
-    {
-        auto j = (i + 2) % n;
-        auto & p0 = extends.at(i    );
-        auto & e0 = extends.at(i + 1);
-        auto & p1 = extends.at(j);
-        auto & e1 = extends.at(j + 1);
+    //auto color = glm::vec4(_color.r, _color.g, 
+    //                       _color.b, 1.0000f);
+    //for (auto i = 0u, n = extends.size(); i != n; i += 2)
+    //{
+    //    auto j = (i + 2) % n;
+    //    auto & p0 = extends.at(i    );
+    //    auto & e0 = extends.at(i + 1);
+    //    auto & p1 = extends.at(j);
+    //    auto & e1 = extends.at(j + 1);
 
-        points.emplace_back(p0, _color);
-        points.emplace_back(e0,  color);
-        points.emplace_back(e1,  color);
+    //    points.emplace_back(p0, _color);
+    //    points.emplace_back(e0,  color);
+    //    points.emplace_back(e1,  color);
 
-        points.emplace_back(p0, _color);
-        points.emplace_back(e1,  color);
-        points.emplace_back(p1, _color);
-    }
+    //    points.emplace_back(p0, _color);
+    //    points.emplace_back(e1,  color);
+    //    points.emplace_back(p1, _color);
+    //}
 
     _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }
