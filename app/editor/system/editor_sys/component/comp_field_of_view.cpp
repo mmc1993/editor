@@ -6,8 +6,6 @@
 
 CompFieldOfView::CompFieldOfView()
     : _color(1.0f)
-    , _sceneW(0)
-    , _sceneH(0)
 {
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({}, {}, GLMesh::Vertex::kV | 
@@ -29,8 +27,6 @@ void CompFieldOfView::EncodeBinary(std::ofstream & os)
     Component::EncodeBinary(os);
     tools::Serialize(os, _url);
     tools::Serialize(os, _color);
-    tools::Serialize(os, _sceneW);
-    tools::Serialize(os, _sceneH);
     tools::Serialize(os, _trackPoints);
 }
 
@@ -39,8 +35,6 @@ void CompFieldOfView::DecodeBinary(std::ifstream & is)
     Component::DecodeBinary(is);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _color);
-    tools::Deserialize(is, _sceneW);
-    tools::Deserialize(is, _sceneH);
     tools::Deserialize(is, _trackPoints);
 }
 
@@ -72,14 +66,9 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
-    static bool debug;
-
     auto props = Component::CollectProperty();
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Url",      &_url);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color",    &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,  "SceneW",   &_sceneW);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,  "SceneH",   &_sceneH);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kBool,   "Debug",    &debug);
     return std::move(props);
 }
 
@@ -119,28 +108,6 @@ void CompFieldOfView::GenView()
             segments.emplace_back(worldB);
         }
     }
-
-    segments.emplace_back(_sceneW * -0.5f, _sceneH * -0.5f);
-    segments.emplace_back(_sceneW *  0.5f, _sceneH * -0.5f);
-
-    segments.emplace_back(_sceneW *  0.5f, _sceneH * -0.5f);
-    segments.emplace_back(_sceneW *  0.5f, _sceneH *  0.5f);
-
-    segments.emplace_back(_sceneW *  0.5f, _sceneH *  0.5f);
-    segments.emplace_back(_sceneW * -0.5f, _sceneH *  0.5f);
-
-    segments.emplace_back(_sceneW * -0.5f, _sceneH *  0.5f);
-    segments.emplace_back(_sceneW * -0.5f, _sceneH * -0.5f);
-
-    ASSERT_LOG(
-    std::all_of(segments.begin(), segments.end(), 
-        [this] (const auto & point) 
-        { 
-            return point.x >= _sceneW * -0.5f
-                && point.x <= _sceneW *  0.5f
-                && point.y >= _sceneH * -0.5f
-                && point.y <= _sceneH *  0.5f;
-        }), "");
 
     _segments.clear();
     _segments.emplace_back(0.0f);
@@ -206,8 +173,8 @@ void CompFieldOfView::GenMesh()
         points.emplace_back(c, _color);
     }
 
-    auto color = glm::vec4( 0, 0, 
-                            0, 0.0000f);
+    auto color = glm::vec4(_color.r, _color.g, 
+                           _color.b, 1.0000f);
     for (auto i = 0u, n = extends.size(); i != n; i += 2)
     {
         auto j = (i + 2) % n;

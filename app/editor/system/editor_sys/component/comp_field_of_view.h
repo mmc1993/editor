@@ -29,8 +29,6 @@ private:
 private:
     std::string                         _url;
     glm::vec4                           _color;
-    float                               _sceneW;
-    float                               _sceneH;
 
     SharePtr<GLMesh>                    _mesh;
     SharePtr<GLProgram>                 _program;
