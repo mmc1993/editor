@@ -51,7 +51,7 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     command.mMesh           = _mesh;
     command.mProgram        = _program;
     command.mTransform      = canvas->GetMatrixStack().GetM();
-    command.mType           = interface::PostCommand::kSwap;
+    command.mType           = interface::PostCommand::kOverlay;
     canvas->Post(command);
 }
 

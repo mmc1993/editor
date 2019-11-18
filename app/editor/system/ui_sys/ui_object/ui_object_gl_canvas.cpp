@@ -22,6 +22,11 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 
 void UIObjectGLCanvas::HandlePostCommands()
 {
+    // ---
+    //  TODO_:
+    //      临时使用kOverlay
+    //      后期加上分层渲染后, 再去除
+    // ---
     auto state = GetState<UIStateGLCanvas>();
     switch (state->mPostCommands.front().mType)
     {
@@ -41,7 +46,8 @@ void UIObjectGLCanvas::HandlePostCommands()
     {
         for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
         {
-            if (command.mType == interface::PostCommand::kSwap)
+            if (command.mType == interface::PostCommand::kSwap ||
+                command.mType == interface::PostCommand::kOverlay)
             {
                 std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
             }
@@ -49,6 +55,10 @@ void UIObjectGLCanvas::HandlePostCommands()
             tools::RenderTargetAttachment(
                 GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                 GL_TEXTURE_2D, state->mRenderTextures[0]);
+            if (command.mType == interface::PostCommand::kOverlay)
+            {
+                glClear(GL_COLOR_BUFFER_BIT);
+            }
             command.mProgram->BindUniformTex2D("uniform_screen", 
                                   state->mRenderTextures[1], 0);
             command.Call(nullptr);
