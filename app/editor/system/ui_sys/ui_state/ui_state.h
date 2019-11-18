@@ -141,13 +141,12 @@ public:
         glm::vec4                       mSelectRect;
         std::vector<SharePtr<GLObject>> mSelectObjects;
 
-        float       mScale;
-        glm::vec3   mCoord;
+        float       mViewScale;
+        glm::vec3   mViewCoord;
         size_t      mOpMode;
 
         //  ≥ı ºªØ
-        Operation()
-            : mOpMode(0), mScale(1)
+        Operation(): mOpMode(0), mViewScale(1)
         { }
     } mOperation;
 

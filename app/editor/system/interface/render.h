@@ -14,6 +14,7 @@ namespace interface {
         void Call(uint * pos) { if (mCallback)mCallback(*this,pos); }
     };
 
+    //  ÕıÏòäÖÈ¾ÄÇ
     struct FowardCommand : public RenderCommand {
         using TextureArray = std::vector<std::pair<std::string, SharePtr<GLTexture>>>;
         SharePtr<GLMesh>    mMesh;
@@ -22,6 +23,7 @@ namespace interface {
         glm::mat4 mTransform;               //  ¾ØÕó
     };
 
+    //  ºóÆÚäÖÈ¾
     struct PostCommand : public RenderCommand {
         enum TypeEnum {
             kOverlay,       //  ¸²¸Ç
@@ -32,6 +34,11 @@ namespace interface {
         SharePtr<GLMesh> mMesh;             //  Íø¸ñ
         glm::mat4 mTransform;               //  ¾ØÕó
         TypeEnum mType;
+    };
+
+    //  ·Ö²ãäÖÈ¾
+    struct LayerCommand : public RenderCommand {
+
     };
 
     struct MatrixStack {

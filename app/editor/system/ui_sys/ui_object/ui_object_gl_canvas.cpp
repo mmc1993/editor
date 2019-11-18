@@ -469,19 +469,19 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     //  按下中间拖动舞台
     if (param.mAct == 1 && param.mKey == 2)
     {
-        state->mOperation.mCoord.x -= param.mDelta.x;
-        state->mOperation.mCoord.y += param.mDelta.y;
+        state->mOperation.mViewCoord.x -= param.mDelta.x;
+        state->mOperation.mViewCoord.y += param.mDelta.y;
     }
     //  滚动鼠标缩放舞台
     if (param.mWheel != 0)
     {
         auto origin = ProjectWorld(ToLocalCoord(param.mMouse));
-        auto oldS   = state->mOperation.mScale;
-        state->mOperation.mScale = std::clamp(state->mOperation.mScale + (0.05f * param.mWheel), 0.05f, 5.0f);
-        auto newS   = state->mOperation.mScale;
+        auto oldS   = state->mOperation.mViewScale;
+        state->mOperation.mViewScale = std::clamp(state->mOperation.mViewScale + (0.05f * param.mWheel), 0.05f, 5.0f);
+        auto newS   = state->mOperation.mViewScale;
         auto target = ProjectWorld(ToLocalCoord(param.mMouse));
-        state->mOperation.mCoord.x += (origin.x - target.x) * newS;
-        state->mOperation.mCoord.y += (origin.y - target.y) * newS;
+        state->mOperation.mViewCoord.x += (origin.x - target.x) * newS;
+        state->mOperation.mViewCoord.y += (origin.y - target.y) * newS;
     }
 
     //  非编辑模式
@@ -566,9 +566,9 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
 glm::mat4 UIObjectGLCanvas::GetMatView()
 {
     auto state = GetState<UIStateGLCanvas>();
-    auto view = glm::lookAt(state->mOperation.mCoord,
-                            state->mOperation.mCoord - glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
-    return glm::scale(view, glm::vec3(state->mOperation.mScale, state->mOperation.mScale, 1));
+    auto view = glm::lookAt(state->mOperation.mViewCoord,
+                            state->mOperation.mViewCoord - glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
+    return glm::scale(view, glm::vec3(state->mOperation.mViewScale, state->mOperation.mViewScale, 1));
 }
 
 glm::mat4 UIObjectGLCanvas::GetMatProj()
