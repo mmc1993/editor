@@ -172,8 +172,6 @@ private:
 
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
-    virtual void OnApplyLayout() override;
-    virtual void OnResetLayout() override;
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
     bool OnEventKey(const UIEvent::Key & param);

@@ -26,8 +26,8 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 
 void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::LayerCommand & command)
 {
-    std::swap(command.mRenderTextures[0],
-              command.mRenderTextures[1]);
+    std::swap(command.mRenderTextures[0]->mID,
+              command.mRenderTextures[1]->mID);
     for (auto & cmd : command.mPostCommands)
     {
         for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
@@ -41,7 +41,7 @@ void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::LayerCommand & comman
             cmd.mMesh->Draw(GL_TRIANGLES     );
             if (cmd.mType == interface::PostCommand::kSwap)
             {
-                std::swap(command.mRenderTextures[0], command.mRenderTextures[1]);
+                std::swap(command.mRenderTextures[0]->mID, command.mRenderTextures[1]->mID);
             }
         }
     }
@@ -95,6 +95,12 @@ void UIObjectGLCanvas::CallCommands()
             command.mRenderTextures[0]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
         }
 
+        if (command.mRenderTextures[1]->mW != state->Move.z ||
+            command.mRenderTextures[1]->mH != state->Move.w)
+        {
+            command.mRenderTextures[1]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
+        }
+
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                                       GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
@@ -116,11 +122,6 @@ void UIObjectGLCanvas::CallCommands()
             HandlePostCommands(command);
         }
         ASSERT_LOG(glGetError() == 0, "");
-    }
-
-    if (state->mRenderTextures[0] != state->mCommandArray.front().mRenderTextures[0])
-    {
-        std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
     }
 
     state->mCommandArray.clear();
@@ -414,22 +415,7 @@ void UIObjectGLCanvas::OnLeave(bool ret)
     }
 }
 
-void UIObjectGLCanvas::OnApplyLayout()
-{
-    auto state = GetState<UIStateGLCanvas>();
-    if (state->Move_.z != state->Move.z || state->Move_.w != state->Move.w)
-    {
-        state->mRenderTextures[0]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
-        state->mRenderTextures[1]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
-    }
-}
-
-void UIObjectGLCanvas::OnResetLayout()
-{
-    OnApplyLayout();
-}
-
-inline bool UIObjectGLCanvas::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIObjectGLCanvas::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (Global::Ref().mEditorSys->IsOpenProject())
     {
