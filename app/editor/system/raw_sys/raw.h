@@ -98,6 +98,8 @@ public:
     GLImage();
     ~GLImage();
     void SetParam(int key, int val);
+    void ModifyWH(uint w, uint h);
+    void InitNull(uint fmt);
     virtual bool Init(const std::string & url) override;
 
 public:

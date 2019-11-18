@@ -57,12 +57,10 @@ UIStateUICanvas::UIStateUICanvas()
 
 UIStateGLCanvas::UIStateGLCanvas()
 {
-    glGenTextures(2, &mRenderTextures[0]);
     glGenFramebuffers(1,  &mRenderTarget);
 }
 
 UIStateGLCanvas::~UIStateGLCanvas()
 {
-    glDeleteTextures(2, &mRenderTextures[0]);
     glDeleteFramebuffers(1,  &mRenderTarget);
 }

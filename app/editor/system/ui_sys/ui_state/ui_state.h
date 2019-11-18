@@ -118,11 +118,18 @@ class GLMaterial;
 
 class UIStateGLCanvas : public UIState {
 public:
+    struct LayerCommand {
+        std::vector<interface::PostCommand>     mPostCommands;      //  后期
+        std::vector<interface::FowardCommand>   mFowardCommands;    //  正向
+        SharePtr<GLImage>                       mRenderTextures[2];
+    };
+
+public:
     GLuint mRenderTarget;
-    GLuint mRenderTextures[2];
-    interface::MatrixStack mMatrixStack;
-    std::vector<interface::PostCommand>   mPostCommands;
-    std::vector<interface::FowardCommand> mFowardCommands;
+    SharePtr<GLImage> mRenderTextures[2];
+    interface::MatrixStack    mMatrixStack;
+    std::stack<LayerCommand>  mCommandStack;
+    std::vector<LayerCommand> mCommandArray;
 
     //  编辑功能相关
     struct Operation {
@@ -141,9 +148,9 @@ public:
         glm::vec4                       mSelectRect;
         std::vector<SharePtr<GLObject>> mSelectObjects;
 
+        size_t      mOpMode;
         float       mViewScale;
         glm::vec3   mViewCoord;
-        size_t      mOpMode;
 
         //  初始化
         Operation(): mOpMode(0), mViewScale(1)
@@ -151,7 +158,7 @@ public:
     } mOperation;
 
     std::vector<SharePtr<GLMesh>> mMeshBuffer;
-    SharePtr<GLProgram> mGLProgramSolidFill;
+    SharePtr<GLProgram>   mGLProgramSolidFill;
 
 public:
     UIStateGLCanvas();

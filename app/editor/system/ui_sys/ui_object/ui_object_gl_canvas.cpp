@@ -17,126 +17,116 @@ const glm::vec4 UIObjectGLCanvas::VAL_TrackPointColors[32] = {
 UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 {
     auto state = GetState<UIStateGLCanvas>();
+    state->mRenderTextures[0] = std::create_ptr<GLImage>();
+    state->mRenderTextures[0]->InitNull(GL_RGBA);
+    state->mRenderTextures[1] = std::create_ptr<GLImage>();
+    state->mRenderTextures[1]->InitNull(GL_RGBA);
     state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
-void UIObjectGLCanvas::HandlePostCommands()
+void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::LayerCommand & command)
 {
-    // ---
-    //  TODO_:
-    //      临时使用kOverlay
-    //      后期加上分层渲染后, 再去除
-    // ---
-    auto state = GetState<UIStateGLCanvas>();
-    switch (state->mPostCommands.front().mType)
+    std::swap(command.mRenderTextures[0],
+              command.mRenderTextures[1]);
+    for (auto & cmd : command.mPostCommands)
     {
-    case interface::PostCommand::kOverlay:
+        for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
         {
-            std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
-        }
-        break;
-    case interface::PostCommand::kSample:
-        {
-            std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
-        }
-        break;
-    }
-
-    for (auto & command : state->mPostCommands)
-    {
-        for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
-        {
-            if (command.mType == interface::PostCommand::kSwap ||
-                command.mType == interface::PostCommand::kOverlay)
+            cmd.mProgram->UsePass(i);
+            tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
+                                          GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
+            cmd.mProgram->BindUniformTex2D("uniform_screen", command.mRenderTextures[1]->mID, 0);
+            cmd.Call(1                       );
+            Post(cmd.mProgram, cmd.mTransform);
+            cmd.mMesh->Draw(GL_TRIANGLES     );
+            if (cmd.mType == interface::PostCommand::kSwap)
             {
-                std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+                std::swap(command.mRenderTextures[0], command.mRenderTextures[1]);
             }
-            command.mProgram->UsePass(i);
-            tools::RenderTargetAttachment(
-                GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                GL_TEXTURE_2D, state->mRenderTextures[0]);
-            if (command.mType == interface::PostCommand::kOverlay)
-            {
-                glClear(GL_COLOR_BUFFER_BIT);
-            }
-            command.mProgram->BindUniformTex2D("uniform_screen", 
-                                  state->mRenderTextures[1], 0);
-            command.Call(nullptr);
-            Post(command.mProgram, command.mTransform);
-            command.mMesh->Draw(GL_TRIANGLES);
-            //command.mMesh->Draw(GL_POINTS);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            //command.mMesh->Draw(GL_TRIANGLES);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
 }
 
-void UIObjectGLCanvas::HandleFowardCommands()
+void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::LayerCommand & command)
 {
-    auto state = GetState<UIStateGLCanvas>();
-    for (auto & command : state->mFowardCommands)
+    for (auto & cmd : command.mFowardCommands)
     {
-        for (auto i = 0; i != command.mProgram->GetPassCount(); ++i)
+        for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
         {
             uint texNum = 0;
-            command.mProgram->UsePass(i);
-            for (auto & texture : command.mTextures)
+            cmd.mProgram->UsePass(i);
+            for (auto & texture : cmd.mTextures)
             {
-                command.mProgram->BindUniformTex2D(
-                    texture.first.c_str(), texture.second->GetID(), texNum++);
+                cmd.mProgram->BindUniformTex2D(texture.first.c_str(), texture.second->GetID(), texNum++);
             }
-            command.Call(&texNum);
-            Post(command.mProgram, command.mTransform);
-            command.mMesh->Draw(GL_TRIANGLES);
-            //command.mMesh->Draw(GL_POINTS);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            //command.mMesh->Draw(GL_TRIANGLES);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            cmd.Call(texNum                  );
+            Post(cmd.mProgram, cmd.mTransform);
+            cmd.mMesh->Draw(GL_TRIANGLES     );
         }
     }
 }
 
 void UIObjectGLCanvas::CollCommands()
 {
+    auto state = GetState<UIStateGLCanvas>();
+    auto & command = state->mCommandArray.emplace_back();
+    command.mRenderTextures[0] = state->mRenderTextures[0];
+    command.mRenderTextures[1] = state->mRenderTextures[1];
     Global::Ref().mEditorSys->GetProject()->GetRoot()->Update(this, 0.0f);
 }
 
 void UIObjectGLCanvas::CallCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-
+    ASSERT_LOG(state->mCommandStack.empty(), "");
     tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
 
-    //  清空离屏Buffer
-    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                  GL_TEXTURE_2D, state->mRenderTextures[0]);
-    tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
-                                  GL_TEXTURE_2D, state->mRenderTextures[1]);
-    uint buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-    glDrawBuffers(2, buffers);
-    glClearColor(0,0,0, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    buffers[1] = GL_NONE;
-    glDrawBuffers(2, buffers);
-
-    //  开始渲染
     iint viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
 
-    if (!state->mFowardCommands.empty())
+    for (auto & command : state->mCommandArray)
     {
-        HandleFowardCommands();
-        state->mFowardCommands.clear();
+        //  _TODO:
+        //      处理编辑器模式下, 视口被改变时, 为了保证所有Layer大小一致性.
+        //      运行时模式下, 这个 IF 无用.
+        if (command.mRenderTextures[0]->mW != state->Move.z ||
+            command.mRenderTextures[0]->mH != state->Move.w)
+        {
+            command.mRenderTextures[0]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
+        }
+
+        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+                                      GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
+        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
+                                      GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
+        uint buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+        glDrawBuffers(2, buffers);
+        glClearColor(0,0,0, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+        buffers[1]         = GL_NONE;
+        glDrawBuffers(2, buffers);
+
+        if (!command.mFowardCommands.empty())
+        {
+            HandleFowardCommands(command);
+        }
+        ASSERT_LOG(glGetError() == 0, "");
+        if (!command.mPostCommands.empty())
+        {
+            HandlePostCommands(command);
+        }
+        ASSERT_LOG(glGetError() == 0, "");
     }
-    ASSERT_LOG(glGetError() == 0, "");
-    if (!state->mPostCommands.empty())
+
+    if (state->mRenderTextures[0] != state->mCommandArray.front().mRenderTextures[0])
     {
-        HandlePostCommands();
-        state->mPostCommands.clear();
+        std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
     }
-    ASSERT_LOG(glGetError() == 0, "");
+
+    state->mCommandArray.clear();
+
+    //  绘制选择区
     if (!state->mOperation.mSelectObjects.empty())
     {
         DrawTrackPoint();
@@ -232,12 +222,43 @@ void UIObjectGLCanvas::DrawSelectRect()
 
 void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
 {
-    GetState<UIStateGLCanvas>()->mPostCommands.push_back(cmd);
+    if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
+    {
+        state->mCommandArray.back().mPostCommands.emplace_back(cmd);
+    }
+    else
+    {
+        state->mCommandStack.top().mPostCommands.emplace_back(cmd);
+    }
+}
+
+void UIObjectGLCanvas::Post(const::interface::LayerCommand & cmd)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    if (cmd.mType == interface::LayerCommand::kPush)
+    {
+        auto & layer = state->mCommandStack.emplace();
+        layer.mRenderTextures[0] = cmd.mTexture;
+        layer.mRenderTextures[1] = state->mRenderTextures[1];
+    }
+    else if (cmd.mType == interface::LayerCommand::kPop)
+    {
+        auto && top = std::move(state->mCommandStack.top());
+        state->mCommandArray.emplace_back(std::move(top));
+        state->mCommandStack.pop();
+    }
 }
 
 void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 {
-    GetState<UIStateGLCanvas>()->mFowardCommands.push_back(cmd);
+    if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
+    {
+        state->mCommandArray.back().mFowardCommands.emplace_back(cmd);
+    }
+    else
+    {
+        state->mCommandStack.top().mFowardCommands.emplace_back(cmd);
+    }
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
@@ -388,7 +409,7 @@ void UIObjectGLCanvas::OnLeave(bool ret)
     if (ret)
     {
         auto state = GetState<UIStateGLCanvas>();
-        ImGui::Image((ImTextureID)state->mRenderTextures[0], 
+        ImGui::Image((ImTextureID)state->mRenderTextures[0]->mID, 
                       ImVec2(state->Move.z, state->Move.w),
                       ImVec2(0, 1), ImVec2(1, 0));
     }
@@ -399,21 +420,8 @@ void UIObjectGLCanvas::OnApplyLayout()
     auto state = GetState<UIStateGLCanvas>();
     if (state->Move_.z != state->Move.z || state->Move_.w != state->Move.w)
     {
-        glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[0]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glBindTexture(GL_TEXTURE_2D, 0);
-
-        glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[1]);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (iint)state->Move.z, (iint)state->Move.w, 0, GL_RGBA, GL_FLOAT, nullptr);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glBindTexture(GL_TEXTURE_2D, 0);
+        state->mRenderTextures[0]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
+        state->mRenderTextures[1]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
     }
 }
 
@@ -642,14 +650,14 @@ bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & worldMin, const g
         auto pt2 = GetProjectRoot()->ParentToLocal(worldMax);
         auto pt3 = GetProjectRoot()->ParentToLocal(glm::vec2(worldMin.x, worldMax.y));
         FromRectSelectObjects(GetProjectRoot(), pt0, pt1, pt2, pt3, output);
-        auto noexists = [&output] (const auto & object) 
+        auto NoExists = [&output] (const auto & object) 
         {
             return output.end() == std::find(output.begin(), output.end(), object);
         };
         std::vector<SharePtr<GLObject>> unlocks;
         std::copy_if(state->mOperation.mSelectObjects.begin(),
                      state->mOperation.mSelectObjects.end(),
-                     std::back_inserter(unlocks), noexists);
+                     std::back_inserter(unlocks), NoExists);
         for (auto & object : unlocks)
         {
             Global::Ref().mEditorSys->OptSelectObject(object, false);

@@ -3,6 +3,7 @@
 #include "../../include.h"
 
 class GLMesh;
+class GLImage;
 class GLObject;
 class GLProgram;
 class GLTexture;
@@ -10,8 +11,8 @@ class GLMaterial;
 
 namespace interface {
     struct RenderCommand {
-        std::function<void(const RenderCommand &, uint *)> mCallback;
-        void Call(uint * pos) { if (mCallback)mCallback(*this,pos); }
+        std::function<void(const RenderCommand &, uint)> mCallback;
+        void Call(uint pos) { if (mCallback)mCallback(*this, pos); }
     };
 
     //  正向渲染那
@@ -26,7 +27,6 @@ namespace interface {
     //  后期渲染
     struct PostCommand : public RenderCommand {
         enum TypeEnum {
-            kOverlay,       //  覆盖
             kSample,        //  采样
             kSwap,          //  交换
         };
@@ -38,7 +38,12 @@ namespace interface {
 
     //  分层渲染
     struct LayerCommand : public RenderCommand {
-
+        enum TypeEnum {
+            kPush,
+            kPop,
+        };
+        TypeEnum            mType;
+        SharePtr<GLImage>   mTexture;
     };
 
     struct MatrixStack {

@@ -147,6 +147,7 @@ public:
     UIObjectGLCanvas();
     interface::MatrixStack & GetMatrixStack();
     void Post(const interface::PostCommand  & cmd);
+    void Post(const interface::LayerCommand & cmd);
     void Post(const interface::FowardCommand & cmd);
     void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
 
@@ -161,8 +162,8 @@ public:
     glm::vec2 ProjectWorld(const glm::vec2 & screen);
 
 private:
-    void HandleFowardCommands();
-    void HandlePostCommands();
+    void HandleFowardCommands(UIStateGLCanvas::LayerCommand & command);
+    void HandlePostCommands(UIStateGLCanvas::LayerCommand & command);
     void CollCommands();
     void CallCommands();
 
