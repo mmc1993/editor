@@ -27,6 +27,12 @@ GLObject::~GLObject()
     ClearComponents();
 }
 
+void GLObject::OnStartUpdate()
+{ }
+
+void GLObject::OnEndedUpdate()
+{ }
+
 void GLObject::OnUpdate(float dt)
 { }
 
@@ -152,6 +158,8 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
     canvas->GetMatrixStack().Mul(interface::MatrixStack::kModel, GetTransform()->GetMatrix());
 
+    OnStartUpdate();
+
     OnUpdate(dt);
 
     for (auto component : _components)
@@ -169,6 +177,8 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
             object->Update(canvas, dt);
         }
     }
+
+    OnEndedUpdate();
 
     canvas->GetMatrixStack().Pop(interface::MatrixStack::kModel);
 }
