@@ -85,11 +85,10 @@ void UIObjectGLCanvas::CallCommands()
     glGetIntegerv(GL_VIEWPORT, viewport);
     glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
 
-    for (auto & command : state->mCommandArray)
+    for (auto iter = state->mCommandArray.rbegin(); 
+              iter != state->mCommandArray.rend(); ++iter)
     {
-        //  _TODO:
-        //      处理编辑器模式下, 视口被改变时, 为了保证所有Layer大小一致性.
-        //      运行时模式下, 这个 IF 无用.
+        auto & command = *iter;
         if (command.mRenderTextures[0]->mW != state->Move.z ||
             command.mRenderTextures[0]->mH != state->Move.w)
         {
@@ -224,7 +223,7 @@ void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
 {
     if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
     {
-        state->mCommandArray.back().mPostCommands.emplace_back(cmd);
+        state->mCommandArray.front().mPostCommands.emplace_back(cmd);
     }
     else
     {
@@ -253,7 +252,7 @@ void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 {
     if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
     {
-        state->mCommandArray.back().mFowardCommands.emplace_back(cmd);
+        state->mCommandArray.front().mFowardCommands.emplace_back(cmd);
     }
     else
     {

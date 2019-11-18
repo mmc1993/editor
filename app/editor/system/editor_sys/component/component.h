@@ -6,9 +6,7 @@
 class UIObject;
 class UIObjectGLCanvas;
 
-class Component
-    : public interface::Serializer 
-    , public std::enable_shared_from_this<Component> {
+class Component: public interface::Serializer {
 public:
     enum class StateEnum {
         kActive = 1 << 0,             //  ¼¤»î
@@ -51,7 +49,9 @@ public:
 	virtual ~Component() { }
     virtual void OnAdd();
     virtual void OnDel();
-    virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) = 0;
+    virtual void OnStart(UIObjectGLCanvas * canvas);
+    virtual void OnLeave(UIObjectGLCanvas * canvas);
+    virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt);
 
     void AddState(StateEnum state, bool add)
     {

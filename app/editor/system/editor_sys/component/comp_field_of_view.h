@@ -2,9 +2,12 @@
 
 #include "component.h"
 #include "comp_polygon.h"
+#include "comp_layer_render.h"
 #include "../../interface/render.h"
 
-class CompFieldOfView : public Component {
+class CompFieldOfView 
+    : public Component
+    , public std::enable_shared_from_this<CompFieldOfView> {
 public:
     CompFieldOfView();
 
@@ -25,13 +28,16 @@ private:
     void GenMesh();
     glm::vec2 RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
     glm::vec2 RayExtended(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
+    void OnDrawCallback(const interface::RenderCommand & command, uint texturePos);
 
 private:
-    std::string                         _url;
-    glm::vec4                           _color;
+    std::string _clipObjectURL;
+    std::string _polyObjectURL;
+    glm::vec4   _color;
 
     SharePtr<GLMesh>                    _mesh;
     SharePtr<GLProgram>                 _program;
     std::vector<glm::vec2>              _segments;
-    std::vector<SharePtr<CompPolygon>>  _polygons;
+    SharePtr<CompLayerRender>           _layerRender;
+    std::vector<SharePtr<CompPolygon>>  _polyObjects;
 };

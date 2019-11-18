@@ -23,9 +23,6 @@ public:
     GLObject();
     GLObject(uint id);
     virtual ~GLObject();
-    virtual void OnStartUpdate();
-    virtual void OnEndedUpdate();
-    virtual void OnUpdate(float dt);
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
 

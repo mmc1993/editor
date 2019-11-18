@@ -25,21 +25,22 @@ const std::string & CompFieldOfView::GetName()
 void CompFieldOfView::EncodeBinary(std::ofstream & os)
 {
     Component::EncodeBinary(os);
-    tools::Serialize(os, _url);
     tools::Serialize(os, _color);
-    tools::Serialize(os, _trackPoints);
+    tools::Serialize(os, _clipObjectURL);
+    tools::Serialize(os, _polyObjectURL);
 }
 
 void CompFieldOfView::DecodeBinary(std::ifstream & is)
 {
     Component::DecodeBinary(is);
-    tools::Deserialize(is, _url);
     tools::Deserialize(is, _color);
-    tools::Deserialize(is, _trackPoints);
+    tools::Deserialize(is, _clipObjectURL);
+    tools::Deserialize(is, _polyObjectURL);
 }
 
 bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
+    AddState(StateEnum::kUpdate, true);
     return true;
 }
 
@@ -52,13 +53,16 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     command.mProgram        = _program;
     command.mTransform      = canvas->GetMatrixStack().GetM();
     command.mType           = interface::PostCommand::kSample;
+    command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback, 
+        shared_from_this(), std::placeholders::_1, std::placeholders::_2);
     canvas->Post(command);
 }
 
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Url",      &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Poly URL", &_polyObjectURL);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Clip URL", &_clipObjectURL);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color",    &_color);
     return std::move(props);
 }
@@ -69,15 +73,25 @@ void CompFieldOfView::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
+        //  更新射线点
         auto track = Global::Ref().mEditorSys->GetProject()->GetRoot();
-        for (auto & name : tools::Split(_url, "/"))
+        for (auto & name : tools::Split(_polyObjectURL, "/"))
         {
             track = track->GetObject(name);
             ASSERT_LOG(track != nullptr, name.c_str());
         }
-        _polygons = track->GetComponentsInChildren<CompPolygon>();
+        _polyObjects = track->GetComponentsInChildren<CompPolygon>();
+
+        //  更新裁剪层
+        track = Global::Ref().mEditorSys->GetProject()->GetRoot();
+        for (auto & name : tools::Split(_clipObjectURL, "/"))
+        {
+            track = track->GetObject(name);
+            ASSERT_LOG(track != nullptr, name.c_str());
+        }
+        _layerRender = track->GetComponent<CompLayerRender>();
+        ASSERT_LOG(_layerRender != nullptr, _clipObjectURL.c_str());
     }
-    _segments.clear();
     GenView();
     GenMesh();
 }
@@ -87,7 +101,7 @@ void CompFieldOfView::GenView()
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
     std::vector<glm::vec2> segments;
-    for (auto & polygon : _polygons)
+    for (auto & polygon : _polyObjects)
     {
         for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
         {
@@ -200,5 +214,11 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
     }
     ASSERT_LOG(crossC != std::numeric_limits<float>::max(), "");
     return result;
+}
+
+void CompFieldOfView::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+{ 
+    ((const interface::PostCommand &)command).mProgram->BindUniformTex2D(
+        "uniform_sample", _layerRender->RefTextureBuffer()->mID, texturePos);
 }
 

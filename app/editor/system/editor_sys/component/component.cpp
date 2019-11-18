@@ -1,5 +1,6 @@
 #include "component.h"
 #include "comp_field_of_view.h"
+#include "comp_layer_render.h"
 #include "comp_transform.h"
 #include "comp_lightning.h"
 #include "comp_tilemap.h"
@@ -11,6 +12,7 @@
 
 static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
     std::make_pair("FieldOfView",   []() { return CastPtr<Component>(std::create_ptr<CompFieldOfView>());   }),
+    std::make_pair("LayerRender",   []() { return CastPtr<Component>(std::create_ptr<CompLayerRender>());   }),
     std::make_pair("Transform",     []() { return CastPtr<Component>(std::create_ptr<CompTransform>());     }),
     std::make_pair("Lightning",     []() { return CastPtr<Component>(std::create_ptr<CompLightning>());     }),
     std::make_pair("Polygon",       []() { return CastPtr<Component>(std::create_ptr<CompPolygon>());       }),
@@ -34,6 +36,15 @@ void Component::OnAdd()
 }
 
 void Component::OnDel()
+{ }
+
+void Component::OnStart(UIObjectGLCanvas * canvas)
+{ }
+
+void Component::OnLeave(UIObjectGLCanvas * canvas)
+{ }
+
+void Component::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 { }
 
 void Component::EncodeBinary(std::ofstream & os)

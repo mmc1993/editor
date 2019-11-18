@@ -27,15 +27,6 @@ GLObject::~GLObject()
     ClearComponents();
 }
 
-void GLObject::OnStartUpdate()
-{ }
-
-void GLObject::OnEndedUpdate()
-{ }
-
-void GLObject::OnUpdate(float dt)
-{ }
-
 void GLObject::EncodeBinary(std::ofstream & os)
 {
     //  ×ÔÉí
@@ -158,14 +149,11 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
     canvas->GetMatrixStack().Mul(interface::MatrixStack::kModel, GetTransform()->GetMatrix());
 
-    OnStartUpdate();
-
-    OnUpdate(dt);
-
     for (auto component : _components)
     {
         if (component->HasState(Component::StateEnum::kActive))
         {
+            component->OnStart (canvas    );
             component->OnUpdate(canvas, dt);
         }
     }
@@ -178,7 +166,13 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
         }
     }
 
-    OnEndedUpdate();
+    for (auto component : _components)
+    {
+        if (component->HasState(Component::StateEnum::kActive))
+        {
+            component->OnLeave(canvas);
+        }
+    }
 
     canvas->GetMatrixStack().Pop(interface::MatrixStack::kModel);
 }

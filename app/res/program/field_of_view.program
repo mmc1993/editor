@@ -27,15 +27,16 @@ BlendFunc One Zero
         } v_out_;
 
         uniform sampler2D uniform_screen;
+        uniform sampler2D uniform_sample;
 
         out vec4 color_;
 
         void main()
         {
-            vec2 size = textureSize(uniform_screen, 0);
+            vec2 size = textureSize(uniform_sample, 0);
             float u = gl_FragCoord.x / size.x;
             float v = gl_FragCoord.y / size.y;
-            color_ = texture(uniform_screen, vec2(u, v));
+            color_ = texture(uniform_sample, vec2(u, v));
             color_.a = v_out_.mColor.a;
         }
     FShader End
