@@ -1,0 +1,42 @@
+Pass Beg
+BlendFunc One Zero
+    VShader Beg
+        #version 330 core
+
+        layout(location = 0) in vec2 a_v_;
+        layout(location = 1) in vec4 a_c_;
+
+        out V_OUT_ {
+            vec4 mColor;
+        } v_out_;
+
+        uniform mat4 uniform_matrix_mvp;
+
+        void main()
+        {
+            v_out_.mColor = a_c_;
+            gl_Position   = uniform_matrix_mvp * vec4(a_v_, 0, 1);
+        }
+    VShader End
+
+    FShader Beg
+        #version 330 core
+
+        in V_OUT_ {
+            vec4 mColor;
+        } v_out_;
+
+        uniform sampler2D uniform_screen;
+
+        out vec4 color_;
+
+        void main()
+        {
+            vec2 size = textureSize(uniform_screen, 0);
+            float u = gl_FragCoord.x / size.x;
+            float v = gl_FragCoord.y / size.y;
+            color_ = texture(uniform_screen, vec2(u, v));
+            color_.a = v_out_.mColor.a;
+        }
+    FShader End
+Pass End

@@ -24,7 +24,8 @@ namespace interface {
 
     struct PostCommand : public RenderCommand {
         enum TypeEnum {
-            kOverlay,       //  叠加
+            kOverlay,       //  覆盖
+            kSample,        //  采样
             kSwap,          //  交换
         };
         SharePtr<GLProgram> mProgram;       //  着色器

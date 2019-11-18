@@ -11,7 +11,7 @@ CompFieldOfView::CompFieldOfView()
     _mesh->Init({}, {}, GLMesh::Vertex::kV | 
                         GLMesh::Vertex::kC);
 
-    _program = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_LIGHT);
+    _program = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
 
     AddState(StateEnum::kActive, false);
 }
@@ -40,15 +40,6 @@ void CompFieldOfView::DecodeBinary(std::ifstream & is)
 
 bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
-    if (title == "Debug")
-    {
-        if (std::any_cast<bool>(newValue))
-        {
-            GenView();
-            GenMesh();
-            _trackPoints = _segments;
-        }
-    }
     return true;
 }
 
@@ -60,7 +51,7 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     command.mMesh           = _mesh;
     command.mProgram        = _program;
     command.mTransform      = canvas->GetMatrixStack().GetM();
-    command.mType           = interface::PostCommand::kOverlay;
+    command.mType           = interface::PostCommand::kSwap;
     canvas->Post(command);
 }
 
@@ -143,54 +134,24 @@ void CompFieldOfView::GenView()
             else if (b.x <  0 && b.y <  0) q1 = 2;
             else if (b.x >= 0 && b.y <  0) q1 = 3;
 
-            return q0 != q1 ? q0 < q1
-                : glm::cross(a, b) > 0;
+            return q0 != q1 ? q0 < q1 : glm::cross(a, b) > 0;
         });
 }
 
 void CompFieldOfView::GenMesh()
 {
     std::vector<GLMesh::Vertex> points;
-    std::vector<glm::vec2>      extends;
-
     auto count = _segments.size() - 1;
     for (auto i = 0; i != count; ++i)
     {
         auto & a = _segments.at((i + count - 1) % count + 1);
         auto & b = _segments.at( i                      + 1);
         auto & c = _segments.at((i         + 1) % count + 1);
-        if (auto ab = b - a, cb = b - c; std::abs(glm::cross(ab, cb)) > 0.01f)
-        {
-            extends.emplace_back(b);
-            auto extend = glm::normalize((glm::normalize(ab) +
-                                          glm::normalize(cb)) * 0.5f);
-            extend *= (glm::cross(ab, cb) < 0 ? +50.0f : -50.0f);
-            extends.emplace_back(b + extend);
-        }
 
         points.emplace_back(_segments.front(), _color);
         points.emplace_back(b, _color);
         points.emplace_back(c, _color);
     }
-
-    //auto color = glm::vec4(_color.r, _color.g, 
-    //                       _color.b, 1.0000f);
-    //for (auto i = 0u, n = extends.size(); i != n; i += 2)
-    //{
-    //    auto j = (i + 2) % n;
-    //    auto & p0 = extends.at(i    );
-    //    auto & e0 = extends.at(i + 1);
-    //    auto & p1 = extends.at(j);
-    //    auto & e1 = extends.at(j + 1);
-
-    //    points.emplace_back(p0, _color);
-    //    points.emplace_back(e0,  color);
-    //    points.emplace_back(e1,  color);
-
-    //    points.emplace_back(p0, _color);
-    //    points.emplace_back(e1,  color);
-    //    points.emplace_back(p1, _color);
-    //}
 
     _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }

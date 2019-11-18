@@ -28,7 +28,7 @@ void CompLight::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 
     interface::PostCommand command;
     command.mTransform  = canvas->GetMatrixStack().GetM();
-    command.mType       = interface::PostCommand::kOverlay;
+    command.mType       = interface::PostCommand::kSample;
     command.mProgram    = _program;
     command.mMesh       = _mesh;
     canvas->Post(command);

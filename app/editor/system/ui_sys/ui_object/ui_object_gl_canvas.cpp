@@ -23,9 +23,18 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 void UIObjectGLCanvas::HandlePostCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (state->mPostCommands.front().mType != interface::PostCommand::kSwap)
+    switch (state->mPostCommands.front().mType)
     {
-        std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+    case interface::PostCommand::kOverlay:
+        {
+            std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+        }
+        break;
+    case interface::PostCommand::kSample:
+        {
+            std::swap(state->mRenderTextures[0], state->mRenderTextures[1]);
+        }
+        break;
     }
 
     for (auto & command : state->mPostCommands)
