@@ -1,4 +1,4 @@
-#include "uievent_delegate_main.h"
+﻿#include "uievent_delegate_main.h"
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
@@ -117,15 +117,47 @@ void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject>& uiobject,
 
 SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::string & name)
 {
-    auto raw = mmc::Json::Hash();
-    raw->Insert(mmc::Json::List(), "__Children");
-    raw->Insert(mmc::Json::Hash(), "__Property");
-    raw->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
-    raw->Insert(mmc::Json::FromValue("0"), "__Property", "Align");
-    raw->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragMove");
-    raw->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragFree");
-    raw->Insert(mmc::Json::FromValue(name), "__Property", "Name");
-    auto object = UIParser::Parse(raw);
+    auto layout = mmc::Json::Hash();
+    layout->Insert(mmc::Json::List(), "__Children");
+    layout->Insert(mmc::Json::Hash(), "__Property");
+    layout->Insert(mmc::Json::FromValue("0"), "__Property", "Type");
+    layout->Insert(mmc::Json::FromValue(ImID(id)), "__Property", "Name");
+    layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsSameline");
+    layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragMove");
+    layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragFree");
+    layout->Insert(mmc::Json::FromValue("false"), "__Property", "IsShowBorder");
+
+    //  Active
+    auto active = mmc::Json::Hash();
+    active->Insert(mmc::Json::List(), "__Children");
+    active->Insert(mmc::Json::Hash(), "__Property");
+    active->Insert(mmc::Json::FromValue("3"), "__Property", "Type");
+    active->Insert(mmc::Json::FromValue("| X |"), "__Property", "Name");
+    active->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
+    active->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
+    layout->Insert(active, "__Children", 0);
+
+    //  Locked
+    auto locked = mmc::Json::Hash();
+    locked->Insert(mmc::Json::List(), "__Children");
+    locked->Insert(mmc::Json::Hash(), "__Property");
+    locked->Insert(mmc::Json::FromValue("3"), "__Property", "Type");
+    locked->Insert(mmc::Json::FromValue("| O |"), "__Property", "Name");
+    locked->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
+    locked->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
+    layout->Insert(locked, "__Children", 1);
+
+    //  Tree
+    auto tree = mmc::Json::Hash();
+    tree->Insert(mmc::Json::List(), "__Children");
+    tree->Insert(mmc::Json::Hash(), "__Property");
+    tree->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
+    tree->Insert(mmc::Json::FromValue(name), "__Property", "Name");
+    tree->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
+    tree->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
+    layout->Insert(tree, "__Children", 2);
+
+    auto object = UIParser::Parse(layout);
     _id2obj.insert(std::make_pair(id, object));
     _obj2id.insert(std::make_pair(object, id));
     return object;

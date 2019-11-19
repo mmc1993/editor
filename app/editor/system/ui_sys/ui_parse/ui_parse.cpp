@@ -17,6 +17,7 @@ SharePtr<UIObject> UIParser::CreateObject(const int type)
 {
     switch ((UITypeEnum)type)
     {
+    case UITypeEnum::kOther: return std::create_ptr<UIObject>();
     case UITypeEnum::kLayout: return std::create_ptr<UIObjectLayout>();
     case UITypeEnum::kTreeBox: return std::create_ptr<UIObjectTreeBox>();
     case UITypeEnum::kTextBox: return std::create_ptr<UIObjectTextBox>();

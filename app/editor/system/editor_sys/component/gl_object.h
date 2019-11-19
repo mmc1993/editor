@@ -16,7 +16,8 @@ class GLObject
     , public std::enable_shared_from_this<GLObject> {
 public:
     enum StateEnum {
-        kActive = 1 << 0,
+        kActive = 0x1,
+        kLocked = 0x2,
     };
 
 public:
@@ -78,7 +79,7 @@ public:
     template <class T>
     std::vector<SharePtr<T>> GetComponentsInChildren()
     {
-        std::vector<SharePtr<T>> result{};
+        std::vector<SharePtr<T>> result;
         auto self = GetComponent<T>();
         if (self != nullptr)
         {

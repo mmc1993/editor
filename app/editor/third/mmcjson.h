@@ -388,8 +388,6 @@ namespace mmc {
 		}
 
     private:
-
-
         Pointer InsertImpl(const Pointer & value, const char * key)
         {
             assert(_type == Type::kHASH);
@@ -409,9 +407,9 @@ namespace mmc {
         Pointer InsertImpl(const Pointer & value, size_t idx = (size_t)-1)
         {
             assert(_type == Type::kLIST);
-            auto insert = idx >= _elems.size()
-                ? _elems.insert(_elems.end(), value)
-                : std::next(_elems.begin(), idx);
+            auto insert = idx < _elems.size()
+                ? _elems.begin() + idx
+                : _elems.end();
             _elems.insert(insert, value);
             return shared_from_this();
         }

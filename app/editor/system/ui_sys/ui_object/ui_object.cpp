@@ -365,7 +365,7 @@ void UIObject::RenderDrag()
 
 void UIObject::UpdateSize()
 {
-    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault)
+    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault && GetType() != UITypeEnum::kOther)
     {
         const auto & size = ImGui::GetItemRectSize();
         GetState()->Move.z = size.x;
@@ -648,8 +648,8 @@ bool UIObjectLayout::OnEnter()
     }
     else
     {
-        ret = ImGui::BeginChild(state->Name.c_str(), 
-            ImVec2(state->Move.z, state->Move.w), 
+        ret = ImGui::BeginChild(state->Name.c_str(),
+            ImVec2(state->Move.z, state->Move.w),
             state->IsShowBorder, flag);
     }
     if (GetState()->IsShowMenuBar)
@@ -859,14 +859,14 @@ UIObjectTreeBox::UIObjectTreeBox() : UIObject(UITypeEnum::kTreeBox, new UIStateT
 
 bool UIObjectTreeBox::OnEnter()
 {
-    auto  state = GetState<UIStateTreeBox>();
+    auto state = GetState<UIStateTreeBox>();
     ImGui::SetNextItemWidth(state->Move.z);
 
     size_t flag = 0;
     ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0));
     if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
-    auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag | ImGuiTreeNodeFlags_Framed);
+    auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag /* | ImGuiTreeNodeFlags_Framed*/);
     ImGui::PopStyleColor();
     return ret;
 }

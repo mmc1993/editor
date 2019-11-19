@@ -11,6 +11,15 @@
 
 class UIObject: public std::enable_shared_from_this<UIObject> {
 public:
+    UIObject(UITypeEnum type = UITypeEnum::kOther, UIState * state = new UIState())
+        : _type(type)
+        , _state(state)
+        , _parent(nullptr)
+    { }
+
+    virtual ~UIObject()
+    { }
+
     template <class T = UIState>
     T * GetState() { return (T *)_state.get(); }
     
@@ -42,15 +51,6 @@ public:
     void BindDelegate(UIEvent::DelegateHandler * delegate);
 
 protected:
-    UIObject(UITypeEnum type, UIState * state) 
-        : _type(type)
-        , _state(state)
-        , _parent(nullptr)
-    { }
-
-    virtual ~UIObject()
-    { }
-
     void RenderDrag();
     void UpdateSize();
     void UpdateMove();
