@@ -69,8 +69,9 @@ void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::st
 {
     if (ObjectName(object->GetParent(), name))
     {
-        object->SetName(name);
-        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kRenameObject, std::make_tuple(object, name));
+        auto old = object->SetName(name);
+        auto arg = std::make_tuple(object, old);
+        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kRenameObject, arg);
     }
 }
 

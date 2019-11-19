@@ -32,10 +32,11 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 if (mouse.mObject == object)
                 {
                     buffer.push_back("Add Object");
+                    UIMenu::PopMenu(mouse.mObject, buffer);
                 }
                 else
                 {
-                    auto & name = mouse.mObject->GetState()->Name;
+                    auto & name = mouse.mObject->GetParent()->GetState()->Name;
                     buffer.push_back(        "Add Object");
                     buffer.push_back(        "Del Object");
                     buffer.push_back(SFormat("Rename Object/{0}~", name));
@@ -44,14 +45,14 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                         std::begin(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
                         std::end(  Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
                         std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mVal->ToString(); });
+                    UIMenu::PopMenu(mouse.mObject->GetParent(), buffer);
                 }
-                UIMenu::PopMenu(mouse.mObject, buffer);
             }
 
             if ((mouse.mKey == 0 || mouse.mKey == 1) && 
                 (mouse.mAct == 2 || mouse.mAct == 3) && mouse.mObject != object)
             {
-                Global::Ref().mEditorSys->OptSelectObject(_obj2id.at(mouse.mObject), true);
+                Global::Ref().mEditorSys->OptSelectObject(_obj2id.at(mouse.mObject->GetParent()), true);
             }
         }
         return true;
@@ -121,7 +122,7 @@ SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::str
     layout->Insert(mmc::Json::List(), "__Children");
     layout->Insert(mmc::Json::Hash(), "__Property");
     layout->Insert(mmc::Json::FromValue("0"), "__Property", "Type");
-    layout->Insert(mmc::Json::FromValue(ImID(id)), "__Property", "Name");
+    layout->Insert(mmc::Json::FromValue(name), "__Property", "Name");
     layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsSameline");
     layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragMove");
     layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragFree");
@@ -217,13 +218,22 @@ void UIEventDelegateMainObjList::OnEventFreeProject()
     GetOwner()->ClearObjects();
 }
 
-void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject>& object)
+void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & object)
 {
-    auto uiobject = NewObject(object->GetID(), object->GetName());
-    _id2obj.at(object->GetParent()->GetID())->AddObject(uiobject);
+    if (object->GetParent() == Global::Ref().mEditorSys->GetProject()->GetRoot())
+    {
+        auto uiobject = NewObject(object->GetID(), object->GetName());
+        _id2obj.at(object->GetParent()->GetID())->AddObject(uiobject);
+    }
+    else
+    {
+        auto parent = _id2obj.at(object->GetParent()->GetID());
+        auto uiobject = NewObject(object->GetID(), object->GetName());
+        parent->GetObject({ parent->GetState()->Name })->AddObject(uiobject);
+    }
 
     auto stage = CastPtr<UIObjectGLCanvas>(GetOwner()->GetParent()->GetObject({"EditorObjStage", "Canvas"}));
-    auto coord = glm::vec2(stage->GetState()->Move.z * 0.5f, 
+    auto coord = glm::vec2(stage->GetState()->Move.z * 0.5f,
                            stage->GetState()->Move.w * 0.5f);
     coord = object->GetParent()->WorldToLocal(stage->ProjectWorld(coord));
     object->GetTransform()->Position(coord.x, coord.y);
@@ -239,12 +249,18 @@ void UIEventDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& o
 
 void UIEventDelegateMainObjList::OnEventRenameObject(const SharePtr<GLObject>& object, const std::string & name)
 {
-    _id2obj.at(object->GetID())->GetState()->Name = object->GetName();
+    auto uiobject0 = _id2obj.at(object->GetID());
+    auto uiobject1 = uiobject0->GetObject({name});
+    uiobject0->GetState()->Name = object->GetName();
+    uiobject1->GetState()->Name = object->GetName();
 }
 
 void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
-    _id2obj.at(object->GetID())->GetState()->IsSelect = select;
+    auto uiobject = _id2obj.at(object->GetID());
+    uiobject->GetObject(
+        { uiobject->GetState()->Name }
+    )->GetState()->IsSelect = select;
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

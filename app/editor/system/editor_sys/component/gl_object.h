@@ -40,7 +40,7 @@ public:
 
     void Update(UIObjectGLCanvas * canvas, float dt);
 
-    void SetName(const std::string & name);
+    std::string SetName(const std::string & name);
     const std::string & GetName() const;
 
     void AddState(StateEnum state, bool add);

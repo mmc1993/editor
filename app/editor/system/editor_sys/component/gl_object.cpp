@@ -177,9 +177,11 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
     canvas->GetMatrixStack().Pop(interface::MatrixStack::kModel);
 }
 
-void GLObject::SetName(const std::string & name)
+std::string GLObject::SetName(const std::string & name)
 {
-    _name = name;
+    auto old = std::move(_name);
+    _name.operator=(name);
+    return std::move(old);
 }
 
 const std::string & GLObject::GetName() const

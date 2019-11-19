@@ -211,7 +211,7 @@ void UIObject::Render(float dt, bool visible)
         }
         for (auto i = 1; i != _children.size(); ++i)
         {
-            ImGui::SameLine();
+            if (visible) {ImGui::SameLine();}
             _children.at(i)->Render(dt, ret);
         }
     }
@@ -279,7 +279,8 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI()
     //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
     auto pos = ImGui::GetCursorPos();
     auto parent = GetParent();
-    while (parent->GetType() == UITypeEnum::kTextBox
+    while (parent->GetType() == UITypeEnum::kOther
+        || parent->GetType() == UITypeEnum::kTextBox
         || parent->GetType() == UITypeEnum::kTreeBox
         || parent->GetType() == UITypeEnum::kImageBox)
     {
@@ -862,12 +863,10 @@ bool UIObjectTreeBox::OnEnter()
     auto state = GetState<UIStateTreeBox>();
     ImGui::SetNextItemWidth(state->Move.z);
 
-    size_t flag = 0;
-    ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0));
+    size_t flag = ImGuiTreeNodeFlags_OpenOnDoubleClick;
     if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
     auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag /* | ImGuiTreeNodeFlags_Framed*/);
-    ImGui::PopStyleColor();
     return ret;
 }
 
