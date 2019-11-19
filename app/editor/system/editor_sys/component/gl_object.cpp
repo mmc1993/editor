@@ -32,6 +32,8 @@ void GLObject::EncodeBinary(std::ofstream & os)
     //  自身
     tools::Serialize(os, _id);
     tools::Serialize(os, _name);
+    tools::Serialize(os, _state);
+
     //  组件
     auto count = GetComponents().size();
     tools::Serialize(os, count);
@@ -54,6 +56,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
     //  自身
     tools::Deserialize(is, _id);
     tools::Deserialize(is, _name);
+    tools::Deserialize(is, _state);
     //  组件
     size_t count;
     tools::Deserialize(is, count);

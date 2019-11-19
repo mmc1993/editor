@@ -188,8 +188,8 @@ SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::str
     tree->Insert(mmc::Json::Hash(), "__Property");
     tree->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
     tree->Insert(mmc::Json::FromValue(name), "__Property", "Name");
-    tree->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
-    tree->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
+    tree->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragMove");
+    tree->Insert(mmc::Json::FromValue("true"), "__Property", "IsCanDragFree");
     layout->Insert(tree, "__Children", 2);
 
     auto object = UIParser::Parse(layout);
