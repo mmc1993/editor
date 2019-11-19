@@ -24,7 +24,7 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
     state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
-void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::LayerCommand & command)
+void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & command)
 {
     std::swap(command.mRenderTextures[0]->mID,
               command.mRenderTextures[1]->mID);
@@ -47,7 +47,7 @@ void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::LayerCommand & comman
     }
 }
 
-void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::LayerCommand & command)
+void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & command)
 {
     for (auto & cmd : command.mFowardCommands)
     {
@@ -233,16 +233,16 @@ void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
     }
 }
 
-void UIObjectGLCanvas::Post(const::interface::LayerCommand & cmd)
+void UIObjectGLCanvas::Post(const::interface::TargetCommand & cmd)
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (cmd.mType == interface::LayerCommand::kPush)
+    if (cmd.mType == interface::TargetCommand::kPush)
     {
-        auto & layer = state->mCommandStack.emplace();
-        layer.mRenderTextures[0] = cmd.mTexture;
-        layer.mRenderTextures[1] = state->mRenderTextures[1];
+        auto & target = state->mCommandStack.emplace();
+        target.mRenderTextures[0] = cmd.mTexture;
+        target.mRenderTextures[1] = state->mRenderTextures[1];
     }
-    else if (cmd.mType == interface::LayerCommand::kPop)
+    else if (cmd.mType == interface::TargetCommand::kPop)
     {
         auto && top = std::move(state->mCommandStack.top());
         state->mCommandArray.emplace_back(std::move(top));

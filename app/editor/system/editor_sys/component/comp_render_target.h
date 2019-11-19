@@ -4,9 +4,9 @@
 #include "comp_polygon.h"
 #include "../../interface/render.h"
 
-class CompLayerRender : public Component {
+class CompRenderTarget : public Component {
 public:
-    CompLayerRender();
+    CompRenderTarget();
 
     virtual const std::string & GetName() override;
     virtual void EncodeBinary(std::ofstream & os) override;

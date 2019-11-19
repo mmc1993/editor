@@ -37,7 +37,7 @@ namespace interface {
     };
 
     //  ∑÷≤„‰÷»æ
-    struct LayerCommand : public RenderCommand {
+    struct TargetCommand : public RenderCommand {
         enum TypeEnum {
             kPush,
             kPop,

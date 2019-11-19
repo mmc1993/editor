@@ -21,7 +21,7 @@
   <ItemGroup>
     <ClCompile Include="editor\system\editor_sys\component\component.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp" />
-    <ClCompile Include="editor\system\editor_sys\component\comp_layer_render.cpp" />
+    <ClCompile Include="editor\system\editor_sys\component\comp_render_target.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_light.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_lightning.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_polygon.cpp" />
@@ -64,7 +64,7 @@
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
     <ClInclude Include="editor\system\editor_sys\component\component.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h" />
-    <ClInclude Include="editor\system\editor_sys\component\comp_layer_render.h" />
+    <ClInclude Include="editor\system\editor_sys\component\comp_render_target.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_light.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_lightning.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_polygon.h" />

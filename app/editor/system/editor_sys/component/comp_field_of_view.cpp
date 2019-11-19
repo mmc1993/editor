@@ -95,7 +95,7 @@ void CompFieldOfView::Update()
             track = track->GetObject(name);
             ASSERT_LOG(track != nullptr, name.c_str());
         }
-        _sampler = track->GetComponent<CompLayerRender>();
+        _sampler = track->GetComponent<CompRenderTarget>();
     }
     if (!_sampler.expired())
     {

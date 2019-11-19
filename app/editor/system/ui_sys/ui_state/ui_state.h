@@ -119,7 +119,7 @@ class GLMaterial;
 
 class UIStateGLCanvas : public UIState {
 public:
-    struct LayerCommand {
+    struct TargetCommand {
         std::vector<interface::PostCommand>     mPostCommands;      //  后期
         std::vector<interface::FowardCommand>   mFowardCommands;    //  正向
         SharePtr<GLImage>                       mRenderTextures[2];
@@ -129,8 +129,8 @@ public:
     GLuint mRenderTarget;
     SharePtr<GLImage> mRenderTextures[2];
     interface::MatrixStack    mMatrixStack;
-    std::stack<LayerCommand>  mCommandStack;
-    std::vector<LayerCommand> mCommandArray;
+    std::stack<TargetCommand>  mCommandStack;
+    std::vector<TargetCommand> mCommandArray;
 
     //  编辑功能相关
     struct Operation {

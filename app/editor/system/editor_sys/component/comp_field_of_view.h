@@ -2,7 +2,7 @@
 
 #include "component.h"
 #include "comp_polygon.h"
-#include "comp_layer_render.h"
+#include "comp_render_target.h"
 #include "../../interface/render.h"
 
 class CompFieldOfView 
@@ -38,6 +38,6 @@ private:
     SharePtr<GLMesh>                    _mesh;
     SharePtr<GLProgram>                 _program;
     std::vector<glm::vec2>              _segments;
-    WeakPtr<CompLayerRender>            _sampler;
+    WeakPtr<CompRenderTarget>           _sampler;
     std::vector<SharePtr<CompPolygon>>  _polyObjects;
 };

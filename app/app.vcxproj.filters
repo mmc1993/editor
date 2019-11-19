@@ -129,7 +129,7 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\editor_sys\component\comp_layer_render.cpp">
+    <ClCompile Include="editor\system\editor_sys\component\comp_render_target.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1022,7 +1022,7 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\component\comp_layer_render.h">
+    <ClInclude Include="editor\system\editor_sys\component\comp_render_target.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
