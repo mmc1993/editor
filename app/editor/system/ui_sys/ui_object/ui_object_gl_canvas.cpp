@@ -680,12 +680,15 @@ void UIObjectGLCanvas::FromRectSelectObjects(
             points.at(1) = children->ParentToLocal(local1);
             points.at(2) = children->ParentToLocal(local2);
             points.at(3) = children->ParentToLocal(local3);
-            auto ret = std::find_if(
-                children->GetComponents().begin(),
-                children->GetComponents().end(), pred);
-            if (ret != children->GetComponents().end())
+            if (!children->HasState(GLObject::StateEnum::kLocked))
             {
-                output.push_back(children);
+                auto ret = std::find_if(
+                    children->GetComponents().begin(),
+                    children->GetComponents().end(), pred);
+                if (children->GetComponents().end() != ret)
+                {
+                    output.push_back(children);
+                }
             }
             FromRectSelectObjects(children, points.at(0), points.at(1), points.at(2), points.at(3), output);
         }
@@ -702,7 +705,7 @@ SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObje
     };
     for (auto it = object->GetObjects().rbegin(); it != object->GetObjects().rend(); ++it)
     {
-        if (object->HasState(GLObject::StateEnum::kActive))
+        if ((*it)->HasState(GLObject::StateEnum::kActive))
         {
             thit = (*it)->ParentToLocal(local);
 
@@ -710,10 +713,13 @@ SharePtr<GLObject> UIObjectGLCanvas::FromCoordSelectObject(const SharePtr<GLObje
             {
                 return ret;
             }
-            auto ret = std::find_if(
-                (*it)->GetComponents().begin(), 
-                (*it)->GetComponents().end(), pred);
-            if (ret != (*it)->GetComponents().end()) { return *it; }
+            if (!(*it)->HasState(GLObject::StateEnum::kLocked))
+            {
+                auto ret = std::find_if(
+                    (*it)->GetComponents().begin(), 
+                    (*it)->GetComponents().end(), pred);
+                if (ret != (*it)->GetComponents().end()) { return *it; }
+            }
         }
     }
     return nullptr;
