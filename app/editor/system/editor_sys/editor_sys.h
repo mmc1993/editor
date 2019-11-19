@@ -24,6 +24,13 @@ public:
     //  删除对象
     void OptDeleteObject(const SharePtr<GLObject> & object);
     void OptDeleteObject(uint id);
+    //  修改状态
+    void OptStateAddObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateAddObject(uint id, uint state);
+    void OptStateSubObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateSubObject(uint id, uint state);
+    void OptStateObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateObject(uint id, uint state);
 
     /// 组件
     //  新增组件

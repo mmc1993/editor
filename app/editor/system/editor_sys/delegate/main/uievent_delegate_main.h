@@ -36,6 +36,7 @@ private:
     void OnEventDeleteObject(const SharePtr<GLObject> & object);
     void OnEventRenameObject(const SharePtr<GLObject> & object, const std::string &name);
     void OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi);
+    void OnEventStateObject(const SharePtr<GLObject> & object, uint state0, uint state1);
 
 private:
     std::map<uint, SharePtr<UIObject>> _id2obj;

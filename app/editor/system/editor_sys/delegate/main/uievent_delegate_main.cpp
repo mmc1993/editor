@@ -15,6 +15,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             _listener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
             _listener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
             _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
         }
         return true;
     }
@@ -26,6 +27,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
     case UIEventEnum::kMouse:
         {
             auto & mouse = (const UIEvent::Mouse &)param;
+            //  右键单击
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
                 std::vector<std::string> buffer;
@@ -49,8 +51,40 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 }
             }
 
-            if ((mouse.mKey == 0 || mouse.mKey == 1) && 
-                (mouse.mAct == 2 || mouse.mAct == 3) && mouse.mObject != object)
+            //  左键单击
+            if (mouse.mKey == 0 && mouse.mAct == 3 && mouse.mObject != object)
+            {
+                auto objectID = _obj2id.at(mouse.mObject->GetParent());
+                if      (mouse.mObject->GetParent()->GetObjects().at(0) == mouse.mObject)
+                {
+                    //  激活
+                    if (auto glo = Global::Ref().mEditorSys->GetProject()->GetObject(objectID); glo->HasState(GLObject::StateEnum::kActive))
+                    {
+                        Global::Ref().mEditorSys->OptStateSubObject(objectID, GLObject::StateEnum::kActive);
+                    }
+                    else
+                    {
+                        Global::Ref().mEditorSys->OptStateAddObject(objectID, GLObject::StateEnum::kActive);
+                    }
+                }
+                else if (mouse.mObject->GetParent()->GetObjects().at(1) == mouse.mObject)
+                {
+                    //  锁定
+                    if (auto glo = Global::Ref().mEditorSys->GetProject()->GetObject(objectID); glo->HasState(GLObject::StateEnum::kLocked))
+                    {
+                        Global::Ref().mEditorSys->OptStateSubObject(objectID, GLObject::StateEnum::kLocked);
+                    }
+                    else
+                    {
+                        Global::Ref().mEditorSys->OptStateAddObject(objectID, GLObject::StateEnum::kLocked);
+                    }
+                }
+            }
+
+            if (    mouse.mObject != object
+                &&  (mouse.mKey == 0 || mouse.mKey == 1)
+                &&  (mouse.mAct == 2 || mouse.mAct == 3) 
+                &&  mouse.mObject->GetParent()->GetObjects().at(2) == mouse.mObject)
             {
                 Global::Ref().mEditorSys->OptSelectObject(_obj2id.at(mouse.mObject->GetParent()), true);
             }
@@ -192,6 +226,12 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
             OnEventRenameObject(std::get<0>(value), std::get<1>(value));
         }
         break;
+    case EventSys::TypeEnum::kStateObject:
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>, uint, uint> &>(param);
+            OnEventStateObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        }
+        break;
     case EventSys::TypeEnum::kSelectObject:
         {
             auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>, bool, bool> &>(param);
@@ -261,6 +301,14 @@ void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<GLObject> & 
     uiobject->GetObject(
         { uiobject->GetState()->Name }
     )->GetState()->IsSelect = select;
+}
+
+void UIEventDelegateMainObjList::OnEventStateObject(const SharePtr<GLObject> & object, uint state0, uint state1)
+{
+    auto active = object->HasState(GLObject::StateEnum::kActive);
+    auto locked = object->HasState(GLObject::StateEnum::kLocked);
+    _id2obj.at(object->GetID())->GetObjects().at(0)->GetState()->Color = active ? glm::vec4(1) : glm::vec4(1, 0, 0, 1);
+    _id2obj.at(object->GetID())->GetObjects().at(1)->GetState()->Color = locked ? glm::vec4(1, 0, 0, 1) : glm::vec4(1);
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

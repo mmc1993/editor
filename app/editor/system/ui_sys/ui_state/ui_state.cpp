@@ -32,6 +32,7 @@ bool UIState::FromStringParse(const std::string & key, const std::string & val)
     FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector2, key, val, " ", "StretchMin", StretchMin);
     //  vec4
     FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector4, key, val, " ", "Move", Move);
+    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector4, key, val, " ", "Color", Color);
     //  string list
     FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kStringList, key, val, ",", "MenuBar", MenuBar);
     return false;

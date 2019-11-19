@@ -189,13 +189,13 @@ const std::string & GLObject::GetName() const
     return _name;
 }
 
-void GLObject::AddState(StateEnum state, bool add)
+void GLObject::AddState(uint state, bool add)
 {
     if (add) _state |=  state;
     else     _state &= ~state;
 }
 
-bool GLObject::HasState(StateEnum state)
+uint GLObject::HasState(uint state)
 {
     return _state & state;
 }

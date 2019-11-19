@@ -39,6 +39,7 @@ public:
     glm::vec2 StretchMin;               //  最小尺寸
     glm::vec4 Move;                     //  方位
     glm::vec4 Move_;                    //  方位
+    glm::vec4 Color = glm::vec4(1);     //  颜色
 
     std::vector<std::string> MenuBar;   //  菜单栏
 };

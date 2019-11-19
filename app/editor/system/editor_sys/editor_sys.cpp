@@ -65,6 +65,39 @@ void EditorSys::OptDeleteObject(uint id)
     OptDeleteObject(GetProject()->GetObject(id));
 }
 
+void EditorSys::OptStateAddObject(const SharePtr<GLObject>& object, uint state)
+{
+    OptStateObject(object, object->HasState(~0u) |  state);
+}
+
+void EditorSys::OptStateAddObject(uint id, uint state)
+{
+    OptStateAddObject(GetProject()->GetObject(id), state);
+}
+
+void EditorSys::OptStateSubObject(const SharePtr<GLObject>& object, uint state)
+{
+    OptStateObject(object, object->HasState(~0u) & ~state);
+}
+
+void EditorSys::OptStateSubObject(uint id, uint state)
+{
+    OptStateSubObject(GetProject()->GetObject(id), state);
+}
+
+void EditorSys::OptStateObject(const SharePtr<GLObject>& object, uint state)
+{
+    auto old = object->HasState(~0u);
+    object->AddState(~0u,  false);
+    object->AddState(state, true);
+    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kStateObject, std::make_tuple(object, old, state));
+}
+
+void EditorSys::OptStateObject(uint id, uint state)
+{
+    OptStateObject(GetProject()->GetObject(id), state);
+}
+
 void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::string & name)
 {
     if (ObjectName(object->GetParent(), name))

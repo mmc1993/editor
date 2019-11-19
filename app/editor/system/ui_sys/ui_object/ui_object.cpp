@@ -917,7 +917,9 @@ bool UIObjectTextBox::OnEnter()
     }
     else
     {
+        ImGui::PushStyleColor(ImGuiCol_Text, GetState()->Color);
         ImGui::Text(state->Name.c_str());
+        ImGui::PopStyleColor();
     }
     return true;
 }
