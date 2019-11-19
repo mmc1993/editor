@@ -140,7 +140,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
     return false;
 }
 
-void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject>& uiobject, const SharePtr<GLObject>& globject)
+void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiobject, const SharePtr<GLObject> & globject)
 {
     for (auto & object : globject->GetObjects())
     {

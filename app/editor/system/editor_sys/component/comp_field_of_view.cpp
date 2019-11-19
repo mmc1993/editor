@@ -48,14 +48,20 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     Update();
 
-    interface::PostCommand command;
-    command.mMesh           = _mesh;
-    command.mProgram        = _program;
-    command.mTransform      = canvas->GetMatrixStack().GetM();
-    command.mType           = interface::PostCommand::kSample;
-    command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback, 
-        shared_from_this(), std::placeholders::_1, std::placeholders::_2);
-    canvas->Post(command);
+    if (!_sampler.expired())
+    {
+        auto sample = _sampler.lock()->RefTextureBuffer();
+        interface::PostCommand command;
+        command.mMesh           = _mesh;
+        command.mProgram        = _program;
+        command.mTransform      = canvas->GetMatrixStack().GetM();
+        command.mType           = interface::PostCommand::kSample;
+        command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback,
+                                    shared_from_this(), sample,
+                                    std::placeholders::_1, 
+                                    std::placeholders::_2);
+        canvas->Post(command);
+    }
 }
 
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
@@ -89,11 +95,13 @@ void CompFieldOfView::Update()
             track = track->GetObject(name);
             ASSERT_LOG(track != nullptr, name.c_str());
         }
-        _layerRender = track->GetComponent<CompLayerRender>();
-        ASSERT_LOG(_layerRender != nullptr, _clipObjectURL.c_str());
+        _sampler = track->GetComponent<CompLayerRender>();
     }
-    GenView();
-    GenMesh();
+    if (!_sampler.expired())
+    {
+        GenView();
+        GenMesh();
+    }
 }
 
 void CompFieldOfView::GenView()
@@ -216,9 +224,11 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
     return result;
 }
 
-void CompFieldOfView::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+void CompFieldOfView::OnDrawCallback(SharePtr<GLImage> texture, const interface::RenderCommand & command, uint texturePos)
 { 
-    ((const interface::PostCommand &)command).mProgram->BindUniformTex2D(
-        "uniform_sample", _layerRender->RefTextureBuffer()->mID, texturePos);
+    auto & cmd = (const interface::PostCommand &)command;
+    cmd.mProgram->BindUniformTex2D("uniform_sample", 
+                                    texture->mID, 
+                                    texturePos);
 }
 

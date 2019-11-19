@@ -132,6 +132,7 @@ void UIObjectGLCanvas::CallCommands()
         DrawTrackPoint();
     }
     DrawSelectRect();
+    glUseProgram(0);
 
     glViewport(0, 0, viewport[2], viewport[3]);
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);

@@ -10,8 +10,9 @@ CompSegment::CompSegment()
     , _smooth(1.0f)
     , _update(kSegment | kMesh)
 {
-    _trackPoints.emplace_back(0, 0 );
-    _trackPoints.emplace_back(0, 100);
+    _trackPoints.emplace_back(-50,  0);
+    _trackPoints.emplace_back( 50, 50);
+    _trackPoints.emplace_back( 50,  0);
 
     _mesh = std::create_ptr<GLMesh>();
     _mesh->Init({},{}, GLMesh::Vertex::kV | 

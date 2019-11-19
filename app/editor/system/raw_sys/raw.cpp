@@ -104,6 +104,7 @@ GLImage::~GLImage()
 
 void GLImage::ModifyWH(uint w, uint h)
 {
+    mW = w; mH = h;
     glBindTexture(GL_TEXTURE_2D, mID);
     glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
     glBindTexture(GL_TEXTURE_2D, 0);
