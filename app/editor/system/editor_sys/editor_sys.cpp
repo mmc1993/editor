@@ -98,6 +98,49 @@ void EditorSys::OptStateObject(uint objectID, uint state)
     OptStateObject(GetProject()->GetObject(objectID), state);
 }
 
+void EditorSys::OptMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & target, int pos)
+{
+    auto was = false;
+    switch (pos)
+    {
+    case 0: //  里面
+        {
+            if (target->GetObject(object->GetName()) != object)
+            {
+                object->SetParent(target);
+                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kStateObject, std::make_tuple(object, target, pos));
+            }
+        }
+        break;
+    case 1: //  前面
+        {
+            auto iter = std::find(target->GetParent()->GetObjects().begin(), 
+                                  target->GetParent()->GetObjects().end(), target);
+            ASSERT_LOG(iter != target->GetParent()->GetObjects().end(), "");
+            //target->GetParent()->GetObjects()
+            //target->GetParent()
+        }
+        break;
+    case 2: //  后面
+    }
+}
+
+void EditorSys::OptMoveObject(uint objectID, const SharePtr<GLObject> & target, int pos)
+{
+    OptMoveObject(Global::Ref().mEditorSys->GetProject()->GetObject(objectID), target, pos);
+}
+
+void EditorSys::OptMoveObject(const SharePtr<GLObject>& object, uint targetID, int pos)
+{
+    OptMoveObject(object, Global::Ref().mEditorSys->GetProject()->GetObject(targetID), pos);
+}
+
+void EditorSys::OptMoveObject(uint objectID, uint targetID, int pos)
+{
+    OptMoveObject(Global::Ref().mEditorSys->GetProject()->GetObject(objectID),
+                  Global::Ref().mEditorSys->GetProject()->GetObject(targetID), pos);
+}
+
 void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::string & name)
 {
     if (ObjectName(object->GetParent(), name))

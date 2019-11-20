@@ -27,7 +27,10 @@ public:
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
 
+    //void InsertObject(const SharePtr<GLObject> & object, uint pos, const std::string & name);
+    //void InsertObject(const SharePtr<GLObject> & object, uint pos);
     void AddObject(const SharePtr<GLObject> & object, const std::string & name);
+    void AddObject(const SharePtr<GLObject> & object);
     void DelObject(const SharePtr<GLObject> & object);
     void DelObject(const std::string & name);
     void DelObject(size_t idx);
@@ -46,6 +49,7 @@ public:
     void AddState(uint state, bool add);
     uint HasState(uint state);
 
+    void SetParent(const SharePtr<GLObject> & parent);
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();
 

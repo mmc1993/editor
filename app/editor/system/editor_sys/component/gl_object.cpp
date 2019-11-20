@@ -81,12 +81,30 @@ void GLObject::DecodeBinary(std::ifstream & is)
     }
 }
 
+//void GLObject::InsertObject(const SharePtr<GLObject>& object, uint pos, const std::string & name)
+//{
+//    ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
+//    _children.push_back(object);
+//    object->_parent = this;
+//    object->_name = name;
+//}
+//
+//void GLObject::InsertObject(const SharePtr<GLObject>& object, uint pos)
+//{
+//    InsertObject(object, pos, object->GetName());
+//}
+
 void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & name)
 {
     ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
     _children.push_back(object);
     object->_parent = this;
     object->_name = name;
+}
+
+void GLObject::AddObject(const SharePtr<GLObject> & object)
+{
+    AddObject(object, object->GetName());
 }
 
 void GLObject::DelObject(const SharePtr<GLObject> & object)
@@ -201,6 +219,11 @@ void GLObject::AddState(uint state, bool add)
 uint GLObject::HasState(uint state)
 {
     return _state & state;
+}
+
+void GLObject::SetParent(const SharePtr<GLObject> & parent)
+{
+    SetParent(parent.get());
 }
 
 void GLObject::SetParent(GLObject * parent)
