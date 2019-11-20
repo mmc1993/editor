@@ -211,6 +211,14 @@ uint GLObject::HasState(uint state)
     return _state & state;
 }
 
+bool GLObject::HasParent(const SharePtr<GLObject> & object)
+{
+    auto parent = GetParent();
+    for (;parent != nullptr && parent != object; 
+          parent = parent->GetParent());
+    return parent != nullptr;
+}
+
 void GLObject::SetParent(const SharePtr<GLObject> & parent)
 {
     SetParent(parent.get());

@@ -54,6 +54,7 @@ void UIObject::DeleteObject(const SharePtr<UIObject> & object)
     auto it = std::find(_children.begin(), _children.end(), object);
     if (it != _children.end()) 
     { 
+        (*it)->_parent = nullptr;
         _children.erase(it); 
     }
 }
@@ -481,7 +482,9 @@ void UIObject::DispatchEventDrag()
                 ASSERT_LOG(state->mDrag.mDragObj != nullptr, "");
                 state->mDrag.mFreeObj->PostEventMessage(UIEventEnum::kDrag, 
                     UIEvent::Drag(2, state->mDrag.mBegWorld, 
-                    state->mDrag.mDragObj->shared_from_this()));
+                    state->mDrag.mDragObj->shared_from_this(),
+                    state->mDrag.mFreeObj->shared_from_this(),
+                    state->mDrag.mDirect));
             }
             state->mDrag.mDragObj = nullptr;
             state->mDrag.mFreeObj = nullptr;

@@ -97,7 +97,11 @@ void EditorSys::OptStateObject(uint objectID, uint state)
 
 void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> target, int pos)
 {
-    auto was = false;
+    if (object == target || target->HasParent(object))
+    {
+        return;
+    }
+
     switch (pos)
     {
     case 0: //  里面
@@ -105,21 +109,50 @@ void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> targ
             if (target->GetObject(object->GetName()) != object)
             {
                 object->SetParent(target);
-                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kStateObject, std::make_tuple(object, target, pos));
+                
+                Global::Ref().mEventSys->Post(EventSys::TypeEnum::kMoveObject, 
+                    std::make_tuple(object, 
+                        object->GetParent(), 
+                        object->GetParent()->GetObjects().size() - 1));
             }
         }
         break;
     case 1: //  前面
         {
-            auto iter = std::find(target->GetParent()->GetObjects().begin(), 
-                                  target->GetParent()->GetObjects().end(), target);
-            ASSERT_LOG(iter != target->GetParent()->GetObjects().end(), "");
-            //target->GetParent()->GetObjects()
-            //target->GetParent()
+            auto & objects = target->GetParent()->GetObjects();
+            if (object->GetParent() == target->GetParent())
+            {
+                auto it0 = std::find(objects.begin(), objects.end(), object);
+                auto it1 = std::find(objects.begin(), objects.end(), target);
+                if (std::distance(it0, it1) == 1) { break; }
+            }
+            object->SetParent(target->GetParent());
+            auto iter = std::find(objects.begin(), objects.end(), target);
+            std::move_backward(iter, std::prev(objects.end(), 1), objects.end());
+            *iter = object;
+
+            Global::Ref().mEventSys->Post(EventSys::TypeEnum::kMoveObject, 
+                std::make_tuple(object, object->GetParent(), 
+                (uint)std::distance(objects.begin(), iter)));
         }
         break;
     case 2: //  后面
         {
+            auto & objects = target->GetParent()->GetObjects();
+            if (object->GetParent() == target->GetParent())
+            {
+                auto it0 = std::find(objects.begin(), objects.end(), object);
+                auto it1 = std::find(objects.begin(), objects.end(), target);
+                if (std::distance(it1, it0) == 1) { break; }
+            }
+            object->SetParent(target->GetParent());
+            auto iter = std::find(objects.begin(), objects.end(), target) + 1;
+            std::move_backward(iter, std::prev(objects.end(), 1), objects.end());
+            *iter = object;
+
+            Global::Ref().mEventSys->Post(EventSys::TypeEnum::kMoveObject, 
+                std::make_tuple(object, object->GetParent(), 
+                (uint)std::distance(objects.begin(), iter)));
         }
         break;
     }

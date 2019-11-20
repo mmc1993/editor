@@ -16,6 +16,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             _listener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
             _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
             _listener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kMoveObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
         }
         return true;
     }
@@ -120,18 +121,30 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             {
                 Global::Ref().mEditorSys->OptAppendComponent(_obj2id.at(menu.mObject), Component::Create(tools::GetFileFullName(menu.mPath)));
             }
-            std::cout
-                << "Menu Key: " << menu.mPath << ' '
-                << "Menu Edit: " << menu.mEdit << std::endl;
         }
         return true;
     case UIEventEnum::kDrag:
         {
             auto & drag = (const UIEvent::Drag &)param;
-            if (drag.mAct == 1 || 
-                drag.mAct == 2 && 
-                drag.mDragObj->GetParent() == GetOwner())
+            if (drag.mAct == 1 && _obj2id.find(drag.mDragObj->GetParent()) != _obj2id.end())
             {
+                return true;
+            }
+            if (drag.mAct == 2 && _obj2id.find(drag.mDragObj->GetParent()) != _obj2id.end())
+            {
+                auto pos = 0;
+                auto dragObj = drag.mDragObj->GetParent();
+                auto freeObj = drag.mFreeObj->GetParent();
+                if (drag.mFreeObj == GetOwner())
+                {
+                    freeObj = _id2obj.at(Global::Ref().mEditorSys->GetProject()->GetRoot()->GetID());
+                }
+                else
+                {
+                    if (drag.mDirect == DirectEnum::kU || drag.mDirect == DirectEnum::kL) { pos = 1; }
+                    if (drag.mDirect == DirectEnum::kD || drag.mDirect == DirectEnum::kR) { pos = 2; }
+                }
+                Global::Ref().mEditorSys->OptMoveObject(_obj2id.at(dragObj), _obj2id.at(freeObj), pos);
                 return true;
             }
         }
@@ -238,6 +251,12 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
             OnEventSelectObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
         }
         break;
+    case EventSys::TypeEnum::kMoveObject:
+        {
+            auto & value = std::any_cast<const std::tuple<SharePtr<GLObject>, SharePtr<GLObject>, uint> &>(param);
+            OnEventMoveObject(std::get<0>(value), std::get<1>(value), std::get<2>(value));
+        }
+        break;
     }
 }
 
@@ -309,6 +328,23 @@ void UIEventDelegateMainObjList::OnEventStateObject(const SharePtr<GLObject> & o
     auto locked = object->HasState(GLObject::StateEnum::kLocked);
     _id2obj.at(object->GetID())->GetObjects().at(0)->GetState()->Color = active ? glm::vec4(1) : glm::vec4(1, 0, 0, 1);
     _id2obj.at(object->GetID())->GetObjects().at(1)->GetState()->Color = locked ? glm::vec4(1, 0, 0, 1) : glm::vec4(1);
+}
+
+void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent, uint pos)
+{
+    auto tree = GetOwner();
+    auto uiobject = _id2obj.at(object->GetID());
+    auto uiparent = _id2obj.at(parent->GetID());
+    if (parent != Global::Ref().mEditorSys->GetProject()->GetRoot())
+    { 
+        tree = uiparent->GetObject({ uiparent->GetState()->Name });
+    }
+    uiobject->DeleteThis(); tree->InsertObject(uiobject);
+
+    auto & objects = tree->GetObjects();
+    auto iter = std::next(objects.begin(), pos);
+    std::move_backward(iter, std::prev(objects.end()), objects.end());
+    *iter = uiobject;
 }
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

@@ -16,6 +16,7 @@ public:
         kInsertObject,    //  { GLObject 新增的节点  }
         kRenameObject,    //  { GLOBject 选中的节点, string 旧名字 }
         kStateObject,     //  { GLOBject 选中的节点, uint 旧状态, uint 新状态 }
+        kMoveObject,      //  { GLOBject 选中的节点, GLObject 父节点, uint 位置 }
 
         //  component
         kDeleteComponent,   //  { GLOBject 选中的节点, Component 选中的组件 }

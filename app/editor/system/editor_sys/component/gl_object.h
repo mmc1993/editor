@@ -47,6 +47,7 @@ public:
     void AddState(uint state, bool add);
     uint HasState(uint state);
 
+    bool HasParent(const SharePtr<GLObject> & object);
     void SetParent(const SharePtr<GLObject> & parent);
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();

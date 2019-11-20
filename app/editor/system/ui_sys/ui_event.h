@@ -78,16 +78,23 @@ public:
 
     //  拖放事件
     struct Drag : Event {
+        DirectEnum mDirect;
         SharePtr<UIObject> mDragObj;
+        SharePtr<UIObject> mFreeObj;
         glm::vec2 mBegWorld;
         glm::vec2 mEndWorld;
         int mAct;               //  0 锁定, 1 拖动, 2 释放
 
-        Drag(int act, const glm::vec2 & beg, const SharePtr<UIObject> & dragObj = nullptr) 
+        Drag(int act, const glm::vec2 & beg, 
+            const SharePtr<UIObject> & dragObj = nullptr,
+            const SharePtr<UIObject> & freeObj = nullptr,
+            const DirectEnum direct = DirectEnum::kNone) 
             : mAct(act)
             , mBegWorld(beg)
             , mEndWorld(beg)
             , mDragObj(dragObj)
+            , mFreeObj(freeObj)
+            , mDirect(direct)
         {
             if (mAct == 1 || mAct == 2)
             {

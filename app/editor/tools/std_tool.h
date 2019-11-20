@@ -21,6 +21,12 @@ namespace std {
         return none_of(first, last, [&](const auto & ele) { return ele == val; });
     }
 
+    template <class Iter, class Val>
+    bool exist(Iter first, Iter last, const Val & val)
+    {
+        return std::find(first, last, val) != last;
+    }
+
     template <class T>
     size_t length(const T & arr)
     {
