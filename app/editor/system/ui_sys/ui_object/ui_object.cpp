@@ -63,7 +63,7 @@ void UIObject::DeleteObject(size_t index)
     DeleteObject(*(_children.begin() + index));
 }
 
-void UIObject::DelThis()
+void UIObject::DeleteThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());
     GetParent()->DeleteObject(shared_from_this());

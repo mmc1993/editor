@@ -284,7 +284,7 @@ void UIEventDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& o
     auto uiobject = _id2obj.at(object->GetID());
     _id2obj.erase(object->GetID());
     _obj2id.erase(uiobject);
-    uiobject->DelThis();
+    uiobject->DeleteThis();
 }
 
 void UIEventDelegateMainObjList::OnEventRenameObject(const SharePtr<GLObject>& object, const std::string & name)

@@ -131,7 +131,7 @@ void GLObject::ClearObjects()
     }
 }
 
-void GLObject::DelThis()
+void GLObject::DeleteThis()
 {
     ASSERT_LOG(GetParent() != nullptr, "");
     GetParent()->DeleteObject(shared_from_this());

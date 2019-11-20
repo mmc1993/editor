@@ -29,8 +29,8 @@ public:
     void InsertObject(const SharePtr<UIObject> & object);
     void DeleteObject(const SharePtr<UIObject> & object);
     void DeleteObject(size_t index);
-    void DelThis();
     void ClearObjects();
+    void DeleteThis();
     SharePtr<UIObject> GetParent();
     SharePtr<UIObject> GetRoot();
     UITypeEnum GetType();

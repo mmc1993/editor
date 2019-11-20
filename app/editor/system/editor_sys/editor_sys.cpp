@@ -56,7 +56,7 @@ void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
     auto temp = object;
     OptSelectObject(temp,  false);
     GetProject()->DeleteObject(temp);
-    temp->DelThis();
+    temp->DeleteThis();
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(temp));
 }
 

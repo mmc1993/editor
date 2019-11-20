@@ -33,7 +33,7 @@ public:
     void DeleteObject(const std::string & name);
     void DeleteObject(size_t idx);
     void ClearObjects();
-    void DelThis();
+    void DeleteThis();
 
     SharePtr<GLObject> GetObject(const std::string & name);
     SharePtr<GLObject> GetObject(const size_t idx);
