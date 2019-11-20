@@ -106,7 +106,7 @@ void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> targ
     {
     case 0: //  ÀïÃæ
         {
-            if (target->GetObject(object->GetName()) != object)
+            if (!target->GetObject(object->GetName()))
             {
                 object->SetParent(target);
                 
@@ -126,6 +126,10 @@ void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> targ
                 auto it1 = std::find(objects.begin(), objects.end(), target);
                 if (std::distance(it0, it1) == 1) { break; }
             }
+            else if (target->GetParent()->GetObject(object->GetName()))
+            {
+                break;
+            }
             object->SetParent(target->GetParent());
             auto iter = std::find(objects.begin(), objects.end(), target);
             std::move_backward(iter, std::prev(objects.end(), 1), objects.end());
@@ -144,6 +148,10 @@ void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> targ
                 auto it0 = std::find(objects.begin(), objects.end(), object);
                 auto it1 = std::find(objects.begin(), objects.end(), target);
                 if (std::distance(it1, it0) == 1) { break; }
+            }
+            else if (target->GetParent()->GetObject(object->GetName()))
+            {
+                break;
             }
             object->SetParent(target->GetParent());
             auto iter = std::find(objects.begin(), objects.end(), target) + 1;
