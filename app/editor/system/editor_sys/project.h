@@ -23,8 +23,8 @@ public:
     const SharePtr<GLObject> & GetObject(uint id) { return _objects.at(id); }
 
     SharePtr<GLObject> NewObject();
-    void DelObject(const uint &id);
-    void DelObject(const SharePtr<GLObject> & object);
+    void DeleteObject(const uint &id);
+    void DeleteObject(const SharePtr<GLObject> & object);
 
 private:
     std::map<uint, SharePtr<GLObject>> _objects;

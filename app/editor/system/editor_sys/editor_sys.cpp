@@ -9,7 +9,7 @@
 
 void EditorSys::OptInsertObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent)
 {
-    parent->AddObject(object, object->GetName());
+    parent->InsertObject(object, object->GetName());
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kInsertObject, std::make_tuple(object));
 }
 
@@ -55,7 +55,7 @@ void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
 {
     auto temp = object;
     OptSelectObject(temp,  false);
-    GetProject()->DelObject(temp);
+    GetProject()->DeleteObject(temp);
     temp->DelThis();
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(temp));
 }
@@ -122,6 +122,9 @@ void EditorSys::OptMoveObject(const SharePtr<GLObject> & object, const SharePtr<
         }
         break;
     case 2: //  ºóÃæ
+        {
+        }
+        break;
     }
 }
 

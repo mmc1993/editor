@@ -52,12 +52,12 @@ SharePtr<GLObject> Project::NewObject()
     return object;
 }
 
-void Project::DelObject(const uint & id)
+void Project::DeleteObject(const uint & id)
 {
     _objects.erase(id);
 }
 
-void Project::DelObject(const SharePtr<GLObject> & object)
+void Project::DeleteObject(const SharePtr<GLObject> & object)
 {
-    DelObject(object->GetID());
+    DeleteObject(object->GetID());
 }

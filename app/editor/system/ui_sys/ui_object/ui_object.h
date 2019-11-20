@@ -26,9 +26,9 @@ public:
     SharePtr<UIObject> GetObject(const std::initializer_list<std::string> & list);
     std::vector<SharePtr<UIObject>>   GetObjects(UITypeEnum type);
     std::vector<SharePtr<UIObject>> & GetObjects();
-    void AddObject(const SharePtr<UIObject> & object);
-    void DelObject(const SharePtr<UIObject> & object);
-    void DelObject(size_t index);
+    void InsertObject(const SharePtr<UIObject> & object);
+    void DeleteObject(const SharePtr<UIObject> & object);
+    void DeleteObject(size_t index);
     void DelThis();
     void ClearObjects();
     SharePtr<UIObject> GetParent();

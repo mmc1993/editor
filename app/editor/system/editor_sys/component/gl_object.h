@@ -27,13 +27,11 @@ public:
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
 
-    //void InsertObject(const SharePtr<GLObject> & object, uint pos, const std::string & name);
-    //void InsertObject(const SharePtr<GLObject> & object, uint pos);
-    void AddObject(const SharePtr<GLObject> & object, const std::string & name);
-    void AddObject(const SharePtr<GLObject> & object);
-    void DelObject(const SharePtr<GLObject> & object);
-    void DelObject(const std::string & name);
-    void DelObject(size_t idx);
+    void InsertObject(const SharePtr<GLObject> & object, const std::string & name, uint pos = ~0u);
+    void InsertObject(const SharePtr<GLObject> & object, uint pos = ~0u);
+    void DeleteObject(const SharePtr<GLObject> & object);
+    void DeleteObject(const std::string & name);
+    void DeleteObject(size_t idx);
     void ClearObjects();
     void DelThis();
 

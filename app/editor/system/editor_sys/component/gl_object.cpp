@@ -64,6 +64,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
     {
         std::string name;
         tools::Deserialize(is, name);
+
         auto comp = Component::Create(name);
         comp->DecodeBinary(is);
         AddComponent(comp);
@@ -77,55 +78,44 @@ void GLObject::DecodeBinary(std::ifstream & is)
     {
         auto object = std::create_ptr<GLObject>();
         object->DecodeBinary(is);
-        AddObject(object, object->GetName());
+        InsertObject(object);
     }
 }
 
-//void GLObject::InsertObject(const SharePtr<GLObject>& object, uint pos, const std::string & name)
-//{
-//    ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
-//    _children.push_back(object);
-//    object->_parent = this;
-//    object->_name = name;
-//}
-//
-//void GLObject::InsertObject(const SharePtr<GLObject>& object, uint pos)
-//{
-//    InsertObject(object, pos, object->GetName());
-//}
-
-void GLObject::AddObject(const SharePtr<GLObject> & object, const std::string & name)
+void GLObject::InsertObject(const SharePtr<GLObject> & object, const std::string & name, uint pos)
 {
     ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
-    _children.push_back(object);
+    auto insert = std::next(_children.begin(), 
+             std::min(pos, _children.size()));
+    _children.insert(insert, object);
     object->_parent = this;
     object->_name = name;
 }
 
-void GLObject::AddObject(const SharePtr<GLObject> & object)
+void GLObject::InsertObject(const SharePtr<GLObject> & object, uint pos)
 {
-    AddObject(object, object->GetName());
+    InsertObject(object, object->GetName(), pos);
 }
 
-void GLObject::DelObject(const SharePtr<GLObject> & object)
+void GLObject::DeleteObject(const SharePtr<GLObject> & object)
 {
     auto it = std::find(_children.begin(), _children.end(), object);
     ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
-    DelObject(std::distance(_children.begin(), it));
+    DeleteObject(std::distance(_children.begin(), it));
 }
 
-void GLObject::DelObject(const std::string & name)
+void GLObject::DeleteObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),
         [name] (const SharePtr<GLObject> & object) 
         { return object->_name == name; });
     if (it != _children.end())
     {
-        DelObject(std::distance(_children.begin(), it));
+        DeleteObject(std::distance(_children.begin(), it));
     }
 }
 
-void GLObject::DelObject(size_t idx)
+void GLObject::DeleteObject(size_t idx)
 {
     ASSERT_LOG(idx < _children.size(), "Object DelChildIdx: {0}", idx);
     auto it = std::next(_children.begin(), idx);
@@ -137,14 +127,14 @@ void GLObject::ClearObjects()
 {
     while (!_children.empty())
     {
-        DelObject(_children.back());
+        DeleteObject(_children.back());
     }
 }
 
 void GLObject::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, "");
-    GetParent()->DelObject(shared_from_this());
+    GetParent()->DeleteObject(shared_from_this());
 }
 
 SharePtr<GLObject> GLObject::GetObject(const std::string & name)
@@ -230,11 +220,11 @@ void GLObject::SetParent(GLObject * parent)
 {
     if (GetParent() != nullptr)
     {
-        GetParent()->DelObject(shared_from_this());
+        GetParent()->DeleteObject(shared_from_this());
     }
     if (parent != nullptr)
     {
-        parent->AddObject(shared_from_this(), _name);
+        parent->InsertObject(shared_from_this(), _name);
     }
 }
 

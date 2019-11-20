@@ -146,7 +146,7 @@ void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiobject
     {
         auto obj = NewObject(object->GetID(), object->GetName());
         InitObjects(obj, object);
-        uiobject->AddObject(obj);
+        uiobject->InsertObject(obj);
     }
 }
 
@@ -263,13 +263,13 @@ void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & 
     if (object->GetParent() == Global::Ref().mEditorSys->GetProject()->GetRoot())
     {
         auto uiobject = NewObject(object->GetID(), object->GetName());
-        _id2obj.at(object->GetParent()->GetID())->AddObject(uiobject);
+        _id2obj.at(object->GetParent()->GetID())->InsertObject(uiobject);
     }
     else
     {
         auto parent = _id2obj.at(object->GetParent()->GetID());
         auto uiobject = NewObject(object->GetID(), object->GetName());
-        parent->GetObject({ parent->GetState()->Name })->AddObject(uiobject);
+        parent->GetObject({ parent->GetState()->Name })->InsertObject(uiobject);
     }
 
     auto stage = CastPtr<UIObjectGLCanvas>(GetOwner()->GetParent()->GetObject({"EditorObjStage", "Canvas"}));
@@ -377,11 +377,11 @@ void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & 
         for (auto component : object->GetComponents())
         {
             auto header = std::create_ptr<UIComponentHeader>(component->GetName());
-            GetOwner()->AddObject(header);
+            GetOwner()->InsertObject(header);
 
             for (auto property : component->CreateUIPropertys())
             {
-                header->AddObject(property);
+                header->InsertObject(property);
             }
         }
     }
@@ -390,11 +390,11 @@ void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & 
 void UIEventDelegateMainComList::OnEventAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
     auto header = std::create_ptr<UIComponentHeader>(component->GetName());
-    GetOwner()->AddObject(header);
+    GetOwner()->InsertObject(header);
 
     for (auto property : component->CreateUIPropertys())
     {
-        header->AddObject(property);
+        header->InsertObject(property);
     }
 }
 
@@ -402,7 +402,7 @@ void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<GLObject>
 {
     auto & components = component->GetOwner()->GetComponents();
     auto it = std::find(components.begin(), components.end(), component);
-    GetOwner()->DelObject(std::distance(components.begin(), it));
+    GetOwner()->DeleteObject(std::distance(components.begin(), it));
 }
 
 bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)

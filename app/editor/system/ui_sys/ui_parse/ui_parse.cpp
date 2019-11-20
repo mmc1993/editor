@@ -68,6 +68,6 @@ void UIParser::Parse__Children(const mmc::Json::Pointer json, const SharePtr<UIO
 {
     for (auto ele : json->At("__Children"))
     {
-        object->AddObject(Parse(ele.mVal));
+        object->InsertObject(Parse(ele.mVal));
     }
 }

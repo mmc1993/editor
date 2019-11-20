@@ -42,14 +42,14 @@ std::vector<SharePtr<UIObject>> & UIObject::GetObjects()
     return _children;
 }
 
-void UIObject::AddObject(const SharePtr<UIObject> & object)
+void UIObject::InsertObject(const SharePtr<UIObject> & object)
 {
     ASSERT_LOG(object->GetParent() == nullptr, "");
     _children.push_back(object);
     object->_parent = this;
 }
 
-void UIObject::DelObject(const SharePtr<UIObject> & object)
+void UIObject::DeleteObject(const SharePtr<UIObject> & object)
 {
     auto it = std::find(_children.begin(), _children.end(), object);
     if (it != _children.end()) 
@@ -58,15 +58,15 @@ void UIObject::DelObject(const SharePtr<UIObject> & object)
     }
 }
 
-void UIObject::DelObject(size_t index)
+void UIObject::DeleteObject(size_t index)
 {
-    DelObject(*(_children.begin() + index));
+    DeleteObject(*(_children.begin() + index));
 }
 
 void UIObject::DelThis()
 {
     ASSERT_LOG(GetParent() != nullptr, GetState()->Name.c_str());
-    GetParent()->DelObject(shared_from_this());
+    GetParent()->DeleteObject(shared_from_this());
 }
 
 void UIObject::ClearObjects()
