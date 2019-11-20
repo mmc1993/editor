@@ -46,9 +46,9 @@ void EditorSys::OptSelectObject(const SharePtr<GLObject> & object, bool select, 
     }
 }
 
-void EditorSys::OptSelectObject(uint id, bool select, bool multi)
+void EditorSys::OptSelectObject(uint objectID, bool select, bool multi)
 {
-    OptSelectObject(GetProject()->GetObject(id), select, multi);
+    OptSelectObject(GetProject()->GetObject(objectID), select, multi);
 }
 
 void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
@@ -60,9 +60,9 @@ void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(temp));
 }
 
-void EditorSys::OptDeleteObject(uint id)
+void EditorSys::OptDeleteObject(uint objectID)
 {
-    OptDeleteObject(GetProject()->GetObject(id));
+    OptDeleteObject(GetProject()->GetObject(objectID));
 }
 
 void EditorSys::OptStateAddObject(const SharePtr<GLObject>& object, uint state)
@@ -70,22 +70,22 @@ void EditorSys::OptStateAddObject(const SharePtr<GLObject>& object, uint state)
     OptStateObject(object, object->HasState(~0u) |  state);
 }
 
-void EditorSys::OptStateAddObject(uint id, uint state)
+void EditorSys::OptStateAddObject(uint objectID, uint state)
 {
-    OptStateAddObject(GetProject()->GetObject(id), state);
+    OptStateAddObject(GetProject()->GetObject(objectID), state);
 }
 
-void EditorSys::OptStateSubObject(const SharePtr<GLObject>& object, uint state)
+void EditorSys::OptStateSubObject(const SharePtr<GLObject> & object, uint state)
 {
     OptStateObject(object, object->HasState(~0u) & ~state);
 }
 
-void EditorSys::OptStateSubObject(uint id, uint state)
+void EditorSys::OptStateSubObject(uint objectID, uint state)
 {
-    OptStateSubObject(GetProject()->GetObject(id), state);
+    OptStateSubObject(GetProject()->GetObject(objectID), state);
 }
 
-void EditorSys::OptStateObject(const SharePtr<GLObject>& object, uint state)
+void EditorSys::OptStateObject(const SharePtr<GLObject> & object, uint state)
 {
     auto old = object->HasState(~0u);
     object->AddState(~0u,  false);
@@ -93,9 +93,9 @@ void EditorSys::OptStateObject(const SharePtr<GLObject>& object, uint state)
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kStateObject, std::make_tuple(object, old, state));
 }
 
-void EditorSys::OptStateObject(uint id, uint state)
+void EditorSys::OptStateObject(uint objectID, uint state)
 {
-    OptStateObject(GetProject()->GetObject(id), state);
+    OptStateObject(GetProject()->GetObject(objectID), state);
 }
 
 void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::string & name)
@@ -108,9 +108,9 @@ void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::st
     }
 }
 
-void EditorSys::OptRenameObject(uint id, const std::string & name)
+void EditorSys::OptRenameObject(uint objectID, const std::string & name)
 {
-    OptRenameObject(GetProject()->GetObject(id), name);
+    OptRenameObject(GetProject()->GetObject(objectID), name);
 }
 
 void EditorSys::OptAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
@@ -119,9 +119,9 @@ void EditorSys::OptAppendComponent(const SharePtr<GLObject> & object, const Shar
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kAppendComponent, std::make_tuple(object, component));
 }
 
-void EditorSys::OptAppendComponent(uint id, const SharePtr<Component>& component)
+void EditorSys::OptAppendComponent(uint objectID, const SharePtr<Component> & component)
 {
-    OptAppendComponent(GetProject()->GetObject(id), component);
+    OptAppendComponent(GetProject()->GetObject(objectID), component);
 }
 
 void EditorSys::OptDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
@@ -130,9 +130,9 @@ void EditorSys::OptDeleteComponent(const SharePtr<GLObject> & object, const Shar
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteComponent, std::make_tuple(object, component));
 }
 
-void EditorSys::OptDeleteComponent(uint id, const SharePtr<Component>& component)
+void EditorSys::OptDeleteComponent(uint objectID, const SharePtr<Component>& component)
 {
-    OptDeleteComponent(GetProject()->GetObject(id), component);
+    OptDeleteComponent(GetProject()->GetObject(objectID), component);
 }
 
 void EditorSys::OptNewProject(const std::string & url)
