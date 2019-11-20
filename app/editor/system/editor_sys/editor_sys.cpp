@@ -7,13 +7,13 @@
 #include<Commdlg.h>
 #pragma comment(lib,"Shell32.lib")
 
-void EditorSys::OptInsertObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent)
+void EditorSys::OptInsertObject(SharePtr<GLObject> object, SharePtr<GLObject> parent)
 {
     parent->InsertObject(object, object->GetName());
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kInsertObject, std::make_tuple(object));
 }
 
-void EditorSys::OptSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
+void EditorSys::OptSelectObject(SharePtr<GLObject> object, bool select, bool multi)
 {
     auto iter = std::find(_selected.begin(), _selected.end(), object);
     auto has = iter != _selected.end();
@@ -51,13 +51,10 @@ void EditorSys::OptSelectObject(uint objectID, bool select, bool multi)
     OptSelectObject(GetProject()->GetObject(objectID), select, multi);
 }
 
-void EditorSys::OptDeleteObject(const SharePtr<GLObject> & object)
+void EditorSys::OptDeleteObject(SharePtr<GLObject> object)
 {
-    auto temp = object;
-    OptSelectObject(temp,  false);
-    GetProject()->DeleteObject(temp);
-    temp->DeleteThis();
-    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(temp));
+    OptSelectObject(object, false); GetProject()->DeleteObject(object); object->DeleteThis();
+    Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteObject, std::make_tuple(object));
 }
 
 void EditorSys::OptDeleteObject(uint objectID)
@@ -65,7 +62,7 @@ void EditorSys::OptDeleteObject(uint objectID)
     OptDeleteObject(GetProject()->GetObject(objectID));
 }
 
-void EditorSys::OptStateAddObject(const SharePtr<GLObject>& object, uint state)
+void EditorSys::OptStateAddObject(SharePtr<GLObject> object, uint state)
 {
     OptStateObject(object, object->HasState(~0u) |  state);
 }
@@ -75,7 +72,7 @@ void EditorSys::OptStateAddObject(uint objectID, uint state)
     OptStateAddObject(GetProject()->GetObject(objectID), state);
 }
 
-void EditorSys::OptStateSubObject(const SharePtr<GLObject> & object, uint state)
+void EditorSys::OptStateSubObject(SharePtr<GLObject> object, uint state)
 {
     OptStateObject(object, object->HasState(~0u) & ~state);
 }
@@ -85,7 +82,7 @@ void EditorSys::OptStateSubObject(uint objectID, uint state)
     OptStateSubObject(GetProject()->GetObject(objectID), state);
 }
 
-void EditorSys::OptStateObject(const SharePtr<GLObject> & object, uint state)
+void EditorSys::OptStateObject(SharePtr<GLObject> object, uint state)
 {
     auto old = object->HasState(~0u);
     object->AddState(~0u,  false);
@@ -98,7 +95,7 @@ void EditorSys::OptStateObject(uint objectID, uint state)
     OptStateObject(GetProject()->GetObject(objectID), state);
 }
 
-void EditorSys::OptMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & target, int pos)
+void EditorSys::OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> target, int pos)
 {
     auto was = false;
     switch (pos)
@@ -128,12 +125,12 @@ void EditorSys::OptMoveObject(const SharePtr<GLObject> & object, const SharePtr<
     }
 }
 
-void EditorSys::OptMoveObject(uint objectID, const SharePtr<GLObject> & target, int pos)
+void EditorSys::OptMoveObject(uint objectID, SharePtr<GLObject> target, int pos)
 {
     OptMoveObject(Global::Ref().mEditorSys->GetProject()->GetObject(objectID), target, pos);
 }
 
-void EditorSys::OptMoveObject(const SharePtr<GLObject>& object, uint targetID, int pos)
+void EditorSys::OptMoveObject(SharePtr<GLObject> object, uint targetID, int pos)
 {
     OptMoveObject(object, Global::Ref().mEditorSys->GetProject()->GetObject(targetID), pos);
 }
@@ -144,7 +141,7 @@ void EditorSys::OptMoveObject(uint objectID, uint targetID, int pos)
                   Global::Ref().mEditorSys->GetProject()->GetObject(targetID), pos);
 }
 
-void EditorSys::OptRenameObject(const SharePtr<GLObject> & object, const std::string & name)
+void EditorSys::OptRenameObject(SharePtr<GLObject> object, const std::string & name)
 {
     if (ObjectName(object->GetParent(), name))
     {

@@ -14,28 +14,28 @@ private:
 public:
     /// 对象
     //  插入对象
-    void OptInsertObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent);
+    void OptInsertObject(SharePtr<GLObject> object, SharePtr<GLObject> parent);
     //  选中对象
-    void OptSelectObject(const SharePtr<GLObject> & object, bool select, bool multi = false);
+    void OptSelectObject(SharePtr<GLObject> object, bool select, bool multi = false);
     void OptSelectObject(uint objectID, bool select, bool multi = false);
     //  修改名字
-    void OptRenameObject(const SharePtr<GLObject> & object, const std::string & name);
+    void OptRenameObject(SharePtr<GLObject> object, const std::string & name);
     void OptRenameObject(uint objectID, const std::string & name);
     //  删除对象
-    void OptDeleteObject(const SharePtr<GLObject> & object);
+    void OptDeleteObject(SharePtr<GLObject> object);
     void OptDeleteObject(uint objectID);
     //  修改状态
-    void OptStateAddObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateAddObject(SharePtr<GLObject> object, uint state);
     void OptStateAddObject(uint objectID, uint state);
-    void OptStateSubObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateSubObject(SharePtr<GLObject> object, uint state);
     void OptStateSubObject(uint objectID, uint state);
-    void OptStateObject(const SharePtr<GLObject> & object, uint state);
+    void OptStateObject(SharePtr<GLObject> object, uint state);
     void OptStateObject(uint objectID, uint state);
     //  移动对象
-    void OptMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & target, int pos);  //  0, 1, 2 => 里面, 前面, 后面
-    void OptMoveObject(uint objectID, const SharePtr<GLObject> & target, int pos);                      //  0, 1, 2 => 里面, 前面, 后面
-    void OptMoveObject(const SharePtr<GLObject> & object, uint targetID, int pos);                      //  0, 1, 2 => 里面, 前面, 后面
-    void OptMoveObject(uint objectID, uint targetID, int pos);                                          //  0, 1, 2 => 里面, 前面, 后面
+    void OptMoveObject(SharePtr<GLObject> object, SharePtr<GLObject> target, int pos);  //  0, 1, 2 => 里面, 前面, 后面
+    void OptMoveObject(uint objectID, SharePtr<GLObject> target, int pos);              //  0, 1, 2 => 里面, 前面, 后面
+    void OptMoveObject(SharePtr<GLObject> object, uint targetID, int pos);              //  0, 1, 2 => 里面, 前面, 后面
+    void OptMoveObject(uint objectID, uint targetID, int pos);                          //  0, 1, 2 => 里面, 前面, 后面
 
     /// 组件
     //  新增组件
