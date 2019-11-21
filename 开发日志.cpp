@@ -94,11 +94,29 @@ ok  //  UIEventEnum 剥离
 // 对象锁定
 // 对象可见
 // 对象拖放
+文字
+
 资源管理器:
     类别,
     目录,
     叶子,
+UISys.Update()
+UISys.OpenWindow()
+UISys.FreeWindow()
+UISys.IsWindowExist()
+_windows
+
+资源类型:
+    Text
+    Image
+    Object
+    Tilemap
+    Variable
+    BehaviorTree
 
 地形破坏
 导航网格
+行为树
+网络
+变量
 粒子
