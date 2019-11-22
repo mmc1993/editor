@@ -86,7 +86,10 @@ void CompFieldOfView::Update()
             track = track->GetObject(name);
             ASSERT_LOG(track != nullptr, name.c_str());
         }
-        _polyObjects = track->GetComponentsInChildren<CompPolygon>();
+        for (auto & polygon : track->GetComponentsInChildren<CompPolygon>())
+        {
+            _polyObjects.emplace_back(polygon);
+        }
 
         //  ¸üÐÂ²Ã¼ô²ã
         track = Global::Ref().mEditorSys->GetProject()->GetRoot();
@@ -109,16 +112,25 @@ void CompFieldOfView::GenView()
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
     std::vector<glm::vec2> segments;
-    for (auto & polygon : _polyObjects)
+    for (auto it = _polyObjects.begin(); it != _polyObjects.end(); )
     {
-        for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
+        if (it->expired())
         {
-            const auto & a = polygon->GetSegments().at(i          );
-            const auto & b = polygon->GetSegments().at((i + 1) % n);
-            auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
-            auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
-            segments.emplace_back(worldA);
-            segments.emplace_back(worldB);
+            it = _polyObjects.erase(it);
+        }
+        else
+        {
+            auto polygon = it->lock();
+            for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
+            {
+                const auto & a = polygon->GetSegments().at(i          );
+                const auto & b = polygon->GetSegments().at((i + 1) % n);
+                auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
+                auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
+                segments.emplace_back(worldA);
+                segments.emplace_back(worldB);
+            }
+            ++it;
         }
     }
 

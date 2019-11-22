@@ -39,5 +39,5 @@ private:
     SharePtr<GLProgram>                 _program;
     std::vector<glm::vec2>              _segments;
     WeakPtr<CompRenderTarget>           _sampler;
-    std::vector<SharePtr<CompPolygon>>  _polyObjects;
+    std::vector<WeakPtr<CompPolygon>>   _polyObjects;
 };
