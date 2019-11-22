@@ -70,10 +70,7 @@ namespace tools {
         };
         auto len = std::strlen(str1);
         auto it = std::find_if(str0.begin(), str0.end(), onFind);
-        if (it == str0.end())
-        {
-            return len == 0;
-        }
+        if (it == str0.end()) { return len == 0; }
         auto pos = std::distance(str0.begin(), it);
         return str0.compare(pos, len, str1, len) == 0;
     }

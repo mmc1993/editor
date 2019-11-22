@@ -27,6 +27,7 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_polygon.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_segment.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_sprite.cpp" />
+    <ClCompile Include="editor\system\editor_sys\component\comp_text.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_tilemap.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_transform.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp" />
@@ -70,6 +71,7 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_polygon.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_segment.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_sprite.h" />
+    <ClInclude Include="editor\system\editor_sys\component\comp_text.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_tilemap.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_transform.h" />
     <ClInclude Include="editor\system\editor_sys\component\gl_object.h" />

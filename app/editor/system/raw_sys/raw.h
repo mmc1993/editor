@@ -2,6 +2,11 @@
 
 #include "../../include.h"
 
+class GLMesh;
+class GLFont;
+class GLImage;
+class GLTexture;
+
 class Raw {
 public:
     virtual ~Raw()
@@ -88,6 +93,31 @@ public:
 private:
     uint _vao, _vbo, _ebo;
     uint _vCount, _eCount;
+};
+
+// ---
+//  GLFont
+// ---
+class GLFont : public Raw {
+public:
+    struct Word {
+        uint mID;                   //  ×ÖUnicode±àÂë
+        glm::vec4 mTexUV;           //  ÎÆÀí×ø±ê
+        glm::vec3 mRenderOffset;    //  äÖÈ¾Æ«ÒÆ
+    };
+public:
+    GLFont();
+    ~GLFont();
+    const SharePtr<GLTexture> & RefImage();
+    const Word & RefWord(char word);
+    const Word & RefWord(uint code);
+    const Word & RefWord(const char * word, uint count);
+    std::vector<uint> RefWord(const std::string & text);
+    virtual bool Init(const std::string & url) override;
+
+private:
+    SharePtr<GLTexture>  _fontImage;
+    std::map<uint, Word> _fontWords;
 };
 
 // ---

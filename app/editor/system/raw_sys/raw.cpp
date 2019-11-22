@@ -88,6 +88,88 @@ void GLMesh::Draw(uint primitive)
 }
 
 // ---
+//  GLFont
+// ---
+GLFont::GLFont()
+{ }
+
+GLFont::~GLFont()
+{ }
+
+const SharePtr<GLTexture> & GLFont::RefImage()
+{
+    return _fontImage;
+}
+
+const GLFont::Word & GLFont::RefWord(char word)
+{
+    return RefWord((uint)word);
+}
+
+const GLFont::Word & GLFont::RefWord(uint code)
+{
+    return _fontWords.at(code);
+}
+
+std::vector<uint> GLFont::RefWord(const std::string & text)
+{
+    std::vector<uint> result;
+    for (auto & word : text)
+    {
+        result.emplace_back(RefWord(word).mID);
+    }
+    return std::move(result);
+}
+
+bool GLFont::Init(const std::string & url)
+{
+    std::ifstream is(url);
+    ASSERT_LOG(is, url.c_str());
+    std::string texurl = tools::GetFileFolder(url);
+    std::string text;
+    std::string line;
+
+    //  跳过 Info
+    std::getline(is, line);
+    ASSERT_LOG(tools::IsEqualSkipSpace(line, "info"), line.c_str());
+
+    //  跳过 Common
+    std::getline(is, line);
+    ASSERT_LOG(tools::IsEqualSkipSpace(line, "common"), line.c_str());
+
+    //  解析 Page
+    std::getline(is, line);
+    ASSERT_LOG(tools::IsEqualSkipSpace(line, "page"), line.c_str());
+    auto name = tools::Split(tools::Split(line, " ").at(2), "=").at(1);
+    texurl.append(name.begin() + 1, name.end() - 1);
+
+    //  解析 Cars
+    std::getline(is, line);
+    ASSERT_LOG(tools::IsEqualSkipSpace(line, "chars"), line.c_str());
+    auto wordNum = std::stoi(tools::Split(tools::Split(line, " ").at(1), "=").at(1));
+
+    for (auto i = 0; i != wordNum; ++i)
+    {
+        is >> text;
+        Word word;
+        is >> text; word.mID = std::stoi(text.substr(3));               //  "id="
+        is >> text; word.mTexUV.x = std::stof(text.substr(2));          //  "x="
+        is >> text; word.mTexUV.y = std::stof(text.substr(2));          //  "y="
+        is >> text; word.mTexUV.z = std::stof(text.substr(6));          //  "width="
+        is >> text; word.mTexUV.w = std::stof(text.substr(7));          //  "height="
+        is >> text; word.mRenderOffset.x = std::stof(text.substr(8));   //  "xoffset="
+        is >> text; word.mRenderOffset.y = std::stof(text.substr(8));   //  "yoffset="
+        is >> text; word.mRenderOffset.y = std::stof(text.substr(9));   //  "xadvance="
+        std::getline(is, line);                                         //  丢弃
+        _fontWords.insert(std::make_pair(word.mID, word));
+    }
+
+    _fontImage = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+
+    return true;
+}
+
+// ---
 //  GLImage
 // ---
 GLImage::GLImage()
@@ -182,9 +264,9 @@ bool GLTexture::InitFromImage(const std::string & url)
         _offset.y = 0.0f;
         _offset.z = 1.0f;
         _offset.w = 1.0f;
+        return true;
     }
-    ASSERT_LOG(_refimg != nullptr, url.c_str());
-    return _refimg != nullptr;
+    return false;
 }
 
 bool GLTexture::InitFromAtlas(const std::string & url)
@@ -564,3 +646,4 @@ void GLMaterial::SetTexture(const std::string & key, const SharePtr<GLTexture> &
     if (it != _textures.end()) { it->mKey = key;it->mTex = tex; }
     else { _textures.emplace_back(key, tex); }
 }
+

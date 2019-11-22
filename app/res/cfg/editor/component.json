@@ -1,6 +1,6 @@
 {
     "Order": [
-        "Transform",
+        "Graphics/Text",
         "Graphics/Light",
         "Graphics/Sprite",
         "Graphics/Tilemap",

@@ -2,6 +2,7 @@
 
 #include "../../include.h"
 
+class GLFont;
 class GLMesh;
 class GLImage;
 class GLObject;

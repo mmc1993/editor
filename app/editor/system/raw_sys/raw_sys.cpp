@@ -10,7 +10,11 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
 
     SharePtr<Raw> raw;
     auto suffix = tools::GetFileSuffix(url);
-    if (suffix == ".obj")
+    if (suffix == ".fnt")
+    {
+        raw = std::create_ptr<GLFont>();
+    }
+    else if (suffix == ".obj")
     {
         raw = std::create_ptr<GLMesh>();
     }
