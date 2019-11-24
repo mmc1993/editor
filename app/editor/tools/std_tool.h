@@ -27,6 +27,15 @@ namespace std {
         return std::find(first, last, val) != last;
     }
 
+    //  Ìø¹ý×ó±ß×Ö·û
+    inline std::string lstrip(const std::string & src, char ch)
+    {
+        auto pos = src.find_first_not_of(ch);
+        return pos != std::string::npos
+            ? src.substr(pos)
+            : std::string();
+    }
+
     template <class T>
     size_t length(const T & arr)
     {

@@ -62,6 +62,9 @@ void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & com
             cmd.Call(texNum                  );
             Post(cmd.mProgram, cmd.mTransform);
             cmd.mMesh->Draw(GL_TRIANGLES     );
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            //cmd.mMesh->Draw(GL_TRIANGLES     );
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
 }

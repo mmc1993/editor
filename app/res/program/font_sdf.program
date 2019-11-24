@@ -36,7 +36,8 @@ Pass Beg
 
         void main()
         {
-            color_ = texture(uniform_texture, v_out_.mUV) * v_out_.mColor;
+            float r = texture(uniform_texture, v_out_.mUV).r;
+            color_ = v_out_.mColor * r;
         }
     FShader End
 Pass End

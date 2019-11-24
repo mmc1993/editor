@@ -100,24 +100,40 @@ private:
 // ---
 class GLFont : public Raw {
 public:
-    struct Word {
-        uint mID;                   //  ×ÖUnicode±àÂë
-        glm::vec4 mTexUV;           //  ÎÆÀí×ø±ê
-        glm::vec3 mRenderOffset;    //  äÖÈ¾Æ«ÒÆ
+    struct Char {
+        uint mID;           //  ×ÖUnicode±àÂë
+        glm::vec4 mUV;
+        glm::vec4 mOffset;  
     };
+
+    //  ×ÖÌåÐÅÏ¢
+    struct FontInfo {
+        std::map<uint, Char> mChars;
+        std::map<std::string, std::string> mInfo;
+        std::map<std::string, std::string> mPage;
+        std::map<std::string, std::string> mCommon;
+    };
+
 public:
     GLFont();
     ~GLFont();
-    const SharePtr<GLTexture> & RefImage();
-    const Word & RefWord(char word);
-    const Word & RefWord(uint code);
-    const Word & RefWord(const char * word, uint count);
+    float GetWordW();
+    float GetLineH();
+    const SharePtr<GLTexture> & RefTexture();
+    const Char & RefWord(char word);
+    const Char & RefWord(uint code);
+    //const Word & RefWord(const char * word, uint count);
     std::vector<uint> RefWord(const std::string & text);
     virtual bool Init(const std::string & url) override;
 
 private:
-    SharePtr<GLTexture>  _fontImage;
-    std::map<uint, Word> _fontWords;
+    void Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output);
+
+private:
+    float               _lineH;
+    float               _wordW;
+    FontInfo            _info;
+    SharePtr<GLTexture> _texture;
 };
 
 // ---

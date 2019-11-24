@@ -96,19 +96,29 @@ GLFont::GLFont()
 GLFont::~GLFont()
 { }
 
-const SharePtr<GLTexture> & GLFont::RefImage()
+float GLFont::GetWordW()
 {
-    return _fontImage;
+    return _wordW;
 }
 
-const GLFont::Word & GLFont::RefWord(char word)
+float GLFont::GetLineH()
+{
+    return _lineH;
+}
+
+const SharePtr<GLTexture> & GLFont::RefTexture()
+{
+    return _texture;
+}
+
+const GLFont::Char & GLFont::RefWord(char word)
 {
     return RefWord((uint)word);
 }
 
-const GLFont::Word & GLFont::RefWord(uint code)
+const GLFont::Char & GLFont::RefWord(uint code)
 {
-    return _fontWords.at(code);
+    return _info.mChars.at(code);
 }
 
 std::vector<uint> GLFont::RefWord(const std::string & text)
@@ -124,49 +134,77 @@ std::vector<uint> GLFont::RefWord(const std::string & text)
 bool GLFont::Init(const std::string & url)
 {
     std::ifstream is(url);
-    ASSERT_LOG(is, url.c_str());
-    std::string texurl = tools::GetFileFolder(url);
-    std::string text;
     std::string line;
+    std::string word;
 
-    //  跳过 Info
+    is >> word;
+    ASSERT_LOG(word == "info", line.c_str());
     std::getline(is, line);
-    ASSERT_LOG(tools::IsEqualSkipSpace(line, "info"), line.c_str());
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mInfo);
 
-    //  跳过 Common
+    is >> word;
+    ASSERT_LOG(word == "common", line.c_str());
     std::getline(is, line);
-    ASSERT_LOG(tools::IsEqualSkipSpace(line, "common"), line.c_str());
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mCommon);
 
-    //  解析 Page
+    is >> word;
+    ASSERT_LOG(word == "page", line.c_str());
     std::getline(is, line);
-    ASSERT_LOG(tools::IsEqualSkipSpace(line, "page"), line.c_str());
-    auto name = tools::Split(tools::Split(line, " ").at(2), "=").at(1);
-    texurl.append(name.begin() + 1, name.end() - 1);
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mPage);
 
-    //  解析 Cars
+    auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
+    _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+    _wordW = std::stof(_info.mCommon.at("base"      ));
+    _lineH = std::stof(_info.mCommon.at("lineHeight"));
+
     std::getline(is, line);
-    ASSERT_LOG(tools::IsEqualSkipSpace(line, "chars"), line.c_str());
-    auto wordNum = std::stoi(tools::Split(tools::Split(line, " ").at(1), "=").at(1));
-
-    for (auto i = 0; i != wordNum; ++i)
+    auto texW = std::stof(_info.mCommon.at("scaleW"));
+    auto texH = std::stof(_info.mCommon.at("scaleH"));
+    while (is >> word)
     {
-        is >> text;
-        Word word;
-        is >> text; word.mID = std::stoi(text.substr(3));               //  "id="
-        is >> text; word.mTexUV.x = std::stof(text.substr(2));          //  "x="
-        is >> text; word.mTexUV.y = std::stof(text.substr(2));          //  "y="
-        is >> text; word.mTexUV.z = std::stof(text.substr(6));          //  "width="
-        is >> text; word.mTexUV.w = std::stof(text.substr(7));          //  "height="
-        is >> text; word.mRenderOffset.x = std::stof(text.substr(8));   //  "xoffset="
-        is >> text; word.mRenderOffset.y = std::stof(text.substr(8));   //  "yoffset="
-        is >> text; word.mRenderOffset.y = std::stof(text.substr(9));   //  "xadvance="
-        std::getline(is, line);                                         //  丢弃
-        _fontWords.insert(std::make_pair(word.mID, word));
+        //  id=:3, x=:3, y=:3, width=:6, height=:7, xoffset=:7, yoffset=:7, xadvance=:8
+        Char value;
+        is >> word; value.mID = std::stoi(word.substr(3));
+        is >> word; value.mUV.x = std::stof(word.substr(2)) / texW;
+        is >> word; value.mUV.y = std::stof(word.substr(2)) / texH;
+        is >> word; value.mUV.z = std::stof(word.substr(6)) / texW + value.mUV.x;
+        is >> word; value.mUV.w = std::stof(word.substr(7)) / texH + value.mUV.y;
+
+        //  翻转UV
+        std::swap(value.mUV.y, value.mUV.w);
+        value.mUV.y = 1.0f - value.mUV.y;
+        value.mUV.w = 1.0f - value.mUV.w;
+
+        is >> word; value.mOffset.x = std::stof(word.substr(8));
+        is >> word; value.mOffset.y = std::stof(word.substr(8));
+        value.mOffset.y = _lineH - (value.mOffset.y + (value.mUV.w - value.mUV.y) * texH);
+
+        _info.mChars.emplace(value.mID, value);
+
+        std::getline(is, line);
     }
-
-    _fontImage = Global::Ref().mRawSys->Get<GLTexture>(texurl);
-
+    
+    is.close();
     return true;
+}
+
+void GLFont::Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output)
+{
+    for (const auto & pair : pairs)
+    {
+        if (auto ret = tools::Split(pair, "="); ret.at(1).front() != '\"' &&
+                                                ret.at(1).back()  != '\"')
+        {
+            output->emplace(ret.at(0), ret.at(1));
+        }
+        else
+        {
+            output->emplace(ret.at(0), std::string(ret.at(1).begin() + 1, ret.at(1).end() - 1));
+        }
+    }
 }
 
 // ---

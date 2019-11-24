@@ -79,7 +79,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.emplace_back("uniform_texture", _font->RefImage());
+        command.mTextures.emplace_back("uniform_texture", _font->RefTexture());
         canvas->Post(command);
     }
 }
@@ -153,6 +153,36 @@ void CompText::UpdateMesh()
     _trackPoints.at(3).x = -_size.x *      _anchor.x;
     _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
-    auto codes = _font->RefWord("Hello World");
-    int a = 0;
+    std::vector<GLMesh::Vertex> points;
+    auto codes = _font->RefWord(_text);
+    auto maxCol = int(_size.x / _font->GetWordW());
+    auto maxRow = int(_size.y / _font->GetLineH());
+    auto maxNum = maxRow * maxCol;
+
+    for (auto i = 0; i != codes.size() && i != maxNum; ++i)
+    {
+        const auto row = i / maxCol;
+        const auto col = i % maxCol;
+        const auto & word = _font->RefWord(codes.at(i));
+
+        auto px = _trackPoints.at(3).x +  col      * _font->GetWordW() + word.mOffset.x;
+        auto py = _trackPoints.at(3).y - (row + 1) * _font->GetLineH() + word.mOffset.y;
+
+        auto w = (word.mUV.z - word.mUV.x) * _font->RefTexture()->GetW();
+        auto h = (word.mUV.w - word.mUV.y) * _font->RefTexture()->GetH();
+
+        glm::vec2 p0(px,     py);
+        glm::vec2 p1(px + w, py);
+        glm::vec2 p2(px + w, py + h);
+        glm::vec2 p3(px,     py + h);
+
+        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.y));
+        points.emplace_back(p1, _color, glm::vec2(word.mUV.z, word.mUV.y));
+        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.w));
+
+        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.y));
+        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.w));
+        points.emplace_back(p3, _color, glm::vec2(word.mUV.x, word.mUV.w));
+    }
+    _mesh->Update(points, { });
 }
