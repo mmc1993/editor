@@ -168,13 +168,10 @@ void CompText::UpdateMesh()
         auto px = _trackPoints.at(3).x +  col      * _font->GetWordW() + word.mOffset.x;
         auto py = _trackPoints.at(3).y - (row + 1) * _font->GetLineH() + word.mOffset.y;
 
-        auto w = (word.mUV.z - word.mUV.x) * _font->RefTexture()->GetW();
-        auto h = (word.mUV.w - word.mUV.y) * _font->RefTexture()->GetH();
-
-        glm::vec2 p0(px,     py);
-        glm::vec2 p1(px + w, py);
-        glm::vec2 p2(px + w, py + h);
-        glm::vec2 p3(px,     py + h);
+        glm::vec2 p0(px,                  py);
+        glm::vec2 p1(px + word.mOffset.z, py);
+        glm::vec2 p2(px + word.mOffset.z, py + word.mOffset.w);
+        glm::vec2 p3(px,                  py + word.mOffset.w);
 
         points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.y));
         points.emplace_back(p1, _color, glm::vec2(word.mUV.z, word.mUV.y));

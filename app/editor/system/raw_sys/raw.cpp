@@ -157,13 +157,15 @@ bool GLFont::Init(const std::string & url)
 
     auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
     _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     _wordW = std::stof(_info.mCommon.at("base"      ));
     _lineH = std::stof(_info.mCommon.at("lineHeight"));
 
     std::getline(is, line);
     auto texW = std::stof(_info.mCommon.at("scaleW"));
     auto texH = std::stof(_info.mCommon.at("scaleH"));
-    while (is >> word)
+    while (is >> word && word == "char")
     {
         //  id=:3, x=:3, y=:3, width=:6, height=:7, xoffset=:7, yoffset=:7, xadvance=:8
         Char value;
@@ -180,7 +182,9 @@ bool GLFont::Init(const std::string & url)
 
         is >> word; value.mOffset.x = std::stof(word.substr(8));
         is >> word; value.mOffset.y = std::stof(word.substr(8));
-        value.mOffset.y = _lineH - (value.mOffset.y + (value.mUV.w - value.mUV.y) * texH);
+        value.mOffset.z = (value.mUV.z - value.mUV.x) * texW;
+        value.mOffset.w = (value.mUV.w - value.mUV.y) * texH;
+        value.mOffset.y = _lineH - value.mOffset.y - (value.mUV.w - value.mUV.y) * texH;
 
         _info.mChars.emplace(value.mID, value);
 
