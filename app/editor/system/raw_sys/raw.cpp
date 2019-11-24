@@ -180,12 +180,6 @@ bool GLFont::Init(const std::string & url)
         value.mUV.y = 1.0f - value.mUV.y;
         value.mUV.w = 1.0f - value.mUV.w;
 
-        is >> word; value.mOffset.x = std::stof(word.substr(8));
-        is >> word; value.mOffset.y = std::stof(word.substr(8));
-        value.mOffset.z = (value.mUV.z - value.mUV.x) * texW;
-        value.mOffset.w = (value.mUV.w - value.mUV.y) * texH;
-        value.mOffset.y = _lineH - value.mOffset.y - (value.mUV.w - value.mUV.y) * texH;
-
         _info.mChars.emplace(value.mID, value);
 
         std::getline(is, line);

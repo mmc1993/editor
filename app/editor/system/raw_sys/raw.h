@@ -101,9 +101,8 @@ private:
 class GLFont : public Raw {
 public:
     struct Char {
-        uint mID;           //  ×ÖUnicode±àÂë
+        uint      mID; //  ×ÖUnicode±àÂë
         glm::vec4 mUV;
-        glm::vec4 mOffset;  
     };
 
     //  ×ÖÌåĞÅÏ¢

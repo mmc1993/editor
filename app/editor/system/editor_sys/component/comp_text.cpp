@@ -154,32 +154,44 @@ void CompText::UpdateMesh()
     _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
     std::vector<GLMesh::Vertex> points;
+
+    auto posX = 0.0f, posY = 0.0f;
     auto codes = _font->RefWord(_text);
-    auto maxCol = int(_size.x / _font->GetWordW());
-    auto maxRow = int(_size.y / _font->GetLineH());
-    auto maxNum = maxRow * maxCol;
-
-    for (auto i = 0; i != codes.size() && i != maxNum; ++i)
+    auto texW = _font->RefTexture()->GetW();
+    auto texH = _font->RefTexture()->GetH();
+    for (auto i = 0; i != codes.size(); ++i)
     {
-        const auto row = i / maxCol;
-        const auto col = i % maxCol;
         const auto & word = _font->RefWord(codes.at(i));
+        auto wordW = (word.mUV.z - word.mUV.x) * texW;
+        auto wordH = (word.mUV.w - word.mUV.y) * texH;
+        //  ½Ø¶Ï¿í¶È
+        if (posX + wordW  > _size.x)
+        {
+            posX  = 0.0f;
+            posY += _font->GetLineH();
+        }
+        //  ½Ø¶Ï¸ß¶È
+        if (posY + wordH > _size.y)
+        {
+            break;
+        }
 
-        auto px = _trackPoints.at(3).x +  col      * _font->GetWordW() + word.mOffset.x;
-        auto py = _trackPoints.at(3).y - (row + 1) * _font->GetLineH() + word.mOffset.y;
+        auto x = _trackPoints.at(3).x + posX;
+        auto y = _trackPoints.at(3).y - posY;
+        glm::vec2 p0(x,         y);
+        glm::vec2 p1(x + wordW, y);
+        glm::vec2 p2(x + wordW, y - wordH);
+        glm::vec2 p3(x,         y - wordH);
 
-        glm::vec2 p0(px,                  py);
-        glm::vec2 p1(px + word.mOffset.z, py);
-        glm::vec2 p2(px + word.mOffset.z, py + word.mOffset.w);
-        glm::vec2 p3(px,                  py + word.mOffset.w);
+        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.w));
+        points.emplace_back(p1, _color, glm::vec2(word.mUV.z, word.mUV.w));
+        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.y));
 
-        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.y));
-        points.emplace_back(p1, _color, glm::vec2(word.mUV.z, word.mUV.y));
-        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.w));
+        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.w));
+        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.y));
+        points.emplace_back(p3, _color, glm::vec2(word.mUV.x, word.mUV.y));
 
-        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.y));
-        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.w));
-        points.emplace_back(p3, _color, glm::vec2(word.mUV.x, word.mUV.w));
+        posX += wordW;
     }
     _mesh->Update(points, { });
 }
