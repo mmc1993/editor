@@ -80,6 +80,11 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.emplace_back("uniform_texture", _font->RefTexture());
+        command.mCallback = [this] (const interface::RenderCommand & command, uint pos)
+        {
+            auto forward = (const interface::FowardCommand &)(command);
+            forward.mProgram->BindUniformNumber("value", _color.r);
+        };
         canvas->Post(command);
     }
 }
@@ -87,7 +92,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset,     "Font",          &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset,      "Font",         &_url);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kString,     "Text",         &_text);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2,    "Size",         &_size);
     props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,     "Color",        &_color);

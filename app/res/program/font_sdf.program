@@ -1,5 +1,5 @@
 Pass Beg
-    BlendFunc SrcAlpha OneMinusSrcAlpha
+    BlendFunc One One
     VShader Beg
         #version 330 core
 
@@ -32,43 +32,21 @@ Pass Beg
 
         uniform sampler2D uniform_texture;
 
+        uniform float value;
+
         out vec4 color_;
 
         void main()
         {
-            float u = v_out_.mUV.x;
-            float v = v_out_.mUV.y;
-            vec2 step = 1.0f / textureSize(uniform_texture, 0);
-
-            float a0 = texture(uniform_texture, vec2(u - step.x, v - step.y)).a;
-            float a1 = texture(uniform_texture, vec2(u         , v - step.y)).a;
-            float a2 = texture(uniform_texture, vec2(u + step.x, v - step.y)).a;
-
-            float a3 = texture(uniform_texture, vec2(u - step.x, v         )).a;
-            float a4 = texture(uniform_texture, vec2(u         , v         )).a;
-            float a5 = texture(uniform_texture, vec2(u + step.x, v         )).a;
-
-            float a6 = texture(uniform_texture, vec2(u - step.x, v + step.y)).a;
-            float a7 = texture(uniform_texture, vec2(u         , v + step.y)).a;
-            float a8 = texture(uniform_texture, vec2(u + step.x, v + step.y)).a;
-
-            float a = (a0 + a1 + a2 + a3 + a4 + a5 + a6 + a7 + a8) / 9.0f * 2-1;
-
-            color_ = texture(uniform_texture, vec2(u         , v         ));
-
-            return;
-
-            if (a > 0.2f)
+            float d = texture2D(uniform_texture, v_out_.mUV).a;
+            if (d < value)
             {
-                color_ = v_out_.mColor;
-            }
-            else if (a > -0.2f)
-            {
-                color_ = v_out_.mColor * (0.2 + a);
+                d = 1 - (value - d) / value;
+                color_ = v_out_.mColor * d;
             }
             else
             {
-                color_ = vec4(0);
+                color_ = v_out_.mColor;
             }
         }
     FShader End
