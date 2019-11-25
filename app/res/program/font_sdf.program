@@ -42,9 +42,7 @@ Pass Beg
             float a = texture2D(uniform_texture, v_out_.mUV).r;
             a = smoothstep(valueR - valueG, valueR + valueG, a);
             color_.a    = a;
-            color_.rgb  = v_out_.mColor.rgb;
-            // color_ = v_out_.mColor * a;
-
+            color_.rgb  = vec3(1, 1, 1);
 
             // vec4 color = texture2D(uniform_texture, v_out_.mUV);
             // color_ = color;
