@@ -39,10 +39,17 @@ Pass Beg
 
         void main()
         {
-            float a = texture2D(uniform_texture, v_out_.mUV).r;
-            a = smoothstep(valueR - valueG, valueR + valueG, a);
-            color_.a    = a;
-            color_.rgb  = vec3(1, 1, 1);
+            vec4 outline  = vec4(1, 0, 0, 0);
+            vec4 outColor = vec4(1, 1, 1, 0);
+
+            float a     = texture2D(uniform_texture, v_out_.mUV).a;
+
+            outline.a   = smoothstep(0.5f - 0.3f, 0.5f + 0.3f, a);
+            outColor.a  = smoothstep(0.7f - 0.01f, 0.7f + 0.01f, a);
+
+            color_.rgb  = mix(outline.rgb, outColor.rgb, outColor.a);
+            // color_.rgb  = outColor.rgb;
+            color_.a    = outColor.a;
 
             // vec4 color = texture2D(uniform_texture, v_out_.mUV);
             // color_ = color;
