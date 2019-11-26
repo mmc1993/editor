@@ -89,7 +89,6 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         canvas->Post(command);
     }
 }
-
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
