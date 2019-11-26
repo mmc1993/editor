@@ -39,16 +39,25 @@ Pass Beg
 
         void main()
         {
-            float a = texture2D(uniform_texture, v_out_.mUV).r;
-            if (a > valueR)
-            {
-                color_ = vec4(1, 1, 1, 1);
-            }
-            else
-            {
-                color_ = vec4(0, 0, 0, 0);
-            }
-            color_.a = smoothstep(valueR - valueG, valueR + valueG, a);
+            vec2 size = 1.0f / textureSize(uniform_texture, 0);
+            float a0 = texture2D(uniform_texture, v_out_.mUV + vec2(-size.x, -size.y)).r;
+            float a1 = texture2D(uniform_texture, v_out_.mUV + vec2( size.x, -size.y)).r;
+            float a2 = texture2D(uniform_texture, v_out_.mUV + vec2( size.x,  size.y)).r;
+            float a3 = texture2D(uniform_texture, v_out_.mUV + vec2(-size.x,  size.y)).r;
+            float a = (a0 + a1 + a2 + a3) / 4;
+            // float a = texture2D(uniform_texture, v_out_.mUV).r;
+            a = smoothstep(valueR - valueG, valueR + valueG, a);
+            color_.a    = a;
+            color_.rgb  = vec3(1, 1, 1);
+            // if (a > 0.5f)
+            // {
+            //     color_ = vec4(1, 1, 1, 1);
+            // }
+            // else
+            // {
+            //     color_ = vec4(a, 0, 0, 1);
+            // }
+            // color_.a = smoothstep(valueR - valueG, valueR + valueG, a);
 
             // a = smoothstep(valueR - valueG, valueR + valueG, a);
             // color_.a    = a;
