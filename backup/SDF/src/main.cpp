@@ -2,7 +2,7 @@
 #include "stb_image.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
-
+#define STB_IMAGE_RESIZE_IMPLEMENTATION
 #include "stb_image_resize.h"
 #include <string>
 #include <fstream>
@@ -145,7 +145,7 @@ int GetDistance(const Image & image, int x, int y, int threshold)
     }
 }
 
-char * GenSDF(const Image & image, int outW, int outH, int threshold)
+uchar * GenSDF(const Image & image, int outW, int outH, int threshold)
 {
     auto val = GetDistance(image, 53, 21, threshold);
 
@@ -159,19 +159,7 @@ char * GenSDF(const Image & image, int outW, int outH, int threshold)
         std::cout << "line: " << y << std::endl;
     }
 
-    std::ofstream os("1.txt");
-    for (int y = 0; y != image.mH; ++y)
-    {
-        for (int x = 0; x != image.mW; ++x)
-        {
-            auto val = sdf[image.GetIndex(x, y)];
-            os << (val < 0 ? 0 : 1) << " ";
-        }
-        os << std::endl;
-    }
-    os.close();
-
-    auto ret = new char[image.GetCount()];
+    auto ret = new uchar[image.GetCount()];
     for (auto i = 0; i != image.GetCount(); ++i)
     {
         if (std::abs(sdf[i]) < threshold)
@@ -186,9 +174,12 @@ char * GenSDF(const Image & image, int outW, int outH, int threshold)
             ret[i] = 0;
         }
     }
+    auto out = new uchar[image.GetCount()];
+    stbir_resize_uint8(ret, image.mW, image.mH, 0, 
+                       out, outW, outH, 0, 1);
+    delete[] ret;
     delete[] sdf;
-
-    return ret;
+    return out;
 }
 
 void GenSDF(const std::string & ifile, const std::string & ofile, int outW, int outH, int threshold)
