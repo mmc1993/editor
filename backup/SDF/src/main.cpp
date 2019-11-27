@@ -38,19 +38,9 @@ struct Image {
         : mW(w), mH(h), mFmt(fmt), mData(data)
     { }
 
-    int GetValue(int i) const
-    {
-        return mData[i * mFmt];
-    }
-
-    int GetPixelSize() const
+    int GetCount() const
     {
         return mW * mH;
-    }
-
-    int GetByteSize() const
-    {
-        return GetPixelSize() * mFmt;
     }
 
     int GetIndex(int x, int y) const
@@ -58,8 +48,12 @@ struct Image {
         return mW * y + x;
     }
 
-    int GetValue(int x, int y) const
+    int GetValue(int x, int y, int def = 0) const
     {
+        if (x < 0 || y < 0 || x >= mW || y >= mH)
+        {
+            return def;
+        }
         return (int)(mData[GetIndex(x, y) * mFmt] != 0);
     }
 };
@@ -76,118 +70,135 @@ int GetDistance(int x0, int y0, int x1, int y1)
     return (int)std::sqrt(GetDistanceSq(x0, y0, x1, y1));
 }
 
-int GetDistance(const Image & image, int x, int y)
+int GetDistance(const Image & image, int x, int y, int threshold)
 {
     auto cur = image.GetValue(x, y);
-    int dx0 = image.mW * 2, dy0 = image.mH * 2, val0 = 0;
-    int dx1 = image.mW * 2, dy1 = image.mH * 2, val1 = 0;
+    auto dx = image.mW * 2;
+    auto dy = image.mH * 2;
+    auto val = threshold;
 
-    //  上方
-    for (auto y0 = y; y0 != -1; --y0)
+    for (auto i = 1; i != threshold; ++i)
     {
-        auto isGoto = true;
-        for (auto x0 = 0; x0 != image.mW; ++x0)
+        auto exit = true;
+        auto px = x - i;
+        auto py = y - i;
+        for (auto i0 = 0; i0 != i * 2; ++i0)
         {
-            if (GetDistanceSq(x, y, x0, y0) < GetDistanceSq(x, y, dx0, dy0))
+            if (GetDistanceSq(x, y, px, py) < GetDistanceSq(x, y, dx, dy))
             {
-                if (auto val = image.GetValue(x0, y0); val != cur)
-                { 
-                    dx0 = x0; dy0 = y0; val0 = val;
-                }
-                isGoto = false;
-            }
-        }
-        if (isGoto) goto exit_for_u;
-    }
-exit_for_u:
-
-    //  下方
-    for (auto y0 = y + 1; y0 != image.mH; ++y0)
-    {
-        auto isGoto = true;
-        for (auto x0 = 0; x0 != image.mW; ++x0)
-        {
-            if (GetDistanceSq(x, y, x0, y0) < GetDistanceSq(x, y, dx1, dy1))
-            {
-                if (auto val = image.GetValue(x0, y0); val != cur)
+                if (auto v = image.GetValue(px, py, cur); v != cur)
                 {
-                    dx1 = x0; dy1 = y0; val1 = val;
+                    dx = px; dy = py; val = v;
                 }
-                isGoto = false;
+                exit = false;
             }
+            ++px;
         }
-        if (isGoto) goto exit_for_d;
+        for (auto i1 = 0; i1 != i * 2; ++i1)
+        {
+            if (GetDistanceSq(x, y, px, py) < GetDistanceSq(x, y, dx, dy))
+            {
+                if (auto v = image.GetValue(px, py, cur); v != cur)
+                {
+                    dx = px; dy = py; val = v;
+                }
+                exit = false;
+            }
+            ++py;
+        }
+        for (auto i2 = 0; i2 != i * 2; ++i2)
+        {
+            if (GetDistanceSq(x, y, px, py) < GetDistanceSq(x, y, dx, dy))
+            {
+                if (auto v = image.GetValue(px, py, cur); v != cur)
+                {
+                    dx = px; dy = py; val = v;
+                }
+                exit = false;
+            }
+            --px;
+        }
+        for (auto i3 = 0; i3 != i * 2; ++i3)
+        {
+            if (GetDistanceSq(x, y, px, py) < GetDistanceSq(x, y, dx, dy))
+            {
+                if (auto v = image.GetValue(px, py, cur); v != cur)
+                {
+                    dx = px; dy = py; val = v;
+                }
+                exit = false;
+            }
+            --py;
+        }
+        if (exit) { break; }
     }
-exit_for_d:
 
-    int dx = 0, dy = 0, val = 0;
-    if (GetDistanceSq(x, y, dx0, dy0) < GetDistanceSq(x, y, dx1, dy1))
+    if (val == threshold)
     {
-        dx = dx0; dy = dy0; val = val0;
+        return -threshold;
     }
     else
     {
-        dx = dx1; dy = dy1; val = val1;
+        return val == 0 
+            ?  GetDistance(x, y, dx, dy) 
+            : -GetDistance(x, y, dx, dy);
     }
-
-    return val == 0 
-        ?  GetDistance(x, y, dx, dy) 
-        : -GetDistance(x, y, dx, dy);
 }
 
-char * GenSDF(const Image & image, int oW, int oH)
+char * GenSDF(const Image & image, int outW, int outH, int threshold)
 {
-    auto val = GetDistance(image, 215, 105);
+    auto val = GetDistance(image, 53, 21, threshold);
 
-    auto max = 0;
-    auto sdf = new int[image.GetPixelSize()];
+    auto sdf = new int[image.GetCount()];
     for (int y = 0; y != image.mH; ++y)
     {
         for (int x = 0; x != image.mW; ++x)
         {
-            auto val = GetDistance(image, x, y);
-            sdf[image.GetIndex(x, y)] = val;
-            if (std::abs(val) > max)
-            {
-                max = std::abs(val);
-            }
+            sdf[image.GetIndex(x, y)] = GetDistance(image, x, y, threshold);
         }
         std::cout << "line: " << y << std::endl;
     }
 
-    std::cout << "max: " << max << std::endl;
-
-    auto ret = new char[image.GetPixelSize()];
-    for (auto i = 0; i != image.GetPixelSize(); ++i)
+    std::ofstream os("1.txt");
+    for (int y = 0; y != image.mH; ++y)
     {
-        if (std::abs(sdf[i]) > 50)
+        for (int x = 0; x != image.mW; ++x)
         {
-            ret[i] = 0;
+            auto val = sdf[image.GetIndex(x, y)];
+            os << (val < 0 ? 0 : 1) << " ";
         }
-        else
+        os << std::endl;
+    }
+    os.close();
+
+    auto ret = new char[image.GetCount()];
+    for (auto i = 0; i != image.GetCount(); ++i)
+    {
+        if (std::abs(sdf[i]) < threshold)
         {
-            auto s = std::abs((float)sdf[i] / (float)50);
+            auto s = std::abs((float)sdf[i] / threshold);
             ret[i] = sdf[i] < 0
                 ? (uchar)(127.0f * (1 - s))
                 : (uchar)(127.0f * s + 128);
         }
+        else
+        {
+            ret[i] = 0;
+        }
     }
+    delete[] sdf;
+
     return ret;
 }
 
-void GenSDF(const std::string & ifile, const std::string & ofile, int oW, int oH)
+void GenSDF(const std::string & ifile, const std::string & ofile, int outW, int outH, int threshold)
 {
     int w = 0, h = 0, fmt = 0;
     auto data = stbi_load(ifile.c_str(), &w, &h, &fmt, 0);
+    if (data == nullptr) {throw Error(Error::kDataError);}
 
-    if (data == nullptr)
-    {
-        stbi_image_free(data);
-        throw Error(Error::kDataError);
-    }
-
-    auto sdf = GenSDF(Image(w, h, fmt, (uchar *)data), oW, oH);
-    stbi_write_png(ofile.c_str(), oW, oH, 1, sdf, 0);
+    auto sdf = GenSDF(Image(w, h, fmt, data), outW, outH, threshold);
+    stbi_write_png(ofile.c_str(), outW, outH, 1, sdf, 0);
     stbi_image_free(data);
     delete[] sdf;
 }
@@ -198,9 +209,10 @@ int main()
     {
         std::string ifile = "1.png";
         std::string ofile = "1.sdf.png";
-        int oW = 256;
-        int oH = 256;
-        GenSDF(ifile, ofile, oW, oH);
+        int threshold = 48;
+        int outW = 256;
+        int outH = 256;
+        GenSDF(ifile, ofile, outW, outH, threshold);
     }
     catch (const Error & error)
     {
