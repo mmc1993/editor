@@ -14,8 +14,8 @@ using uchar = unsigned char;
 class Error {
 public:
     enum CodeEnum {
-        kChannelOut,    //  Í¨µÀ³¬³ö
-        kDataError,
+        kFileError,
+        kArgcError,
     };
 
 public:
@@ -186,7 +186,7 @@ void GenSDF(const std::string & ifile, const std::string & ofile, int outW, int 
 {
     int w = 0, h = 0, fmt = 0;
     auto data = stbi_load(ifile.c_str(), &w, &h, &fmt, 0);
-    if (data == nullptr) {throw Error(Error::kDataError);}
+    if (data == nullptr) {throw Error(Error::kFileError);}
 
     auto sdf = GenSDF(Image(w, h, fmt, data), outW, outH, threshold);
     stbi_write_png(ofile.c_str(), outW, outH, 1, sdf, 0);
@@ -194,21 +194,41 @@ void GenSDF(const std::string & ifile, const std::string & ofile, int outW, int 
     delete[] sdf;
 }
 
-int main()
+int main(char **argv, int argc)
 {
     try
     {
-        std::string ifile = "1.png";
-        std::string ofile = "1.sdf.png";
-        int threshold = 48;
-        int outW = 256;
-        int outH = 256;
+        if (argc != 6)
+        {
+            throw Error(Error::kArgcError);
+        }
+        std::string ifile = argv[1];
+        std::string ofile = argv[2];
+        int outW = std::stoi(argv[3]);
+        int outH = std::stoi(argv[4]);
+        int threshold = std::stoi(argv[5]);
         GenSDF(ifile, ofile, outW, outH, threshold);
+
+        //std::string ifile = "1.png";
+        //std::string ofile = "1.sdf.png";
+        //int threshold = 48;
+        //int outW = 256;
+        //int outH = 256;
+        //GenSDF(ifile, ofile, outW, outH, threshold);
     }
     catch (const Error & error)
     {
-        std::cout << error.What() << std::endl;
+        switch (error.What())
+        {
+        case Error::kFileError:
+            std::cout << "> Input File Error." << std::endl;
+            break;
+        case Error::kArgcError:
+            std::cout 
+                << "> Input Param: File.exe IFile OFile OutW OutH Threshold.\n"
+                << std::endl;
+            break;
+        }
     }
-    std::cin.get();
     return 0;
 }
