@@ -11,6 +11,8 @@ CompText::CompText()
     , _anchor(0.0f)
     , _size(100.0f)
     , _update(kFont | kMesh)
+    , _outDelta(0)
+    , _outColor(0)
 {
     _trackPoints.resize(4);
 
@@ -35,8 +37,11 @@ void CompText::EncodeBinary(std::ofstream & os)
     tools::Serialize(os, _url);
     tools::Serialize(os, _text);
     tools::Serialize(os, _size);
-    tools::Serialize(os, _color);
     tools::Serialize(os, _anchor);
+
+    tools::Serialize(os, _color);
+    tools::Serialize(os, _outColor);
+    tools::Serialize(os, _outDelta);
 }
 
 void CompText::DecodeBinary(std::ifstream & is)
@@ -45,14 +50,17 @@ void CompText::DecodeBinary(std::ifstream & is)
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _text);
     tools::Deserialize(is, _size);
-    tools::Deserialize(is, _color);
     tools::Deserialize(is, _anchor);
+
+    tools::Deserialize(is, _color);
+    tools::Deserialize(is, _outColor);
+    tools::Deserialize(is, _outDelta);
 }
 
 bool CompText::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "Font")
+    if (title == "URL")
     {
         _update |= kFont;
     }
@@ -80,23 +88,24 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.emplace_back("uniform_texture", _font->RefTexture());
-        command.mCallback = [this] (const interface::RenderCommand & command, uint pos)
-        {
-            auto forward = (const interface::FowardCommand &)(command);
-            forward.mProgram->BindUniformNumber("valueR", _color.r);
-            forward.mProgram->BindUniformNumber("valueG", _color.g);
-        };
+        command.mCallback = std::bind(
+            &CompText::OnDrawCallback, this,
+            std::placeholders::_1,
+            std::placeholders::_2);
         canvas->Post(command);
     }
 }
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset,      "Font",         &_url);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString,     "Text",         &_text);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2,    "Size",         &_size);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,     "Color",        &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2,    "Anchor",       &_anchor);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset,   "URL",       &_url);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString,  "Text",      &_text);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size",      &_size);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,  "Color",     &_color);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,  "OutColor",  &_outColor);
+    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,   "OutDelta",  &_outDelta);
+
     return std::move(props);
 }
 
@@ -178,7 +187,8 @@ void CompText::UpdateMesh()
             posY += lineH;
         }
         //  ½Ø¶Ï¸ß¶È
-        if (posY + wordH > _size.y)
+        if (posX + wordW > _size.x ||
+            posY + wordH > _size.y)
         {
             break;
         }
@@ -203,4 +213,11 @@ void CompText::UpdateMesh()
     }
 
     _mesh->Update(points, { });
+}
+
+void CompText::OnDrawCallback(const interface::RenderCommand & command, uint pos)
+{ 
+    auto forward = (const interface::FowardCommand &)(command);
+    forward.mProgram->BindUniformNumber("out_delta_", _outDelta);
+    forward.mProgram->BindUniformVector("out_color_", _outColor);
 }

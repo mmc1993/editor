@@ -172,7 +172,6 @@ bool GLFont::Init(const std::string & url)
 
         std::getline(is, line);
     }
-    
     is.close();
     return true;
 }

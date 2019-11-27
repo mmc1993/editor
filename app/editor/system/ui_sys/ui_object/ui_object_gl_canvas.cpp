@@ -474,7 +474,7 @@ bool UIObjectGLCanvas::OnEventMouse(const UIEvent::Mouse & param)
     {
         auto origin = ProjectWorld(ToLocalCoord(param.mMouse));
         auto oldS   = state->mOperation.mViewScale;
-        state->mOperation.mViewScale = std::clamp(state->mOperation.mViewScale + (2.0f * param.mWheel), 0.5f, 100.0f);
+        state->mOperation.mViewScale = std::clamp(state->mOperation.mViewScale + (0.2f * param.mWheel), 0.2f, 10.0f);
         auto newS   = state->mOperation.mViewScale;
         auto target = ProjectWorld(ToLocalCoord(param.mMouse));
         state->mOperation.mViewCoord.x += (origin.x - target.x) * newS;

@@ -30,19 +30,42 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
+        uniform float out_delta_;
+        uniform vec4  out_color_;
         uniform sampler2D uniform_texture;
 
-        uniform float valueR;
-        uniform float valueG;
-
+        const float mark = 0.498f;
         out vec4 color_;
 
         void main()
         {
-            float a = texture2D(uniform_texture, v_out_.mUV).r;
-            a = smoothstep(valueR - valueG, valueR + valueG, a);
-            color_.a    = a;
-            color_.rgb  = vec3(1, 1, 1);
+            float r = texture2D(uniform_texture, v_out_.mUV).r;
+            
+            //  文字颜色
+            float r0 = smoothstep(mark, mark, r);
+            vec4 color = vec4(v_out_.mColor.rgb, r0);
+
+            //  描边
+            r0 = smoothstep(mark - out_delta_, mark + out_delta_, r);
+            vec4 outColor = vec4(out_color_.rgb, r0);
+
+            //  外发光
+            // r0 = smoothstep(mark - delta_ - out_delta_, mark - delta_, r);
+            // vec4 outColor = vec4(out_color_.rgb, pow(r0, 64));
+
+            //  内发光
+            // vec4 outColor = vec4(out_color_.rgb, 0);
+            // if (r > mark && (r < mark + out_delta_))
+            // {
+            //     float s = 1.0f - (r - mark) / out_delta_;
+            //     outColor.a = pow(s, 32);
+            // }
+            // color.rgb   = color.rgb * (1.0f - outColor.a);
+            // color_.rgb  = color.rgb + outColor.rgb;
+            // color_.a    = color.a;
+
+            //  最终颜色
+            color_ = mix(outColor, color, color.a);
         }
     FShader End
 Pass End

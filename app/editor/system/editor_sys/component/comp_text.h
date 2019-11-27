@@ -34,6 +34,7 @@ protected:
 private:
     void UpdateFont();
     void UpdateMesh();
+    void OnDrawCallback(const interface::RenderCommand & command, uint pos);
 
 private:
     uint _update;
@@ -41,10 +42,13 @@ private:
     std::string _url;
     std::string _text;
     glm::vec2   _size;
-    glm::vec4   _color;
     glm::vec2   _anchor;
-    SharePtr<GLFont> _font;
 
+    float       _outDelta; //  ÎÄ×Ö±ßÔµÆ½»¬·¶Î§
+    glm::vec4   _outColor;
+    glm::vec4   _color;
+
+    SharePtr<GLFont>    _font;
     SharePtr<GLMesh>    _mesh;
     SharePtr<GLProgram> _program;
 };
