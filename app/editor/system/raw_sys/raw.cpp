@@ -185,7 +185,7 @@ bool GLFont::Init(const std::string & url)
         std::getline(is, line);
     }
 
-    _texture = Global::Ref().mRawSys->Get<GLTexture>("res/font/zzz.png_sdf.png");
+    _texture = Global::Ref().mRawSys->Get<GLTexture>("res/font/aaa.png");
     _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     

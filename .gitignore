@@ -6,3 +6,10 @@
 /app/tool/xml2json/.vs
 /app/tool/xml2json/xml2json.VC.db
 /app/Release
+/backup/SDF/Release
+/backup/SDF/Debug
+/backup/SDF/.vs/sdf/v15/Browse.VC.db
+/backup/SDF/.vs/sdf/v15/Browse.VC.opendb
+/backup/SDF/.vs/sdf/v15/ipch/AutoPCH/4b8b7f0d2e29778c/MAIN.ipch
+/backup/SDF/.vs/sdf/v15/ipch/AutoPCH/6a55804d9c2f8b2c/MAIN.ipch
+/backup/SDF/.vs/sdf/v15/.suo
