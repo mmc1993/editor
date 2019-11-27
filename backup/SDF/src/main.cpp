@@ -194,7 +194,7 @@ void GenSDF(const std::string & ifile, const std::string & ofile, int outW, int 
     delete[] sdf;
 }
 
-int main(char **argv, int argc)
+int main(int argc, char **argv)
 {
     try
     {
