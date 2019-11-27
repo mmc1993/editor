@@ -39,45 +39,10 @@ Pass Beg
 
         void main()
         {
-            vec2 size = 1.0f / textureSize(uniform_texture, 0);
-            float a0 = texture2D(uniform_texture, v_out_.mUV + vec2(-size.x, -size.y)).r;
-            float a1 = texture2D(uniform_texture, v_out_.mUV + vec2( size.x, -size.y)).r;
-            float a2 = texture2D(uniform_texture, v_out_.mUV + vec2( size.x,  size.y)).r;
-            float a3 = texture2D(uniform_texture, v_out_.mUV + vec2(-size.x,  size.y)).r;
-            float a = (a0 + a1 + a2 + a3) / 4;
+            float a = texture2D(uniform_texture, v_out_.mUV).r;
             a = smoothstep(valueR - valueG, valueR + valueG, a);
             color_.a    = a;
             color_.rgb  = vec3(1, 1, 1);
-
-
-
-            // if (a > 0.5f)
-            // {
-            //     color_ = vec4(1, 1, 1, 1);
-            // }
-            // else
-            // {
-            //     color_ = vec4(a, 0, 0, 1);
-            // }
-            // color_.a = smoothstep(valueR - valueG, valueR + valueG, a);
-
-            // a = smoothstep(valueR - valueG, valueR + valueG, a);
-            // color_.a    = a;
-            // color_.rgb  = vec3(1, 1, 1);
-
-            // vec4 color = texture2D(uniform_texture, v_out_.mUV);
-            // color_ = color;
-
-            // float d = texture2D(uniform_texture, v_out_.mUV).a;
-            // if (d < value)
-            // {
-            //     d = 1 - (value - d) / value;
-            //     color_ = v_out_.mColor * d;
-            // }
-            // else
-            // {
-            //     color_ = v_out_.mColor;
-            // }
         }
     FShader End
 Pass End
