@@ -96,16 +96,6 @@ GLFont::GLFont()
 GLFont::~GLFont()
 { }
 
-float GLFont::GetWordW()
-{
-    return _wordW;
-}
-
-float GLFont::GetLineH()
-{
-    return _lineH;
-}
-
 const SharePtr<GLTexture> & GLFont::RefTexture()
 {
     return _texture;
@@ -155,12 +145,10 @@ bool GLFont::Init(const std::string & url)
     line = std::lstrip(line, ' ');
     Parse(tools::Split(line, " "), &_info.mPage);
 
-    //auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
-    //_texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
-    //_texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    //_texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    _wordW = std::stof(_info.mCommon.at("base"      ));
-    _lineH = std::stof(_info.mCommon.at("lineHeight"));
+    auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
+    _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     std::getline(is, line);
     auto texW = std::stof(_info.mCommon.at("scaleW"));
@@ -184,10 +172,6 @@ bool GLFont::Init(const std::string & url)
 
         std::getline(is, line);
     }
-
-    _texture = Global::Ref().mRawSys->Get<GLTexture>("res/font/aaa.png");
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     
     is.close();
     return true;

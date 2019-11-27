@@ -116,8 +116,6 @@ public:
 public:
     GLFont();
     ~GLFont();
-    float GetWordW();
-    float GetLineH();
     const SharePtr<GLTexture> & RefTexture();
     const Char & RefWord(char word);
     const Char & RefWord(uint code);
@@ -129,8 +127,6 @@ private:
     void Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output);
 
 private:
-    float               _lineH;
-    float               _wordW;
     FontInfo            _info;
     SharePtr<GLTexture> _texture;
 };
