@@ -28,6 +28,7 @@ public:
     bool IsShowMenuBar      = false;    //  显示菜单
     bool IsShowTitleBar     = false;    //  显示标题
     bool IsShowScrollBar    = false;    //  显示滚动条
+    bool IsFirstRender      = true;     //  是否第一次渲染
 
     float BorderNumber      = 1;        //  边框宽度
 

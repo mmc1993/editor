@@ -239,6 +239,7 @@ void UIObject::Render(float dt, bool visible)
     //  刷新备份数据
     state->Move_  = state->Move;
     state->LSkin_ = state->LSkin;
+    state->IsFirstRender = false;
 }
 
 glm::vec4 UIObject::CalcStretech(DirectEnum direct, const glm::vec2 & offset)
@@ -655,8 +656,12 @@ bool UIObjectLayout::OnEnter()
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-        ImGui::SetNextWindowSize(size);
-        ImGui::SetNextWindowPos(move);
+        if (state->IsFirstRender)
+        {
+            ImGui::SetNextWindowSize(size);
+            ImGui::SetNextWindowPos(move);
+        }
+
         if (state->IsFullScreen)
         {
             ret = ImGui::Begin(ImID(name).c_str(), nullptr, flag);
@@ -687,6 +692,10 @@ void UIObjectLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (state->IsWindow)
     {
+        auto move = ImGui::GetWindowPos();
+        auto size = ImGui::GetWindowSize();
+        state->Move = glm::vec4(move.x, move.y, size.x, size.y);
+
         ImGui::PopStyleVar();
         if (GetRoot().get() == this)
         {
