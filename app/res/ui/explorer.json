@@ -1,0 +1,140 @@
+{
+	"__Property": {
+		"Type": "Widget",
+		"Skin": "PanelSkin",
+		"Move": "340 60 600 600",
+		"Align": "0",
+		"Name": "Explorer",
+		"IsCanDragFree": "false",
+		"IsCanMove": "true",
+		"IsCanStretch": "true",
+		"IsFullScreen": "false",
+		"IsShowBorder": "false",
+		"IsShowMenuBar": "false",
+		"IsShowNav": "false",
+		"IsShowScrollBar": "false",
+		"IsShowTitleBar": "true",
+		"IsWindow": "true",
+		"StretchMin": "300 300"
+	},
+	"__Children": [
+		{
+			"__Property": {
+				"Type": "Widget",
+				"Skin": "PanelSkin",
+				"Move": "0 0 600 80",
+				"Align": "26",
+				"Name": "LayoutSerach",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "false",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"IsCanDragMove": "false"
+			},
+			"__Children": [
+				{
+					"__Property": {
+						"Type": "3",
+						"Skin": "EditBox",
+						"Move": "20 20 560 40",
+						"Align": "30",
+						"Name": "Serach",
+						"IsCanDragFree": "false",
+						"IsCanMove": "false",
+						"IsCanStretch": "false",
+						"IsFullScreen": "false",
+						"IsShowBorder": "false",
+						"IsShowMenuBar": "false",
+						"IsShowNav": "false",
+						"IsShowScrollBar": "false",
+						"IsShowTitleBar": "false",
+						"IsWindow": "false",
+						"IsMulti": "false",
+						"IsEditBox": "true"
+					},
+					"__Children": [
+						
+					]
+				}
+			]
+		},
+		{
+			"__Property": {
+				"Type": "Widget",
+				"Skin": "PanelSkin",
+				"Move": "0 80 300 520",
+				"Align": "30",
+				"Name": "LayoutView",
+				"BorderNumber": "1",
+				"IsCanDragFree": "true",
+				"IsCanDragMove": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "true",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "200 0"
+			},
+			"__Children": [
+				{
+					"__Property": {
+						"Type": "2",
+						"Skin": "ListBox",
+						"Move": "0 0 300 520",
+						"Align": "30",
+						"Name": "View",
+						"IsCanDragFree": "true",
+						"IsCanDragMove": "false",
+						"IsCanMove": "false",
+						"IsCanStretch": "false",
+						"IsFullScreen": "false",
+						"IsShowBorder": "false",
+						"IsShowMenuBar": "false",
+						"IsShowNav": "false",
+						"IsShowScrollBar": "true",
+						"IsShowTitleBar": "false",
+						"IsWindow": "false"
+					},
+					"__Children": [
+						
+					]
+				}
+			]
+		},
+		{
+			"__Property": {
+				"Type": "Widget",
+				"Skin": "PanelSkin",
+				"Move": "300 80 300 520",
+				"Align": "30",
+				"BorderNumber": "1",
+				"IsCanDragFree": "false",
+				"IsCanDragMove": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "300 0"
+			},
+			"__Children": [
+				
+			]
+		}
+	]
+}

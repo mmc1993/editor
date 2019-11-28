@@ -32,7 +32,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             //  右键单击
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
-                Global::Ref().mUISys->OpenWindow(UIFile_Main2);
+                Global::Ref().mUISys->OpenWindow(UIFile_Explorer);
                 std::vector<std::string> buffer;
                 if (mouse.mObject == object)
                 {
