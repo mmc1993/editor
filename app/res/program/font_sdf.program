@@ -42,11 +42,11 @@ Pass Beg
             float r = texture2D(uniform_texture, v_out_.mUV).r;
             
             //  文字颜色
-            float r0 = smoothstep(mark, mark, r);
-            vec4 color = vec4(v_out_.mColor.rgb, r0);
+            vec4 color = vec4(v_out_.mColor.rgb, 0);
+            if (r >= mark) { color.a = 1.0f; }
 
             //  描边
-            r0 = smoothstep(mark - out_delta_, mark + out_delta_, r);
+            float r0 = smoothstep(mark - out_delta_ * 2, mark - out_delta_, r);
             vec4 outColor = vec4(out_color_.rgb, r0);
 
             //  外发光
