@@ -644,8 +644,10 @@ bool UIObjectLayout::OnEnter()
         const auto & name = state->Name;
         ImVec2 move = ImVec2(state->Move.x, state->Move.y);
         ImVec2 size = ImVec2(state->Move.z, state->Move.w);
+
         if (state->IsFullScreen)
         {
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
             size = ImGui_ImplGlfw_GetWindowSize();
             move.x = 0;
             move.y = 0;
@@ -653,21 +655,17 @@ bool UIObjectLayout::OnEnter()
                  | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
                  | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav
                  | ImGuiWindowFlags_NoBringToFrontOnFocus;
-        }
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
-
-        if (state->IsFirstRender)
-        {
-            ImGui::SetNextWindowSize(size);
             ImGui::SetNextWindowPos(move);
-        }
-
-        if (state->IsFullScreen)
-        {
+            ImGui::SetNextWindowSize(size);
             ret = ImGui::Begin(ImID(name).c_str(), nullptr, flag);
         }
         else
         {
+            if (state->IsFirstRender)
+            {
+                ImGui::SetNextWindowPos(move);
+                ImGui::SetNextWindowSize(size);
+            }
             bool isfree= true;
             ret = ImGui::Begin(ImID(name).c_str(), &isfree, flag);
             if (!isfree) { Global::Ref().mUISys->FreeWindow(shared_from_this()); }
@@ -692,11 +690,19 @@ void UIObjectLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (state->IsWindow)
     {
-        auto move = ImGui::GetWindowPos();
-        auto size = ImGui::GetWindowSize();
-        state->Move = glm::vec4(move.x, move.y, size.x, size.y);
+        if (!state->IsFullScreen)
+        {
+            auto move = ImGui::GetWindowPos();
+            auto size = ImGui::GetWindowSize();
+            size.x = std::max(state->StretchMin.x, size.x);
+            size.y = std::max(state->StretchMin.y, size.y);
+            state->Move = glm::vec4(move.x, move.y, size.x, size.y);
+        }
+        else
+        {
+            ImGui::PopStyleVar();
+        }
 
-        ImGui::PopStyleVar();
         if (GetRoot().get() == this)
         {
             UIMenu::RenderPopup();

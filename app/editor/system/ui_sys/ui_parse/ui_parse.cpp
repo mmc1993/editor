@@ -30,7 +30,6 @@ SharePtr<UIObject> UIParser::CreateObject(const int type)
     return nullptr;
 }
 
-
 SharePtr<UIObject> UIParser::Parse(const std::string & url)
 {
     auto json = mmc::Json::FromFile(url);

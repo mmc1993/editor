@@ -1,6 +1,6 @@
 {
 	"__Property": {
-		"Type": "Widget",
+		"Type": "1",
 		"Skin": "PanelSkin",
 		"Move": "340 60 600 600",
 		"Align": "0",
@@ -20,9 +20,9 @@
 	"__Children": [
 		{
 			"__Property": {
-				"Type": "Widget",
+				"Type": "1",
 				"Skin": "PanelSkin",
-				"Move": "0 0 600 80",
+				"Move": "0 25 600 45",
 				"Align": "26",
 				"Name": "LayoutSerach",
 				"BorderNumber": "1",
@@ -43,7 +43,7 @@
 					"__Property": {
 						"Type": "3",
 						"Skin": "EditBox",
-						"Move": "20 20 560 40",
+						"Move": "20 10 560 22",
 						"Align": "30",
 						"Name": "Serach",
 						"IsCanDragFree": "false",
@@ -57,7 +57,8 @@
 						"IsShowTitleBar": "false",
 						"IsWindow": "false",
 						"IsMulti": "false",
-						"IsEditBox": "true"
+						"IsEditBox": "true",
+						"IsCanDragMove": "false"
 					},
 					"__Children": [
 						
@@ -67,57 +68,11 @@
 		},
 		{
 			"__Property": {
-				"Type": "Widget",
+				"Type": "1",
 				"Skin": "PanelSkin",
-				"Move": "0 80 300 520",
+				"Move": "300 70 300 530",
 				"Align": "30",
-				"Name": "LayoutView",
-				"BorderNumber": "1",
-				"IsCanDragFree": "true",
-				"IsCanDragMove": "false",
-				"IsCanMove": "false",
-				"IsCanStretch": "true",
-				"IsFullScreen": "false",
-				"IsShowBorder": "true",
-				"IsShowMenuBar": "false",
-				"IsShowNav": "false",
-				"IsShowScrollBar": "true",
-				"IsShowTitleBar": "false",
-				"IsWindow": "false",
-				"StretchMin": "200 0"
-			},
-			"__Children": [
-				{
-					"__Property": {
-						"Type": "2",
-						"Skin": "ListBox",
-						"Move": "0 0 300 520",
-						"Align": "30",
-						"Name": "View",
-						"IsCanDragFree": "true",
-						"IsCanDragMove": "false",
-						"IsCanMove": "false",
-						"IsCanStretch": "false",
-						"IsFullScreen": "false",
-						"IsShowBorder": "false",
-						"IsShowMenuBar": "false",
-						"IsShowNav": "false",
-						"IsShowScrollBar": "true",
-						"IsShowTitleBar": "false",
-						"IsWindow": "false"
-					},
-					"__Children": [
-						
-					]
-				}
-			]
-		},
-		{
-			"__Property": {
-				"Type": "Widget",
-				"Skin": "PanelSkin",
-				"Move": "300 80 300 520",
-				"Align": "30",
+				"Name": "Info",
 				"BorderNumber": "1",
 				"IsCanDragFree": "false",
 				"IsCanDragMove": "false",
