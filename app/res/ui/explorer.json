@@ -70,8 +70,57 @@
 			"__Property": {
 				"Type": "1",
 				"Skin": "PanelSkin",
+				"Move": "0 70 300 530",
+				"Align": "384",
+				"Name": "LayoutView",
+				"BorderNumber": "1",
+				"IsCanDragFree": "true",
+				"IsCanDragMove": "false",
+				"IsCanMove": "false",
+				"IsCanStretch": "true",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "true",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "200 0"
+			},
+			"__Children": [
+				{
+					"__Property": {
+						"Type": "2",
+						"Skin": "ListBox",
+						"Move": "0 0 300 530",
+						"Align": "30",
+						"Name": "View",
+						"IsCanDragFree": "true",
+						"IsCanDragMove": "false",
+						"IsCanMove": "false",
+						"IsCanStretch": "false",
+						"IsFullScreen": "false",
+						"IsShowBorder": "false",
+						"IsShowMenuBar": "false",
+						"IsShowNav": "false",
+						"IsShowScrollBar": "true",
+						"IsShowTitleBar": "false",
+						"IsWindow": "false",
+						"BorderNumber": "1",
+						"StretchMin": "300 0"
+					},
+					"__Children": [
+						
+					]
+				}
+			]
+		},
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "PanelSkin",
 				"Move": "300 70 300 530",
-				"Align": "30",
+				"Align": "384",
 				"Name": "Info",
 				"BorderNumber": "1",
 				"IsCanDragFree": "false",

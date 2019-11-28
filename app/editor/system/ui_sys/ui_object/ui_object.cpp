@@ -193,8 +193,8 @@ void UIObject::ApplyLayout()
         {
             const auto & size0 = thisState->Move;
             const auto & size1 = thisState->StretchMin;
-            thisState->Move.z = std::max(size0.x, size1.x);
-            thisState->Move.w = std::max(size0.y, size1.y);
+            thisState->Move.z = std::max(size0.z, size1.x);
+            thisState->Move.w = std::max(size0.w, size1.y);
         }
     }
     OnApplyLayout();
@@ -378,7 +378,8 @@ void UIObject::RenderDrag()
 
 void UIObject::UpdateSize()
 {
-    if ((UIAlignEnum)GetState()->Align == UIAlignEnum::kDefault && GetType() != UITypeEnum::kOther)
+    auto state = GetState();
+    if (!state->IsWindow && (UIAlignEnum)state->Align == UIAlignEnum::kDefault && GetType() != UITypeEnum::kOther)
     {
         const auto & size = ImGui::GetItemRectSize();
         GetState()->Move.z = size.x;
