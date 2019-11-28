@@ -1,0 +1,45 @@
+{
+	"__Property": {
+		"Type": "1",
+		"Skin": "Window",
+		"Move": "100 100 512 512",
+		"Align": "18",
+		"Name": "Title",
+		"IsCanMove": "true",
+		"IsCanDragFree": "false",
+		"IsCanStretch": "true",
+		"IsFullScreen": "false",
+		"IsShowBorder": "true",
+		"IsShowMenuBar": "false",
+		"IsShowNav": "false",
+		"IsShowScrollBar": "false",
+		"IsShowTitleBar": "true",
+		"IsWindow": "true",
+		"StretchMin": "256 256"
+	},
+	"__Children": [
+		{
+			"__Property": {
+				"Type": "1",
+				"Skin": "Window",
+				"Move": "0 0 512 512",
+				"Align": "384",
+				"Name": "Child",
+				"IsCanMove": "false",
+				"IsCanDragFree": "false",
+				"IsCanStretch": "false",
+				"IsFullScreen": "false",
+				"IsShowBorder": "true",
+				"IsShowMenuBar": "false",
+				"IsShowNav": "false",
+				"IsShowScrollBar": "false",
+				"IsShowTitleBar": "false",
+				"IsWindow": "false",
+				"StretchMin": "512 512"
+			},
+			"__Children": [
+				
+			]
+		}
+	]
+}

@@ -124,11 +124,11 @@ std::string ImID(const T & v)
 {
     if constexpr (std::is_pointer_v<T> || std::is_arithmetic_v<T>)
     {
-        return SFormat("{0}##{0}", (size_t)v);
+        return SFormat("##{0}", (size_t)v);
     }
     else
     {
-        return SFormat("{0}##{1}", (size_t)&v, v);
+        return SFormat("{0}##{1}", v, (size_t)&v);
     }
 }
 

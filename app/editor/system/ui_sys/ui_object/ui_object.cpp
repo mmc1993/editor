@@ -181,10 +181,21 @@ void UIObject::ApplyLayout()
     }
     else
     {
-        const auto & wsize = ImGui_ImplGlfw_GetWindowSize();
-        const auto & size = thisState->StretchMin;
-        thisState->Move.z = std::max(wsize.x, size.x);
-        thisState->Move.w = std::max(wsize.y, size.y);
+        ASSERT_LOG(thisState->IsWindow, "");
+        if (thisState->IsFullScreen)
+        {
+            const auto & size0 = ImGui_ImplGlfw_GetWindowSize();
+            const auto & size1 = thisState->StretchMin;
+            thisState->Move.z = std::max(size0.x, size1.x);
+            thisState->Move.w = std::max(size0.y, size1.y);
+        }
+        else
+        {
+            const auto & size0 = thisState->Move;
+            const auto & size1 = thisState->StretchMin;
+            thisState->Move.z = std::max(size0.x, size1.x);
+            thisState->Move.w = std::max(size0.y, size1.y);
+        }
     }
     OnApplyLayout();
 }
@@ -615,9 +626,6 @@ bool UIObjectLayout::OnEnter()
 
     //  ´°¿Úflag
     size_t flag = ImGuiWindowFlags_NoCollapse;
-    if (!state->IsShowNav)          { flag |= ImGuiWindowFlags_NoNav; }
-    if (!state->IsCanMove)          { flag |= ImGuiWindowFlags_NoMove; }
-    if (!state->IsCanStretch)       { flag |= ImGuiWindowFlags_NoResize; }
     if ( state->IsShowMenuBar)      { flag |= ImGuiWindowFlags_MenuBar; }
     if (!state->IsShowTitleBar)     { flag |= ImGuiWindowFlags_NoTitleBar; }
     if (!state->IsShowScrollBar)    { flag |= ImGuiWindowFlags_NoScrollbar; }
@@ -627,6 +635,10 @@ bool UIObjectLayout::OnEnter()
     auto ret = false;
     if (state->IsWindow)
     {
+        if (!state->IsShowNav)          { flag |= ImGuiWindowFlags_NoNav; }
+        if (!state->IsCanMove)          { flag |= ImGuiWindowFlags_NoMove; }
+        if (!state->IsCanStretch)       { flag |= ImGuiWindowFlags_NoResize; }
+
         //  Ðü¸¡´°¿Ú
         const auto & name = state->Name;
         ImVec2 move = ImVec2(state->Move.x, state->Move.y);
@@ -643,11 +655,8 @@ bool UIObjectLayout::OnEnter()
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
-        if (state->IsFullScreen || (UIAlignEnum)state->Align != UIAlignEnum::kDefault)
-        {
-            ImGui::SetNextWindowPos(move);
-        }
         ImGui::SetNextWindowSize(size);
+        ImGui::SetNextWindowPos(move);
         if (state->IsFullScreen)
         {
             ret = ImGui::Begin(ImID(name).c_str(), nullptr, flag);
