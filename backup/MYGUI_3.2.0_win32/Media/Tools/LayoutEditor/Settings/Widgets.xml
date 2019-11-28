@@ -2,12 +2,12 @@
 <MyGUI type="Widgets">
 
 	<!-- Layout -->
-	<Widget name="Window">
-		<Property key="DefaultSkin" 		value="Window"/>
-		<Property key="Skin" 				value="Window"/>
+	<Widget name="Widget">
+		<Property key="DefaultSkin" 		value="PanelSkin"/>
+		<Property key="Skin" 				value="PanelSkin"/>
 		<Property key="Parent" 				value="true"/>
 		<Property key="Child" 				value="true"/>
-		
+
 		<Parameter key="IsWindow" 			value="Bool"/>
 		<Parameter key="IsShowNav" 			value="Bool"/>
 		<Parameter key="IsCanMove" 			value="Bool"/>
@@ -15,6 +15,7 @@
 		<Parameter key="IsFullScreen" 		value="Bool"/>
 		<Parameter key="IsShowBorder" 		value="Bool"/>
 		<Parameter key="IsCanDragFree" 		value="Bool"/>
+		<Parameter key="IsCanDragMove" 		value="Bool"/>
 		<Parameter key="IsShowMenuBar" 		value="Bool"/>
 		<Parameter key="IsShowTitleBar" 	value="Bool"/>
 		<Parameter key="IsShowScrollBar" 	value="Bool"/>
@@ -23,6 +24,7 @@
 		<Parameter key="StretchMin" 		value="2 int"/>
 
 		<Parameter key="MenuBar" 			value="String"/>
+		<Parameter key="EventDelegate" 		value="String"/>
 	</Widget>
 
 	<!-- TreeBox -->
@@ -33,11 +35,6 @@
 		<Property key="Child" 			value="true"/>
 
 		<Parameter key="IsSelect" 		value="Bool"/>
-		<Parameter key="IsShowBorder" 	value="Bool"/>
-		<Parameter key="IsCanDragMove" 	value="Bool"/>
-		<Parameter key="IsCanDragFree" 	value="Bool"/>
-
-		<Parameter key="BorderNumber" 	value="1 int"/>
 	</Widget>
 
 	<Widget name="EditBox">
@@ -48,11 +45,6 @@
 
 		<Parameter key="IsMulti" 		value="Bool"/>
 		<Parameter key="IsEditBox" 		value="Bool"/>
-		<Parameter key="IsShowBorder" 	value="Bool"/>
-		<Parameter key="IsCanDragMove" 	value="Bool"/>
-		<Parameter key="IsCanDragFree" 	value="Bool"/>
-
-		<Parameter key="BorderNumber" 	value="1 int"/>
 	</Widget>
 
 	<!-- ImageBox -->
@@ -63,11 +55,6 @@
 		<Property key="Child" 			value="true"/>
 
 		<Parameter key="IsButton" 		value="Bool"/>
-		<Parameter key="IsShowBorder" 	value="Bool"/>
-		<Parameter key="IsCanDragMove" 	value="Bool"/>
-		<Parameter key="IsCanDragFree" 	value="Bool"/>
-
-		<Parameter key="BorderNumber" 	value="1 int"/>
 
 		<Parameter key="LSkin" 			value="String"/>
 	</Widget>
@@ -77,12 +64,6 @@
 		<Property key="Skin" 				value="ComboBox"/>
 		<Property key="Parent" 				value="true"/>
 		<Property key="Child" 				value="true"/>
-
-		<Parameter key="IsShowBorder" 		value="Bool"/>
-		<Parameter key="IsCanDragMove" 		value="Bool"/>
-		<Parameter key="IsCanDragFree" 		value="Bool"/>
-
-		<Parameter key="BorderNumber" 		value="1 int"/>
 	</Widget>
 
 	<!-- GLCanvas -->
@@ -91,12 +72,6 @@
 		<Property key="Skin" 				value="ScrollBarH"/>
 		<Property key="Parent" 				value="true"/>
 		<Property key="Child" 				value="true"/>
-
-		<Parameter key="IsShowBorder" 		value="Bool"/>
-		<Parameter key="IsCanDragFree" 		value="Bool"/>
-		<Parameter key="IsShowScrollBar" 	value="Bool"/>
-
-		<Parameter key="BorderNumber" 		value="1 int"/>
 	</Widget>
 
 	<!-- UICanvas -->
@@ -105,21 +80,5 @@
 		<Property key="Skin" 				value="ScrollView"/>
 		<Property key="Parent" 				value="true"/>
 		<Property key="Child" 				value="true"/>
-
-		<Parameter key="IsShowBorder" 		value="Bool"/>
-		<Parameter key="IsCanDragFree" 		value="Bool"/>
-		<Parameter key="IsShowScrollBar" 	value="Bool"/>
-
-		<Parameter key="BorderNumber" 		value="1 int"/>
 	</Widget>
-
-	<Widget name="Widget">
-		<Property key="DefaultSkin" 		value="PanelSkin"/>
-		<Property key="Skin" 				value="PanelSkin"/>
-		<Property key="Parent" 				value="true"/>
-		<Property key="Child" 				value="true"/>
-
-		<Parameter key="EventDelegate" 		value="String"/>
-	</Widget>
-
 </MyGUI>
