@@ -1,9 +1,8 @@
 #include "ui_object.h"
 #include "../ui_menu.h"
 #include "imgui_impl_glfw.h"
-#include "../../raw_sys/raw.h"
+#include "../../ui_sys/ui_sys.h"
 #include "../../raw_sys/raw_sys.h"
-
 // ---
 //  UIObject
 // ---
@@ -639,7 +638,8 @@ bool UIObjectLayout::OnEnter()
             move.y = 0;
             flag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove
                  | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse
-                 | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav;
+                 | ImGuiWindowFlags_NoCollapse  | ImGuiWindowFlags_NoNav
+                 | ImGuiWindowFlags_NoBringToFrontOnFocus;
         }
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0);
 
@@ -648,15 +648,25 @@ bool UIObjectLayout::OnEnter()
             ImGui::SetNextWindowPos(move);
         }
         ImGui::SetNextWindowSize(size);
-        ret = ImGui::Begin(name.empty()? nullptr: name.c_str(), nullptr, flag);
+        if (state->IsFullScreen)
+        {
+            ret = ImGui::Begin(ImID(name).c_str(), nullptr, flag);
+        }
+        else
+        {
+            bool isfree= true;
+            ret = ImGui::Begin(ImID(name).c_str(), &isfree, flag);
+            if (!isfree) { Global::Ref().mUISys->FreeWindow(shared_from_this()); }
+            ret = ret && isfree;
+        }
     }
     else
     {
-        ret = ImGui::BeginChild(state->Name.c_str(),
+        ret = ImGui::BeginChild(ImID(state->Name).c_str(),
             ImVec2(state->Move.z, state->Move.w),
             state->IsShowBorder, flag);
     }
-    if (GetState()->IsShowMenuBar)
+    if (ret && GetState()->IsShowMenuBar)
     {
         UIMenu::BarMenu(shared_from_this(), GetState()->MenuBar);
     }

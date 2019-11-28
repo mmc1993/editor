@@ -10,22 +10,29 @@ UISys::~UISys()
 
 void UISys::Update(float dt)
 {
-    _root->Render(dt);
+    //  拷贝副本, 防止在遍历过程中增删数组
+    auto windows = _windows;
+
+    for (auto & window : windows)
+    {
+        window->Render(dt);
+    }
 }
 
-const SharePtr<UIObject> & UISys::GetRoot()
+void UISys::OpenWindow(const std::string & url)
 {
-    return _root;
+    auto window = _windows.emplace_back(UIParser::Parse(url));
+    window->ResetLayout();
 }
 
-void UISys::SetRoot(const std::string & url)
+void UISys::FreeWindow(const SharePtr<UIObject> & ptr)
 {
-    SetRoot(UIParser::Parse(url));
-    _root->ResetLayout();
+    auto it = std::remove(_windows.begin(), _windows.end(), ptr);
+    if (it != _windows.end()) { _windows.erase(it); }
 }
 
-void UISys::SetRoot(const SharePtr<UIObject> & object)
+const std::vector<SharePtr<UIObject>> & UISys::GetWindows()
 {
-    _root = object;
-    _root->ResetLayout();
+    return _windows;
 }
+

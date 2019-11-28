@@ -1031,6 +1031,9 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_text.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\system\ui_sys\ui_list.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="editor\third\glm\detail\func_common.inl">

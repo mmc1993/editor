@@ -90,6 +90,7 @@
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
     <ClInclude Include="editor\system\interface\serializer.h" />
     <ClInclude Include="editor\system\ui_sys\ui_event.h" />
+    <ClInclude Include="editor\system\ui_sys\ui_list.h" />
     <ClInclude Include="editor\system\ui_sys\ui_menu.h" />
     <ClInclude Include="editor\third\glm\common.hpp" />
     <ClInclude Include="editor\third\glm\detail\compute_common.hpp" />

@@ -120,9 +120,16 @@ enum class UIEventEnum {
 
 //  转化为ImGuiID
 template <class T>
-inline std::string ImID(const T & v)
+std::string ImID(const T & v)
 {
-    return "##" + std::to_string(v);
+    if constexpr (std::is_pointer_v<T> || std::is_arithmetic_v<T>)
+    {
+        return SFormat("{0}##{0}", (size_t)v);
+    }
+    else
+    {
+        return SFormat("{0}##{1}", (size_t)&v, v);
+    }
 }
 
 //  ImGui 工具函数

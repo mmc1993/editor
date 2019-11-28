@@ -7,10 +7,10 @@ public:
     UISys();
     ~UISys();
     void Update(float dt);
-    const SharePtr<UIObject> & GetRoot();
-    void SetRoot(const std::string & url);
-    void SetRoot(const SharePtr<UIObject> & object);
+    void OpenWindow(const std::string & url);
+    void FreeWindow(const SharePtr<UIObject> & ptr);
+    const std::vector<SharePtr<UIObject>> & GetWindows();
 
 private:
-    SharePtr<UIObject> _root;
+    std::vector<SharePtr<UIObject>> _windows;
 };

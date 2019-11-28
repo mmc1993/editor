@@ -34,6 +34,7 @@
 
 #include "global.h"
 #include "system/ui_sys/ui_sys.h"
+#include "system/ui_sys/ui_list.h"
 #include "system/raw_sys/raw_sys.h"
 #include "system/cfg_sys/cfg_sys.h"
 #include "system/event_sys/event_sys.h"
@@ -154,7 +155,7 @@ int main(int, char**)
     Global::Ref().mEditorSys = new EditorSys();
     //  初始化UI系统
     Global::Ref().mUISys = new UISys();
-    Global::Ref().mUISys->SetRoot("res/ui/window.json");
+    Global::Ref().mUISys->OpenWindow(UIFile_Main);
 
     // Main loop
     while (!glfwWindowShouldClose(window))
