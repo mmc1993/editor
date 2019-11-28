@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
-    <Widget type="Window" skin="Window" position="0 0 1280 720" align="HStretch VStretch" name="Root">
+    <Widget type="Widget" skin="PanelSkin" position="0 0 1280 720" align="HStretch VStretch" name="Root">
         <Property key="IsCanMove" value="false"/>
         <Property key="IsCanDragFree" value="false"/>
         <Property key="IsCanStretch" value="true"/>
@@ -14,7 +14,7 @@
         <Property key="StretchMin" value="1280 720"/>
         <Property key="MenuBar" value="Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic"/>
         <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_global"/>
-        <Widget type="Window" skin="Window" position="0 0 1280 25" align="Left Right Top" name="EditorMenu">
+        <Widget type="Widget" skin="PanelSkin" position="0 0 1280 25" align="Left Right Top" name="EditorMenu">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
@@ -28,7 +28,7 @@
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="1280 25"/>
         </Widget>
-        <Widget type="Window" skin="Window" position="0 680 1280 40" align="Left Right Bottom" name="EditorState">
+        <Widget type="Widget" skin="PanelSkin" position="0 680 1280 40" align="Left Right Bottom" name="EditorState">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
@@ -42,7 +42,7 @@
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="1280 40"/>
         </Widget>
-        <Widget type="Window" skin="Window" position="0 25 300 655" align="HStretch VStretch" name="EditorObjList">
+        <Widget type="Widget" skin="PanelSkin" position="0 25 300 655" align="HStretch VStretch" name="EditorObjList">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="true"/>
             <Property key="IsCanMove" value="false"/>
@@ -57,7 +57,7 @@
             <Property key="StretchMin" value="300 655"/>
             <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_obj_list"/>
         </Widget>
-        <Widget type="Window" skin="Window" position="1040 25 240 655" align="HStretch VStretch" name="EditorObjComp">
+        <Widget type="Widget" skin="PanelSkin" position="1040 25 240 655" align="HStretch VStretch" name="EditorObjComp">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
@@ -72,7 +72,7 @@
             <Property key="StretchMin" value="240 655"/>
             <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_com_list"/>
         </Widget>
-        <Widget type="Window" skin="Window" position="300 25 740 655" align="HStretch VStretch" name="EditorObjStage">
+        <Widget type="Widget" skin="PanelSkin" position="300 25 740 655" align="HStretch VStretch" name="EditorObjStage">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
