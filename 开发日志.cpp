@@ -96,15 +96,16 @@ ok  //  UIEventEnum 剥离
 // 对象拖放
 // 文字
 
-资源管理器:
-    类别,
-    目录,
-    叶子,
 UISys.Update()
 UISys.OpenWindow()
 UISys.FreeWindow()
 UISys.IsWindowExist()
 _windows
+
+资源管理器:
+    类别,
+    目录,
+    叶子,
 
 资源类型:
     Text
