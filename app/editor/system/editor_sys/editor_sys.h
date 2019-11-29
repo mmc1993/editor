@@ -3,6 +3,7 @@
 #include "../../include.h"
 #include "project.h"
 
+class Res;
 class GLObject;
 class Component;
 
@@ -54,6 +55,14 @@ public:
     void OptSaveProject(const std::string & url);
     //  关闭项目
     void OptFreeProject();
+
+    /// 资源
+    //  删除资源
+    void OptDeleteRes(Res * res);
+    //  修改资源
+    void OptModifyRes(Res * res, const std::string & url);
+    //  设置资源类型
+    void OptSetResType(Res * res, uint type);
 
 //  工具接口
     void OpenDialogNewProject(const std::string & url);

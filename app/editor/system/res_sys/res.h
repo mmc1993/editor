@@ -4,7 +4,7 @@
 
 class Res {
 public:
-    enum TagEnum {
+    enum TypeEnum {
         kNull,      //  无
         kTxt,       //  文本
         kImg,       //  图片
@@ -50,14 +50,14 @@ public:
     Ref* AppendRef();
     void DeleteRef(Ref * ref);
 
-    void SetTag(TagEnum tag);
-    TagEnum GetTag();
+    void SetType(TypeEnum type);
+    TypeEnum GetType();
 
     std::string GetPath();
 
 private:
     uint                _id;
-    TagEnum             _tag;   //  标签
+    TypeEnum            _type;  //  标签
     std::vector<Ref *>  _refs;  //  引用集
     std::string         _metas; //  字符元数据
     uint                _metai; //  数值元数据

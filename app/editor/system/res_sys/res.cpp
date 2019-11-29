@@ -37,7 +37,7 @@ void Res::Ref::SetModify()
 // ---
 Res::Res(uint id)
     : _id(id)
-    , _tag(kNull)
+    , _type(kNull)
     , _metai(~0L)
 { }
 
@@ -49,7 +49,7 @@ Res::~Res()
 std::any Res::Load()
 {
     std::any ret;
-    switch (_tag)
+    switch (_type)
     {
     case Res::kTxt:
     case Res::kImg:
@@ -82,20 +82,20 @@ void Res::DeleteRef(Ref * ref)
     _refs.erase(it);
 }
 
-void Res::SetTag(TagEnum tag)
+void Res::SetType(TypeEnum type)
 { 
-    _tag = tag;
+    _type = type;
 }
 
-Res::TagEnum Res::GetTag()
+Res::TypeEnum Res::GetType()
 { 
-    return _tag;
+    return _type;
 }
 
 std::string Res::GetPath()
 {
     std::string path;
-    switch (_tag)
+    switch (_type)
     {
     case Res::kTxt:
     case Res::kImg:

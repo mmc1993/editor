@@ -3,6 +3,7 @@
 class EditorSys;
 class EventSys;
 class RawSys;
+class ResSys;
 class CfgSys;
 class UISys;
 
@@ -20,6 +21,7 @@ public:
     EditorSys * mEditorSys;
     EventSys * mEventSys;
     RawSys * mRawSys;
+    ResSys * mResSys;
     CfgSys * mCfgSys;
     UISys * mUISys;
 
