@@ -44,6 +44,7 @@
     <ClCompile Include="editor\system\raw_sys\raw_sys.cpp" />
     <ClCompile Include="editor\system\interface\serializer.cpp" />
     <ClCompile Include="editor\system\res_sys\res.cpp" />
+    <ClCompile Include="editor\system\res_sys\res_sys.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_event.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_object\ui_object_gl_canvas.cpp" />
     <ClCompile Include="editor\third\glm\detail\glm.cpp" />
@@ -91,6 +92,7 @@
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
     <ClInclude Include="editor\system\interface\serializer.h" />
     <ClInclude Include="editor\system\res_sys\res.h" />
+    <ClInclude Include="editor\system\res_sys\res_sys.h" />
     <ClInclude Include="editor\system\ui_sys\ui_event.h" />
     <ClInclude Include="editor\system\ui_sys\ui_list.h" />
     <ClInclude Include="editor\system\ui_sys\ui_menu.h" />
@@ -500,7 +502,7 @@
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{B275AC70-3F0A-459C-8D4C-62932D5D9483}</ProjectGuid>
     <RootNamespace>app</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

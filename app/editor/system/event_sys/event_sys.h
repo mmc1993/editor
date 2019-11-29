@@ -24,11 +24,9 @@ public:
         kAppendComponent,   //  { GLOBject 选中的节点, Component 新增的组件 }
 
         //  resource
-        kSetResType,            //  { Res 选中的资源, string 路径, Res::TypeEnum 类型 }
-        kModifyResFile,         //  { Res 选中的资源, string 旧路径, string 新路径 } 
-        kModifyResDataObj,      //  { Res 选中的资源, string 旧名字, string 新名字,  GLObject 旧父节点, GLObject 新父节点, GLObject 对象 }
-        kDeleteResFile,         //  { Res 选中的资源, string 路径 }
-        kDeleteResDataObj,      //  { Res 选中的资源, string 路径, GLObject 对象 }
+        kSetResType,        //  { Res 选中的资源, string 路径, Res::TypeEnum 类型 }
+        kModifyRes,         //  { Res 选中的资源, string 旧路径, string 新路径 }
+        kDeleteRes,         //  { id 选中的资源, string 路径 }
     };
 
     using func_t = std::function<void(TypeEnum type, const std::any &)>;

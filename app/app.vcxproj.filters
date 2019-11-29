@@ -138,6 +138,9 @@
     <ClCompile Include="editor\system\res_sys\res.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\res_sys\res_sys.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -1038,6 +1041,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\res_sys\res.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\res_sys\res_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

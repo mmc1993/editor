@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../include.h"
+#include "../interface/serializer.h"
 
 class Res {
 public:
@@ -53,7 +54,15 @@ public:
     void SetType(TypeEnum type);
     TypeEnum GetType();
 
+    void BindMeta(uint                val);
+    void BindMeta(const std::string & val);
+
     std::string GetPath();
+    uint GetRefCount();
+    uint GetID();
+
+private:
+    void WakeRefs();
 
 private:
     uint                _id;

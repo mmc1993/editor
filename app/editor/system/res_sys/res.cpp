@@ -92,6 +92,24 @@ Res::TypeEnum Res::GetType()
     return _type;
 }
 
+void Res::BindMeta(uint val)
+{
+    if (_metai != val)
+    {
+        _metai = val;
+        WakeRefs();
+    }
+}
+
+void Res::BindMeta(const std::string & val)
+{ 
+    if (_metas != val)
+    {
+        _metas = val;
+        WakeRefs();
+    }
+}
+
 std::string Res::GetPath()
 {
     std::string path;
@@ -125,4 +143,22 @@ std::string Res::GetPath()
         break;
     }
     return std::move(path);
+}
+
+uint Res::GetRefCount()
+{
+    return _refs.size();
+}
+
+uint Res::GetID()
+{
+    return _id;
+}
+
+void Res::WakeRefs()
+{ 
+    for (auto & ref : _refs)
+    {
+        ref->SetModify();
+    }
 }
