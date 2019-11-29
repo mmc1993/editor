@@ -16,11 +16,7 @@ std::vector<Res*> ResSys::GetResByType(std::initializer_list<Res::TypeEnum> type
     std::vector<Res *> result;
     for (auto & pair : _resources)
     {
-        auto fn = [&pair] (const Res::TypeEnum type)
-        {
-            return pair.second->GetType() == type;
-        };
-
+        auto fn =[&pair](const Res::TypeEnum type){return pair.second->Type()==type;};
         if (auto it = std::find_if(types.begin(), types.end(), fn); it != types.end())
         {
             result.emplace_back(pair.second);
@@ -43,12 +39,12 @@ void ResSys::OptDeleteRes(uint id)
 
 void ResSys::OptDeleteRes(Res * res)
 {
-    if (res->GetRefCount() == 0 && (res->GetType() == Res::kTxt ||
-                                    res->GetType() == Res::kImg ||   
-                                    res->GetType() == Res::kMap ||
-                                    res->GetType() == Res::kFont))
+    if (res->GetRefCount() == 0 && (res->Type() == Res::kTxt ||
+                                    res->Type() == Res::kImg ||   
+                                    res->Type() == Res::kMap ||
+                                    res->Type() == Res::kFont))
     {
-        auto value = std::any_cast<std::string>(res->Load());
+        auto value = std::any_cast<std::string>(res->Instance());
         auto tuple = std::make_tuple(res->GetID(), value);
         DeleteRes(res);
 
@@ -63,16 +59,16 @@ void ResSys::OptModifyRes(uint id, const std::string & url)
 
 void ResSys::OptModifyRes(Res * res, const std::string & url)
 {
-    if (res->GetType() == Res::kTxt ||
-        res->GetType() == Res::kImg ||   
-        res->GetType() == Res::kMap ||
-        res->GetType() == Res::kFont)
+    if (res->Type() == Res::kTxt ||
+        res->Type() == Res::kImg ||   
+        res->Type() == Res::kMap ||
+        res->Type() == Res::kFont)
     {
         try
         {
-            auto oldPath = std::any_cast<std::string>(res->Load());
+            auto oldPath = std::any_cast<std::string>(res->Instance());
             std::filesystem::rename(oldPath, url); res->BindMeta(url);
-            auto newPath = std::any_cast<std::string>(res->Load());
+            auto newPath = std::any_cast<std::string>(res->Instance());
 
             Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteRes, std::make_tuple(res, oldPath, newPath));
         }
@@ -92,7 +88,7 @@ void ResSys::OptSetResType(Res * res, uint type)
 {
     if (res->GetRefCount() == 0)
     {
-        res->SetType((Res::TypeEnum)type);
+        res->Type((Res::TypeEnum)type);
 
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSetResType, std::make_tuple(res, (Res::TypeEnum)type));
     }

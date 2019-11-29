@@ -22,14 +22,15 @@ Res::Ref * Res::Ref::Clone()
     return _owner->AppendRef();
 }
 
-bool Res::Ref::IsModify()
+bool Res::Ref::Modify()
 {
     return _modify;
 }
 
-void Res::Ref::SetModify()
+bool Res::Ref::Modify(bool modify)
 {
     _modify = true;
+    return _modify;
 }
 
 // ---
@@ -46,7 +47,7 @@ Res::~Res()
     ASSERT_LOG(_refs.empty(), "");
 }
 
-std::any Res::Load()
+std::any Res::Instance()
 {
     std::any ret;
     switch (_type)
@@ -70,6 +71,16 @@ std::any Res::Load()
     return std::move(ret);
 }
 
+uint Res::GetRefCount()
+{
+    return _refs.size();
+}
+
+uint Res::GetID()
+{
+    return _id;
+}
+
 Res::Ref * Res::AppendRef()
 {
     return new Ref(this);
@@ -78,21 +89,23 @@ Res::Ref * Res::AppendRef()
 void Res::DeleteRef(Ref * ref)
 { 
     auto it = std::remove(_refs.begin(), _refs.end(), ref);
-    ASSERT_LOG(it != _refs.end(), "");
+    ASSERT_LOG(it != _refs.end(), ""); 
     _refs.erase(it);
+    delete ref;
 }
 
-void Res::SetType(TypeEnum type)
-{ 
-    _type = type;
-}
-
-Res::TypeEnum Res::GetType()
+Res::TypeEnum Res::Type()
 { 
     return _type;
 }
 
-void Res::BindMeta(uint val)
+Res::TypeEnum Res::Type(TypeEnum type)
+{ 
+    _type = type;
+    return _type;
+}
+
+void Res::BindMeta(const uint val)
 {
     if (_metai != val)
     {
@@ -110,7 +123,7 @@ void Res::BindMeta(const std::string & val)
     }
 }
 
-std::string Res::GetPath()
+std::string Res::Path()
 {
     std::string path;
     switch (_type)
@@ -119,7 +132,9 @@ std::string Res::GetPath()
     case Res::kImg:
     case Res::kMap:
     case Res::kFont:
-        path = _metas;
+        {
+            path = _metas;
+        }
         break;
     case Res::kObj:
         {
@@ -145,20 +160,10 @@ std::string Res::GetPath()
     return std::move(path);
 }
 
-uint Res::GetRefCount()
-{
-    return _refs.size();
-}
-
-uint Res::GetID()
-{
-    return _id;
-}
-
 void Res::WakeRefs()
 { 
     for (auto & ref : _refs)
     {
-        ref->SetModify();
+        ref->Modify(true);
     }
 }

@@ -22,15 +22,16 @@ public:
         ~Ref();
 
         Ref * Clone();
-        bool IsModify();
-        void SetModify();
+        bool Modify();
+        bool Modify(bool modify);
 
         template <class T>
-        T Load()
+        T Instance()
         {
             ASSERT_LOG(_owner != nullptr, "");
-            _modify = false;
-            return std::any_cast<T>(_owner->Load());
+            Modify(false);
+            auto instance = _owner->Instance();
+            return  std::any_cast<T>(instance);
         }
 
     private:
@@ -46,28 +47,27 @@ public:
     Res(uint id);
     ~Res();
 
-    std::any Load();
-
-    Ref* AppendRef();
-    void DeleteRef(Ref * ref);
-
-    void SetType(TypeEnum type);
-    TypeEnum GetType();
-
-    void BindMeta(uint                val);
-    void BindMeta(const std::string & val);
-
-    std::string GetPath();
+    std::any Instance();
+    std::string Path();
     uint GetRefCount();
     uint GetID();
+    
+    Ref * AppendRef();
+    void  DeleteRef(Ref * ref);
+
+    TypeEnum Type();
+    TypeEnum Type(TypeEnum type);
+
+    void BindMeta(const uint          val);
+    void BindMeta(const std::string & val);
 
 private:
     void WakeRefs();
 
 private:
     uint                _id;
-    TypeEnum            _type;  //  标签
-    std::vector<Ref *>  _refs;  //  引用集
+    TypeEnum            _type;  //  类型
+    std::vector<Ref *>  _refs;  //  引用列表
     std::string         _metas; //  字符元数据
     uint                _metai; //  数值元数据
 };
