@@ -103,10 +103,97 @@ UISys.FreeWindow()
 UISys.IsWindowExist()
 
 资源管理器:
-    标签,
-    节点(Txt, Img, Map, Fnt, Obj, Var, Root),
+    文件对象
+    抽象对象
+操作:
+    检索
+    查看引用
+    移动资源
+    删除资源
 
-用于显示节点(标签, 路径)
+文件对象(Txt, Img, Map, Font)
+抽象对象(Obj, Var, Blueprint)
+
+文件对象ID => 文件路径
+抽象对象ID => 对象ID
+
+文件对象路径 => 文件路径
+抽象对象路径 => 对象路径
+
+文件对象元数据 => 文件路径
+抽象对象元数据 => 对象ID
+
+文件对象实例 => Raw实例
+抽象对象实例 => Obj实例
+
+
+class Res {
+public:
+    enum TagEnum {
+        kNull,      //  无
+        kTxt,       //  文本
+        kImg,       //  图片
+        kMap,       //  地图
+        kFont,      //  字体
+        kObj,       //  对象
+        kVar,       //  变量
+        kBlueprint, //  蓝图
+    }
+
+    class Ref {
+    public:
+        ~Ref();
+        Ref(uint owner);
+        Ref(const Ref & other);
+        Ref & operator=(const Ref & other);
+
+        bool IsModify()
+        {
+            return _modify;
+        }
+
+        void SetModify()
+        {
+            _modify = true;
+        }
+
+        template <class T>
+        T Load()
+        {
+            _modify = false;
+            return std::any_cast<T>(_parent->Load());
+        }
+
+    private:
+        Res * _parent;
+        bool  _modify;
+    }
+
+public:
+    Res();
+    ~Res();
+    std::any Load();
+    Ref * Insert();
+    void  Delete(Ref * ref);
+
+private:
+    uint                _id;
+    TagEnum             _tag;   //  标签
+    std::vector<Ref *>  _refs;  //  引用集
+    std::string         _metas; //  字符元数据
+    uint                _metai; //  数值元数据
+}
+
+//  作用
+//  生成资源列表
+//  查找/移动/删除资源
+//  资源按标签分类
+
+//  引用关系
+//  Res 资源对象
+//  Ref 引用对象
+
+
 
 地形破坏
 导航网格

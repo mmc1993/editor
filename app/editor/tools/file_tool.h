@@ -1,5 +1,9 @@
 #pragma once
 
+#ifdef CreateDirectory
+#undef CreateDirectory
+#endif
+
 namespace tools {
     inline size_t GetFileLength(std::ifstream & istream)
     {
@@ -24,6 +28,18 @@ namespace tools {
         std::ifstream is(path);
         bool ret = !!is;
         is.close();
+        return ret;
+    }
+
+    inline bool CreateDirectory(const std::string & path)
+    {
+        auto split = tools::Split(path, "/");
+        split.pop_back();
+        auto ret = false;
+        for (auto & name : split)
+        {
+            ret = std::filesystem::create_directory(name);
+        }
         return ret;
     }
 }

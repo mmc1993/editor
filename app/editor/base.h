@@ -12,6 +12,7 @@ using uint = unsigned int;
 #include <list>
 #include <iterator>
 #include <algorithm>
+#include <filesystem>
 #include <functional>
 #include <random>
 #include <memory>
