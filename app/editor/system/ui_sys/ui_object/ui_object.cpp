@@ -667,6 +667,15 @@ bool UIObjectLayout::OnEnter()
                 ImGui::SetNextWindowPos(move);
                 ImGui::SetNextWindowSize(size);
             }
+
+            //  限制最小尺寸
+            if (size.x <= state->StretchMin.x || size.y <= state->StretchMin.y)
+            {
+                size.x = std::max(size.x, state->StretchMin.x);
+                size.y = std::max(size.y, state->StretchMin.y);
+                ImGui::SetNextWindowSize(size);
+            }
+
             bool isfree= true;
             ret = ImGui::Begin(ImID(name).c_str(), &isfree, flag);
             if (!isfree) { Global::Ref().mUISys->FreeWindow(shared_from_this()); }

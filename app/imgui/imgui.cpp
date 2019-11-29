@@ -1242,7 +1242,7 @@ ImGuiIO::ImGuiIO()
 #endif
     ConfigInputTextCursorBlink = true;
     ConfigWindowsResizeFromEdges = true;
-    ConfigWindowsMoveFromTitleBarOnly = false;
+    ConfigWindowsMoveFromTitleBarOnly = true;
 
     // Platform Functions
     BackendPlatformName = BackendRendererName = NULL;

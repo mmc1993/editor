@@ -1,19 +1,19 @@
-ok ���ڲ˵�
-ok �����˵�
-ok ���췽���ж�
+ok 窗口菜单
+ok 弹出菜单
+ok 拉伸方向判断
 
 
-����
-���
+对象
+组件
 
 
-ͼ��
-����:
-    ���0
-    ���1
-    ���2
+图层
+对象:
+    组件0
+    组件1
+    组件2
 
-//  ������
+//  工程类
 class Project {
 public:
     GLOBject * mRoot;
@@ -26,28 +26,28 @@ public:
     void Free();
 }
 
-//  �ṩ���������л�/�����л�
-//  �ṩ�ַ������л�/�����л�
-//  ���л��ӿ�
+//  提供二进制序列化/反序列化
+//  提供字符串序列化/反序列化
+//  序列化接口
 class Serializer {
 public:
     virtual void Encode(std::ofstream & os) = 0;
     virtual void Decode(std::ifstream & is) = 0;
 }
 
-ok  //  event_enum �Ž� EventSys
-ok  //  event_listen �Ž� EventSys
-ok  //  parser_tool.h �Ž� Serializer
-ok  //  UIEventEnum ����
+ok  //  event_enum 放进 EventSys
+ok  //  event_listen 放进 EventSys
+ok  //  parser_tool.h 放进 Serializer
+ok  //  UIEventEnum 剥离
 
 
-// ��Ҫ���л��Ķ���:
+// 需要序列化的对象:
 //     Project
 //     GLObject
 //     Component
 
 
-�ϷŲ���:
+拖放参数:
     bool IsCanDrag,
 
     struct Drag {
@@ -61,40 +61,40 @@ ok  //  UIEventEnum ����
         glm::vec2 mEndWorld;
     }
 
-// ʹ������ָ��
+// 使用智能指针
 
-// ΪGLObject����ΨһID
-// EditorSysֻ����GLObject
+// 为GLObject生成唯一ID
+// EditorSys只操作GLObject
 
-//  ͼ��/ͼƬ�ϲ�
-//  ��Դ�������WeakPtr
+//  图集/图片合并
+//  资源缓存改用WeakPtr
 
  GLCanvas
-    �л�ģʽ: �س�
+    切换模式: 回车
 
-�༭ģʽ:
-    ���Ʊ߿�, ��ʾ���Ƶ�
-    ���˫���߿� -> �������Ƶ�
-    ����������Ƶ� -> ѡ�п��Ƶ�
-    �����ס���Ƶ� -> �϶����Ƶ�
-    �Ҽ���ס���Ƶ� -> �������Ƶ�
-    Delete        -> ɾ�����Ƶ�
+编辑模式:
+    绘制边框, 显示控制点
+    左键双击边框 -> 新增控制点
+    左键单击控制点 -> 选中控制点
+    左键按住控制点 -> 拖动控制点
+    右键按住控制点 -> 新增控制点
+    Delete        -> 删除控制点
 
- �϶�ģʽ:
-     ���Ʊ߿�
-     �����ס�߿��� -> �϶�����
-     Delete        -> ɾ������
+ 拖动模式:
+     绘制边框
+     左键按住边框内 -> 拖动对象
+     Delete        -> 删除对象
 
-// ����
-// ��Ƭ��ͼ
-// ����
-// ����������
-// �������ü�
-// �ֲ���Ⱦ
-// ��������
-// ����ɼ�
-// �����Ϸ�
-// ����
+// 精灵
+// 瓦片地图
+// 光照
+// 贝塞尔曲线
+// 可视区裁剪
+// 分层渲染
+// 对象锁定
+// 对象可见
+// 对象拖放
+// 文字
 
 _windows
 UISys.Update()
@@ -102,22 +102,15 @@ UISys.OpenWindow()
 UISys.FreeWindow()
 UISys.IsWindowExist()
 
-��Դ������:
-    ���,
-    Ŀ¼,
-    Ҷ��,
+资源管理器:
+    标签,
+    节点(Txt, Img, Map, Fnt, Obj, Var, Root),
 
-��Դ����:
-    Text
-    Image
-    Object
-    Tilemap
-    Variable
-    BehaviorTree
+用于显示节点(标签, 路径)
 
-�����ƻ�
-��������
-��Ϊ��
-����
-����
-����
+地形破坏
+导航网格
+行为树
+网络
+变量
+粒子
