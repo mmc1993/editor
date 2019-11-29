@@ -668,18 +668,30 @@ bool UIObjectLayout::OnEnter()
                 ImGui::SetNextWindowSize(size);
             }
 
-            //  限制最小尺寸
-            if (size.x <= state->StretchMin.x || size.y <= state->StretchMin.y)
+            bool isOpen = true;
+            ret = ImGui::Begin(ImID(name).c_str(), &isOpen, flag);
+
+            //  计算正确的坐标和尺寸(Window通过ImGui管理坐标和尺寸, 在这里只需要更新它就行了)
+            if (isOpen)
             {
-                size.x = std::max(size.x, state->StretchMin.x);
-                size.y = std::max(size.y, state->StretchMin.y);
-                ImGui::SetNextWindowSize(size);
+                move = ImGui::GetWindowPos();
+                size = ImGui::GetWindowSize();
+                size.x = std::max(state->StretchMin.x, size.x);
+                size.y = std::max(state->StretchMin.y, size.y);
+                state->Move = glm::vec4(move.x, move.y, size.x, size.y);
+                if (size.x <= state->StretchMin.x || size.y <= state->StretchMin.y)
+                {
+                    size.x = std::max(size.x, state->StretchMin.x);
+                    size.y = std::max(size.y, state->StretchMin.y);
+                    ImGui::SetWindowSize(size);
+                }
+            }
+            else
+            {
+                Global::Ref().mUISys->FreeWindow(shared_from_this());
             }
 
-            bool isfree= true;
-            ret = ImGui::Begin(ImID(name).c_str(), &isfree, flag);
-            if (!isfree) { Global::Ref().mUISys->FreeWindow(shared_from_this()); }
-            ret = ret && isfree;
+            ret = ret && isOpen;
         }
     }
     else
@@ -700,15 +712,7 @@ void UIObjectLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (state->IsWindow)
     {
-        if (!state->IsFullScreen)
-        {
-            auto move = ImGui::GetWindowPos();
-            auto size = ImGui::GetWindowSize();
-            size.x = std::max(state->StretchMin.x, size.x);
-            size.y = std::max(state->StretchMin.y, size.y);
-            state->Move = glm::vec4(move.x, move.y, size.x, size.y);
-        }
-        else
+        if (state->IsFullScreen)
         {
             ImGui::PopStyleVar();
         }
