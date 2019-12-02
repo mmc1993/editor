@@ -1,6 +1,4 @@
 #include "ui_sys.h"
-#include "ui_parse/ui_parse.h"
-#include "ui_object/ui_object.h"
 
 UISys::UISys()
 { }

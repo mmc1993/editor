@@ -1,8 +1,6 @@
 #pragma once
 
-#include "component.h"
-#include "comp_polygon.h"
-#include "../../interface/render.h"
+#include "../../raw_sys/component.h"
 
 class CompRenderTarget : public Component {
 public:

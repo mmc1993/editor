@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../../../include.h"
 #include "../../ui_sys/ui_object/ui_object.h"
 
 class UIComponentHeader : public UIObject {

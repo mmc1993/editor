@@ -1,6 +1,5 @@
 #include "comp_light.h"
-#include "comp_transform.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../../raw_sys/comp_transform.h"
 
 CompLight::CompLight()
     : _border(20)

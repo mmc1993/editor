@@ -1,7 +1,6 @@
 #pragma once
 
-#include "component.h"
-#include "../../interface/render.h"
+#include "../../raw_sys/component.h"
 
 class CompSprite : public Component {
 private:

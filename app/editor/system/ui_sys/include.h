@@ -56,9 +56,9 @@
 
 #include "imgui.h"
 
-class UIObject;
 class UIState;
-class UISys;
+class UIParse;
+class UIObject;
 
 enum class DirectEnum {
     kU, kD, kL, kR, Length, kNone,

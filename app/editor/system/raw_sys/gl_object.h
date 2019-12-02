@@ -1,11 +1,7 @@
 #pragma once
 
-#include "../../../include.h"
-#include "../../interface/serializer.h"
-
-#ifdef GetObject
-#undef GetObject
-#endif
+#include "../../include.h"
+#include "../interface/serializer.h"
 
 class Component;
 class CompTransform;

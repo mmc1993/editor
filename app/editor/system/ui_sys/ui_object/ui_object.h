@@ -3,11 +3,6 @@
 #include "../include.h"
 #include "../ui_event.h"
 #include "../ui_state/ui_state.h"
-#include "../../raw_sys/raw.h"
-
-#ifdef GetObject
-#undef GetObject
-#endif
 
 class UIObject: public std::enable_shared_from_this<UIObject> {
 public:

@@ -1,6 +1,5 @@
 #include "res.h"
-#include "../editor_sys/editor_sys.h"
-#include "../editor_sys/component/gl_object.h"
+#include "project.h"
 
 // ---
 //  Res::Ref
@@ -36,9 +35,10 @@ bool Res::Ref::Modify(bool modify)
 // ---
 //  Res
 // ---
-Res::Res(uint id)
+Res::Res(Project * owner, uint id)
     : _id(id)
     , _type(kNull)
+    , _owner(owner)
 { }
 
 Res::~Res()
@@ -58,7 +58,7 @@ std::any Res::Instance()
         ret = std::any_cast<std::string>(_meta);
         break;
     case Res::kObj:
-        ret = Global::Ref().mEditorSys->GetProject()->GetObject(std::any_cast<uint>(_meta));
+        ret = _owner->GetObject(std::any_cast<uint>(_meta));
         break;
     case Res::kVar:
         ASSERT_LOG(false, "");
@@ -135,7 +135,7 @@ std::string Res::Path()
         break;
     case Res::kObj:
         {
-            auto object = Global::Ref().mEditorSys->GetProject()->GetObject(std::any_cast<uint>(_meta));
+            auto object = _owner->GetObject(std::any_cast<uint>(_meta));
             path.append(object->GetName());
 
             for (   object = object->GetParent(); 

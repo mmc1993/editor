@@ -1,5 +1,4 @@
 #include "event_sys.h"
-#include "../../base.h"
 #include "../../global.h"
 
 size_t EventSys::s_coundID = 0;

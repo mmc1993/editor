@@ -1,8 +1,7 @@
 #include "comp_render_target.h"
-#include "../editor_sys.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../editor_sys.h"
 
 CompRenderTarget::CompRenderTarget()
 {

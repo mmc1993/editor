@@ -1,5 +1,5 @@
 #include "comp_tilemap.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../../raw_sys/raw_sys.h"
 
 CompTilemap::CompTilemap()
     : _size(0.0f, 0.0f)

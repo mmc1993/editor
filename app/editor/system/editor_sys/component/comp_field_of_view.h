@@ -1,9 +1,8 @@
 #pragma once
 
-#include "component.h"
-#include "comp_polygon.h"
+#include "../../raw_sys/component.h"
 #include "comp_render_target.h"
-#include "../../interface/render.h"
+#include "comp_polygon.h"
 
 class CompFieldOfView 
     : public Component

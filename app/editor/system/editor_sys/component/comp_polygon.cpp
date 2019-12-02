@@ -1,8 +1,7 @@
 #include "comp_polygon.h"
-#include "comp_transform.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../../raw_sys/comp_transform.h"
 
 CompPolygon::CompPolygon()
 {

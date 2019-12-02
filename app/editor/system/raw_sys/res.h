@@ -3,6 +3,8 @@
 #include "../../include.h"
 #include "../interface/serializer.h"
 
+class Project;
+
 class Res {
 public:
     enum TypeEnum {
@@ -44,7 +46,7 @@ public:
     };
 
 public:
-    Res(uint id);
+    Res(Project * owner, uint id);
     ~Res();
 
     std::any Instance();
@@ -66,7 +68,8 @@ private:
 
 private:
     uint                _id;
-    TypeEnum            _type;  //  类型
-    std::any            _meta;  //  元数据
-    std::vector<Ref *>  _refs;  //  引用列表
+    TypeEnum            _type;      //  类型
+    std::any            _meta;      //  元数据
+    std::vector<Ref *>  _refs;      //  引用列表
+    Project *           _owner;     //  项目归属
 };

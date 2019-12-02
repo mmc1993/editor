@@ -1,17 +1,14 @@
 #pragma once
 
 #include "../../../../include.h"
-#include "../../component/component.h"
-#include "../../component/comp_transform.h"
+#include "../../../raw_sys/project.h"
+#include "../../../raw_sys/comp_transform.h"
 #include "../../../event_sys/event_sys.h"
 #include "../../../cfg_sys/cfg_sys.h"
 #include "../../../ui_sys/ui_sys.h"
-#include "../../../ui_sys/ui_menu.h"
-#include "../../../ui_sys/ui_parse/ui_parse.h"
-#include "../../../ui_sys/ui_object/ui_object.h"
+#include "../../../ui_sys/ui_list.h"
 #include "../../property/ui_property.h"
 #include "../../editor_sys.h"
-#include "../../project.h"
 
 class UIEventDelegateMain : public UIEvent::DelegateHandler {
 protected:

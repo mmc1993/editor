@@ -1,12 +1,10 @@
 #pragma once
 
 #include "../../include.h"
-
-#ifdef GetObject
-#undef GetObject
-#endif
-
-class GLObject;
+#include "gl_object.h"
+#include "component.h"
+#include "res.h"
+#include "raw.h"
 
 class Project {
 public:

@@ -1,8 +1,7 @@
 #pragma once
 
-#include "component.h"
+#include "../../raw_sys/component.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../interface/render.h"
 
 class CompTilemap : public Component {
 private:

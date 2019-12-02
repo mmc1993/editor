@@ -1,7 +1,7 @@
 #include "gl_object.h"
 #include "component.h"
 #include "comp_transform.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../ui_sys/ui_object/ui_object.h"
 
 GLObject::GLObject()
     : _id(~0)

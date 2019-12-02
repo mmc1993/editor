@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="editor\system\editor_sys\component\component.cpp" />
+    <ClCompile Include="editor\system\raw_sys\component.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_render_target.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_light.cpp" />
@@ -29,11 +29,11 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_sprite.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_text.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_tilemap.cpp" />
-    <ClCompile Include="editor\system\editor_sys\component\comp_transform.cpp" />
-    <ClCompile Include="editor\system\editor_sys\component\gl_object.cpp" />
+    <ClCompile Include="editor\system\raw_sys\comp_transform.cpp" />
+    <ClCompile Include="editor\system\raw_sys\gl_object.cpp" />
     <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp" />
     <ClCompile Include="editor\system\editor_sys\editor_sys.cpp" />
-    <ClCompile Include="editor\system\editor_sys\project.cpp" />
+    <ClCompile Include="editor\system\raw_sys\project.cpp" />
     <ClCompile Include="editor\system\editor_sys\property\ui_property.cpp" />
     <ClCompile Include="editor\global.cpp" />
     <ClCompile Include="editor\main.cpp" />
@@ -64,7 +64,7 @@
   <ItemGroup>
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
-    <ClInclude Include="editor\system\editor_sys\component\component.h" />
+    <ClInclude Include="editor\system\raw_sys\component.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_render_target.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_light.h" />
@@ -74,12 +74,12 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_sprite.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_text.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_tilemap.h" />
-    <ClInclude Include="editor\system\editor_sys\component\comp_transform.h" />
-    <ClInclude Include="editor\system\editor_sys\component\gl_object.h" />
+    <ClInclude Include="editor\system\raw_sys\comp_transform.h" />
+    <ClInclude Include="editor\system\raw_sys\gl_object.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.h" />
     <ClInclude Include="editor\system\editor_sys\editor_sys.h" />
     <ClInclude Include="editor\system\editor_sys\include.h" />
-    <ClInclude Include="editor\system\editor_sys\project.h" />
+    <ClInclude Include="editor\system\raw_sys\project.h" />
     <ClInclude Include="editor\global.h" />
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />

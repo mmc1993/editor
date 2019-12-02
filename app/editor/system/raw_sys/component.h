@@ -1,10 +1,10 @@
 #pragma once
 
 #include "gl_object.h"
-#include "../../interface/serializer.h"
-
-class UIObject;
-class UIObjectGLCanvas;
+#include "raw.h"
+#include "../interface/render.h"
+#include "../interface/serializer.h"
+#include "../ui_sys/ui_object/ui_object.h"
 
 class Component: public interface::Serializer {
 public:

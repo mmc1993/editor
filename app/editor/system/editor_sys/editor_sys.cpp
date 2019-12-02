@@ -1,5 +1,4 @@
 #include "editor_sys.h"
-#include "component/gl_object.h"
 #include "../event_sys/event_sys.h"
 
 //  选择文件夹对话框

@@ -1,5 +1,4 @@
 #include "project.h"
-#include "component/gl_object.h"
 
 Project::Project(): _acc(0)
 { }

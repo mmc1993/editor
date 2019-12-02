@@ -111,13 +111,6 @@ public:
     UIStateUICanvas();
 };
 
-class GLMesh;
-class GLObject;
-class Component;
-class GLProgram;
-class GLTexture;
-class GLMaterial;
-
 class UIStateGLCanvas : public UIState {
 public:
     struct TargetCommand {

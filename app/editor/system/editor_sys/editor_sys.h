@@ -1,11 +1,7 @@
 #pragma once
 
 #include "../../include.h"
-#include "project.h"
-
-class Res;
-class GLObject;
-class Component;
+#include "../raw_sys/project.h"
 
 class EditorSys {
 private:

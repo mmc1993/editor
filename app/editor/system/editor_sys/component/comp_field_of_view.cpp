@@ -2,7 +2,6 @@
 #include "../editor_sys.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../ui_sys/ui_object/ui_object.h"
 
 CompFieldOfView::CompFieldOfView()
     : _color(1.0f)

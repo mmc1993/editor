@@ -2,6 +2,14 @@
 // If you are new to dear imgui, see examples/README.txt and documentation at the top of imgui.cpp.
 // (GLFW is a cross-platform general purpose library for handling windows, inputs, OpenGL/Vulkan graphics context creation, etc.)
 
+#include "global.h"
+#include "system/ui_sys/ui_sys.h"
+#include "system/ui_sys/ui_list.h"
+#include "system/raw_sys/raw_sys.h"
+#include "system/cfg_sys/cfg_sys.h"
+#include "system/event_sys/event_sys.h"
+#include "system/editor_sys/editor_sys.h"
+
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
@@ -31,14 +39,6 @@
 #pragma comment(lib, "legacy_stdio_definitions")
 
 #endif
-
-#include "global.h"
-#include "system/ui_sys/ui_sys.h"
-#include "system/ui_sys/ui_list.h"
-#include "system/raw_sys/raw_sys.h"
-#include "system/cfg_sys/cfg_sys.h"
-#include "system/event_sys/event_sys.h"
-#include "system/editor_sys/editor_sys.h"
 
 static void glfw_error_callback(int error, const char* description)
 {

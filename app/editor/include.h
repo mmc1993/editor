@@ -21,3 +21,7 @@ SharePtr<T> CastPtr(const U & ptr)
     return std::reinterpret_pointer_cast<T>(ptr);
 #endif
 }
+
+#ifdef GetObject
+#undef GetObject
+#endif

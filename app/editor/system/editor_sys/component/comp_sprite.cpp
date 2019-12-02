@@ -1,8 +1,7 @@
 #include "comp_sprite.h"
-#include "comp_transform.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
-#include "../../ui_sys/ui_object/ui_object.h"
+#include "../../raw_sys/comp_transform.h"
 
 CompSprite::CompSprite()
     : _size(0.0f, 0.0f)

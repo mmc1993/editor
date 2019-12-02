@@ -2,11 +2,6 @@
 
 #include "../../include.h"
 
-class GLMesh;
-class GLFont;
-class GLImage;
-class GLTexture;
-
 class Raw {
 public:
     virtual ~Raw()
@@ -96,42 +91,6 @@ private:
 };
 
 // ---
-//  GLFont
-// ---
-class GLFont : public Raw {
-public:
-    struct Char {
-        uint      mID; //  字Unicode编码
-        glm::vec4 mUV;
-    };
-
-    //  字体信息
-    struct FontInfo {
-        std::map<uint, Char> mChars;
-        std::map<std::string, std::string> mInfo;
-        std::map<std::string, std::string> mPage;
-        std::map<std::string, std::string> mCommon;
-    };
-
-public:
-    GLFont();
-    ~GLFont();
-    const SharePtr<GLTexture> & RefTexture();
-    const Char & RefWord(char word);
-    const Char & RefWord(uint code);
-    //const Word & RefWord(const char * word, uint count);
-    std::vector<uint> RefWord(const std::string & text);
-    virtual bool Init(const std::string & url) override;
-
-private:
-    void Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output);
-
-private:
-    FontInfo            _info;
-    SharePtr<GLTexture> _texture;
-};
-
-// ---
 //  GLImage
 // ---
 class GLImage: Raw {
@@ -188,6 +147,41 @@ private:
     glm::vec4         _offset;
 };
 
+// ---
+//  GLFont
+// ---
+class GLFont : public Raw {
+public:
+    struct Char {
+        uint      mID; //  字Unicode编码
+        glm::vec4 mUV;
+    };
+
+    //  字体信息
+    struct FontInfo {
+        std::map<uint, Char> mChars;
+        std::map<std::string, std::string> mInfo;
+        std::map<std::string, std::string> mPage;
+        std::map<std::string, std::string> mCommon;
+    };
+
+public:
+    GLFont();
+    ~GLFont();
+    const SharePtr<GLTexture> & RefTexture();
+    const Char & RefWord(char word);
+    const Char & RefWord(uint code);
+    //const Word & RefWord(const char * word, uint count);
+    std::vector<uint> RefWord(const std::string & text);
+    virtual bool Init(const std::string & url) override;
+
+private:
+    void Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output);
+
+private:
+    FontInfo            _info;
+    SharePtr<GLTexture> _texture;
+};
 
 // ---
 //  GLProgram

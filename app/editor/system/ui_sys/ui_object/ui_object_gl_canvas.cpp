@@ -1,11 +1,11 @@
 #include "ui_object.h"
 #include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
+#include "../../raw_sys/gl_object.h"
+#include "../../raw_sys/component.h"
+#include "../../raw_sys/comp_transform.h"
 #include "../../event_sys/event_sys.h"
 #include "../../editor_sys/editor_sys.h"
-#include "../../editor_sys/component/gl_object.h"
-#include "../../editor_sys/component/component.h"
-#include "../../editor_sys/component/comp_transform.h"
 
 const glm::vec4 UIObjectGLCanvas::VAL_TrackPointColors[32] = {
     glm::vec4{ 0.60f, 0.85f, 0.91f, 1.0f },

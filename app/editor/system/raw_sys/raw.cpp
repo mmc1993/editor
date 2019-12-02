@@ -88,111 +88,6 @@ void GLMesh::Draw(uint primitive)
 }
 
 // ---
-//  GLFont
-// ---
-GLFont::GLFont()
-{ }
-
-GLFont::~GLFont()
-{ }
-
-const SharePtr<GLTexture> & GLFont::RefTexture()
-{
-    return _texture;
-}
-
-const GLFont::Char & GLFont::RefWord(char word)
-{
-    return RefWord((uint)word);
-}
-
-const GLFont::Char & GLFont::RefWord(uint code)
-{
-    return _info.mChars.at(code);
-}
-
-std::vector<uint> GLFont::RefWord(const std::string & text)
-{
-    std::vector<uint> result;
-    for (auto & word : text)
-    {
-        result.emplace_back(RefWord(word).mID);
-    }
-    return std::move(result);
-}
-
-bool GLFont::Init(const std::string & url)
-{
-    std::ifstream is(url);
-    std::string line;
-    std::string word;
-
-    is >> word;
-    ASSERT_LOG(word == "info", line.c_str());
-    std::getline(is, line);
-    line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mInfo);
-
-    is >> word;
-    ASSERT_LOG(word == "common", line.c_str());
-    std::getline(is, line);
-    line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mCommon);
-
-    is >> word;
-    ASSERT_LOG(word == "page", line.c_str());
-    std::getline(is, line);
-    line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mPage);
-
-    auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
-    _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    std::getline(is, line);
-    auto texW = std::stof(_info.mCommon.at("scaleW"));
-    auto texH = std::stof(_info.mCommon.at("scaleH"));
-    while (is >> word && word == "char")
-    {
-        //  id=:3, x=:3, y=:3, width=:6, height=:7, xoffset=:7, yoffset=:7, xadvance=:8
-        Char value;
-        is >> word; value.mID = std::stoi(word.substr(3));
-        is >> word; value.mUV.x = std::stof(word.substr(2)) / texW;
-        is >> word; value.mUV.y = std::stof(word.substr(2)) / texH;
-        is >> word; value.mUV.z = std::stof(word.substr(6)) / texW + value.mUV.x;
-        is >> word; value.mUV.w = std::stof(word.substr(7)) / texH + value.mUV.y;
-
-        //  ·­×ªUV
-        std::swap(value.mUV.y, value.mUV.w);
-        value.mUV.y = 1.0f - value.mUV.y;
-        value.mUV.w = 1.0f - value.mUV.w;
-
-        _info.mChars.emplace(value.mID, value);
-
-        std::getline(is, line);
-    }
-    is.close();
-    return true;
-}
-
-void GLFont::Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output)
-{
-    for (const auto & pair : pairs)
-    {
-        if (auto ret = tools::Split(pair, "="); ret.at(1).front() != '\"' &&
-                                                ret.at(1).back()  != '\"')
-        {
-            output->emplace(ret.at(0), ret.at(1));
-        }
-        else
-        {
-            output->emplace(ret.at(0), std::string(ret.at(1).begin() + 1, ret.at(1).end() - 1));
-        }
-    }
-}
-
-// ---
 //  GLImage
 // ---
 GLImage::GLImage()
@@ -325,6 +220,114 @@ bool GLTexture::InitFromAtlas(const std::string & url)
     return _refimg != nullptr;
 }
 
+// ---
+//  GLFont
+// ---
+GLFont::GLFont()
+{ }
+
+GLFont::~GLFont()
+{ }
+
+const SharePtr<GLTexture> & GLFont::RefTexture()
+{
+    return _texture;
+}
+
+const GLFont::Char & GLFont::RefWord(char word)
+{
+    return RefWord((uint)word);
+}
+
+const GLFont::Char & GLFont::RefWord(uint code)
+{
+    return _info.mChars.at(code);
+}
+
+std::vector<uint> GLFont::RefWord(const std::string & text)
+{
+    std::vector<uint> result;
+    for (auto & word : text)
+    {
+        result.emplace_back(RefWord(word).mID);
+    }
+    return std::move(result);
+}
+
+bool GLFont::Init(const std::string & url)
+{
+    std::ifstream is(url);
+    std::string line;
+    std::string word;
+
+    is >> word;
+    ASSERT_LOG(word == "info", line.c_str());
+    std::getline(is, line);
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mInfo);
+
+    is >> word;
+    ASSERT_LOG(word == "common", line.c_str());
+    std::getline(is, line);
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mCommon);
+
+    is >> word;
+    ASSERT_LOG(word == "page", line.c_str());
+    std::getline(is, line);
+    line = std::lstrip(line, ' ');
+    Parse(tools::Split(line, " "), &_info.mPage);
+
+    auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
+    _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    std::getline(is, line);
+    auto texW = std::stof(_info.mCommon.at("scaleW"));
+    auto texH = std::stof(_info.mCommon.at("scaleH"));
+    while (is >> word && word == "char")
+    {
+        //  id=:3, x=:3, y=:3, width=:6, height=:7, xoffset=:7, yoffset=:7, xadvance=:8
+        Char value;
+        is >> word; value.mID = std::stoi(word.substr(3));
+        is >> word; value.mUV.x = std::stof(word.substr(2)) / texW;
+        is >> word; value.mUV.y = std::stof(word.substr(2)) / texH;
+        is >> word; value.mUV.z = std::stof(word.substr(6)) / texW + value.mUV.x;
+        is >> word; value.mUV.w = std::stof(word.substr(7)) / texH + value.mUV.y;
+
+        //  ·­×ªUV
+        std::swap(value.mUV.y, value.mUV.w);
+        value.mUV.y = 1.0f - value.mUV.y;
+        value.mUV.w = 1.0f - value.mUV.w;
+
+        _info.mChars.emplace(value.mID, value);
+
+        std::getline(is, line);
+    }
+    is.close();
+    return true;
+}
+
+void GLFont::Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output)
+{
+    for (const auto & pair : pairs)
+    {
+        if (auto ret = tools::Split(pair, "="); ret.at(1).front() != '\"' &&
+            ret.at(1).back()  != '\"')
+        {
+            output->emplace(ret.at(0), ret.at(1));
+        }
+        else
+        {
+            output->emplace(ret.at(0), std::string(ret.at(1).begin() + 1, ret.at(1).end() - 1));
+        }
+    }
+}
+
+// ---
+//  GLProgram
+// ---
 GLProgram::GLProgram() : _use(GL_INVALID_INDEX)
 { }
 
