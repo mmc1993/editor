@@ -173,8 +173,8 @@ void Project::Retrieve()
             front->GetObjects().end(),
             std::back_inserter(list));
         auto res = NewRes();
-        res->BindMeta(front->GetID());
-        res->Type(Res::TypeEnum::kObj);
+        res->BindMeta(front);
+        res->Type(Res::kObj);
         list.pop_front();
     }
 
