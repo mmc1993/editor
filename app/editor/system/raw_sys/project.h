@@ -48,6 +48,8 @@ private:
         return url + ".res";
     }
 
+    Res * NewRes();
+
 private:
     std::map<uint, Res *>               _resources;     //  资源
     std::map<uint, SharePtr<GLObject>>  _objects;       //  对象

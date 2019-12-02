@@ -163,6 +163,26 @@ bool Project::SetResType(Res * res, uint type)
     return res->GetRefCount() == 0;
 }
 
+void Project::Retrieve()
+{
+    //  检索对象
+    std::deque<SharePtr<GLObject>> list{ _object };
+    while (!list.empty())
+    {
+        auto & front = list.front();
+        std::copy(
+            front->GetObjects().begin(),
+            front->GetObjects().end(),
+            std::back_inserter(list));
+        auto res = NewRes();
+        res->BindMeta(front->GetID());
+        res->Type(Res::TypeEnum::kObj);
+        list.pop_front();
+    }
+
+    //  检索本地文件
+}
+
 Res * Project::GetRes(uint id)
 {
     return _resources.at(id);
@@ -185,4 +205,11 @@ std::vector<Res*> Project::GetResByType(const std::initializer_list<Res::TypeEnu
         }
     }
     return std::move(result);
+}
+
+Res * Project::NewRes()
+{
+    auto res = new Res(this, ++_gid);
+    _resources.emplace(_gid, res);
+    return res;
 }
