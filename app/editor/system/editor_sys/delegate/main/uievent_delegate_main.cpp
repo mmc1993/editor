@@ -9,14 +9,14 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
         auto & arg = (const UIEvent::Delegate &)param;
         if (arg.mType == 0)
         {
-            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kInsertObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
-            _listener.Add(EventSys::TypeEnum::kMoveObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2));
+            _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kInsertObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+            _listener.Add(EventSys::TypeEnum::kMoveObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
         }
         return true;
     }
@@ -366,15 +366,15 @@ bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent
             _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
                 &UIEventDelegateMainComList::OnEvent, this, 
                 std::placeholders::_1, 
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
             _listener.Add(EventSys::TypeEnum::kAppendComponent, std::bind(
                 &UIEventDelegateMainComList::OnEvent, this,
                 std::placeholders::_1,
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
             _listener.Add(EventSys::TypeEnum::kDeleteComponent, std::bind(
                 &UIEventDelegateMainComList::OnEvent, this,
                 std::placeholders::_1,
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
         }
     }
     return false;
@@ -454,15 +454,15 @@ bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::
             _listener.Add(EventSys::TypeEnum::kOpenProject, std::bind(
                 &UIEventDelegateMainStage::OnEvent, this,
                 std::placeholders::_1,
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
             _listener.Add(EventSys::TypeEnum::kFreeProject, std::bind(
                 &UIEventDelegateMainStage::OnEvent, this,
                 std::placeholders::_1,
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
             _listener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
                 &UIEventDelegateMainStage::OnEvent, this,
                 std::placeholders::_1,
-                std::placeholders::_2));
+                std::placeholders::_2), Global::Ref().mEventSys);
         }
         return true;
     }
