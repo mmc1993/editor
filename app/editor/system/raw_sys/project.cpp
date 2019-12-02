@@ -201,6 +201,10 @@ void Project::Retrieve()
     }
 
     //  检索本地文件
+    tools::ListPath("res", [&] (const std::string & path)
+        {
+
+        });
     //  TODO_
 }
 

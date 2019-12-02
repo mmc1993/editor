@@ -42,4 +42,19 @@ namespace tools {
         }
         return ret;
     }
+
+    //  ±éÀúÄ¿Â¼
+    inline void ListPath(const std::string & dir, const std::function<void (const std::string & path)> & func)
+    {
+        for (std::deque<std::string> list{ dir }; !list.empty(); list.pop_front())
+        {
+            for (auto & item : std::filesystem::directory_iterator(list.front()))
+            {
+                auto path = item.path().string();
+                if (item.is_directory())
+                {list.push_back(path);}
+                else {func(path);}
+            }
+        }
+    }
 }
