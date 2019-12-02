@@ -36,7 +36,11 @@ public:
             return  std::any_cast<T>(instance);
         }
 
+        void EncodeBinary(Project * project, std::ofstream & os);
+        void DecodeBinary(Project * project, std::ifstream & is);
+
     private:
+        friend class Res;
         Ref(const Ref & other) = delete;
         Ref & operator=(const Ref & other) = delete;
 
@@ -55,6 +59,7 @@ public:
     uint GetID();
     
     Ref * AppendRef();
+    Ref * AppendRef(Ref * ref);
     void  DeleteRef(Ref * ref);
 
     TypeEnum Type();

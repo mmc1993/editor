@@ -32,6 +32,18 @@ bool Res::Ref::Modify(bool modify)
     return _modify;
 }
 
+void Res::Ref::EncodeBinary(Project * project, std::ofstream & os)
+{
+    tools::Serialize(os, _owner->GetID());
+}
+
+void Res::Ref::DecodeBinary(Project * project, std::ifstream & is)
+{
+    uint id = 0;
+    tools::Deserialize(is, id);
+    project->GetRes(id)->AppendRef(this);
+}
+
 // ---
 //  Res
 // ---
@@ -82,7 +94,13 @@ uint Res::GetID()
 
 Res::Ref * Res::AppendRef()
 {
-    return new Ref(this);
+    return _refs.emplace_back(new Ref(this));
+}
+
+Res::Ref * Res::AppendRef(Ref * ref)
+{
+    ref->_owner = this;
+    return _refs.emplace_back(ref);
 }
 
 void Res::DeleteRef(Ref * ref)
