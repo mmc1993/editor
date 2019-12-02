@@ -10,7 +10,6 @@ class GLProgram;
 class GLTexture;
 class GLMaterial;
 class Component;
-class GLObject;
 
 namespace interface {
     struct RenderCommand {

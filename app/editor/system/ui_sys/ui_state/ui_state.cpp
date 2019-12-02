@@ -1,5 +1,4 @@
 #include "ui_state.h"
-#include "../../interface/serializer.h"
 
 bool UIState::FromStringParse(const std::string & key, const std::string & val)
 {
