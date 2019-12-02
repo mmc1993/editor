@@ -79,7 +79,7 @@ void CompFieldOfView::Update()
         AddState(StateEnum::kUpdate, false);
 
         //  更新射线点
-        auto track = Global::Ref().mEditorSys->GetProject()->GetRoot();
+        auto track = Global::Ref().mEditorSys->GetProject()->GetObject();
         for (auto & name : tools::Split(_polyObjectURL, "/"))
         {
             track = track->GetObject(name);
@@ -91,7 +91,7 @@ void CompFieldOfView::Update()
         }
 
         //  更新裁剪层
-        track = Global::Ref().mEditorSys->GetProject()->GetRoot();
+        track = Global::Ref().mEditorSys->GetProject()->GetObject();
         for (auto & name : tools::Split(_clipObjectURL, "/"))
         {
             track = track->GetObject(name);

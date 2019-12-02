@@ -138,7 +138,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 auto freeObj = drag.mFreeObj->GetParent();
                 if (drag.mFreeObj == GetOwner())
                 {
-                    freeObj = _id2obj.at(Global::Ref().mEditorSys->GetProject()->GetRoot()->GetID());
+                    freeObj = _id2obj.at(Global::Ref().mEditorSys->GetProject()->GetObject()->GetID());
                 }
                 else
                 {
@@ -265,10 +265,10 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
 {
     ASSERT_LOG(_obj2id.empty(), "");
     ASSERT_LOG(_id2obj.empty(), "");
-    auto root = Global::Ref().mEditorSys->GetProject()->GetRoot();
+    auto root = Global::Ref().mEditorSys->GetProject()->GetObject();
     _id2obj.insert(std::make_pair(root->GetID(), GetOwner()));
     _obj2id.insert(std::make_pair(GetOwner(), root->GetID()));
-    InitObjects(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetRoot());
+    InitObjects(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetObject());
 }
 
 void UIEventDelegateMainObjList::OnEventFreeProject()
@@ -280,7 +280,7 @@ void UIEventDelegateMainObjList::OnEventFreeProject()
 
 void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & object)
 {
-    if (object->GetParent() == Global::Ref().mEditorSys->GetProject()->GetRoot())
+    if (object->GetParent() == Global::Ref().mEditorSys->GetProject()->GetObject())
     {
         auto uiobject = NewObject(object->GetID(), object->GetName());
         _id2obj.at(object->GetParent()->GetID())->InsertObject(uiobject);
@@ -336,7 +336,7 @@ void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & ob
     auto tree = GetOwner();
     auto uiobject = _id2obj.at(object->GetID());
     auto uiparent = _id2obj.at(parent->GetID());
-    if (parent != Global::Ref().mEditorSys->GetProject()->GetRoot())
+    if (parent != Global::Ref().mEditorSys->GetProject()->GetObject())
     { 
         tree = uiparent->GetObject({ uiparent->GetState()->Name });
     }

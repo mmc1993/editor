@@ -72,7 +72,7 @@ void UIObjectGLCanvas::CollCommands()
     auto & command = state->mCommandArray.emplace_back();
     command.mRenderTextures[0] = state->mRenderTextures[0];
     command.mRenderTextures[1] = state->mRenderTextures[1];
-    Global::Ref().mEditorSys->GetProject()->GetRoot()->Update(this, 0.0f);
+    Global::Ref().mEditorSys->GetProject()->GetObject()->Update(this, 0.0f);
 }
 
 void UIObjectGLCanvas::CallCommands()
@@ -605,7 +605,7 @@ void UIObjectGLCanvas::AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool
 const SharePtr<GLObject>& UIObjectGLCanvas::GetProjectRoot()
 {
     ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
-    return Global::Ref().mEditorSys->GetProject()->GetRoot();
+    return Global::Ref().mEditorSys->GetProject()->GetObject();
 }
 
 bool UIObjectGLCanvas::FromRectSelectObjects(const glm::vec2 & worldMin, const glm::vec2 & worldMax)
