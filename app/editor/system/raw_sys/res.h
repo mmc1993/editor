@@ -72,7 +72,8 @@ public:
     std::string Path();
     uint GetRefCount();
     uint GetID();
-    
+
+    void WakeRefs();
     Ref * AppendRef();
     Ref * AppendRef(Ref * ref);
     void  DeleteRef(Ref * ref);
@@ -91,9 +92,6 @@ public:
 
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;
-
-private:
-    void WakeRefs();
 
 private:
     uint                _id;

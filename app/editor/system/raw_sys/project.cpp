@@ -108,15 +108,13 @@ bool Project::DeleteRes(uint id)
 
 bool Project::DeleteRes(Res * res)
 { 
-    ASSERT_LOG(res->GetRefCount() == 0, "");
-    if (res->GetRefCount() == 0 && (res->Type() == Res::kTxt ||
-                                    res->Type() == Res::kImg ||   
-                                    res->Type() == Res::kMap ||
-                                    res->Type() == Res::kFont))
+    if (res->Type() == Res::kTxt ||
+        res->Type() == Res::kImg ||
+        res->Type() == Res::kMap ||
+        res->Type() == Res::kFont)
     {
-        auto value = std::any_cast<std::string>(res->Instance());
-        auto tuple = std::make_tuple(res->GetID(), value);
         _resources.erase(res->GetID());
+        res->WakeRefs();
         delete  res;
         return true;
     }

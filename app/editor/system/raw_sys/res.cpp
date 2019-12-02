@@ -56,8 +56,11 @@ Res::Res(Project * owner, uint id)
 { }
 
 Res::~Res()
-{ 
-    ASSERT_LOG(_refs.empty(), "");
+{
+    for (auto & ref : _refs)
+    {
+        ref->_owner = nullptr;
+    }
 }
 
 std::any Res::Instance()
