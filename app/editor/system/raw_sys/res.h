@@ -3,6 +3,7 @@
 #include "../../include.h"
 #include "../interface/serializer.h"
 
+class GLObject;
 class Project;
 
 class Res : public interface::Serializer {
@@ -20,6 +21,15 @@ public:
 
     class Ref {
     public:
+        static bool Check(Ref *& ref)
+        {
+            if (!ref->Check())
+            {
+                ref = nullptr;
+            }
+            return ref != nullptr;
+        }
+
         Ref(Res * owner);
         ~Ref();
 
@@ -34,6 +44,11 @@ public:
             Modify(false);
             auto instance = _owner->Instance();
             return  std::any_cast<T>(instance);
+        }
+
+        bool Check()
+        {
+            return _owner != nullptr;
         }
 
         void EncodeBinary(Project * project, std::ofstream & os);
@@ -65,8 +80,14 @@ public:
     TypeEnum Type();
     TypeEnum Type(TypeEnum type);
 
-    void BindMeta(const uint          val);
-    void BindMeta(const std::string & val);
+    template <class T>
+    void BindMeta(const T & val)
+    {
+        if (std::any_cast<T &>(_meta) != val)
+        {
+            _meta = val; WakeRefs();
+        }
+    }
 
     virtual void EncodeBinary(std::ofstream & os) override;
     virtual void DecodeBinary(std::ifstream & is) override;

@@ -11,8 +11,10 @@ Res::Ref::Ref(Res * owner)
 
 Res::Ref::~Ref()
 {
-    ASSERT_LOG(_owner != nullptr, "");
-    _owner->DeleteRef(this);
+    if (_owner != nullptr)
+    {
+        _owner->DeleteRef(this);
+    }
 }
 
 Res::Ref * Res::Ref::Clone()
@@ -70,7 +72,7 @@ std::any Res::Instance()
         ret = std::any_cast<std::string>(_meta);
         break;
     case Res::kObj:
-        ret = _owner->GetObject(std::any_cast<uint>(_meta));
+        ret = std::any_cast<SharePtr<GLObject>>(_meta);
         break;
     case Res::kVar:
         ASSERT_LOG(false, "");
@@ -122,22 +124,6 @@ Res::TypeEnum Res::Type(TypeEnum type)
     return _type;
 }
 
-void Res::BindMeta(const uint val)
-{
-    if (std::any_cast<uint>(_meta) != val)
-    {
-        _meta = val; WakeRefs();
-    }
-}
-
-void Res::BindMeta(const std::string & val)
-{ 
-    if (std::any_cast<std::string>(_meta) != val)
-    {
-        _meta = val; WakeRefs();
-    }
-}
-
 void Res::EncodeBinary(std::ofstream & os)
 {
     tools::Serialize(os, _id);
@@ -151,7 +137,7 @@ void Res::EncodeBinary(std::ofstream & os)
         tools::Serialize(os, std::any_cast<std::string &>(_meta));
         break;
     case Res::kObj:
-        tools::Serialize(os, std::any_cast<uint &>(_meta));
+        tools::Serialize(os, std::any_cast<SharePtr<GLObject>>(_meta)->GetID());
         break;
     case Res::kVar:
         break;
@@ -174,12 +160,25 @@ void Res::DecodeBinary(std::ifstream & is)
         tools::Deserialize(is, std::any_cast<std::string &>(_meta));
         break;
     case Res::kObj:
-        _meta.emplace<uint>();
-        tools::Deserialize(is, std::any_cast<uint &>(_meta));
+        {
+            uint id = 0;
+            tools::Deserialize(is, id);
+            _meta = _owner->GetObject(id);
+        }
         break;
     case Res::kVar:
+        {
+            uint id = 0;
+            tools::Deserialize(is, id);
+            //  读取变量
+        }
         break;
     case Res::kBlueprint:
+        { 
+            uint id = 0;
+            tools::Deserialize(is, id);
+            //  读取蓝图
+        }
         break;
     }
 }
@@ -199,7 +198,7 @@ std::string Res::Path()
         break;
     case Res::kObj:
         {
-            auto object = _owner->GetObject(std::any_cast<uint>(_meta));
+            auto object = std::any_cast<SharePtr<GLObject>>(_meta);
             path.append(object->GetName());
 
             for (   object = object->GetParent(); 
