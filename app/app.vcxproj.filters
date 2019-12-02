@@ -135,10 +135,7 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_text.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\res_sys\res.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="editor\system\res_sys\res_sys.cpp">
+    <ClCompile Include="editor\system\raw_sys\res.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1040,10 +1037,7 @@
     <ClInclude Include="editor\system\ui_sys\ui_list.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\res_sys\res.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="editor\system\res_sys\res_sys.h">
+    <ClInclude Include="editor\system\raw_sys\res.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

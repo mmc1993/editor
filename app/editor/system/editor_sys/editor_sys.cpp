@@ -1,7 +1,6 @@
 #include "editor_sys.h"
 #include "component/gl_object.h"
 #include "../event_sys/event_sys.h"
-#include "../res_sys/res_sys.h"
 
 //  选择文件夹对话框
 #include<Shlobj.h>
@@ -260,32 +259,32 @@ void EditorSys::OptFreeProject()
 
 void EditorSys::OptDeleteRes(uint id)
 {
-    Global::Ref().mResSys->OptDeleteRes(id);
+    //Global::Ref().mResSys->OptDeleteRes(id);
 }
 
 void EditorSys::OptDeleteRes(Res * res)
 {
-    Global::Ref().mResSys->OptDeleteRes(res);
+    //Global::Ref().mResSys->OptDeleteRes(res);
 }
 
 void EditorSys::OptModifyRes(uint id, const std::string & url)
 { 
-    Global::Ref().mResSys->OptModifyRes(id, url);
+    //Global::Ref().mResSys->OptModifyRes(id, url);
 }
 
 void EditorSys::OptModifyRes(Res * res, const std::string & url)
 {
-    Global::Ref().mResSys->OptModifyRes(res, url);
+    //Global::Ref().mResSys->OptModifyRes(res, url);
 }
 
 void EditorSys::OptSetResType(uint id, uint type)
 { 
-    Global::Ref().mResSys->OptSetResType(id, type);
+    //Global::Ref().mResSys->OptSetResType(id, type);
 }
 
 void EditorSys::OptSetResType(Res * res, uint type)
 {
-    Global::Ref().mResSys->OptSetResType(res, type);
+    //Global::Ref().mResSys->OptSetResType(res, type);
 }
 
 void EditorSys::OpenDialogNewProject(const std::string & url)
