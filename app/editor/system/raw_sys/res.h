@@ -5,7 +5,7 @@
 
 class Project;
 
-class Res {
+class Res : public interface::Serializer {
 public:
     enum TypeEnum {
         kNull,      //  нч
@@ -46,7 +46,7 @@ public:
     };
 
 public:
-    Res(Project * owner, uint id);
+    Res(Project * owner, uint id = ~0);
     ~Res();
 
     std::any Instance();
@@ -62,6 +62,9 @@ public:
 
     void BindMeta(const uint          val);
     void BindMeta(const std::string & val);
+
+    virtual void EncodeBinary(std::ofstream & os) override;
+    virtual void DecodeBinary(std::ifstream & is) override;
 
 private:
     void WakeRefs();

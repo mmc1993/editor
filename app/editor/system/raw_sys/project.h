@@ -9,6 +9,7 @@
 class Project {
 public:
     Project();
+    ~Project();
 
     //  项目
     bool IsOpen() const { return _object != nullptr; }
@@ -40,6 +41,12 @@ public:
     std::vector<Res *> GetResByType(const Res::TypeEnum & type);
     std::vector<Res *> GetResByType(const std::initializer_list<Res::TypeEnum> & types);
     std::vector<Res *> GetResByWord(const std::string & word);
+
+private:
+    std::string GetResURL(const std::string & url)
+    { 
+        return url + ".res";
+    }
 
 private:
     std::map<uint, Res *>               _resources;     //  资源

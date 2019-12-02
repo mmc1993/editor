@@ -120,6 +120,52 @@ void Res::BindMeta(const std::string & val)
     }
 }
 
+void Res::EncodeBinary(std::ofstream & os)
+{
+    tools::Serialize(os, _id);
+    tools::Serialize(os, _type);
+    switch (_type)
+    {
+    case Res::kTxt:
+    case Res::kImg:
+    case Res::kMap:
+    case Res::kFont:
+        tools::Serialize(os, std::any_cast<std::string &>(_meta));
+        break;
+    case Res::kObj:
+        tools::Serialize(os, std::any_cast<uint &>(_meta));
+        break;
+    case Res::kVar:
+        break;
+    case Res::kBlueprint:
+        break;
+    }
+}
+
+void Res::DecodeBinary(std::ifstream & is)
+{
+    tools::Deserialize(is, _id);
+    tools::Deserialize(is, _type);
+    switch (_type)
+    {
+    case Res::kTxt:
+    case Res::kImg:
+    case Res::kMap:
+    case Res::kFont:
+        _meta.emplace<std::string>();
+        tools::Deserialize(is, std::any_cast<std::string &>(_meta));
+        break;
+    case Res::kObj:
+        _meta.emplace<uint>();
+        tools::Deserialize(is, std::any_cast<uint &>(_meta));
+        break;
+    case Res::kVar:
+        break;
+    case Res::kBlueprint:
+        break;
+    }
+}
+
 std::string Res::Path()
 {
     std::string path;

@@ -40,7 +40,7 @@ public:
 
         ~Listener()
         {
-            ASSERT_LOG(_owner != nullptr, "");
+            ASSERT_LOG(_listens.empty() || _owner != nullptr, "");
             for (auto listen : _listens)
             {
                 _owner->Del(listen);

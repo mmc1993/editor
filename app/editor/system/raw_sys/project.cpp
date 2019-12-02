@@ -3,6 +3,15 @@
 Project::Project(): _gid(0)
 { }
 
+Project::~Project()
+{
+    //  删除资源, 因为资源不需要SharePtr, 故此在这里删除
+    for (auto & pair : _resources)
+    {
+        delete pair.second;
+    }
+}
+
 void Project::New(const std::string & url)
 {
     _gid = 0x0;
@@ -13,13 +22,31 @@ void Project::New(const std::string & url)
 void Project::Load(const std::string & url)
 {
     ASSERT_LOG(_object == nullptr, url.c_str());
-    std::ifstream is(url, std::ios::binary);
+    ASSERT_LOG(_resources.empty(), url.c_str());
+    std::ifstream is;
+
+    //  加载资源
+    is.open(GetResURL(url), std::ios::binary);
     ASSERT_LOG(is, url.c_str());
     tools::Deserialize(is,_gid);
-    _object.reset(new GLObject());
-    _object->DecodeBinary(is);
-    _url = url;
+
+    //  读入Res对象
+    uint num = 0; tools::Deserialize(is, num);
+    for (auto i = 0; i != num; ++i)
+    {
+        auto res = new Res(this); res->DecodeBinary(is);
+        auto pair = std::make_pair(res->GetID(), res);
+        _resources.insert(pair);
+    }
     is.close();
+
+    //  加载对象
+    is.open(url, std::ios::binary);
+    ASSERT_LOG(is,    url.c_str());
+    _object.reset(new  GLObject());
+    _object->DecodeBinary(is);
+    is.close();
+    _url = url;
 
     //  生成Object Map
     std::deque<SharePtr<GLObject>> list{ _object };
@@ -38,10 +65,23 @@ void Project::Load(const std::string & url)
 void Project::Save(const std::string & url)
 {
     ASSERT_LOG(_object != nullptr, url.c_str());
-    std::ofstream os(url.empty()? _url : url, std::ios::binary);
-    tools::Serialize(os, _gid);
-    _object->EncodeBinary(os);
+    const auto & saveURL = url.empty()?_url:url;
+
+    std::ofstream os;
+    //  写入资源
+    os.open(GetResURL(saveURL), std::ios::binary);
+    tools::Serialize(os,    _gid);
+    uint num =  _resources.size();
+    tools::Serialize(os,     num);
+    for (auto & pair : _resources)
+    {
+        pair.second->EncodeBinary(os);
+    }
     os.close();
+
+    //  写入Obj对象
+    os.open(saveURL,    std::ios::binary);
+    _object->EncodeBinary(os); os.close();
 }
 
 SharePtr<GLObject> Project::NewObject()
