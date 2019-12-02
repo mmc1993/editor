@@ -39,7 +39,6 @@ bool Res::Ref::Modify(bool modify)
 Res::Res(uint id)
     : _id(id)
     , _type(kNull)
-    , _metai(~0L)
 { }
 
 Res::~Res()
@@ -56,10 +55,10 @@ std::any Res::Instance()
     case Res::kImg:
     case Res::kMap:
     case Res::kFont:
-        ret = _metas;
+        ret = std::any_cast<std::string>(_meta);
         break;
     case Res::kObj:
-        ret = Global::Ref().mEditorSys->GetProject()->GetObject(_metai);
+        ret = Global::Ref().mEditorSys->GetProject()->GetObject(std::any_cast<uint>(_meta));
         break;
     case Res::kVar:
         ASSERT_LOG(false, "");
@@ -107,19 +106,17 @@ Res::TypeEnum Res::Type(TypeEnum type)
 
 void Res::BindMeta(const uint val)
 {
-    if (_metai != val)
+    if (std::any_cast<uint>(_meta) != val)
     {
-        _metai = val;
-        WakeRefs();
+        _meta = val; WakeRefs();
     }
 }
 
 void Res::BindMeta(const std::string & val)
 { 
-    if (_metas != val)
+    if (std::any_cast<std::string>(_meta) != val)
     {
-        _metas = val;
-        WakeRefs();
+        _meta = val; WakeRefs();
     }
 }
 
@@ -133,12 +130,12 @@ std::string Res::Path()
     case Res::kMap:
     case Res::kFont:
         {
-            path = _metas;
+            path = std::any_cast<std::string>(_meta);
         }
         break;
     case Res::kObj:
         {
-            auto object = Global::Ref().mEditorSys->GetProject()->GetObject(_metai);
+            auto object = Global::Ref().mEditorSys->GetProject()->GetObject(std::any_cast<uint>(_meta));
             path.append(object->GetName());
 
             for (   object = object->GetParent(); 

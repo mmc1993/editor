@@ -67,7 +67,6 @@ private:
 private:
     uint                _id;
     TypeEnum            _type;  //  类型
+    std::any            _meta;  //  元数据
     std::vector<Ref *>  _refs;  //  引用列表
-    std::string         _metas; //  字符元数据
-    uint                _metai; //  数值元数据
 };
