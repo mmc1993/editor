@@ -27,7 +27,7 @@ public:
     void ClearObjects();
     void DeleteThis();
     SharePtr<UIObject> GetParent();
-    SharePtr<UIObject> GetRoot();
+    SharePtr<UIObject> GetObject();
     UITypeEnum GetType();
     bool IsVisible();
 

@@ -80,7 +80,7 @@ SharePtr<UIObject> UIObject::GetParent()
         : nullptr;
 }
 
-SharePtr<UIObject> UIObject::GetRoot()
+SharePtr<UIObject> UIObject::GetObject()
 {
     auto ret = shared_from_this();
     while (ret->GetParent())
@@ -716,7 +716,7 @@ void UIObjectLayout::OnLeave(bool ret)
             ImGui::PopStyleVar();
         }
 
-        if (GetRoot().get() == this)
+        if (GetObject().get() == this)
         {
             UIMenu::RenderPopup();
         }
@@ -854,8 +854,8 @@ bool UIObjectLayout::IsCanStretch(DirectEnum edge, const glm::vec2 & offset)
 
 void UIObjectLayout::HandleStretch()
 {
-    auto thisState =            GetState<UIStateLayout>();
-    auto rootState = GetRoot()->GetState<UIStateLayout>();
+    auto thisState =              GetState<UIStateLayout>();
+    auto rootState = GetObject()->GetState<UIStateLayout>();
     if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsItemHovered())
     {
         const auto & world = ToWorldCoord();
