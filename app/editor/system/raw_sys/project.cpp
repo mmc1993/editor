@@ -163,7 +163,26 @@ bool Project::SetResType(Res * res, uint type)
 
 void Project::Retrieve()
 {
-    //  检索对象
+    std::set<uint>          set0;       //  对象
+    std::set<std::string>   set1;       //  文件
+
+    for (auto & pair : _resources)
+    {
+        switch (pair.second->Type())
+        {
+        case Res::kTxt:
+        case Res::kImg:
+        case Res::kMap:
+        case Res::kFont:
+            set1.insert(std::any_cast<std::string>(pair.second->Instance()));
+            break;
+        case Res::kObj:
+            set0.insert(std::any_cast<SharePtr<GLObject>>(pair.second->Instance())->GetID());
+            break;
+        }
+    }
+
+    //  对象
     std::deque<SharePtr<GLObject>> list{ _object };
     while (!list.empty())
     {
@@ -172,13 +191,17 @@ void Project::Retrieve()
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        auto res = NewRes();
-        res->BindMeta(front);
-        res->Type(Res::kObj);
+        if (0 == set0.count(front->GetID()))
+        {
+            auto res = NewRes();
+            res->BindMeta(front);
+            res->Type(Res::kObj);
+        }
         list.pop_front();
     }
 
     //  检索本地文件
+    //  TODO_
 }
 
 Res * Project::GetRes(uint id)
