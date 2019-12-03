@@ -17,16 +17,18 @@ void UISys::Update(float dt)
     }
 }
 
-void UISys::OpenWindow(const std::string & url)
+void UISys::OpenWindow(const std::string & url, const std::any & param)
 {
     auto window = _windows.emplace_back(UIParser::Parse(url));
-    window->ResetLayout();
+    window->ResetLayout(  );
+    window->WakeInit(param);
 }
 
 void UISys::FreeWindow(const SharePtr<UIObject> & ptr)
 {
     auto it = std::remove(_windows.begin(), _windows.end(), ptr);
-    if (it != _windows.end()) { _windows.erase(it); }
+    ASSERT_LOG(it != _windows.end(), "");
+    _windows.erase(it);
 }
 
 const std::vector<SharePtr<UIObject>> & UISys::GetWindows()

@@ -44,6 +44,7 @@ public:
 
     //  绑定事件委托, 事件将被传递到委托中
     void BindDelegate(UIEvent::DelegateHandler * delegate);
+    void WakeInit(const std::any & param);
 
 protected:
     void RenderDrag();

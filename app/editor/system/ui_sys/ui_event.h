@@ -113,11 +113,11 @@ public:
         { }
     };
 
-    //  事件代理
-    struct Delegate : Event {
-        int mType;      //  0 初始化, 1 销毁
+    //  初始化事件
+    struct Init : Event {
+        std::any mParam;
 
-        Delegate(int type) : mType(type)
+        Init(const std::any & param) : mParam(param)
         {  }
     };
 
@@ -126,13 +126,9 @@ public:
     public:
         virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, const SharePtr<UIObject> & object)
         {
-            if (type == UIEventEnum::kDelegate)
+            if (type == UIEventEnum::kInit)
             {
-                auto & delegate = (const Delegate &)event;
-                if (delegate.mType == 0)
-                {
-                    _owner = object;
-                }
+                _owner = object;
             }
             return false;
         }

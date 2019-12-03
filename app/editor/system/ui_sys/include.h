@@ -115,7 +115,7 @@ enum class UIEventEnum {
     kEditTextFinish,    //  输入完成
     kMenu,              //  菜单
     kDrag,              //  拖放
-    kDelegate,          //  代理函数初始化
+    kInit,              //  构造
 };
 
 //  转化为ImGuiID

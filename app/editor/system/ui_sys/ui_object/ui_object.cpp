@@ -309,9 +309,22 @@ glm::vec4 UIObject::ToWorldRect()
 
 void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
 {
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(1), shared_from_this()); }
+    ASSERT_LOG(_delegate == nullptr, "");
     _delegate.reset(delegate);
-    if (_delegate != nullptr) { _delegate->OnCallEventMessage(UIEventEnum::kDelegate, UIEvent::Delegate(0), shared_from_this()); }
+}
+
+void UIObject::WakeInit(const std::any & param)
+{
+    auto event = UIEvent::Init(param);
+    for (std::deque<SharePtr<UIObject>> list{shared_from_this()}; !list.empty(); list.pop_front())
+    {
+        auto & front = list.front();
+        std::copy(
+            front->GetObjects().begin(),
+            front->GetObjects().end(),
+            std::back_inserter(list));
+        front->OnCallEventMessage(UIEventEnum::kInit, event);
+    }
 }
 
 void UIObject::RenderDrag()
