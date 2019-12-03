@@ -84,7 +84,7 @@ public:
     template <class T>
     void BindMeta(const T & val)
     {
-        if (std::any_cast<T &>(_meta) != val)
+        if (!_meta.has_value() || std::any_cast<T &>(_meta) != val)
         {
             _meta = val; WakeRefs();
         }

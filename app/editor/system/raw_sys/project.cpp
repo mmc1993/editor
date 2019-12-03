@@ -170,6 +170,7 @@ void Project::Retrieve()
     {
         switch (pair.second->Type())
         {
+        case Res::kNull:
         case Res::kTxt:
         case Res::kImg:
         case Res::kMap:
@@ -203,9 +204,13 @@ void Project::Retrieve()
     //  检索本地文件
     tools::ListPath("res", [&] (const std::string & path)
         {
-
+            if (0 == set1.count(path))
+            {
+                auto res = NewRes();
+                res->BindMeta(path);
+                res->Type(Res::kNull);
+            }
         });
-    //  TODO_
 }
 
 Res * Project::GetRes(uint id)

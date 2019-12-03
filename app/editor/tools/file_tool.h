@@ -50,7 +50,7 @@ namespace tools {
         {
             for (auto & item : std::filesystem::directory_iterator(list.front()))
             {
-                auto path = item.path().string();
+                auto path = Replace(item.path().string(), "\\", "/");
                 if (item.is_directory())
                 {list.push_back(path);}
                 else {func(path);}

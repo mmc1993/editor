@@ -68,6 +68,7 @@ std::any Res::Instance()
     std::any ret;
     switch (_type)
     {
+    case Res::kNull:
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
@@ -133,6 +134,7 @@ void Res::EncodeBinary(std::ofstream & os)
     tools::Serialize(os, _type);
     switch (_type)
     {
+    case Res::kNull:
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
@@ -191,6 +193,7 @@ std::string Res::Path()
     std::string path;
     switch (_type)
     {
+    case Res::kNull:
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
