@@ -13,7 +13,7 @@ public:
         kTxt,       //  文本
         kImg,       //  图片
         kMap,       //  地图
-        kFont,      //  字体
+        kFnt,      //  字体
         kObj,       //  对象
         kVar,       //  变量
         kBlueprint, //  蓝图

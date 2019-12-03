@@ -72,7 +72,7 @@ std::any Res::Instance()
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFont:
+    case Res::kFnt:
         ret = std::any_cast<std::string>(_meta);
         break;
     case Res::kObj:
@@ -138,7 +138,7 @@ void Res::EncodeBinary(std::ofstream & os)
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFont:
+    case Res::kFnt:
         tools::Serialize(os, std::any_cast<std::string &>(_meta));
         break;
     case Res::kObj:
@@ -160,7 +160,7 @@ void Res::DecodeBinary(std::ifstream & is)
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFont:
+    case Res::kFnt:
         _meta.emplace<std::string>();
         tools::Deserialize(is, std::any_cast<std::string &>(_meta));
         break;
@@ -197,7 +197,7 @@ std::string Res::Path()
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFont:
+    case Res::kFnt:
         {
             path = std::any_cast<std::string>(_meta);
         }

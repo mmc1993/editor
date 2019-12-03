@@ -39,10 +39,10 @@ private:
     std::map<Res *, SharePtr<UIObject>> mRes2Obj;
     std::map<SharePtr<UIObject>, Res *> mObj2Res;
     //  ¿Ø¼þ
-    SharePtr<UIObjectLayout> mListBox;
-    SharePtr<UIObjectLayout> mTypeBox;
-    SharePtr<UIObjectLayout> mRefsBox;
-    SharePtr<UIObjectTextBox> mSearchBox;
+    SharePtr<UIObjectLayout> mListLayout;
+    SharePtr<UIObjectLayout> mTypeLayout;
+    SharePtr<UIObjectLayout> mRefsLayout;
+    SharePtr<UIObjectTextBox> mSearchText;
     //  ²ÎÊý
     std::string                     mPreSearch;
     std::function<void(Res::Ref *)> mOptSelect;

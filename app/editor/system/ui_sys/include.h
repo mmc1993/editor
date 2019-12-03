@@ -57,7 +57,7 @@
 #include "imgui.h"
 
 class UIState;
-class UIParse;
+class UIParser;
 class UIObject;
 
 enum class DirectEnum {

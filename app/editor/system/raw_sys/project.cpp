@@ -111,7 +111,7 @@ bool Project::DeleteRes(Res * res)
     if (res->Type() == Res::kTxt ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
-        res->Type() == Res::kFont)
+        res->Type() == Res::kFnt)
     {
         _resources.erase(res->GetID());
         res->WakeRefs();
@@ -131,7 +131,7 @@ bool Project::ModifyRes(Res * res, const std::string & url)
     if (res->Type() == Res::kTxt ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
-        res->Type() == Res::kFont)
+        res->Type() == Res::kFnt)
     {
         try
         {
@@ -174,7 +174,7 @@ void Project::Retrieve()
         case Res::kTxt:
         case Res::kImg:
         case Res::kMap:
-        case Res::kFont:
+        case Res::kFnt:
             set1.insert(std::any_cast<std::string>(pair.second->Instance()));
             break;
         case Res::kObj:
