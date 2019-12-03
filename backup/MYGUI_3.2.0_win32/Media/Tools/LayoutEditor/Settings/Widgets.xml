@@ -11,6 +11,7 @@
 		<Parameter key="IsWindow" 			value="Bool"/>
 		<Parameter key="IsShowNav" 			value="Bool"/>
 		<Parameter key="IsCanMove" 			value="Bool"/>
+		<Parameter key="IsSameline" 		value="Bool"/>
 		<Parameter key="IsCanStretch" 		value="Bool"/>
 		<Parameter key="IsFullScreen" 		value="Bool"/>
 		<Parameter key="IsShowBorder" 		value="Bool"/>
