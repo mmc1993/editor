@@ -24,7 +24,17 @@ private:
     void ResRename();
     void ResDelete();
 
+    void NewRecord();
+
 private:
-    std::map<Res *, UIObject *> _res2obj;
-    std::map<UIObject *, Res *> _obj2res;
+    std::map<Res *, UIObject *> mRes2Obj;
+    std::map<UIObject *, Res *> mObj2Res;
+    //  ¿Ø¼þ
+    SharePtr<UIObjectLayout> mListBox;
+    SharePtr<UIObjectLayout> mTypeBox;
+    SharePtr<UIObjectLayout> mRefsBox;
+    SharePtr<UIObjectTextBox> mSearchBox;
+    //  ²ÎÊý
+    std::string                     mPreSearch;
+    std::function<void(Res::Ref *)> mOptSelect;
 };

@@ -112,7 +112,7 @@ enum class UITextAlignEnum {
 enum class UIEventEnum {
     kKey,               //  按键
     kMouse,             //  鼠标
-    kEditTextFinish,    //  输入完成
+    kEdit,              //  编辑
     kMenu,              //  菜单
     kDrag,              //  拖放
     kInit,              //  构造

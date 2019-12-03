@@ -964,7 +964,7 @@ bool UIObjectTextBox::OnEnter()
                 ImVec2(state->Move.z, state->Move.w),
                 flag, &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, shared_from_this()));
+                PostEventMessage(UIEventEnum::kEdit, UIEvent::EditText(state->mBuffer, shared_from_this()));
             }
         }
         else
@@ -976,7 +976,7 @@ bool UIObjectTextBox::OnEnter()
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
             {
-                PostEventMessage(UIEventEnum::kEditTextFinish, UIEvent::EditText(state->mBuffer, shared_from_this()));
+                PostEventMessage(UIEventEnum::kEdit, UIEvent::EditText(state->mBuffer, shared_from_this()));
             }
             ImGui::PopItemWidth();
         }
