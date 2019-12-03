@@ -1,4 +1,4 @@
-﻿#include "uievent_delegate_main.h"
+﻿#include "ui_delegate_main.h"
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {

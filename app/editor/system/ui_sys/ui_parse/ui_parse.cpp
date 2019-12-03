@@ -1,7 +1,7 @@
 #include "ui_parse.h"
 #include "../ui_state/ui_state.h"
 #include "../ui_object/ui_object.h"
-#include "../../editor_sys/delegate/main/uievent_delegate_main.h"
+#include "../../editor_sys/delegate/main/ui_delegate_main.h"
 
 // ...
 //  UI事件委托映射表

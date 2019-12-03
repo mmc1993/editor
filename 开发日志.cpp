@@ -193,6 +193,17 @@ private:
 //  Res 资源对象
 //  Ref 引用对象
 
+--  Serach
+--      Type0 Type1|Word0 Word1
+
+--  Menu
+--      Delete
+--      Rename
+--      SetType
+--      Reference
+
+--  Show
+--      Type|Path > Word0 Word1
 
 
 地形破坏

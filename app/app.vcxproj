@@ -31,7 +31,7 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_tilemap.cpp" />
     <ClCompile Include="editor\system\raw_sys\comp_transform.cpp" />
     <ClCompile Include="editor\system\raw_sys\gl_object.cpp" />
-    <ClCompile Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.cpp" />
+    <ClCompile Include="editor\system\editor_sys\delegate\main\ui_delegate_main.cpp" />
     <ClCompile Include="editor\system\editor_sys\editor_sys.cpp" />
     <ClCompile Include="editor\system\raw_sys\project.cpp" />
     <ClCompile Include="editor\system\editor_sys\property\ui_property.cpp" />
@@ -76,7 +76,7 @@
     <ClInclude Include="editor\system\editor_sys\component\comp_tilemap.h" />
     <ClInclude Include="editor\system\raw_sys\comp_transform.h" />
     <ClInclude Include="editor\system\raw_sys\gl_object.h" />
-    <ClInclude Include="editor\system\editor_sys\delegate\main\uievent_delegate_main.h" />
+    <ClInclude Include="editor\system\editor_sys\delegate\main\ui_delegate_main.h" />
     <ClInclude Include="editor\system\editor_sys\editor_sys.h" />
     <ClInclude Include="editor\system\editor_sys\include.h" />
     <ClInclude Include="editor\system\raw_sys\project.h" />
