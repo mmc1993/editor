@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="editor\system\editor_sys\delegate\explorer\ui_delegate_explorer.cpp" />
     <ClCompile Include="editor\system\raw_sys\component.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_field_of_view.cpp" />
     <ClCompile Include="editor\system\editor_sys\component\comp_render_target.cpp" />

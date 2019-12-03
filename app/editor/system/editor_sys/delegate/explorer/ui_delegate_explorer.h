@@ -24,22 +24,7 @@ private:
     void ResRename();
     void ResDelete();
 
-    //  ³õÊ¼»¯id2obj, obj2id
-    void Init();
-
-    //  Serach
-    //      Type0 Type1|Word0 Word1
-
-    //  Menu
-    //      Delete
-    //      Rename
-    //      SetType
-    //      Reference
-
-    //  Show
-    //      Type|Path > Word0 Word1
-
 private:
-    std::map<uint, UIObject *> _id2obj;
-    std::map<UIObject *, uint> _obj2id;
+    std::map<Res *, UIObject *> _res2obj;
+    std::map<UIObject *, Res *> _obj2res;
 };

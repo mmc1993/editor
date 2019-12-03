@@ -138,6 +138,9 @@
     <ClCompile Include="editor\system\editor_sys\delegate\main\ui_delegate_main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\delegate\explorer\ui_delegate_explorer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
