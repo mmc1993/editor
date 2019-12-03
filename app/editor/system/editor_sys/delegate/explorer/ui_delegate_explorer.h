@@ -24,6 +24,9 @@ private:
     void ResRename();
     void ResDelete();
 
+    //  ≥ı ºªØid2obj, obj2id
+    void Init();
+
     //  Serach
     //      Type0 Type1|Word0 Word1
 
