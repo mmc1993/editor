@@ -17,6 +17,7 @@ public:
         kObj,       //  对象
         kVar,       //  变量
         kBlueprint, //  蓝图
+        Length,
     };
 
     class Ref {

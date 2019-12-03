@@ -57,8 +57,8 @@ public:
     void OptDeleteRes(uint id);
     void OptDeleteRes(Res * res);
     //  修改资源
-    void OptModifyRes(uint id, const std::string & url);
-    void OptModifyRes(Res * res, const std::string & url);
+    void OptRenameRes(uint id, const std::string & name);
+    void OptRenameRes(Res * res, const std::string & name);
     //  设置资源类型
     void OptSetResType(uint id, uint type);
     void OptSetResType(Res * res, uint type);

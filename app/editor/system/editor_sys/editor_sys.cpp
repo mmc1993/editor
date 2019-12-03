@@ -266,14 +266,14 @@ void EditorSys::OptDeleteRes(Res * res)
     //Global::Ref().mResSys->OptDeleteRes(res);
 }
 
-void EditorSys::OptModifyRes(uint id, const std::string & url)
+void EditorSys::OptRenameRes(uint id, const std::string & name)
 { 
-    //Global::Ref().mResSys->OptModifyRes(id, url);
+    //Global::Ref().mResSys->OptRenameRes(id, name);
 }
 
-void EditorSys::OptModifyRes(Res * res, const std::string & url)
+void EditorSys::OptRenameRes(Res * res, const std::string & name)
 {
-    //Global::Ref().mResSys->OptModifyRes(res, url);
+    //Global::Ref().mResSys->OptRenameRes(res, name);
 }
 
 void EditorSys::OptSetResType(uint id, uint type)
