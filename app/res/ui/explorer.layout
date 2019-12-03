@@ -12,7 +12,7 @@
         <Property key="IsShowTitleBar" value="true"/>
         <Property key="IsWindow" value="true"/>
         <Property key="StretchMin" value="300 300"/>
-        <Widget type="Widget" skin="PanelSkin" position="0 25 600 45" align="Left Right Top" name="LayoutSerach">
+        <Widget type="Widget" skin="PanelSkin" position="0 25 600 45" align="Left Right Top" name="LayoutSearch">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanMove" value="false"/>
@@ -25,7 +25,7 @@
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
             <Property key="IsCanDragMove" value="false"/>
-            <Widget type="EditBox" skin="EditBox" position="20 10 560 22" align="Left Right Top Bottom" name="Serach">
+            <Widget type="EditBox" skin="EditBox" position="20 10 560 22" align="Left Right Top Bottom" name="Input">
                 <Property key="IsCanDragFree" value="false"/>
                 <Property key="IsCanMove" value="false"/>
                 <Property key="IsCanStretch" value="false"/>
@@ -41,7 +41,7 @@
                 <Property key="IsCanDragMove" value="false"/>
             </Widget>
         </Widget>
-        <Widget type="Widget" skin="PanelSkin" position="0 70 300 530" align="HStretch VStretch" name="LayoutView">
+        <Widget type="Widget" skin="PanelSkin" position="0 70 600 530" align="HStretch VStretch" name="LayoutList">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="true"/>
             <Property key="IsCanDragMove" value="false"/>
@@ -55,23 +55,8 @@
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="200 0"/>
-            <Widget type="ListBox" skin="ListBox" position="0 0 300 530" align="Left Right Top Bottom" name="View">
-                <Property key="IsCanDragFree" value="true"/>
-                <Property key="IsCanDragMove" value="false"/>
-                <Property key="IsCanMove" value="false"/>
-                <Property key="IsCanStretch" value="false"/>
-                <Property key="IsFullScreen" value="false"/>
-                <Property key="IsShowBorder" value="false"/>
-                <Property key="IsShowMenuBar" value="false"/>
-                <Property key="IsShowNav" value="false"/>
-                <Property key="IsShowScrollBar" value="true"/>
-                <Property key="IsShowTitleBar" value="false"/>
-                <Property key="IsWindow" value="false"/>
-                <Property key="BorderNumber" value="1"/>
-                <Property key="StretchMin" value="300 0"/>
-            </Widget>
         </Widget>
-        <Widget type="Widget" skin="PanelSkin" position="300 70 300 530" align="HStretch VStretch" name="Info">
+        <Widget type="Widget" skin="PanelSkin" position="400 70 200 200" align="HStretch VStretch" name="LayoutType">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanDragMove" value="false"/>
