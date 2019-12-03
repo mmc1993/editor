@@ -1,16 +1,12 @@
 #pragma once
 
 #include "../../../../include.h"
-#include "../../../raw_sys/project.h"
-#include "../../../raw_sys/comp_transform.h"
-#include "../../../event_sys/event_sys.h"
-#include "../../../cfg_sys/cfg_sys.h"
-#include "../../../ui_sys/ui_sys.h"
-#include "../../../ui_sys/ui_list.h"
-#include "../../property/ui_property.h"
 #include "../../editor_sys.h"
+#include "../../../ui_sys/ui_sys.h"
+#include "../../../raw_sys/project.h"
+#include "../../../event_sys/event_sys.h"
 
-class UIEventDelegateMain : public UIEvent::DelegateHandler {
+class UIDelegateExplorer : public UIEvent::DelegateHandler {
 protected:
     EventSys::Listener _listener;
 };
