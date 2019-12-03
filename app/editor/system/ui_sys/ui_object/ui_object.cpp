@@ -323,7 +323,10 @@ void UIObject::WakeInit(const std::any & param)
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        front->OnCallEventMessage(UIEventEnum::kInit, event);
+        if (front->_delegate != nullptr)
+        {
+            front->_delegate->OnCallEventMessage(UIEventEnum::kInit, event, front->shared_from_this());
+        }
     }
 }
 
