@@ -1040,6 +1040,12 @@
     <ClInclude Include="editor\system\editor_sys\delegate\main\ui_delegate_main.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\delegate\explorer\ui_delegate_explorer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\delegate\ui_delegate_base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="editor\third\glm\detail\func_common.inl">
