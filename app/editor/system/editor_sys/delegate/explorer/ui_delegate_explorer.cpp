@@ -1,7 +1,10 @@
 #include "ui_delegate_explorer.h"
 
+static const char * TYPE_LIST[] = { "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUE_PRINT" };
+
 bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject>& object)
 {
+    auto ret = UIDelegateBase::OnCallEventMessage(e, param, object);
     switch (e)
     {
     case UIEventEnum::kMouse:
@@ -11,7 +14,7 @@ bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event 
     case UIEventEnum::kInit:
         return OnEventInit((const UIEvent::Init &)param);
     }
-    return false;
+    return ret;
 }
 
 bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)
@@ -39,11 +42,12 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mRefsLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutRefs" }));
     mSearchText = CastPtr<UIObjectTextBox>(GetOwner()->GetObject({ "LayoutSearch", "Input" }));
     mProject = Global::Ref().mEditorSys->GetProject().get();
+    mProject->Retrieve();
 
-    auto init = std::any_cast<const InitParam_t &>(param);
+    auto init = std::any_cast<const InitParam_t &>(param.mParam);
     mPreSearch = std::get<0>(init);
     mOptSelect = std::get<1>(init);
-    ListRefresh();
+    NewSearch(std::upper(mPreSearch));
     return true;
 }
 
@@ -54,8 +58,6 @@ void UIDelegateExplorer::ListRefresh()
 
 void UIDelegateExplorer::ListClick1(const SharePtr<UIObject> & object)
 { 
-    static const char * TYPE_LIST[] = { "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUE_PRINT" };
-
     if (mLastSelect != nullptr)
     {
         mLastSelect->GetState()->IsSelect = false;
@@ -122,18 +124,79 @@ void UIDelegateExplorer::NewRecord(Res * res)
 }
 
 void UIDelegateExplorer::NewSearch(const std::string & search)
-{ 
-    mSearchStat.mTypes.clear();
-    mSearchStat.mWords.clear();
+{
+    SearchStat searchStat;
     auto txt = tools::ReplaceEx(search, "\\s+", " ");
     auto pos = txt.find_first_of('|');
     if (pos == std::string::npos)
     {
-        mSearchStat.mWords = tools::Split(txt, " ");
+        searchStat.mWords = tools::Split(txt, " ");
     }
     else
     {
-        mSearchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
-        mSearchStat.mWords = tools::Split(txt.substr(   pos), " ");
+        searchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
+        searchStat.mWords = tools::Split(txt.substr(   pos), " ");
     }
+
+    auto ret = mSearchStat.mTypes.size() != searchStat.mTypes.size()
+            || mSearchStat.mWords.size() != searchStat.mWords.size();
+    for (auto i = 0; !ret && i != mSearchStat.mTypes.size(); ++i)
+    {
+        if (mSearchStat.mTypes.at(i) != searchStat.mTypes.at(i)) { ret = true; }
+    }
+    for (auto i = 0; !ret && i != mSearchStat.mWords.size(); ++i)
+    {
+        if (mSearchStat.mWords.at(i) != searchStat.mWords.at(i)) { ret = true; }
+    }
+    if (ret) { NewSearch(searchStat); }
+}
+
+void UIDelegateExplorer::NewSearch(const SearchStat & search)
+{ 
+    mSearchStat = search;
+    mSearchItems.clear();
+    //  ∆•≈‰¿‡–Õ
+    std::vector<Res::TypeEnum> types;
+    for (const auto & type : mSearchStat.mTypes)
+    {
+        auto it = std::find(std::begin(TYPE_LIST), std::end(TYPE_LIST), type);
+        ASSERT_LOG(it != std::end(TYPE_LIST), type.c_str());
+        auto t = std::distance(std::begin(TYPE_LIST), it);
+        types.emplace_back((Res::TypeEnum)t);
+    }
+    //  ∆•≈‰πÿº¸◊÷
+    for (auto res : mProject->GetResByType(types))
+    {
+        SearchItem item(res, res->Type());
+        for (const auto & word:mSearchStat.mWords)
+        {
+            item.mWords.emplace_back(res->Path().find(word));
+        }
+        if (std::none_ofv(item.mWords.begin(), item.mWords.end(), std::string::npos))
+        {
+            mSearchItems.emplace_back(item);
+        }
+    }
+    //  ≈≈–ÚΩ·π˚
+    std::sort(mSearchItems.begin(), mSearchItems.end(), 
+        [] (const SearchItem & a, const SearchItem & b)
+        {
+            if (a.mType != b.mType)
+            {
+                return a.mType < b.mType;
+            }
+            for (auto i = 0; i != a.mWords.size(); ++i)
+            {
+                if (a.mWords.at(i) < b.mWords.at(i))
+                {
+                    return true;
+                }
+            }
+            return false;
+        });
+    for (auto & item : mSearchItems)
+    {
+        std::cout << "Path: " << item.mRes->Path() << std::endl;
+    }
+    ListRefresh();
 }

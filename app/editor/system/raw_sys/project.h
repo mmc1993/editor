@@ -38,7 +38,7 @@ public:
 
     void Retrieve();    //  ¼ìË÷
     Res * GetRes(uint id);
-    std::vector<Res *> GetResByType(const std::initializer_list<Res::TypeEnum> & types);
+    std::vector<Res *> GetResByType(const std::vector<Res::TypeEnum> & types);
 
 private:
     std::string GetResURL(const std::string & url)

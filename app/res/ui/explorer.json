@@ -15,7 +15,8 @@
 		"IsShowScrollBar": "false",
 		"IsShowTitleBar": "true",
 		"IsWindow": "true",
-		"StretchMin": "300 300"
+		"StretchMin": "300 300",
+		"EventDelegate": "editor/editor/delegate/explorer/ui_delegate_explorer"
 	},
 	"__Children": [
 		{
@@ -24,7 +25,7 @@
 				"Skin": "PanelSkin",
 				"Move": "0 25 600 45",
 				"Align": "26",
-				"Name": "LayoutSerach",
+				"Name": "LayoutSearch",
 				"BorderNumber": "1",
 				"IsCanDragFree": "false",
 				"IsCanMove": "false",
@@ -45,7 +46,7 @@
 						"Skin": "EditBox",
 						"Move": "20 10 560 22",
 						"Align": "30",
-						"Name": "Serach",
+						"Name": "Input",
 						"IsCanDragFree": "false",
 						"IsCanMove": "false",
 						"IsCanStretch": "false",
@@ -70,14 +71,14 @@
 			"__Property": {
 				"Type": "1",
 				"Skin": "PanelSkin",
-				"Move": "0 70 300 530",
+				"Move": "0 70 600 530",
 				"Align": "384",
-				"Name": "LayoutView",
+				"Name": "LayoutList",
 				"BorderNumber": "1",
 				"IsCanDragFree": "true",
 				"IsCanDragMove": "false",
 				"IsCanMove": "false",
-				"IsCanStretch": "true",
+				"IsCanStretch": "false",
 				"IsFullScreen": "false",
 				"IsShowBorder": "true",
 				"IsShowMenuBar": "false",
@@ -88,45 +89,21 @@
 				"StretchMin": "200 0"
 			},
 			"__Children": [
-				{
-					"__Property": {
-						"Type": "2",
-						"Skin": "ListBox",
-						"Move": "0 0 300 530",
-						"Align": "30",
-						"Name": "View",
-						"IsCanDragFree": "true",
-						"IsCanDragMove": "false",
-						"IsCanMove": "false",
-						"IsCanStretch": "false",
-						"IsFullScreen": "false",
-						"IsShowBorder": "false",
-						"IsShowMenuBar": "false",
-						"IsShowNav": "false",
-						"IsShowScrollBar": "true",
-						"IsShowTitleBar": "false",
-						"IsWindow": "false",
-						"BorderNumber": "1",
-						"StretchMin": "300 0"
-					},
-					"__Children": [
-						
-					]
-				}
+				
 			]
 		},
 		{
 			"__Property": {
 				"Type": "1",
 				"Skin": "PanelSkin",
-				"Move": "300 70 300 530",
-				"Align": "384",
-				"Name": "Info",
+				"Move": "400 70 200 200",
+				"Align": "18",
+				"Name": "LayoutType",
 				"BorderNumber": "1",
 				"IsCanDragFree": "false",
 				"IsCanDragMove": "false",
 				"IsCanMove": "false",
-				"IsCanStretch": "true",
+				"IsCanStretch": "false",
 				"IsFullScreen": "false",
 				"IsShowBorder": "true",
 				"IsShowMenuBar": "false",
@@ -134,7 +111,7 @@
 				"IsShowScrollBar": "false",
 				"IsShowTitleBar": "false",
 				"IsWindow": "false",
-				"StretchMin": "300 0"
+				"StretchMin": "200 200"
 			},
 			"__Children": [
 				

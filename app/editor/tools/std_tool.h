@@ -52,4 +52,30 @@ namespace std {
     {
         return std::make_shared<T>(std::forward<ARGS>(args)...);
     }
+
+    //  转小写
+    inline std::string lower(std::string & str)
+    {
+        std::string result;
+        for (auto ch : str)
+        {
+            if (ch >= 'a' && ch <= 'z')
+            { result.push_back(ch - 32); }
+            else { result.push_back(ch); }
+        }
+        return std::move(result);
+    }
+
+    //  转大写
+    inline std::string upper(std::string & str)
+    {
+        std::string result;
+        for (auto ch : str)
+        {
+            if (ch >= 'A' && ch <= 'Z')
+            { result.push_back(ch + 32); }
+            else { result.push_back(ch); }
+        }
+        return std::move(result);
+    }
 }

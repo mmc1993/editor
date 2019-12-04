@@ -184,7 +184,10 @@ void Project::Retrieve()
     }
 
     //  ∂‘œÛ
-    std::deque<SharePtr<GLObject>> list{ _object };
+    std::deque<SharePtr<GLObject>> list{
+        _object->GetObjects().begin(),
+        _object->GetObjects().end()
+    };
     while (!list.empty())
     {
         auto & front = list.front();
@@ -218,15 +221,22 @@ Res * Project::GetRes(uint id)
     return _resources.at(id);
 }
 
-std::vector<Res*> Project::GetResByType(const std::initializer_list<Res::TypeEnum> & types)
+std::vector<Res*> Project::GetResByType(const std::vector<Res::TypeEnum> & types)
 {
     std::vector<Res *> result;
     for (auto & pair : _resources)
     {
-        auto fn =[&pair](const Res::TypeEnum type){return pair.second->Type()==type;};
-        if (auto it = std::find_if(types.begin(), types.end(), fn); it != types.end())
+        if (types.empty())
         {
             result.emplace_back(pair.second);
+        }
+        else
+        {
+            auto fn =[&pair](const Res::TypeEnum type){return pair.second->Type()==type;};
+            if (auto it = std::find_if(types.begin(), types.end(), fn); it != types.end())
+            {
+                result.emplace_back(pair.second);
+            }
         }
     }
     return std::move(result);

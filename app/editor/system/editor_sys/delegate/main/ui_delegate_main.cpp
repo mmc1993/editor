@@ -28,9 +28,6 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             //  右键单击
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
-                //Global::Ref().mUISys->OpenWindow(UIFile_Explorer);
-                Global::Ref().mEditorSys->GetProject()->Retrieve();
-
                 std::vector<std::string> buffer;
                 if (mouse.mObject == object)
                 {
@@ -50,6 +47,13 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                         std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mVal->ToString(); });
                     UIMenu::PopMenu(mouse.mObject->GetParent(), buffer);
                 }
+            }
+
+            if (mouse.mKey == 2 && mouse.mAct == 3 && mouse.mObject == object)
+            {
+                std::string                     arg0("image");
+                std::function<void(Res::Ref *)> arg1 = nullptr;
+                Global::Ref().mUISys->OpenWindow(UIFile_Explorer, std::make_tuple(arg0, arg1));
             }
 
             //  左键单击

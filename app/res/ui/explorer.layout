@@ -12,6 +12,7 @@
         <Property key="IsShowTitleBar" value="true"/>
         <Property key="IsWindow" value="true"/>
         <Property key="StretchMin" value="300 300"/>
+        <Property key="EventDelegate" value="editor/editor/delegate/explorer/ui_delegate_explorer"/>
         <Widget type="Widget" skin="PanelSkin" position="0 25 600 45" align="Left Right Top" name="LayoutSearch">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
@@ -46,7 +47,7 @@
             <Property key="IsCanDragFree" value="true"/>
             <Property key="IsCanDragMove" value="false"/>
             <Property key="IsCanMove" value="false"/>
-            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsCanStretch" value="false"/>
             <Property key="IsFullScreen" value="false"/>
             <Property key="IsShowBorder" value="true"/>
             <Property key="IsShowMenuBar" value="false"/>
@@ -56,12 +57,12 @@
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="200 0"/>
         </Widget>
-        <Widget type="Widget" skin="PanelSkin" position="400 70 200 200" align="HStretch VStretch" name="LayoutType">
+        <Widget type="Widget" skin="PanelSkin" position="400 70 200 200" align="Right Top" name="LayoutType">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanDragMove" value="false"/>
             <Property key="IsCanMove" value="false"/>
-            <Property key="IsCanStretch" value="true"/>
+            <Property key="IsCanStretch" value="false"/>
             <Property key="IsFullScreen" value="false"/>
             <Property key="IsShowBorder" value="true"/>
             <Property key="IsShowMenuBar" value="false"/>
@@ -69,7 +70,7 @@
             <Property key="IsShowScrollBar" value="false"/>
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="300 0"/>
+            <Property key="StretchMin" value="200 200"/>
         </Widget>
     </Widget>
 </MyGUI>

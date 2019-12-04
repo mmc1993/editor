@@ -20,10 +20,12 @@ public:
     };
 
     //  搜索结果
-    struct SearchResult {
+    struct SearchItem {
+        SearchItem(Res * res = nullptr, uint type = 0) : mRes(res), mType(type)
+        { }
         Res * mRes;
         uint mType;
-        uint mWord[3];
+        std::vector<uint> mWords;
     };
 
 private:
@@ -45,10 +47,9 @@ private:
 
     void NewRecord(Res * res);
     void NewSearch(const std::string & search);
+    void NewSearch(const SearchStat  & search);
 
 private:
-    std::map<Res *, SharePtr<UIObject>> mRes2Obj;
-    std::map<SharePtr<UIObject>, Res *> mObj2Res;
     //  控件
     SharePtr<UIObjectLayout> mListLayout;
     SharePtr<UIObjectLayout> mTypeLayout;
@@ -57,9 +58,12 @@ private:
     //  参数
     std::string                     mPreSearch;
     std::function<void(Res::Ref *)> mOptSelect;
-    SharePtr<UIObject>              mLastSelect;
+    //  内部状态
+    std::vector<SearchItem> mSearchItems;       //  搜索结果
+    SearchStat              mSearchStat;        //  搜索状态
+    SharePtr<UIObject>      mLastSelect;        //  最后选中
+    Project *               mProject;           //  当前项目
 
-    std::vector<SearchResult>   mSearchResult;
-    SearchStat                  mSearchStat;
-    Project *                   mProject;
+    std::map<Res *, SharePtr<UIObject>> mRes2Obj;
+    std::map<SharePtr<UIObject>, Res *> mObj2Res;
 };

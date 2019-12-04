@@ -2,6 +2,7 @@
 #include "../ui_state/ui_state.h"
 #include "../ui_object/ui_object.h"
 #include "../../editor_sys/delegate/main/ui_delegate_main.h"
+#include "../../editor_sys/delegate/explorer/ui_delegate_explorer.h"
 
 // ...
 //  UI事件委托映射表
@@ -12,6 +13,7 @@ static std::map<std::string, UIEvent::DelegateHandler *(*)()> s_DelegateMap = {
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainObjList(); }),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainResList(); }),
     std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainComList(); }),
+    std::make_pair("editor/editor/delegate/explorer/ui_delegate_explorer", []() { return (UIEvent::DelegateHandler *)new UIDelegateExplorer(); }),
 };
 
 SharePtr<UIObject> UIParser::CreateObject(const int type)
