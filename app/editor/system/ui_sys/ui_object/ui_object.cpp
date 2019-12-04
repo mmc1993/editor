@@ -952,9 +952,12 @@ bool UIObjectTextBox::OnEnter()
     auto state = GetState<UIStateTextBox>();
     if (state->IsEditBox)
     {
-        auto flag = ImGuiInputTextFlags_EnterReturnsTrue
-                  | ImGuiInputTextFlags_CallbackResize
+        auto flag = ImGuiInputTextFlags_CallbackResize
                   | ImGuiInputTextFlags_AutoSelectAll;
+        if (state->IsEditReturn)
+        {
+            flag |= ImGuiInputTextFlags_EnterReturnsTrue;
+        }
         if (state->IsMulti)
         {
             if (ImGui::InputTextMultiline(

@@ -24,12 +24,12 @@ public:
     bool IsShowBorder       = true;     //  显示边框
     bool IsCanStretch       = true;     //  可拉伸
     bool IsFullScreen       = false;    //  全屏
+    bool IsEditReturn       = false;    //  编辑按回车
     bool IsCanDragMove      = false;    //  可拖放移动
     bool IsCanDragFree      = false;    //  可拖放释放
     bool IsShowMenuBar      = false;    //  显示菜单
     bool IsShowTitleBar     = false;    //  显示标题
     bool IsShowScrollBar    = false;    //  显示滚动条
-    bool IsFirstRender      = true;     //  是否第一次渲染
 
     float BorderNumber      = 1;        //  边框宽度
 
@@ -44,6 +44,9 @@ public:
     glm::vec4 Color = glm::vec4(1);     //  颜色
 
     std::vector<std::string> MenuBar;   //  菜单栏
+
+    //  无需解析
+    bool IsFirstRender      = true;     //  是否第一次渲染
 };
 
 class UIStateLayout : public UIState {
