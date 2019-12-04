@@ -1,7 +1,5 @@
 #include "ui_delegate_explorer.h"
 
-static const char * TYPE_LIST[] = { "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUE_PRINT" };
-
 bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject>& object)
 {
     auto ret = UIDelegateBase::OnCallEventMessage(e, param, object);
@@ -70,12 +68,13 @@ void UIDelegateExplorer::ListClick1(const SharePtr<UIObject> & object)
         for (auto i = 0; i != Res::TypeEnum::Length; ++i)
         {
             auto type = mmc::Json::Hash();
+            auto name = Res::TypeString((Res::TypeEnum)i);
             type->Insert(mmc::Json::List(), "__Children");
             type->Insert(mmc::Json::Hash(), "__Property");
-            type->Insert(mmc::Json::FromValue("3"),          "__Property", "Type");
-            type->Insert(mmc::Json::FromValue(TYPE_LIST[i]), "__Property", "Name");
-            type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragMove");
-            type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragFree");
+            type->Insert(mmc::Json::FromValue("3"), "__Property", "Type");
+            type->Insert(mmc::Json::FromValue(name), "__Property", "Name");
+            type->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
+            type->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
             mTypeLayout->InsertObject(UIParser::Parse(type));
         }
     }
@@ -160,10 +159,13 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
     std::vector<Res::TypeEnum> types;
     for (const auto & type : mSearchStat.mTypes)
     {
-        auto it = std::find(std::begin(TYPE_LIST), std::end(TYPE_LIST), type);
-        ASSERT_LOG(it != std::end(TYPE_LIST), type.c_str());
-        auto t = std::distance(std::begin(TYPE_LIST), it);
-        types.emplace_back((Res::TypeEnum)t);
+        for (auto i = 0; i != Res::TypeEnum::Length; ++i)
+        {
+            if (Res::TypeString((Res::TypeEnum)i) == type)
+            {
+                types.emplace_back((Res::TypeEnum)i);
+            }
+        }
     }
     //  Æ¥Åä¹Ø¼ü×Ö
     for (auto res : mProject->GetResByType(types))

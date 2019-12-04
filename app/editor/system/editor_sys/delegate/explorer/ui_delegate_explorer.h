@@ -21,8 +21,8 @@ public:
 
     //  搜索结果
     struct SearchItem {
-        SearchItem(Res * res = nullptr, uint type = 0) : mRes(res), mType(type)
-        { }
+        SearchItem(Res * res = nullptr, uint type = 0)
+            : mRes(res), mType(type) { }
         Res * mRes;
         uint mType;
         std::vector<uint> mWords;
@@ -58,6 +58,7 @@ private:
     //  参数
     std::string                     mPreSearch;
     std::function<void(Res::Ref *)> mOptSelect;
+    std::vector<Res::TypeEnum>      mLimitType;
     //  内部状态
     std::vector<SearchItem> mSearchItems;       //  搜索结果
     SearchStat              mSearchStat;        //  搜索状态
