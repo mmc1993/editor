@@ -38,9 +38,7 @@ public:
 
     void Retrieve();    //  ¼ìË÷
     Res * GetRes(uint id);
-    std::vector<Res *> GetResByType(const Res::TypeEnum & type);
     std::vector<Res *> GetResByType(const std::initializer_list<Res::TypeEnum> & types);
-    std::vector<Res *> GetResByWord(const std::string & word);
 
 private:
     std::string GetResURL(const std::string & url)

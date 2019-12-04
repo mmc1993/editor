@@ -218,11 +218,6 @@ Res * Project::GetRes(uint id)
     return _resources.at(id);
 }
 
-std::vector<Res*> Project::GetResByType(const Res::TypeEnum & type)
-{
-    return GetResByType({ type });
-}
-
 std::vector<Res*> Project::GetResByType(const std::initializer_list<Res::TypeEnum> & types)
 {
     std::vector<Res *> result;
