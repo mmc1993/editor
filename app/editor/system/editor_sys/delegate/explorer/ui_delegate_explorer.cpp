@@ -46,6 +46,7 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mPreSearch = std::get<0>(init);
     mOptSelect = std::get<1>(init);
     NewSearch(std::upper(mPreSearch));
+    mLimitType = mSearchStat.mTypes;        //  限制搜索类型
     return true;
 }
 
@@ -138,6 +139,9 @@ void UIDelegateExplorer::NewSearch(const std::string & search)
         searchStat.mWords = tools::Split(txt.substr(   pos), " ");
     }
 
+    //  限制搜索类型
+    if (!mLimitType.empty()) { searchStat.mTypes = mLimitType; }
+
     auto ret = mSearchStat.mTypes.size() != searchStat.mTypes.size()
             || mSearchStat.mWords.size() != searchStat.mWords.size();
     for (auto i = 0; !ret && i != mSearchStat.mTypes.size(); ++i)
@@ -161,7 +165,7 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
     {
         for (auto i = 0; i != Res::TypeEnum::Length; ++i)
         {
-            if (Res::TypeString((Res::TypeEnum)i) == type)
+            if (Res::TypeString((Res::TypeEnum)i) ==type)
             {
                 types.emplace_back((Res::TypeEnum)i);
             }

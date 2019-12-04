@@ -57,8 +57,8 @@ private:
     SharePtr<UIObjectTextBox> mSearchText;
     //  参数
     std::string                     mPreSearch;
+    std::vector<std::string>        mLimitType;
     std::function<void(Res::Ref *)> mOptSelect;
-    std::vector<Res::TypeEnum>      mLimitType;
     //  内部状态
     std::vector<SearchItem> mSearchItems;       //  搜索结果
     SearchStat              mSearchStat;        //  搜索状态
