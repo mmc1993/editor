@@ -38,6 +38,7 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mTypeLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutType" }));
     mRefsLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutRefs" }));
     mSearchText = CastPtr<UIObjectTextBox>(GetOwner()->GetObject({ "LayoutSearch", "Input" }));
+    mProject = Global::Ref().mEditorSys->GetProject().get();
 
     auto init = std::any_cast<const InitParam_t &>(param);
     mPreSearch = std::get<0>(init);
@@ -46,42 +47,58 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     return true;
 }
 
+void UIDelegateExplorer::ListRefresh()
+{
+    ListClick1(nullptr);
+}
+
 void UIDelegateExplorer::ListClick1(const SharePtr<UIObject> & object)
 { 
+    static const char * TYPE_LIST[] = { "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUE_PRINT" };
+
     if (mLastSelect != nullptr)
     {
         mLastSelect->GetState()->IsSelect = false;
     }
     mLastSelect = object;
+    mTypeLayout->ClearObjects();
     if (mLastSelect != nullptr)
     {
         mLastSelect->GetState()->IsSelect = true;
-        TypeRefresh();
-        RefsRefresh();
+        for (auto i = 0; i != Res::TypeEnum::Length; ++i)
+        {
+            auto type = mmc::Json::Hash();
+            type->Insert(mmc::Json::List(), "__Children");
+            type->Insert(mmc::Json::Hash(), "__Property");
+            type->Insert(mmc::Json::FromValue("3"),          "__Property", "Type");
+            type->Insert(mmc::Json::FromValue(TYPE_LIST[i]), "__Property", "Name");
+            type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragMove");
+            type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragFree");
+            mTypeLayout->InsertObject(UIParser::Parse(type));
+        }
     }
 }
 
-void UIDelegateExplorer::TypeRefresh()
+void UIDelegateExplorer::ListClick2(const SharePtr<UIObject>& object)
 {
-    const char * TYPE_LIST[] = { "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUE_PRINT" };
-
-    mTypeLayout->ClearObjects();
-    for (auto i = 0; i != Res::TypeEnum::Length; ++i)
+    if (mOptSelect)
     {
-        auto type = mmc::Json::Hash();
-        type->Insert(mmc::Json::List(), "__Children");
-        type->Insert(mmc::Json::Hash(), "__Property");
-        type->Insert(mmc::Json::FromValue("3"),          "__Property", "Type");
-        type->Insert(mmc::Json::FromValue(TYPE_LIST[i]), "__Property", "Name");
-        type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragMove");
-        type->Insert(mmc::Json::FromValue("false"),      "__Property", "IsCanDragFree");
-        mTypeLayout->InsertObject(UIParser::Parse(type));
+        mOptSelect(mObj2Res.at(object)->AppendRef());
     }
 }
 
-void UIDelegateExplorer::RefsRefresh()
+void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
 {
-    mRefsLayout->ClearObjects();
+    auto res = mObj2Res.at(object);
+    std::vector<std::string> list;
+    list.emplace_back("Delete");
+    if (res->Type() == Res::TypeEnum::kImg ||
+        res->Type() == Res::TypeEnum::kTxt ||
+        res->Type() == Res::TypeEnum::kFnt ||
+        res->Type() == Res::TypeEnum::kMap)
+    {
+        list.emplace_back(SFormat("Rename/{0}~", mObj2Res.at(object)->Path()));
+    }
 }
 
 void UIDelegateExplorer::ResSetType(const SharePtr<UIObject>& object, const Res::TypeEnum type)
@@ -99,7 +116,24 @@ void UIDelegateExplorer::ResDelete(const SharePtr<UIObject>& object)
     Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(object));
 }
 
-void UIDelegateExplorer::RefReference(const SharePtr<UIObject>& object)
-{
-    mOptSelect(mObj2Res.at(object)->AppendRef());
+void UIDelegateExplorer::NewRecord(Res * res)
+{ 
+
+}
+
+void UIDelegateExplorer::NewSearch(const std::string & search)
+{ 
+    mSearchStat.mTypes.clear();
+    mSearchStat.mWords.clear();
+    auto txt = tools::ReplaceEx(search, "\\s+", " ");
+    auto pos = txt.find_first_of('|');
+    if (pos == std::string::npos)
+    {
+        mSearchStat.mWords = tools::Split(txt, " ");
+    }
+    else
+    {
+        mSearchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
+        mSearchStat.mWords = tools::Split(txt.substr(   pos), " ");
+    }
 }

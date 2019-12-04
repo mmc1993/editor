@@ -39,6 +39,7 @@ namespace tools {
 		return std::move(result);
 	}
 
+    // 字符串替换
 	inline std::string Replace(const std::string & str, 
 							   const std::string & sold, 
 							   const std::string & snew, 
@@ -60,6 +61,15 @@ namespace tools {
 		}
 		return Join(vec, "");
 	}
+
+    //  正则表达式替换
+    inline std::string ReplaceEx(
+        const std::string & str, 
+        const std::string & sold, 
+        const std::string & snew)
+    {
+        return std::regex_replace(str, std::regex(sold), snew);
+    }
 
     //  比较字符串是否一样
     //  同时忽略空白字符

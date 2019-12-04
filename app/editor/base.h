@@ -7,6 +7,7 @@ using uint = unsigned int;
 #include <iostream>
 #include <vector>
 #include <array>
+#include <regex>
 #include <string>
 #include <stack>
 #include <list>

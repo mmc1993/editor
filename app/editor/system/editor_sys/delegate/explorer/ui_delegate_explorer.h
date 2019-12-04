@@ -13,6 +13,19 @@ public:
     using SelectFunc_t  = std::function<void (Res::Ref *)>;
     using InitParam_t   = std::tuple<std::string, SelectFunc_t>;
 
+    //  搜索信息
+    struct SearchStat {
+        std::vector<std::string> mTypes;
+        std::vector<std::string> mWords;
+    };
+
+    //  搜索结果
+    struct SearchResult {
+        Res * mRes;
+        uint mType;
+        uint mWord[3];
+    };
+
 private:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
     bool OnEventMouse(const UIEvent::Mouse & param);
@@ -24,16 +37,14 @@ private:
     void ListClick1(const SharePtr<UIObject> & object);
     void ListClick2(const SharePtr<UIObject> & object);
     void ListRClick(const SharePtr<UIObject> & object);
-    void TypeRefresh();
-    void RefsRefresh();
 
     //  资源操作
     void ResSetType(const SharePtr<UIObject> & object, const Res::TypeEnum type);
     void ResRename(const SharePtr<UIObject> & object, const std::string & name);
     void ResDelete(const SharePtr<UIObject> & object);
-    void RefReference(const SharePtr<UIObject> & object);
 
-    void NewRecord();
+    void NewRecord(Res * res);
+    void NewSearch(const std::string & search);
 
 private:
     std::map<Res *, SharePtr<UIObject>> mRes2Obj;
@@ -46,7 +57,9 @@ private:
     //  参数
     std::string                     mPreSearch;
     std::function<void(Res::Ref *)> mOptSelect;
+    SharePtr<UIObject>              mLastSelect;
 
-    //  上一个被选中的节点
-    SharePtr<UIObject> mLastSelect;
+    std::vector<SearchResult>   mSearchResult;
+    SearchStat                  mSearchStat;
+    Project *                   mProject;
 };
