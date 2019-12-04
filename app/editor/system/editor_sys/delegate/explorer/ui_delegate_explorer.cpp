@@ -86,6 +86,7 @@ void UIDelegateExplorer::ListClick2(const SharePtr<UIObject>& object)
     if (mOptSelect)
     {
         mOptSelect(mObj2Res.at(object)->AppendRef());
+        Global::Ref().mUISys->FreeWindow(GetOwner());
     }
 }
 
