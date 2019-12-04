@@ -13,12 +13,14 @@ public:
         kTxt,       //  文本
         kImg,       //  图片
         kMap,       //  地图
-        kFnt,      //  字体
+        kFnt,       //  字体
         kObj,       //  对象
         kVar,       //  变量
         kBlueprint, //  蓝图
         Length,
     };
+
+    static const std::string sTypeString[TypeEnum::Length];
 
     class Ref {
     public:
@@ -81,6 +83,9 @@ public:
 
     TypeEnum Type();
     TypeEnum Type(TypeEnum type);
+
+    const        std::string & TypeString();
+    static const std::string & TypeString(Res::TypeEnum type);
 
     template <class T>
     void BindMeta(const T & val)

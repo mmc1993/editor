@@ -1,6 +1,10 @@
 #include "res.h"
 #include "project.h"
 
+const std::string Res::sTypeString[TypeEnum::Length] = {
+    "Null", "Txt", "Img", "Map", "Fnt", "Obj", "Var", "Blueprint"
+};
+
 // ---
 //  Res::Ref
 // ---
@@ -126,6 +130,16 @@ Res::TypeEnum Res::Type(TypeEnum type)
 { 
     _type = type;
     return _type;
+}
+
+const std::string & Res::TypeString()
+{
+    return TypeString(Type());
+}
+
+const std::string & Res::TypeString(Res::TypeEnum type)
+{
+    return sTypeString[type];
 }
 
 void Res::EncodeBinary(std::ofstream & os)
