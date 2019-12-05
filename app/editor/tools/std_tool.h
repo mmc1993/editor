@@ -54,7 +54,7 @@ namespace std {
     }
 
     //  转小写
-    inline std::string lower(std::string & str)
+    inline std::string lower(const std::string & str)
     {
         std::string result;
         for (auto ch : str)
@@ -67,7 +67,7 @@ namespace std {
     }
 
     //  转大写
-    inline std::string upper(std::string & str)
+    inline std::string upper(const std::string & str)
     {
         std::string result;
         for (auto ch : str)

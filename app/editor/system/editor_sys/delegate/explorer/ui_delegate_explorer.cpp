@@ -20,7 +20,7 @@ bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event 
     case UIEventEnum::kMouse:
         return OnEventMouse((const UIEvent::Mouse &)param);
     case UIEventEnum::kEdit:
-        //return 
+        return OnEventEdit((const UIEvent::Edit &)param);
     case UIEventEnum::kMenu:
         return OnEventMenu((const UIEvent::Menu &)param);
     case UIEventEnum::kInit:
@@ -67,6 +67,12 @@ bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)
     return true;
 }
 
+bool UIDelegateExplorer::OnEventEdit(const UIEvent::Edit & param)
+{
+    NewSearch(std::upper(param.mString));
+    return true;
+}
+
 bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
 {
     if      (tools::IsEqualSkipSpace(param.mPath, "Rename"))
@@ -100,7 +106,7 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
 void UIDelegateExplorer::ListRefresh()
 {
     ListClick1(nullptr);
-
+    mListLayout->ClearObjects();
     for (auto & item : mSearchItems)
     {
         NewRecord(item);
@@ -278,7 +284,7 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
         {
             item.mWords.emplace_back(res->Path().find(word));
         }
-        if (std::none_ofv(item.mWords.begin(), item.mWords.end(), std::string::npos))
+        if (!std::all_ofv(item.mWords.begin(), item.mWords.end(), std::string::npos))
         {
             mSearchItems.emplace_back(item);
         }
