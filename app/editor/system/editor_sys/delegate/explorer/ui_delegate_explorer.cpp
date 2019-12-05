@@ -33,7 +33,7 @@ bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)
 {
     if (param.mAct == 3)
     {
-        if      (param.mKey == 0)
+        if (param.mKey == 0)
         {
             if (mObj2Res.end() != mObj2Res.find(param.mObject))
             {
