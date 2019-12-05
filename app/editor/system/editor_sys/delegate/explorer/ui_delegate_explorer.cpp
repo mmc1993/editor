@@ -91,7 +91,7 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mPreSearch = std::get<0>(init);
     mOptSelect = std::get<1>(init);
     NewSearch(std::upper(mPreSearch));
-    mLimitType = mSearchStat.mTypes;        //  限制搜索类型
+    mLimitType =   mSearchStat.mTypes;        //  限制搜索类型
     return true;
 }
 
