@@ -11,7 +11,7 @@
         <Property key="IsShowScrollBar" value="false"/>
         <Property key="IsShowTitleBar" value="true"/>
         <Property key="IsWindow" value="true"/>
-        <Property key="StretchMin" value="300 300"/>
+        <Property key="StretchMin" value="300 205"/>
         <Property key="EventDelegate" value="editor/editor/delegate/explorer/ui_delegate_explorer"/>
         <Widget type="Widget" skin="PanelSkin" position="0 25 600 45" align="Left Right Top" name="LayoutSearch">
             <Property key="BorderNumber" value="1"/>
@@ -42,7 +42,7 @@
                 <Property key="IsCanDragMove" value="false"/>
             </Widget>
         </Widget>
-        <Widget type="Widget" skin="PanelSkin" position="0 70 600 530" align="HStretch VStretch" name="LayoutList">
+        <Widget type="Widget" skin="PanelSkin" position="0 95 600 505" align="Left Right Top Bottom" name="LayoutList">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="true"/>
             <Property key="IsCanDragMove" value="false"/>
@@ -57,7 +57,7 @@
             <Property key="IsWindow" value="false"/>
             <Property key="StretchMin" value="200 0"/>
         </Widget>
-        <Widget type="Widget" skin="PanelSkin" position="400 70 200 200" align="Right Top" name="LayoutType">
+        <Widget type="Widget" skin="PanelSkin" position="0 70 600 25" align="Left Right Top" name="LayoutType">
             <Property key="BorderNumber" value="1"/>
             <Property key="IsCanDragFree" value="false"/>
             <Property key="IsCanDragMove" value="false"/>
@@ -71,7 +71,7 @@
             <Property key="IsShowScrollBar" value="false"/>
             <Property key="IsShowTitleBar" value="false"/>
             <Property key="IsWindow" value="false"/>
-            <Property key="StretchMin" value="200 200"/>
+            <Property key="StretchMin" value="600 25"/>
         </Widget>
     </Widget>
 </MyGUI>

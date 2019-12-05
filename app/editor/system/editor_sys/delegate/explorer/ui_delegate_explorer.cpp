@@ -172,37 +172,6 @@ void UIDelegateExplorer::ResSetType(const SharePtr<UIObject> & object)
     //Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(mLastSelect), type);
 }
 
-void UIDelegateExplorer::NewSearch(const std::string & search)
-{
-    SearchStat searchStat;
-    auto txt = tools::ReplaceEx(search, "\\s+", " ");
-    auto pos = txt.find_first_of('|');
-    if (pos == std::string::npos)
-    {
-        searchStat.mWords = tools::Split(txt, " ");
-    }
-    else
-    {
-        searchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
-        searchStat.mWords = tools::Split(txt.substr(   pos), " ");
-    }
-
-    //  限制搜索类型
-    if (!mLimitType.empty()) { searchStat.mTypes = mLimitType; }
-
-    auto ret = mSearchStat.mTypes.size() != searchStat.mTypes.size()
-            || mSearchStat.mWords.size() != searchStat.mWords.size();
-    for (auto i = 0; !ret && i != mSearchStat.mTypes.size(); ++i)
-    {
-        if (mSearchStat.mTypes.at(i) != searchStat.mTypes.at(i)) { ret = true; }
-    }
-    for (auto i = 0; !ret && i != mSearchStat.mWords.size(); ++i)
-    {
-        if (mSearchStat.mWords.at(i) != searchStat.mWords.at(i)) { ret = true; }
-    }
-    if (ret) { NewSearch(searchStat); }
-}
-
 void UIDelegateExplorer::NewRecord(const SearchItem & item)
 {
     const auto & color = SFormat("{0} {1} {2} {3}", 
@@ -260,6 +229,37 @@ void UIDelegateExplorer::NewRecord(const SearchItem & item)
     mObj2Res.emplace(mListLayout->GetObjects().back()->GetObjects().at(0), item.mRes);
 }
 
+void UIDelegateExplorer::NewSearch(const std::string & search)
+{
+    SearchStat searchStat;
+    auto txt = tools::ReplaceEx(search, "\\s+", " ");
+    auto pos = txt.find_first_of('|');
+    if (pos == std::string::npos)
+    {
+        searchStat.mWords = tools::Split(txt, " ");
+    }
+    else
+    {
+        searchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
+        searchStat.mWords = tools::Split(txt.substr(   pos), " ");
+    }
+
+    //  限制搜索类型
+    if (!mLimitType.empty()) { searchStat.mTypes = mLimitType; }
+
+    auto ret = mSearchStat.mTypes.size() != searchStat.mTypes.size()
+            || mSearchStat.mWords.size() != searchStat.mWords.size();
+    for (auto i = 0; !ret && i != mSearchStat.mTypes.size(); ++i)
+    {
+        if (mSearchStat.mTypes.at(i) != searchStat.mTypes.at(i)) { ret = true; }
+    }
+    for (auto i = 0; !ret && i != mSearchStat.mWords.size(); ++i)
+    {
+        if (mSearchStat.mWords.at(i) != searchStat.mWords.at(i)) { ret = true; }
+    }
+    if (ret) { NewSearch(searchStat); }
+}
+
 void UIDelegateExplorer::NewSearch(const SearchStat & search)
 { 
     mSearchStat = search;
@@ -280,13 +280,23 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
     for (auto res : mProject->GetResByType(types))
     {
         SearchItem item(res, res->Type());
-        for (const auto & word:mSearchStat.mWords)
-        {
-            item.mWords.emplace_back(res->Path().find(word));
-        }
-        if (!std::all_ofv(item.mWords.begin(), item.mWords.end(), std::string::npos))
+        if (mSearchStat.mWords.empty())
         {
             mSearchItems.emplace_back(item);
+        }
+        else
+        {
+            auto path = std::upper(res->Path());
+            for (const auto & word : mSearchStat.mWords)
+            {
+                item.mWords.emplace_back(path.find(word));
+            }
+            if (!std::all_ofv(item.mWords.begin(),
+                              item.mWords.end(), 
+                              std::string::npos))
+            {
+                mSearchItems.emplace_back(item);
+            }
         }
     }
     //  排序结果

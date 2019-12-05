@@ -59,8 +59,8 @@ namespace std {
         std::string result;
         for (auto ch : str)
         {
-            if (ch >= 'a' && ch <= 'z')
-            { result.push_back(ch - 32); }
+            if (ch >= 'A' && ch <= 'Z')
+            { result.push_back(ch + 32); }
             else { result.push_back(ch); }
         }
         return std::move(result);
@@ -72,8 +72,8 @@ namespace std {
         std::string result;
         for (auto ch : str)
         {
-            if (ch >= 'A' && ch <= 'Z')
-            { result.push_back(ch + 32); }
+            if (ch >= 'a' && ch <= 'z')
+            { result.push_back(ch - 32); }
             else { result.push_back(ch); }
         }
         return std::move(result);

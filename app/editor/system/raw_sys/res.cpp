@@ -137,7 +137,7 @@ const std::string & Res::TypeString()
     return TypeString(Type());
 }
 
-const std::string & Res::TypeString(Res::TypeEnum type)
+const std::string & Res::TypeString(uint type)
 {
     return sTypeString[type];
 }

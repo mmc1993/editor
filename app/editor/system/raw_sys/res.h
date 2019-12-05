@@ -85,7 +85,7 @@ public:
     TypeEnum Type(TypeEnum type);
 
     const        std::string & TypeString();
-    static const std::string & TypeString(Res::TypeEnum type);
+    static const std::string & TypeString(uint type);
 
     template <class T>
     void BindMeta(const T & val)
