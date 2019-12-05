@@ -11,13 +11,13 @@
 
 //  菜单格式:
 //      @勾选, !禁用, ~编辑
-//      Menu0/Menu0[~][@][!]
-//      Menu0/Menu1[~][@][!]
-//      Menu0/Menu2[~][@][!]
-//      Menu1/Menu0[~][@][!]
-//      Menu1/Menu1[~][@][!]
-//      Menu1/Menu2[~][@][!]
-//      Menu2/Menu0~
+//      Menu0\\Menu0[~][@][!]
+//      Menu0\\Menu1[~][@][!]
+//      Menu0\\Menu2[~][@][!]
+//      Menu1\\Menu0[~][@][!]
+//      Menu1\\Menu1[~][@][!]
+//      Menu1\\Menu2[~][@][!]
+//      Menu2\\Menu0~
 
 class UIMenu {
 public:
@@ -40,12 +40,12 @@ public:
     };
 
 public:
-    static void BarMenu(const SharePtr<UIObject> & object, const std::vector<std::string> & list);
-    static void PopMenu(const SharePtr<UIObject> & object, const std::vector<std::string> & list);
+    static void BarMenu(SharePtr<UIObject> object, const std::vector<std::string> & list);
+    static void PopMenu(SharePtr<UIObject> object, const std::vector<std::string> & list);
     static void RenderPopup();
 
 private:
-    static void RenderMenu(const SharePtr<UIObject> & object, std::vector<MenuItem> & items);
+    static void RenderMenu(SharePtr<UIObject> object, std::vector<MenuItem> & items);
 
 private:
     static Popup s_popup;
