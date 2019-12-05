@@ -116,15 +116,17 @@ void UIDelegateExplorer::ListClick1(const SharePtr<UIObject> & object)
     if (mLastSelect != nullptr)
     {
         mLastSelect->GetState()->IsSelect = true;
+        auto resource = mObj2Res.at(mLastSelect);
         for (auto i = 0; i != Res::TypeEnum::Length; ++i)
         {
+            auto color = resource->Type() == (Res::TypeEnum)i ? "1 0 0 1" : "1 1 1 1";
             auto type = mmc::Json::Hash();
             auto name = Res::TypeString((Res::TypeEnum)i);
             type->Insert(mmc::Json::List(), "__Children");
             type->Insert(mmc::Json::Hash(), "__Property");
             type->Insert(mmc::Json::FromValue("3"), "__Property", "Type");
             type->Insert(mmc::Json::FromValue(name), "__Property", "Name");
-            type->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragMove");
+            type->Insert(mmc::Json::FromValue(color), "__Property", "Color");
             type->Insert(mmc::Json::FromValue("false"), "__Property", "IsCanDragFree");
             mTypeLayout->InsertObject(UIParser::Parse(type));
         }

@@ -64,6 +64,7 @@
             <Property key="IsCanMove" value="false"/>
             <Property key="IsCanStretch" value="false"/>
             <Property key="IsFullScreen" value="false"/>
+            <Property key="IsSameline" value="true"/>
             <Property key="IsShowBorder" value="true"/>
             <Property key="IsShowMenuBar" value="false"/>
             <Property key="IsShowNav" value="false"/>

@@ -105,6 +105,7 @@
 				"IsCanMove": "false",
 				"IsCanStretch": "false",
 				"IsFullScreen": "false",
+				"IsSameline": "true",
 				"IsShowBorder": "true",
 				"IsShowMenuBar": "false",
 				"IsShowNav": "false",
