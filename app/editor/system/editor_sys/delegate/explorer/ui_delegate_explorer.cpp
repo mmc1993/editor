@@ -73,7 +73,7 @@ bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
     }
     else if (param.mPath == "Delete")
     {
-        Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
+        //Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
     }
     return true;
 }
@@ -147,13 +147,15 @@ void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
     auto res = mObj2Res.at(object);
     std::vector<std::string> list;
     list.emplace_back("Delete");
-    if (res->Type() == Res::TypeEnum::kImg ||
+    if (res->Type() == Res::TypeEnum::kNull ||
+        res->Type() == Res::TypeEnum::kImg ||
         res->Type() == Res::TypeEnum::kTxt ||
         res->Type() == Res::TypeEnum::kFnt ||
         res->Type() == Res::TypeEnum::kMap)
     {
         list.emplace_back(SFormat("Rename/{0}~", mObj2Res.at(object)->Path()));
     }
+    UIMenu::PopMenu(object, list);
 }
 
 void UIDelegateExplorer::ResSetType(const SharePtr<UIObject> & object)
