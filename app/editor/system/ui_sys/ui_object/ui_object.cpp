@@ -399,8 +399,8 @@ void UIObject::UpdateSize()
     if (!state->IsWindow && (UIAlignEnum)state->Align == UIAlignEnum::kDefault && GetType() != UITypeEnum::kOther)
     {
         const auto & size = ImGui::GetItemRectSize();
-        GetState()->Move.z = size.x;
-        GetState()->Move.w = size.y;
+        state->Move.z = size.x;
+        state->Move.w = size.y;
     }
 }
 
