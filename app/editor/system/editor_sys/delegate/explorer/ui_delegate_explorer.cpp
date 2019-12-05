@@ -81,7 +81,7 @@ bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
     }
     else if (tools::IsEqualSkipSpace(param.mPath, "Delete"))
     {
-        //Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
+        Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
     }
     return true;
 }
