@@ -1,7 +1,7 @@
 {
 	"__Property": {
 		"Type": "1",
-		"Skin": "Window",
+		"Skin": "PanelSkin",
 		"Move": "0 0 1280 720",
 		"Align": "384",
 		"Name": "Root",
@@ -16,14 +16,14 @@
 		"IsShowTitleBar": "false",
 		"IsWindow": "true",
 		"StretchMin": "1280 720",
-		"MenuBar": "Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic",
+		"MenuBar": "Menu\New Project,Menu\Open Project,Menu\Save Project,Menu\Free Project,Style/Drak,Style/Light,Style/Classic",
 		"EventDelegate": "editor/editor/delegate/main/uievent_delegate_main_global"
 	},
 	"__Children": [
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "Window",
+				"Skin": "PanelSkin",
 				"Move": "0 0 1280 25",
 				"Align": "26",
 				"Name": "EditorMenu",
@@ -47,7 +47,7 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "Window",
+				"Skin": "PanelSkin",
 				"Move": "0 680 1280 40",
 				"Align": "28",
 				"Name": "EditorState",
@@ -71,7 +71,7 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "Window",
+				"Skin": "PanelSkin",
 				"Move": "0 25 300 655",
 				"Align": "384",
 				"Name": "EditorObjList",
@@ -96,7 +96,7 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "Window",
+				"Skin": "PanelSkin",
 				"Move": "1040 25 240 655",
 				"Align": "384",
 				"Name": "EditorObjComp",
@@ -121,7 +121,7 @@
 		{
 			"__Property": {
 				"Type": "1",
-				"Skin": "Window",
+				"Skin": "PanelSkin",
 				"Move": "300 25 740 655",
 				"Align": "384",
 				"Name": "EditorObjStage",

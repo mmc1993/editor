@@ -12,7 +12,7 @@
         <Property key="IsShowTitleBar" value="false"/>
         <Property key="IsWindow" value="true"/>
         <Property key="StretchMin" value="1280 720"/>
-        <Property key="MenuBar" value="Menu/New Project,Menu/Open Project,Menu/Save Project,Menu/Free Project,Style/Drak,Style/Light,Style/Classic"/>
+        <Property key="MenuBar" value="Menu\New Project,Menu\Open Project,Menu\Save Project,Menu\Free Project,Style/Drak,Style/Light,Style/Classic"/>
         <Property key="EventDelegate" value="editor/editor/delegate/main/uievent_delegate_main_global"/>
         <Widget type="Widget" skin="PanelSkin" position="0 0 1280 25" align="Left Right Top" name="EditorMenu">
             <Property key="BorderNumber" value="1"/>
