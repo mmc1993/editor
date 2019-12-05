@@ -104,10 +104,10 @@ public:
     };
 
     //  编辑文本事件
-    struct EditText : Event {
+    struct Edit : Event {
         std::string mString;
 
-        EditText(const std::string & string, const SharePtr<UIObject> & object = nullptr)
+        Edit(const std::string & string, const SharePtr<UIObject> & object = nullptr)
             : Event(object)
             , mString(string)
         { }

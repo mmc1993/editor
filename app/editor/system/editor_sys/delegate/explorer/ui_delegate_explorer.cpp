@@ -19,6 +19,8 @@ bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event 
     {
     case UIEventEnum::kMouse:
         return OnEventMouse((const UIEvent::Mouse &)param);
+    case UIEventEnum::kEdit:
+        //return 
     case UIEventEnum::kMenu:
         return OnEventMenu((const UIEvent::Menu &)param);
     case UIEventEnum::kInit:
