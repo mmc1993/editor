@@ -106,6 +106,10 @@ class UIObjectTextBox : public UIObject {
 public:
     UIObjectTextBox();
 
+    void SetText(const std::string & text)
+    {
+        GetState<UIStateTextBox>()->mBuffer = text;
+    }
 private:
     virtual bool OnEnter() override;
 };

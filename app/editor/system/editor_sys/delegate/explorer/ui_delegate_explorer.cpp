@@ -99,7 +99,8 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mPreSearch = std::get<0>(init);
     mOptSelect = std::get<1>(init);
     NewSearch(std::upper(mPreSearch));
-    mLimitType =   mSearchStat.mTypes;        //  限制搜索类型
+    mSearchText->SetText(mPreSearch);
+    mLimitType = mSearchStat.mTypes;        //  限制搜索类型
     return true;
 }
 
@@ -241,7 +242,7 @@ void UIDelegateExplorer::NewSearch(const std::string & search)
     else
     {
         searchStat.mTypes = tools::Split(txt.substr(0, pos), " ");
-        searchStat.mWords = tools::Split(txt.substr(   pos), " ");
+        searchStat.mWords = tools::Split(txt.substr(pos +1), " ");
     }
 
     //  限制搜索类型
@@ -268,12 +269,12 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
     std::vector<Res::TypeEnum> types;
     for (const auto & type : mSearchStat.mTypes)
     {
-        for (auto i = 0; i != Res::TypeEnum::Length; ++i)
+        auto i = 0;
+        for (; i != Res::TypeEnum::Length &&
+            Res::TypeString(i) != type; ++i);
+        if (i != Res::TypeEnum::Length)
         {
-            if (Res::TypeString((Res::TypeEnum)i) ==type)
-            {
-                types.emplace_back((Res::TypeEnum)i);
-            }
+            types.emplace_back((Res::TypeEnum)i);
         }
     }
     //  匹配关键字
@@ -286,7 +287,7 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
         }
         else
         {
-            auto path = std::upper(res->Path());
+            const auto & path = std::upper(res->Path());
             for (const auto & word : mSearchStat.mWords)
             {
                 item.mWords.emplace_back(path.find(word));

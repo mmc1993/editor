@@ -2,7 +2,7 @@
 #include "project.h"
 
 const std::string Res::sTypeString[TypeEnum::Length] = {
-    "Null", "Txt", "Img", "Map", "Fnt", "Obj", "Var", "Blueprint"
+    "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUEPRINT"
 };
 
 // ---
