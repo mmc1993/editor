@@ -28,7 +28,40 @@ bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event 
 }
 
 bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)
-{ 
+{
+    if (param.mAct == 3)
+    {
+        if      (param.mKey == 0)
+        {
+            if (mObj2Res.end() != mObj2Res.find(param.mObject))
+            {
+                //  单击条目
+                ListClick1(param.mObject);
+            }
+            else if (param.mObject->GetParent() == mTypeLayout)
+            {
+                //  单击类型
+                ResSetType(param.mObject);
+            }
+        }
+        else if (param.mKey == 1)
+        {
+            if (mObj2Res.end() != mObj2Res.find(param.mObject))
+            {
+                //  右键条目
+                ListClick1(param.mObject);
+                ListRClick(param.mObject);
+            }
+        }
+    }
+    else if (param.mAct == 4 && param.mKey == 0)
+    {
+        if (mObj2Res.end() != mObj2Res.find(param.mObject))
+        {
+            //  双击条目
+            ListClick2(param.mObject);
+        }
+    }
     return true;
 }
 
@@ -121,9 +154,10 @@ void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
     }
 }
 
-void UIDelegateExplorer::ResSetType(const SharePtr<UIObject>& object, const Res::TypeEnum type)
-{ 
-    Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(object), type);
+void UIDelegateExplorer::ResSetType(const SharePtr<UIObject> & object)
+{
+    ASSERT_LOG(mLastSelect != nullptr, "");
+    //Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(mLastSelect), type);
 }
 
 void UIDelegateExplorer::NewSearch(const std::string & search)
@@ -210,6 +244,8 @@ void UIDelegateExplorer::NewRecord(const SearchItem & item)
     }
 
     mListLayout->InsertObject(UIParser::Parse(layout));
+    mRes2Obj.emplace(item.mRes, mListLayout->GetObjects().back()->GetObjects().at(0));
+    mObj2Res.emplace(mListLayout->GetObjects().back()->GetObjects().at(0), item.mRes);
 }
 
 void UIDelegateExplorer::NewSearch(const SearchStat & search)
@@ -258,9 +294,5 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
             }
             return false;
         });
-    for (auto & item : mSearchItems)
-    {
-        std::cout << "Path: " << item.mRes->Path() << std::endl;
-    }
     ListRefresh();
 }

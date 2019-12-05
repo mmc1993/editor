@@ -42,7 +42,7 @@ private:
     void ListRClick(const SharePtr<UIObject> & object);
 
     //  ×ÊÔ´²Ù×÷
-    void ResSetType(const SharePtr<UIObject> & object, const Res::TypeEnum type);
+    void ResSetType(const SharePtr<UIObject> & object);
 
     void NewRecord(const SearchItem & item);
     void NewSearch(const SearchStat & search);
