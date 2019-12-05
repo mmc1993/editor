@@ -297,14 +297,13 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
             {
                 return a.mType < b.mType;
             }
+            int n = 0;
             for (auto i = 0; i != a.mWords.size(); ++i)
             {
-                if (a.mWords.at(i) < b.mWords.at(i))
-                {
-                    return true;
-                }
+                if      (a.mWords.at(i) < b.mWords.at(i)) { ++n; }
+                else if (a.mWords.at(i) > b.mWords.at(i)) { --n; }
             }
-            return false;
+            return n > 0;
         });
     ListRefresh();
 }
