@@ -67,11 +67,11 @@ bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)
 
 bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
 {
-    if      (param.mPath == "Rename")
+    if      (tools::IsEqualSkipSpace(param.mPath, "Rename"))
     {
         Global::Ref().mEditorSys->OptRenameRes(mObj2Res.at(param.mObject), param.mEdit);
     }
-    else if (param.mPath == "Delete")
+    else if (tools::IsEqualSkipSpace(param.mPath, "Delete"))
     {
         //Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
     }
@@ -153,7 +153,7 @@ void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
         res->Type() == Res::TypeEnum::kFnt ||
         res->Type() == Res::TypeEnum::kMap)
     {
-        list.emplace_back(SFormat("Rename/{0}~", mObj2Res.at(object)->Path()));
+        list.emplace_back(SFormat("Rename\\{0}~", mObj2Res.at(object)->Path()));
     }
     UIMenu::PopMenu(object, list);
 }
