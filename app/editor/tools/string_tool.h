@@ -138,8 +138,11 @@ namespace tools {
     //  返回文件名 有后缀
     inline std::string GetFileFullName(const std::string & fname)
     {
-        assert(std::string::npos == fname.find_first_of('\\'));
         auto pos = fname.find_last_of('/');
+        if (pos == std::string::npos)
+        {
+            pos = fname.find_last_of('\\');
+        }
         return fname.substr(pos + 1);
     }
 }

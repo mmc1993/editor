@@ -39,12 +39,12 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                     auto & name = mouse.mObject->GetParent()->GetState()->Name;
                     buffer.push_back(        "Add Object");
                     buffer.push_back(        "Del Object");
-                    buffer.push_back(SFormat("Rename Object/{0}~", name));
+                    buffer.push_back(SFormat("Rename Object\\{0}~", name));
 
                     std::transform(
                         std::begin(Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
                         std::end(  Global::Ref().mCfgSys->At("res/cfg/editor/component.json", "Order")),
-                        std::back_inserter(buffer), [](const auto & pair) { return "Add Component/" + pair.mVal->ToString(); });
+                        std::back_inserter(buffer), [](const auto & pair) { return "Add Component\\" + pair.mVal->ToString(); });
                     UIMenu::PopMenu(mouse.mObject->GetParent(), buffer);
                 }
             }
@@ -505,31 +505,31 @@ bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent:
     if (e == UIEventEnum::kMenu)
     {
         auto & menu = (const UIEvent::Menu &)param;
-        if (menu.mPath == "Menu/New Project")
+        if (menu.mPath == "Menu\\New Project")
         {
             Global::Ref().mEditorSys->OptNewProject("1.proj");
         }
-        else if (menu.mPath == "Menu/Open Project")
+        else if (menu.mPath == "Menu\\Open Project")
         {
             Global::Ref().mEditorSys->OptOpenProject("1.proj");
         }
-        else if (menu.mPath == "Menu/Save Project")
+        else if (menu.mPath == "Menu\\Save Project")
         {
             Global::Ref().mEditorSys->OptSaveProject("");
         }
-        else if (menu.mPath == "Menu/Free Project")
+        else if (menu.mPath == "Menu\\Free Project")
         {
             Global::Ref().mEditorSys->OptFreeProject();
         }
-        else if (menu.mPath == "Style/Drak")
+        else if (menu.mPath == "Style\\Drak")
         {
             ImGui::StyleColorsDark();
         }
-        else if (menu.mPath == "Style/Light")
+        else if (menu.mPath == "Style\\Light")
         {
             ImGui::StyleColorsLight();
         }
-        else if (menu.mPath == "Style/Classic")
+        else if (menu.mPath == "Style\\Classic")
         {
             ImGui::StyleColorsClassic();
         }
