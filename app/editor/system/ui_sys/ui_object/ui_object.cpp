@@ -289,6 +289,8 @@ glm::vec2 UIObject::ToLocalCoordFromImGUI()
 {
     //  对于内部没有ImGui::Begin的组件, 需要使用这个接口返回ImGui::GetCursorPos
     auto pos = ImGui::GetCursorPos();
+    pos.x -= ImGui::GetScrollX();
+    pos.y -= ImGui::GetScrollY();
     auto parent = GetParent();
     while (parent->GetType() == UITypeEnum::kOther
         || parent->GetType() == UITypeEnum::kTextBox
