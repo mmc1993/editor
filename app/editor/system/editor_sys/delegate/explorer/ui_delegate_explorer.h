@@ -10,6 +10,7 @@
 
 class UIDelegateExplorer : public UIDelegateBase {
 public:
+    static const glm::vec4 sTypeColors[Res::Length];
     using SelectFunc_t  = std::function<void (Res::Ref *)>;
     using InitParam_t   = std::tuple<std::string, SelectFunc_t>;
 
@@ -42,12 +43,10 @@ private:
 
     //  资源操作
     void ResSetType(const SharePtr<UIObject> & object, const Res::TypeEnum type);
-    void ResRename(const SharePtr<UIObject> & object, const std::string & name);
-    void ResDelete(const SharePtr<UIObject> & object);
 
-    void NewRecord(Res * res);
+    void NewRecord(const SearchItem & item);
+    void NewSearch(const SearchStat & search);
     void NewSearch(const std::string & search);
-    void NewSearch(const SearchStat  & search);
 
 private:
     //  控件

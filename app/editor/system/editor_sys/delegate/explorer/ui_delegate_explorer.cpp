@@ -1,5 +1,17 @@
 #include "ui_delegate_explorer.h"
 
+const glm::vec4 UIDelegateExplorer::sTypeColors[Res::Length]
+{
+    glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f),
+    glm::vec4(1.0f, 0.5f, 0.0f, 1.0f),
+    glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f),
+    glm::vec4(1.0f, 0.5f, 0.0f, 1.0f),
+    glm::vec4(1.0f, 1.0f, 1.0f, 1.0f),
+    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f),
+};
+
 bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject>& object)
 {
     auto ret = UIDelegateBase::OnCallEventMessage(e, param, object);
@@ -24,11 +36,11 @@ bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
 {
     if      (param.mPath == "Rename")
     {
-        ResRename(param.mObject, param.mEdit);
+        Global::Ref().mEditorSys->OptRenameRes(mObj2Res.at(param.mObject), param.mEdit);
     }
     else if (param.mPath == "Delete")
     {
-        ResDelete(param.mObject);
+        Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(param.mObject));
     }
     return true;
 }
@@ -53,6 +65,11 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
 void UIDelegateExplorer::ListRefresh()
 {
     ListClick1(nullptr);
+
+    for (auto & item : mSearchItems)
+    {
+        NewRecord(item);
+    }
 }
 
 void UIDelegateExplorer::ListClick1(const SharePtr<UIObject> & object)
@@ -109,21 +126,6 @@ void UIDelegateExplorer::ResSetType(const SharePtr<UIObject>& object, const Res:
     Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(object), type);
 }
 
-void UIDelegateExplorer::ResRename(const SharePtr<UIObject> & object, const std::string & name)
-{ 
-    Global::Ref().mEditorSys->OptRenameRes(mObj2Res.at(object), name);
-}
-
-void UIDelegateExplorer::ResDelete(const SharePtr<UIObject>& object)
-{ 
-    Global::Ref().mEditorSys->OptDeleteRes(mObj2Res.at(object));
-}
-
-void UIDelegateExplorer::NewRecord(Res * res)
-{ 
-
-}
-
 void UIDelegateExplorer::NewSearch(const std::string & search)
 {
     SearchStat searchStat;
@@ -153,6 +155,61 @@ void UIDelegateExplorer::NewSearch(const std::string & search)
         if (mSearchStat.mWords.at(i) != searchStat.mWords.at(i)) { ret = true; }
     }
     if (ret) { NewSearch(searchStat); }
+}
+
+void UIDelegateExplorer::NewRecord(const SearchItem & item)
+{
+    const auto & color = SFormat("{0} {1} {2} {3}", 
+                         sTypeColors[item.mType].r,
+                         sTypeColors[item.mType].g,
+                         sTypeColors[item.mType].b,
+                         sTypeColors[item.mType].a);
+    const auto & type  = item.mRes->TypeString();
+    const auto & path  = item.mRes->Path();
+
+    auto layout = mmc::Json::Hash();
+    layout->Insert(mmc::Json::List(), "__Children");
+    layout->Insert(mmc::Json::Hash(), "__Property");
+    layout->Insert(mmc::Json::FromValue("0"), "__Property", "Type");
+    layout->Insert(mmc::Json::FromValue("0"), "__Property", "Name");
+    layout->Insert(mmc::Json::FromValue("true"), "__Property", "IsSameline");
+
+    //  颜色, 类型, 路径
+    auto text = type + "> " + path + " ";
+    auto line = mmc::Json::Hash();
+    line->Insert(mmc::Json::List(), "__Children");
+    line->Insert(mmc::Json::Hash(), "__Property");
+    line->Insert(mmc::Json::FromValue("2"), "__Property", "Type");
+    line->Insert(mmc::Json::FromValue(text), "__Property", "Name");
+    line->Insert(mmc::Json::FromValue(color), "__Property", "Color");
+    layout->Insert(line, "__Children", 0);
+
+    //  颜色, 关键字
+    if (!item.mWords.empty())
+    {
+        text.clear();
+        for (auto i = 0; i != item.mWords.size(); ++i)
+        {
+            if (item.mWords.at(i) != std::string::npos)
+            {
+                text.append(mSearchStat.mWords.at(i));
+                text.append(" ");
+            }
+        }
+        if (!text.empty())
+        {
+            const auto & color = "0.5, 0.5, 0.5, 1";
+            auto word = mmc::Json::Hash();
+            word->Insert(mmc::Json::List(), "__Children");
+            word->Insert(mmc::Json::Hash(), "__Property");
+            word->Insert(mmc::Json::FromValue("3"), "__Property", "Type");
+            word->Insert(mmc::Json::FromValue(text), "__Property", "Name");
+            word->Insert(mmc::Json::FromValue(color), "__Property", "Color");
+            layout->Insert(word, "__Children", 1);
+        }
+    }
+
+    mListLayout->InsertObject(UIParser::Parse(layout));
 }
 
 void UIDelegateExplorer::NewSearch(const SearchStat & search)

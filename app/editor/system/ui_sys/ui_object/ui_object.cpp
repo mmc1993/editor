@@ -215,7 +215,7 @@ void UIObject::Render(float dt, bool visible)
 
     if (state->IsSameline && !_children.empty())
     {
-        if (_children.size() > 1)
+        if (_children.size() >= 1)
         {
             _children.at(0)->Render(dt, ret);
         }
@@ -932,7 +932,9 @@ bool UIObjectTreeBox::OnEnter()
     size_t flag = ImGuiTreeNodeFlags_OpenOnDoubleClick;
     if (state->IsSelect) { flag |= ImGuiTreeNodeFlags_Selected; }
     if (GetObjects().empty()) { flag |= ImGuiTreeNodeFlags_Leaf; }
+    ImGui::PushStyleColor(ImGuiCol_Text, state->Color);
     auto ret = ImGui::TreeNodeEx(state->Name.c_str(), flag /* | ImGuiTreeNodeFlags_Framed*/);
+    ImGui::PopStyleColor();
     return ret;
 }
 
@@ -986,7 +988,7 @@ bool UIObjectTextBox::OnEnter()
     }
     else
     {
-        ImGui::PushStyleColor(ImGuiCol_Text, GetState()->Color);
+        ImGui::PushStyleColor(ImGuiCol_Text, state->Color);
         ImGui::Text(state->Name.c_str());
         ImGui::PopStyleColor();
     }

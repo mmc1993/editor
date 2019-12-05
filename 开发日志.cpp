@@ -205,6 +205,15 @@ private:
 --  Show
 --      Type|Path > Word0 Word1
 
+OnCallEventMessage 消除第三个参数
+
+
+
+
+
+
+
+
 
 地形破坏
 导航网格
