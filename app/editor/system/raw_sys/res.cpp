@@ -80,7 +80,7 @@ std::any Res::Instance()
         ret = std::any_cast<std::string>(_meta);
         break;
     case Res::kObj:
-        ret = std::any_cast<SharePtr<GLObject>>(_meta);
+        ret = _owner->GetObject(std::any_cast<uint>(_meta));
         break;
     case Res::kVar:
         ASSERT_LOG(false, "");
@@ -156,11 +156,13 @@ void Res::EncodeBinary(std::ofstream & os)
         tools::Serialize(os, std::any_cast<std::string &>(_meta));
         break;
     case Res::kObj:
-        tools::Serialize(os, std::any_cast<SharePtr<GLObject>>(_meta)->GetID());
+        tools::Serialize(os, std::any_cast<uint>(_meta));
         break;
     case Res::kVar:
+        tools::Serialize(os, std::any_cast<uint>(_meta));
         break;
     case Res::kBlueprint:
+        tools::Serialize(os, std::any_cast<uint>(_meta));
         break;
     }
 }
@@ -175,28 +177,27 @@ void Res::DecodeBinary(std::ifstream & is)
     case Res::kImg:
     case Res::kMap:
     case Res::kFnt:
-        _meta.emplace<std::string>();
-        tools::Deserialize(is, std::any_cast<std::string &>(_meta));
+        {
+            _meta.emplace<std::string>();
+            tools::Deserialize(is, std::any_cast<std::string &>(_meta));
+        }
         break;
     case Res::kObj:
         {
-            uint id = 0;
-            tools::Deserialize(is, id);
-            _meta = _owner->GetObject(id);
+            _meta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(_meta));
         }
         break;
     case Res::kVar:
         {
-            uint id = 0;
-            tools::Deserialize(is, id);
-            //  读取变量
+            _meta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(_meta));
         }
         break;
     case Res::kBlueprint:
-        { 
-            uint id = 0;
-            tools::Deserialize(is, id);
-            //  读取蓝图
+        {
+            _meta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(_meta));
         }
         break;
     }
@@ -213,12 +214,12 @@ std::string Res::Path()
     case Res::kMap:
     case Res::kFnt:
         {
-            path = std::any_cast<std::string>(_meta);
+            path = std::any_cast<std::string>(Instance());
         }
         break;
     case Res::kObj:
         {
-            auto object = std::any_cast<SharePtr<GLObject>>(_meta);
+            auto object = std::any_cast<SharePtr<GLObject>>(Instance());
             path.append(object->GetName());
 
             for (   object = object->GetParent(); 
