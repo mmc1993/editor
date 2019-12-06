@@ -88,6 +88,11 @@ bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
 
 bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
 {
+    //  注册监听
+    _listener.Add(EventSys::TypeEnum::kSetResType, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+    _listener.Add(EventSys::TypeEnum::kRenameRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+    _listener.Add(EventSys::TypeEnum::kDeleteRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+
     mListLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutList" }));
     mTypeLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutType" }));
     mRefsLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutRefs" }));
@@ -102,6 +107,39 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mSearchText->SetText(mPreSearch);
     mLimitType = mSearchStat.mTypes;        //  限制搜索类型
     return true;
+}
+
+void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param)
+{ 
+    switch (type)
+    {
+    case EventSys::TypeEnum::kSetResType:
+        {
+            auto & args = std::any_cast<const std::tuple<Res *, uint> &>(param);
+            auto & arg0 = std::get<0>(args);
+            auto & arg1 = std::get<1>(args);
+            ListClick1(mRes2Obj.at(arg0));
+        }
+        break;
+    case EventSys::TypeEnum::kRenameRes:
+        {
+            auto & args = std::any_cast<const std::tuple<Res *, std::string, std::string> &>(param);
+            auto & arg0 = std::get<0>(args);
+            auto & arg1 = std::get<1>(args);
+            auto & arg2 = std::get<2>(args);
+            mRes2Obj.at(arg0)->GetState()->Name = arg2;
+        }
+        break;
+    case EventSys::TypeEnum::kDeleteRes:
+        {
+            auto & args = std::any_cast<const std::tuple<Res *, uint, std::string> &>(param);
+            auto & arg0 = std::get<0>(args);
+            auto & arg1 = std::get<1>(args);
+            auto & arg2 = std::get<2>(args);
+            mRes2Obj.at(arg0)->DeleteThis();
+        }
+        break;
+    }
 }
 
 void UIDelegateExplorer::ListRefresh()

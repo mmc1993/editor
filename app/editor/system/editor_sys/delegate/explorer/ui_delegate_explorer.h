@@ -36,6 +36,8 @@ private:
     bool OnEventMenu(const UIEvent::Menu & param);
     bool OnEventInit(const UIEvent::Init & param);
 
+    void OnEvent(EventSys::TypeEnum type, const std::any & param);
+
     //  ½çÃæ²Ù×÷
     void ListRefresh();
     void ListClick1(const SharePtr<UIObject> & object);

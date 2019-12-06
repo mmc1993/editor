@@ -142,11 +142,15 @@ bool Project::RenameRes(Res * res, const std::string & url)
 
 bool Project::SetResType(Res * res, uint type)
 {
-    auto ret = res->GetRefCount() == 0 && (res->Type() == Res::kNull ||
-                                           res->Type() == Res::kTxt ||
-                                           res->Type() == Res::kImg ||
-                                           res->Type() == Res::kMap ||
-                                           res->Type() == Res::kFnt);
+    auto ret = res->GetRefCount() == 0 
+            && type != Res::kObj 
+            && type != Res::kVar 
+            && type != Res::kBlueprint 
+            && (res->Type() == Res::kNull ||
+                res->Type() == Res::kTxt ||
+                res->Type() == Res::kImg ||
+                res->Type() == Res::kMap ||
+                res->Type() == Res::kFnt);
     if (ret) { res->Type((Res::TypeEnum)type); }
     return ret;
 }
