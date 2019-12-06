@@ -256,34 +256,34 @@ void EditorSys::OptFreeProject()
     }
 }
 
-void EditorSys::OptDeleteRes(uint id)
-{
-    //Global::Ref().mResSys->OptDeleteRes(id);
-}
-
 void EditorSys::OptDeleteRes(Res * res)
 {
-    //Global::Ref().mResSys->OptDeleteRes(res);
-}
-
-void EditorSys::OptRenameRes(uint id, const std::string & name)
-{ 
-    //Global::Ref().mResSys->OptRenameRes(id, name);
+    ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+    auto id     = res->GetID();
+    auto path   = res->Path();
+    if (Global::Ref().mEditorSys->GetProject()->DeleteRes(res))
+    {
+        //  此时的 res 是野指针, 仅做地址比较使用.
+        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteRes, std::make_tuple(res, id, path));
+    }
 }
 
 void EditorSys::OptRenameRes(Res * res, const std::string & name)
 {
-    //Global::Ref().mResSys->OptRenameRes(res, name);
-}
-
-void EditorSys::OptSetResType(uint id, uint type)
-{ 
-    //Global::Ref().mResSys->OptSetResType(id, type);
+    ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+    if (auto path = res->Path(); Global::Ref().mEditorSys->GetProject()->RenameRes(res, name))
+    {
+        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kRenameRes, std::make_tuple(res, path, res->Path()));
+    }
 }
 
 void EditorSys::OptSetResType(Res * res, uint type)
 {
-    //Global::Ref().mResSys->OptSetResType(res, type);
+    ASSERT_LOG(Global::Ref().mEditorSys->IsOpenProject(), "");
+    if (Global::Ref().mEditorSys->GetProject()->SetResType(res, type))
+    {
+        Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSetResType, std::make_tuple(res, type));
+    }
 }
 
 void EditorSys::OpenDialogNewProject(const std::string & url)

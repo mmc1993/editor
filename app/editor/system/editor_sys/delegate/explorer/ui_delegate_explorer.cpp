@@ -170,7 +170,11 @@ void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
 void UIDelegateExplorer::ResSetType(const SharePtr<UIObject> & object)
 {
     ASSERT_LOG(mLastSelect != nullptr, "");
-    //Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(mLastSelect), type);
+    auto iter = std::find(
+        object->GetParent()->GetObjects().begin(), 
+        object->GetParent()->GetObjects().end(), object);
+    auto idx = std::distance(object->GetParent()->GetObjects().begin(), iter);
+    Global::Ref().mEditorSys->OptSetResType(mObj2Res.at(mLastSelect), idx);
 }
 
 void UIDelegateExplorer::NewRecord(const SearchItem & item)

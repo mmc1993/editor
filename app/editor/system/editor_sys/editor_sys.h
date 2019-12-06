@@ -54,16 +54,13 @@ public:
 
     /// 资源
     //  删除资源
-    void OptDeleteRes(uint id);
     void OptDeleteRes(Res * res);
     //  修改资源
-    void OptRenameRes(uint id, const std::string & name);
     void OptRenameRes(Res * res, const std::string & name);
     //  设置资源类型
-    void OptSetResType(uint id, uint type);
     void OptSetResType(Res * res, uint type);
 
-//  工具接口
+    ///  工具接口
     void OpenDialogNewProject(const std::string & url);
     void OpenDialogOpenProject(const std::string & url);
     //  项目是否打开

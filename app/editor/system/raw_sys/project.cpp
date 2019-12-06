@@ -101,18 +101,15 @@ void Project::DeleteObject(const SharePtr<GLObject> & object)
     DeleteObject(object->GetID());
 }
 
-bool Project::DeleteRes(uint id)
-{
-    return DeleteRes(_resources.at(id));
-}
-
 bool Project::DeleteRes(Res * res)
 { 
-    if (res->Type() == Res::kTxt ||
+    if (res->Type() == Res::kNull ||
+        res->Type() == Res::kTxt ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
         res->Type() == Res::kFnt)
     {
+        std::filesystem::remove(res->Path());
         _resources.erase(res->GetID());
         res->WakeRefs();
         delete  res;
@@ -121,14 +118,10 @@ bool Project::DeleteRes(Res * res)
     return false;
 }
 
-bool Project::ModifyRes(uint id, const std::string & url)
+bool Project::RenameRes(Res * res, const std::string & url)
 {
-    return ModifyRes(_resources.at(id), url);
-}
-
-bool Project::ModifyRes(Res * res, const std::string & url)
-{
-    if (res->Type() == Res::kTxt ||
+    if (res->Type() == Res::kNull ||
+        res->Type() == Res::kTxt ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
         res->Type() == Res::kFnt)
@@ -147,18 +140,15 @@ bool Project::ModifyRes(Res * res, const std::string & url)
     return false;
 }
 
-bool Project::SetResType(uint id, uint type)
-{
-    return SetResType(_resources.at(id), type);
-}
-
 bool Project::SetResType(Res * res, uint type)
 {
-    if (res->GetRefCount() == 0)
-    {
-        res->Type((Res::TypeEnum)type);
-    }
-    return res->GetRefCount() == 0;
+    auto ret = res->GetRefCount() == 0 && (res->Type() == Res::kNull ||
+                                           res->Type() == Res::kTxt ||
+                                           res->Type() == Res::kImg ||
+                                           res->Type() == Res::kMap ||
+                                           res->Type() == Res::kFnt);
+    if (ret) { res->Type((Res::TypeEnum)type); }
+    return ret;
 }
 
 void Project::Retrieve()

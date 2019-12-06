@@ -29,11 +29,8 @@ public:
     void DeleteObject(const SharePtr<GLObject> & object);
 
     //  ×ÊÔ´
-    bool DeleteRes(uint id);
     bool DeleteRes(Res * res);
-    bool ModifyRes(uint id, const std::string & url);
-    bool ModifyRes(Res * res, const std::string & url);
-    bool SetResType(uint id, uint type);
+    bool RenameRes(Res * res, const std::string & url);
     bool SetResType(Res * res, uint type);
 
     void Retrieve();    //  ¼ìË÷
