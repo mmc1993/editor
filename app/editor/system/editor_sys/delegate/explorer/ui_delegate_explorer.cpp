@@ -372,8 +372,8 @@ void UIDelegateExplorer::NewSearch(const SearchStat & search)
             int n = 0;
             for (auto i = 0; i != a.mWords.size(); ++i)
             {
-                if      (a.mWords.at(i) < b.mWords.at(i)) { ++n; }
-                else if (a.mWords.at(i) > b.mWords.at(i)) { --n; }
+                if (a.mWords.at(i) != std::string::npos) { ++n; }
+                if (b.mWords.at(i) != std::string::npos) { --n; }
             }
             return n > 0;
         });
