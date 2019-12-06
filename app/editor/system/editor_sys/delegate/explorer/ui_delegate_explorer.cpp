@@ -119,6 +119,10 @@ void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param
             auto & arg0 = std::get<0>(args);
             auto & arg1 = std::get<1>(args);
             ListClick1(mRes2Obj.at(arg0));
+
+            const auto & [path, color] = GenItemPathAndColor(arg0);
+            mRes2Obj.at(arg0)->GetState()->Color = color;
+            mRes2Obj.at(arg0)->GetState()->Name = path;
         }
         break;
     case EventSys::TypeEnum::kRenameRes:
@@ -127,7 +131,10 @@ void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param
             auto & arg0 = std::get<0>(args);
             auto & arg1 = std::get<1>(args);
             auto & arg2 = std::get<2>(args);
-            mRes2Obj.at(arg0)->GetState()->Name = arg2;
+
+            const auto & [path, color] = GenItemPathAndColor(arg0);
+            mRes2Obj.at(arg0)->GetState()->Color = color;
+            mRes2Obj.at(arg0)->GetState()->Name = path;
         }
         break;
     case EventSys::TypeEnum::kDeleteRes:
@@ -136,7 +143,9 @@ void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param
             auto & arg0 = std::get<0>(args);
             auto & arg1 = std::get<1>(args);
             auto & arg2 = std::get<2>(args);
-            mRes2Obj.at(arg0)->DeleteThis();
+            ListClick1(nullptr);
+
+            mRes2Obj.at(arg0)->GetParent()->DeleteThis();
         }
         break;
     }
@@ -192,17 +201,17 @@ void UIDelegateExplorer::ListClick2(const SharePtr<UIObject>& object)
 void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
 {
     auto res = mObj2Res.at(object);
-    std::vector<std::string> list;
-    list.emplace_back("Delete");
     if (res->Type() == Res::TypeEnum::kNull ||
         res->Type() == Res::TypeEnum::kImg ||
         res->Type() == Res::TypeEnum::kTxt ||
         res->Type() == Res::TypeEnum::kFnt ||
         res->Type() == Res::TypeEnum::kMap)
     {
+        std::vector<std::string> list;
+        list.emplace_back("Delete"  );
         list.emplace_back(SFormat("Rename\\{0}~", mObj2Res.at(object)->Path()));
+        UIMenu::PopMenu(object, list);
     }
-    UIMenu::PopMenu(object, list);
 }
 
 void UIDelegateExplorer::ResSetType(const SharePtr<UIObject> & object)
@@ -301,6 +310,16 @@ void UIDelegateExplorer::NewSearch(const std::string & search)
         if (mSearchStat.mWords.at(i) != searchStat.mWords.at(i)) { ret = true; }
     }
     if (ret) { NewSearch(searchStat); }
+}
+
+std::tuple<std::string, glm::vec4> UIDelegateExplorer::GenItemPathAndColor(Res * res)
+{
+    std::tuple<std::string, glm::vec4> result;
+    std::get<0>(result).append(res->TypeString());
+    std::get<0>(result).append("> "             );
+    std::get<0>(result).append(res->Path()      );
+    std::get<1>(result) = sTypeColors[res->Type()];
+    return std::move(result);
 }
 
 void UIDelegateExplorer::NewSearch(const SearchStat & search)

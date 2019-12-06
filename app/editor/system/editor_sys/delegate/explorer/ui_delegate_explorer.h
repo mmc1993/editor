@@ -43,13 +43,14 @@ private:
     void ListClick1(const SharePtr<UIObject> & object);
     void ListClick2(const SharePtr<UIObject> & object);
     void ListRClick(const SharePtr<UIObject> & object);
-
-    //  资源操作
     void ResSetType(const SharePtr<UIObject> & object);
 
     void NewRecord(const SearchItem & item);
     void NewSearch(const SearchStat & search);
     void NewSearch(const std::string & search);
+
+    //  生成条目字符串/颜色
+    std::tuple<std::string, glm::vec4> GenItemPathAndColor(Res * res);
 
 private:
     //  控件
