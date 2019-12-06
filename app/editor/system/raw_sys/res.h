@@ -3,7 +3,6 @@
 #include "../../include.h"
 #include "../interface/serializer.h"
 
-class GLObject;
 class Project;
 
 class Res : public interface::Serializer {
@@ -40,13 +39,18 @@ public:
         bool Modify();
         bool Modify(bool modify);
 
+        std::string Path()
+        {
+            ASSERT_LOG(_owner != nullptr, "");
+            return _owner->Path();
+        }
+
         template <class T>
-        T Instance()
+        SharePtr<T> Instance()
         {
             ASSERT_LOG(_owner != nullptr, "");
             Modify(false);
-            auto instance = _owner->Instance();
-            return  std::any_cast<T>(instance);
+            return _owner->Instance<T>();
         }
 
         bool Check()
@@ -71,7 +75,13 @@ public:
     Res(Project * owner, uint id = ~0);
     ~Res();
 
-    std::any Instance();
+    //  实例化对象
+    template <class T>
+    SharePtr<T> Instance()
+    {
+        static_assert(false);
+    }
+
     std::string Path();
     uint GetRefCount();
     uint GetID();

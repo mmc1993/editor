@@ -67,29 +67,11 @@ Res::~Res()
     }
 }
 
-std::any Res::Instance()
+template <>
+SharePtr<GLObject> Res::Instance()
 {
-    std::any ret;
-    switch (_type)
-    {
-    case Res::kNull:
-    case Res::kTxt:
-    case Res::kImg:
-    case Res::kMap:
-    case Res::kFnt:
-        ret = std::any_cast<std::string>(_meta);
-        break;
-    case Res::kObj:
-        ret = _owner->GetObject(std::any_cast<uint>(_meta));
-        break;
-    case Res::kVar:
-        ASSERT_LOG(false, "");
-        break;
-    case Res::kBlueprint:
-        ASSERT_LOG(false, "");
-        break;
-    }
-    return std::move(ret);
+    ASSERT_LOG(Type() == Res::kObj, "");
+    return _owner->GetObject(std::any_cast<uint>(_meta));
 }
 
 uint Res::GetRefCount()
@@ -214,12 +196,12 @@ std::string Res::Path()
     case Res::kMap:
     case Res::kFnt:
         {
-            path = std::any_cast<std::string>(Instance());
+            path = std::any_cast<std::string>(_meta);
         }
         break;
     case Res::kObj:
         {
-            auto object = std::any_cast<SharePtr<GLObject>>(Instance());
+            auto object = Instance<GLObject>();
             path.append(object->GetName());
 
             for (   object = object->GetParent(); 

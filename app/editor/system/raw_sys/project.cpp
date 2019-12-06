@@ -129,8 +129,8 @@ bool Project::RenameRes(Res * res, const std::string & url)
     {
         try
         {
-            auto oldPath = std::any_cast<std::string>(res->Instance());
-            std::filesystem::rename(oldPath, url);  res->BindMeta(url);
+            std::filesystem::rename(res->Path(), url);
+            res->BindMeta(url);
             return true;
         }
         catch (const std::exception &)
@@ -161,7 +161,34 @@ void Project::Retrieve()
     std::set<std::string>   set0;     //  文件
     std::set<uint>          set1;     //  id
 
-    //  TODO_
+    for (auto pair : _resources)
+    {
+        switch (pair.second->Type())
+        {
+        case Res::kNull:
+        case Res::kTxt:
+        case Res::kImg:
+        case Res::kMap:
+        case Res::kFnt:
+            set0.insert(pair.second->Path());
+            break;
+        case Res::kObj:
+            set1.insert(pair.second->Instance<GLObject>()->GetID());
+            break;
+        }
+    }
+
+    //  检索本地文件
+    tools::ListPath("res", [&] (const std::string & path)
+        {
+            if (0 == set0.count(path))
+            {
+                auto res = NewRes();
+                res->BindMeta(path);
+                res->Type(Res::kNull);
+            }
+        });
+
     //  对象
     std::deque<SharePtr<GLObject>> list{
         _object->GetObjects().begin(),
@@ -174,7 +201,7 @@ void Project::Retrieve()
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        if (0 == set0.count(front->GetID()))
+        if (0 == set1.count(front->GetID()))
         {
             auto res = NewRes();
             res->BindMeta(front);
@@ -182,17 +209,6 @@ void Project::Retrieve()
         }
         list.pop_front();
     }
-
-    //  检索本地文件
-    tools::ListPath("res", [&] (const std::string & path)
-        {
-            if (0 == set1.count(path))
-            {
-                auto res = NewRes();
-                res->BindMeta(path);
-                res->Type(Res::kNull);
-            }
-        });
 }
 
 Res * Project::GetRes(uint id)
