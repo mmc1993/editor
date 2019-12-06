@@ -60,6 +60,7 @@ void Project::Load(const std::string & url)
         _objects.insert(std::make_pair(front->GetID(), front));
         list.pop_front();
     }
+    Retrieve();
 }
 
 void Project::Save(const std::string & url)
@@ -157,26 +158,10 @@ bool Project::SetResType(Res * res, uint type)
 
 void Project::Retrieve()
 {
-    std::set<uint>          set0;       //  对象
-    std::set<std::string>   set1;       //  文件
+    std::set<std::string>   set0;     //  文件
+    std::set<uint>          set1;     //  id
 
-    for (auto & pair : _resources)
-    {
-        switch (pair.second->Type())
-        {
-        case Res::kNull:
-        case Res::kTxt:
-        case Res::kImg:
-        case Res::kMap:
-        case Res::kFnt:
-            set1.insert(std::any_cast<std::string>(pair.second->Instance()));
-            break;
-        case Res::kObj:
-            set0.insert(std::any_cast<SharePtr<GLObject>>(pair.second->Instance())->GetID());
-            break;
-        }
-    }
-
+    //  TODO_
     //  对象
     std::deque<SharePtr<GLObject>> list{
         _object->GetObjects().begin(),
