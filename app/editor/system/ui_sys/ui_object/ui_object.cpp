@@ -593,9 +593,14 @@ void UIObject::DispatchEventMouse()
 
 SharePtr<UIObject> UIObject::DispatchEventMouse(const UIEvent::Mouse & param)
 {
-    for (auto child : GetObjects())
+    if (GetType() == UITypeEnum::kLayout && !tools::IsContains(ToWorldRect(), param.mMouse))
     {
-        auto result = child->DispatchEventMouse(param);
+        return nullptr;
+    }
+
+    for (auto & object : GetObjects())
+    {
+        auto result = object->DispatchEventMouse(param);
         if (result != nullptr) { return result; }
     }
 

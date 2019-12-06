@@ -201,10 +201,11 @@ void Project::Retrieve()
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        if (0 == set1.count(front->GetID()))
+        auto objid = front->GetID();
+        if (0 == set1.count(objid))
         {
             auto res = NewRes();
-            res->BindMeta(front);
+            res->BindMeta(objid);
             res->Type(Res::kObj);
         }
         list.pop_front();
