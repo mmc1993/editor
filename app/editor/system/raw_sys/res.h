@@ -4,6 +4,7 @@
 #include "../interface/serializer.h"
 
 class Project;
+class GLObject;
 
 class Res : public interface::Serializer {
 public:
@@ -81,6 +82,9 @@ public:
     {
         static_assert(false);
     }
+
+    template <>
+    SharePtr<GLObject> Instance();
 
     std::string Path();
     uint GetRefCount();
