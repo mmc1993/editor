@@ -154,6 +154,8 @@ void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param
 void UIDelegateExplorer::ListRefresh()
 {
     ListClick1(nullptr);
+    mRes2Obj.clear();
+    mObj2Res.clear();
     mListLayout->ClearObjects();
     for (auto & item : mSearchItems)
     {
