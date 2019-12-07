@@ -109,9 +109,10 @@ void UIObject::ResetLayout()
     state->Move_ = state->Move;
     state->LSkin_ = state->LSkin;
 
-    std::for_each(_children.begin(),_children.end(),
-                    std::bind(&UIObject::ResetLayout, 
-                    std::placeholders::_1));
+    for (auto & child : _children)
+    {
+        child->ResetLayout();
+    }
 }
 
 void UIObject::ApplyLayout()
