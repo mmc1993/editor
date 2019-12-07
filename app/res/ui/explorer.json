@@ -14,6 +14,7 @@
 		"IsShowNav": "false",
 		"IsShowScrollBar": "false",
 		"IsShowTitleBar": "true",
+		"IsModel": "true",
 		"IsWindow": "true",
 		"StretchMin": "300 205",
 		"EventDelegate": "editor/editor/delegate/explorer/ui_delegate_explorer"

@@ -8,6 +8,7 @@
 		<Property key="Parent" 				value="true"/>
 		<Property key="Child" 				value="true"/>
 
+		<Parameter key="IsModel" 			value="Bool"/>
 		<Parameter key="IsWindow" 			value="Bool"/>
 		<Parameter key="IsShowNav" 			value="Bool"/>
 		<Parameter key="IsCanMove" 			value="Bool"/>

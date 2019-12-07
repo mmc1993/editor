@@ -10,6 +10,7 @@
         <Property key="IsShowNav" value="false"/>
         <Property key="IsShowScrollBar" value="false"/>
         <Property key="IsShowTitleBar" value="true"/>
+        <Property key="IsModel" value="true"/>
         <Property key="IsWindow" value="true"/>
         <Property key="StretchMin" value="300 205"/>
         <Property key="EventDelegate" value="editor/editor/delegate/explorer/ui_delegate_explorer"/>
