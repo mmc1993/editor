@@ -24,11 +24,16 @@ void UISys::OpenWindow(const std::string & url, const std::any & param)
     window->WakeInit(param);
 }
 
-void UISys::FreeWindow(const SharePtr<UIObject> & ptr)
+void UISys::FreeWindow(const SharePtr<UIObject> & window)
 {
-    auto it = std::remove(_windows.begin(), _windows.end(), ptr);
+    auto it = std::remove(_windows.begin(), _windows.end(), window);
     ASSERT_LOG(it != _windows.end(), "");
     _windows.erase(it);
+}
+
+bool UISys::CheckOpen(const SharePtr<UIObject> & window)
+{ 
+    return _windows.end() != std::find(_windows.begin(), _windows.end(), window);
 }
 
 const std::vector<SharePtr<UIObject>> & UISys::GetWindows()

@@ -13,7 +13,8 @@ public:
     void Update(float dt);
     void OpenWindow(const std::string & url,
                     const std::any & param = std::any());
-    void FreeWindow(const SharePtr<UIObject> & ptr);
+    void FreeWindow(const SharePtr<UIObject> & window);
+    bool CheckOpen(const SharePtr<UIObject> & window);
     const std::vector<SharePtr<UIObject>> & GetWindows();
 
 private:

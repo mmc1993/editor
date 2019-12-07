@@ -14,6 +14,7 @@ public:
     int Align               = 0;        //  对齐方式
     
     bool IsMulti            = false;    //  多行
+    bool IsModel            = false;    //  模态
     bool IsSelect           = false;    //  选中
     bool IsWindow           = false;    //  窗口
     bool IsButton           = false;    //  按钮

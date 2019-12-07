@@ -692,7 +692,18 @@ bool UIObjectLayout::OnEnter()
             }
 
             bool isOpen = true;
-            ret = ImGui::Begin(ImID(name).c_str(), &isOpen, flag);
+            if (state->IsModel)
+            {
+                if (!ImGui::IsPopupOpen(ImID(name).c_str()))
+                {
+                    ImGui::OpenPopup(ImID(name).c_str());
+                }
+                ret = ImGui::BeginPopupModal(ImID(name).c_str(), &isOpen, flag);
+            }
+            else
+            {
+                ret = ImGui::Begin(ImID(name).c_str(), &isOpen, flag);
+            }
 
             //  计算正确的坐标和尺寸(Window通过ImGui管理坐标和尺寸, 在这里只需要更新它就行了)
             if (isOpen)
@@ -735,20 +746,29 @@ void UIObjectLayout::OnLeave(bool ret)
     auto state = GetState<UIStateLayout>();
     if (state->IsWindow)
     {
-        if (state->IsFullScreen)
-        {
-            ImGui::PopStyleVar();
-        }
-
-        if (GetObject().get() == this)
-        {
-            UIMenu::RenderPopup();
-        }
         DispatchEventMouse();
         DispatchEventDrag();
         DispatchEventKey();
         RenderDrag();
-        ImGui::End();
+        if (state->IsFullScreen)
+        {
+            ImGui::PopStyleVar();
+        }
+        if (GetObject().get() == this)
+        {
+            UIMenu::RenderPopup();
+        }
+        if (state->IsModel)
+        {
+            if (Global::Ref().mUISys->CheckOpen(shared_from_this()))
+            {
+                ImGui::EndPopup();
+            }
+        }
+        else
+        {
+            ImGui::End();
+        }
     }
     else
     {
