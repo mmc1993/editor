@@ -983,7 +983,7 @@ bool UIObjectTextBox::OnEnter()
         {
             ImGui::PushItemWidth(state->Move.z);
             if (ImGui::InputText(
-                state->Name.c_str(),
+                ImID(this).c_str(),
                 state->mBuffer.data(),
                 state->mBuffer.size(), flag,
                 &imgui_tools::OnResizeBuffer, &state->mBuffer))
