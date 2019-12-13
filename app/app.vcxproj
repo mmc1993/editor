@@ -43,7 +43,6 @@
     <ClCompile Include="editor\system\event_sys\event_sys.cpp" />
     <ClCompile Include="editor\system\raw_sys\raw.cpp" />
     <ClCompile Include="editor\system\raw_sys\raw_sys.cpp" />
-    <ClCompile Include="editor\system\interface\serializer.cpp" />
     <ClCompile Include="editor\system\raw_sys\res.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_event.cpp" />
     <ClCompile Include="editor\system\ui_sys\ui_object\ui_object_gl_canvas.cpp" />
@@ -92,8 +91,8 @@
     <ClInclude Include="editor\system\interface\render.h" />
     <ClInclude Include="editor\system\raw_sys\raw.h" />
     <ClInclude Include="editor\system\raw_sys\raw_sys.h" />
-    <ClInclude Include="editor\system\interface\serializer.h" />
     <ClInclude Include="editor\system\raw_sys\res.h" />
+    <ClInclude Include="editor\system\raw_sys\serializer.h" />
     <ClInclude Include="editor\system\ui_sys\ui_event.h" />
     <ClInclude Include="editor\system\ui_sys\ui_list.h" />
     <ClInclude Include="editor\system\ui_sys\ui_menu.h" />

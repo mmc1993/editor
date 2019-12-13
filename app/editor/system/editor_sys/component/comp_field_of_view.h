@@ -4,15 +4,13 @@
 #include "comp_render_target.h"
 #include "comp_polygon.h"
 
-class CompFieldOfView 
-    : public Component
-    , public std::enable_shared_from_this<CompFieldOfView> {
+class CompFieldOfView : public Component {
 public:
     CompFieldOfView();
 
     virtual const std::string & GetName() override;
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
     virtual bool OnModifyProperty(const std::any & oldValue,
                                   const std::any & newValue,
                                   const std::string & title) override;

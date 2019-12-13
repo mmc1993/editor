@@ -21,17 +21,17 @@ void CompTransform::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     UpdateMatrix();
 }
 
-void CompTransform::EncodeBinary(std::ofstream & os)
+void CompTransform::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _angle);
     tools::Serialize(os, _scale);
     tools::Serialize(os, _position);
 }
 
-void CompTransform::DecodeBinary(std::ifstream & is)
+void CompTransform::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _angle);
     tools::Deserialize(is, _scale);
     tools::Deserialize(is, _position);

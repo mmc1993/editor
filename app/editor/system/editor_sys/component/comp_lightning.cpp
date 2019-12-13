@@ -46,9 +46,9 @@ const std::string & CompLightning::GetName()
     return name;
 }
 
-void CompLightning::EncodeBinary(std::ofstream & os)
+void CompLightning::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _url);
     tools::Serialize(os, _scale);
     tools::Serialize(os, _width);
@@ -56,9 +56,9 @@ void CompLightning::EncodeBinary(std::ofstream & os)
     tools::Serialize(os, _trackPoints);
 }
 
-void CompLightning::DecodeBinary(std::ifstream & is)
+void CompLightning::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _scale);
     tools::Deserialize(is, _width);

@@ -48,12 +48,12 @@ void Component::OnLeave(UIObjectGLCanvas * canvas)
 void Component::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 { }
 
-void Component::EncodeBinary(std::ofstream & os)
+void Component::EncodeBinary(std::ostream & os, Project * project)
 { 
     tools::Serialize(os, _state);
 }
 
-void Component::DecodeBinary(std::ifstream & is)
+void Component::DecodeBinary(std::istream & is, Project * project)
 { 
     tools::Deserialize(is, _state);
 }

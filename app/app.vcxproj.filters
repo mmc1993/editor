@@ -81,9 +81,6 @@
     <ClCompile Include="editor\system\event_sys\event_sys.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="editor\system\interface\serializer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="editor\system\editor_sys\property\ui_property.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -974,9 +971,6 @@
     <ClInclude Include="editor\system\event_sys\event_sys.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\interface\serializer.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\system\ui_sys\ui_menu.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -1047,6 +1041,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\delegate\ui_delegate_base.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\raw_sys\serializer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

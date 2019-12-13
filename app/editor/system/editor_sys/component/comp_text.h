@@ -15,8 +15,8 @@ public:
     CompText();
 
     virtual const std::string & GetName() override;
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
     virtual bool OnModifyProperty(const std::any & oldValue,
                                   const std::any & newValue,
                                   const std::string & title) override;

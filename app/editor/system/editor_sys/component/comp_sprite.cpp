@@ -41,17 +41,17 @@ const std::string & CompSprite::GetName()
     return name;
 }
 
-void CompSprite::EncodeBinary(std::ofstream & os)
+void CompSprite::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
     tools::Serialize(os, _anchor);
 }
 
-void CompSprite::DecodeBinary(std::ifstream & is)
+void CompSprite::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);

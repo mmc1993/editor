@@ -13,14 +13,14 @@ const std::string & CompRenderTarget::GetName()
     return name;
 }
 
-void CompRenderTarget::EncodeBinary(std::ofstream & os)
+void CompRenderTarget::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
 }
 
-void CompRenderTarget::DecodeBinary(std::ifstream & is)
+void CompRenderTarget::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
 }
 
 bool CompRenderTarget::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)

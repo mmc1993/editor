@@ -34,7 +34,8 @@ void Project::Load(const std::string & url)
     uint num = 0; tools::Deserialize(is, num);
     for (auto i = 0; i != num; ++i)
     {
-        auto res = new Res(this); res->DecodeBinary(is);
+        auto res = new Res(this);
+        res->DecodeBinary(is, this);
         auto pair = std::make_pair(res->GetID(), res);
         _resources.insert(pair);
     }
@@ -44,7 +45,7 @@ void Project::Load(const std::string & url)
     is.open(url, std::ios::binary);
     ASSERT_LOG(is,    url.c_str());
     _object.reset(new  GLObject());
-    _object->DecodeBinary(is);
+    _object->DecodeBinary(is,this);
     is.close();
     _url = url;
 
@@ -76,13 +77,14 @@ void Project::Save(const std::string & url)
     tools::Serialize(os,     num);
     for (auto & pair : _resources)
     {
-        pair.second->EncodeBinary(os);
+        pair.second->EncodeBinary(os, this);
     }
     os.close();
 
     //  Ð´ÈëObj¶ÔÏó
     os.open(saveURL,    std::ios::binary);
-    _object->EncodeBinary(os); os.close();
+    _object->EncodeBinary(os, this);
+    os.close();
 }
 
 SharePtr<GLObject> Project::NewObject()

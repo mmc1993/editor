@@ -42,18 +42,18 @@ const std::string & CompSegment::GetName()
     return name;
 }
 
-void CompSegment::EncodeBinary(std::ofstream & os)
+void CompSegment::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _width);
     tools::Serialize(os, _color);
     tools::Serialize(os, _smooth);
     tools::Serialize(os, _trackPoints);
 }
 
-void CompSegment::DecodeBinary(std::ifstream & is)
+void CompSegment::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _width);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _smooth);

@@ -8,8 +8,8 @@ public:
     ~CompTransform();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
 
     void Position(float x, float y);
     void Scale(float x, float y);

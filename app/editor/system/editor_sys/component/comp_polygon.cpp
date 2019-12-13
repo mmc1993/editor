@@ -30,16 +30,16 @@ const std::string & CompPolygon::GetName()
     return name;
 }
 
-void CompPolygon::EncodeBinary(std::ofstream & os)
+void CompPolygon::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _segments);
     tools::Serialize(os, _trackPoints);
 }
 
-void CompPolygon::DecodeBinary(std::ifstream & is)
+void CompPolygon::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _segments);
     tools::Deserialize(is, _trackPoints);
 }

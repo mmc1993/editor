@@ -21,17 +21,17 @@ const std::string & CompFieldOfView::GetName()
     return name;
 }
 
-void CompFieldOfView::EncodeBinary(std::ofstream & os)
+void CompFieldOfView::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _color);
     tools::Serialize(os, _clipObjectURL);
     tools::Serialize(os, _polyObjectURL);
 }
 
-void CompFieldOfView::DecodeBinary(std::ifstream & is)
+void CompFieldOfView::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _clipObjectURL);
     tools::Deserialize(is, _polyObjectURL);
@@ -56,9 +56,8 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mTransform      = canvas->GetMatrixStack().GetM();
         command.mType           = interface::PostCommand::kSample;
         command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback,
-                                    shared_from_this(), sample,
-                                    std::placeholders::_1, 
-                                    std::placeholders::_2);
+                                    CastPtr<CompFieldOfView>(shared_from_this()), 
+                                    sample, std::placeholders::_1, std::placeholders::_2);
         canvas->Post(command);
     }
 }

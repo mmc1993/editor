@@ -42,16 +42,16 @@ const std::string & CompTilemap::GetName()
     return name;
 }
 
-void CompTilemap::EncodeBinary(std::ofstream & os)
+void CompTilemap::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _url);
     tools::Serialize(os, _size);
 }
 
-void CompTilemap::DecodeBinary(std::ifstream & is)
+void CompTilemap::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
 }

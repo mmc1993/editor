@@ -1,13 +1,16 @@
 #pragma once
 
-#include "gl_object.h"
 #include "raw.h"
+#include "gl_object.h"
+#include "serializer.h"
 #include "../interface/render.h"
-#include "../interface/serializer.h"
 #include "../ui_sys/ui_parse/ui_parse.h"
 #include "../ui_sys/ui_object/ui_object.h"
 
-class Component: public interface::Serializer {
+class Component
+    : public Serializer 
+    , public std::enable_shared_from_this<Component>
+{
 public:
     enum class StateEnum {
         kActive = 1 << 0,             //  激活
@@ -70,8 +73,8 @@ public:
 
     //  组件名字
     virtual const std::string & GetName() = 0;
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
     //  Property修改时被调用
     virtual bool OnModifyProperty(const std::any & oldValue, 
                                   const std::any & newValue,

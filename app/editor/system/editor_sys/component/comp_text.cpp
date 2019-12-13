@@ -30,9 +30,9 @@ const std::string & CompText::GetName()
     return name;
 }
 
-void CompText::EncodeBinary(std::ofstream & os)
+void CompText::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _url);
     tools::Serialize(os, _text);
     tools::Serialize(os, _size);
@@ -43,9 +43,9 @@ void CompText::EncodeBinary(std::ofstream & os)
     tools::Serialize(os, _outDelta);
 }
 
-void CompText::DecodeBinary(std::ifstream & is)
+void CompText::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _url);
     tools::Deserialize(is, _text);
     tools::Deserialize(is, _size);

@@ -27,7 +27,7 @@ GLObject::~GLObject()
     ClearComponents();
 }
 
-void GLObject::EncodeBinary(std::ofstream & os)
+void GLObject::EncodeBinary(std::ostream & os, Project * project)
 {
     //  自身
     tools::Serialize(os, _id);
@@ -40,18 +40,18 @@ void GLObject::EncodeBinary(std::ofstream & os)
     for (const auto & comp : GetComponents())
     {
         tools::Serialize(os,comp->GetName());
-        comp->EncodeBinary(os);
+        comp->EncodeBinary(os, project);
     }
     //  子节点
     count = GetObjects().size();
     tools::Serialize(os, count);
     for (const auto & obj : GetObjects())
     {
-        obj->EncodeBinary(os);
+        obj->EncodeBinary(os, project);
     }
 }
 
-void GLObject::DecodeBinary(std::ifstream & is)
+void GLObject::DecodeBinary(std::istream & is, Project * project)
 {
     //  自身
     tools::Deserialize(is, _id);
@@ -66,7 +66,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
         tools::Deserialize(is, name);
 
         auto comp = Component::Create(name);
-        comp->DecodeBinary(is);
+        comp->DecodeBinary(is, project);
         AddComponent(comp);
     }
     SetTransform(GetComponent<CompTransform>());
@@ -77,7 +77,7 @@ void GLObject::DecodeBinary(std::ifstream & is)
     for (auto i = 0; i != count; ++i)
     {
         auto object = std::create_ptr<GLObject>();
-        object->DecodeBinary(is);
+        object->DecodeBinary(is, project);
         InsertObject(object);
     }
 }

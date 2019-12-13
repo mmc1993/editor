@@ -39,17 +39,17 @@ const std::string & CompLight::GetName()
     return name;
 }
 
-void CompLight::EncodeBinary(std::ofstream & os)
+void CompLight::EncodeBinary(std::ostream & os, Project * project)
 {
-    Component::EncodeBinary(os);
+    Component::EncodeBinary(os, project);
     tools::Serialize(os, _color);
     tools::Serialize(os, _border);
     tools::Serialize(os, _trackPoints);
 }
 
-void CompLight::DecodeBinary(std::ifstream & is)
+void CompLight::DecodeBinary(std::istream & is, Project * project)
 {
-    Component::DecodeBinary(is);
+    Component::DecodeBinary(is, project);
     tools::Deserialize(is, _color);
     tools::Deserialize(is, _border);
     tools::Deserialize(is, _trackPoints);

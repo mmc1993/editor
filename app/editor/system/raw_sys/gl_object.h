@@ -1,15 +1,15 @@
 #pragma once
 
-#include "../../include.h"
-#include "../interface/serializer.h"
+#include "serializer.h"
 
 class Component;
 class CompTransform;
 class UIObjectGLCanvas;
 
 class GLObject 
-    : public interface::Serializer
-    , public std::enable_shared_from_this<GLObject> {
+    : public Serializer
+    , public std::enable_shared_from_this<GLObject>
+{
 public:
     enum StateEnum {
         kActive = 0x1,
@@ -20,8 +20,8 @@ public:
     GLObject();
     GLObject(uint id);
     virtual ~GLObject();
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
 
     void InsertObject(const SharePtr<GLObject> & object, const std::string & name, uint pos = ~0u);
     void InsertObject(const SharePtr<GLObject> & object, uint pos = ~0u);
