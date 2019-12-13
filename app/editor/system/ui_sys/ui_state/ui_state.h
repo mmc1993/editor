@@ -2,7 +2,6 @@
 
 #include "../include.h"
 #include "../../interface/render.h"
-#include "../../interface/serializer.h"
 
 class UIState {
 public:

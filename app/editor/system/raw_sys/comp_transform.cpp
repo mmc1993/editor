@@ -139,9 +139,9 @@ const std::string & CompTransform::GetName()
 std::vector<Component::Property> CompTransform::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Poosition", &_position);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Scale"    , &_scale);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat  , "Angle"    , &_angle);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Poosition", &_position);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Scale"    , &_scale);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat  , "Angle"    , &_angle);
     return std::move(props);
 }
 

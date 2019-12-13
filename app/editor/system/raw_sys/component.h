@@ -4,6 +4,7 @@
 #include "raw.h"
 #include "../interface/render.h"
 #include "../interface/serializer.h"
+#include "../ui_sys/ui_parse/ui_parse.h"
 #include "../ui_sys/ui_object/ui_object.h"
 
 class Component: public interface::Serializer {
@@ -17,19 +18,19 @@ public:
     };
 
     struct Property {
-        interface::Serializer::StringValueTypeEnum mType;
-        std::string                                mName;
-        void *                                     mMember;
-        std::any                                   mExtend;
+        UIParser::StringValueTypeEnum mType;
+        std::string                   mName;
+        void *                        mMember;
+        std::any                      mExtend;
 
         Property()
-            : mType(interface::Serializer::StringValueTypeEnum::kErr)
+            : mType(UIParser::StringValueTypeEnum::kErr)
             , mMember(nullptr)
         { }
 
         Property(
-            interface::Serializer::StringValueTypeEnum type, 
-            const std::string & name, void * member,
+            UIParser::StringValueTypeEnum type, 
+            const std::string & name, void * member, 
             const std::any extend = std::any())
             : mType(type)
             , mName(name)

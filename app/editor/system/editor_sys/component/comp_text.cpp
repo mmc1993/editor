@@ -97,13 +97,13 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset,   "URL",       &_url);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString,  "Text",      &_text);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Size",      &_size);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,  "Color",     &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4,  "OutColor",  &_outColor);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat,   "OutDelta",  &_outDelta);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "URL",       &_url);
+    props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &_text);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &_size);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "Color",     &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "OutColor",  &_outColor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat,   "OutDelta",  &_outDelta);
 
     return std::move(props);
 }

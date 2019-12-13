@@ -1,41 +1,42 @@
 #include "ui_state.h"
+#include "../ui_parse/ui_parse.h"
 
 bool UIState::FromStringParse(const std::string & key, const std::string & val)
 {
     //  int
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kInt, key, val, " ", "Align", Align);
+    if (key == "Align")             return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kInt, val, " ", &Align);
     //  bool
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsMulti", IsMulti);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsModel", IsModel);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsSelect", IsSelect);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsWindow", IsWindow);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsButton", IsButton);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsShowNav", IsShowNav);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsEditBox", IsEditBox);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsCanMove", IsCanMove);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsSameline", IsSameline);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsCanStretch", IsCanStretch);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsFullScreen", IsFullScreen);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsEditReturn", IsEditReturn);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsShowBorder", IsShowBorder);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsCanDragMove", IsCanDragMove);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsCanDragFree", IsCanDragFree);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsShowMenuBar", IsShowMenuBar);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsShowTitleBar", IsShowTitleBar);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kBool, key, val, " ", "IsShowScrollBar", IsShowScrollBar);
+    if (key == "IsMulti")           return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsMulti);
+    if (key == "IsModel")           return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsModel);
+    if (key == "IsSelect")          return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsSelect);
+    if (key == "IsWindow")          return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsWindow);
+    if (key == "IsButton")          return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsButton);
+    if (key == "IsShowNav")         return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsShowNav);
+    if (key == "IsEditBox")         return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsEditBox);
+    if (key == "IsCanMove")         return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsCanMove);
+    if (key == "IsSameline")        return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsSameline);
+    if (key == "IsCanStretch")      return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsCanStretch);
+    if (key == "IsFullScreen")      return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsFullScreen);
+    if (key == "IsEditReturn")      return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsEditReturn);
+    if (key == "IsShowBorder")      return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsShowBorder);
+    if (key == "IsCanDragMove")     return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsCanDragMove);
+    if (key == "IsCanDragFree")     return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsCanDragFree);
+    if (key == "IsShowMenuBar")     return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsShowMenuBar);
+    if (key == "IsShowTitleBar")    return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsShowTitleBar);
+    if (key == "IsShowScrollBar")   return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kBool, val, " ", &IsShowScrollBar);
     //  float
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kFloat, key, val, " ", "BorderNumber", BorderNumber);
+    if (key == "BorderNumber")      return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kFloat, val, " ", &BorderNumber);
     //  string
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kString, key, val, " ", "Name", Name);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kString, key, val, " ", "Tips", Tips);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kString, key, val, " ", "LSkin", LSkin);
+    if (key == "Name")              return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kString, val, " ", &Name);
+    if (key == "Tips")              return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kString, val, " ", &Tips);
+    if (key == "LSkin")             return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kString, val, " ", &LSkin);
     //  vec2
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector2, key, val, " ", "StretchMin", StretchMin);
+    if (key == "StretchMin")        return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kVector2, val, " ", &StretchMin);
     //  vec4
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector4, key, val, " ", "Move", Move);
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kVector4, key, val, " ", "Color", Color);
+    if (key == "Move")              return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kVector4, val, " ", &Move);
+    if (key == "Color")             return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kVector4, val, " ", &Color);
     //  string list
-    FROM_STRING_PARSE_VARIABLE(interface::Serializer::StringValueTypeEnum::kStringList, key, val, ",", "MenuBar", MenuBar);
+    if (key == "MenuBar")           return UIParser::FromStringParse(UIParser::StringValueTypeEnum::kStringList, val, ",", &MenuBar);
     return false;
 }
 

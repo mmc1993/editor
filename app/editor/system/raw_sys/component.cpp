@@ -71,25 +71,25 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
     {
         switch (property.mType)
         {
-        case interface::Serializer::StringValueTypeEnum::kInt:
+        case UIParser::StringValueTypeEnum::kInt:
             result.push_back(std::create_ptr<UIPropertyInt>(*(int *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kBool:
+        case UIParser::StringValueTypeEnum::kBool:
             result.push_back(std::create_ptr<UIPropertyBool>(*(bool *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kFlag:
+        case UIParser::StringValueTypeEnum::kFlag:
             result.push_back(std::create_ptr<UIPropertyFlag>(*(uint *)property.mMember, property.mName, modifyfunc, std::any_cast<uint>(property.mExtend))); break;
-        case interface::Serializer::StringValueTypeEnum::kFloat:
+        case UIParser::StringValueTypeEnum::kFloat:
             result.push_back(std::create_ptr<UIPropertyFloat>(*(float *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kString:
+        case UIParser::StringValueTypeEnum::kString:
             result.push_back(std::create_ptr<UIPropertyString>(*(std::string *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kVector2:
+        case UIParser::StringValueTypeEnum::kVector2:
             result.push_back(std::create_ptr<UIPropertyVector2>(*(glm::vec2 *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kVector3:
+        case UIParser::StringValueTypeEnum::kVector3:
             result.push_back(std::create_ptr<UIPropertyVector3>(*(glm::vec3 *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kVector4:
+        case UIParser::StringValueTypeEnum::kVector4:
             result.push_back(std::create_ptr<UIPropertyVector4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kColor4:
+        case UIParser::StringValueTypeEnum::kColor4:
             result.push_back(std::create_ptr<UIPropertyColor4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
-        case interface::Serializer::StringValueTypeEnum::kAsset:
+        case UIParser::StringValueTypeEnum::kAsset:
             result.push_back(std::create_ptr<UIPropertyAsset>(*(std::string *)property.mMember, property.mName, modifyfunc)); break;
         }
     }
@@ -104,7 +104,7 @@ const std::vector<glm::vec2> & Component::GetTrackPoints()
 std::vector<Component::Property> Component::CollectProperty()
 {
     return {
-        {interface::Serializer::StringValueTypeEnum::kFlag, "Active", &_state, (uint)StateEnum::kActive},
+        {UIParser::StringValueTypeEnum::kFlag, "Active", &_state, (uint)StateEnum::kActive},
     };
 }
 

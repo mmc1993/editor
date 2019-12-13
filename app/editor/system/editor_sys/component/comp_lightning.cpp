@@ -88,10 +88,10 @@ bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any &
 std::vector<Component::Property> CompLightning::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kAsset, "Url", &_url);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Scale", &_scale);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Width", &_width);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color", &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Url", &_url);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Scale", &_scale);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &_width);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
     return std::move(props);
 }
 

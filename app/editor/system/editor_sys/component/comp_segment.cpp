@@ -80,9 +80,9 @@ bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & n
 std::vector<Component::Property> CompSegment::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Width", &_width);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color", &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &_width);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
     return std::move(props);
 }
 

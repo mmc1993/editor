@@ -66,9 +66,9 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Poly URL", &_polyObjectURL);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kString, "Clip URL", &_clipObjectURL);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color",    &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kString, "Poly URL", &_polyObjectURL);
+    props.emplace_back(UIParser::StringValueTypeEnum::kString, "Clip URL", &_clipObjectURL);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",    &_color);
     return std::move(props);
 }
 

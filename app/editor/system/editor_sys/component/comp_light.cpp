@@ -69,8 +69,8 @@ bool CompLight::OnModifyProperty(const std::any & oldValue, const std::any & new
 std::vector<Component::Property> CompLight::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kColor4, "Color", &_color);
-    props.emplace_back(interface::Serializer::StringValueTypeEnum::kFloat, "Border", &_border);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Border", &_border);
     return std::move(props);
 }
 
