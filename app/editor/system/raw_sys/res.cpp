@@ -5,49 +5,17 @@ const std::string Res::sTypeString[TypeEnum::Length] = {
     "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUEPRINT"
 };
 
-// ---
-//  Res::Ref
-// ---
-Res::Ref::Ref(Res * owner)
-    : _owner(owner)
-    , _modify(true)
-{ }
-
-Res::Ref::~Ref()
-{
-    if (_owner != nullptr)
-    {
-        _owner->DeleteRef(this);
-    }
+void Res::Ref::EncodeBinary(std::ostream & os, Project * project)
+{ 
+    uint id = Vaild() ? mOwner->GetID() : ~0;
+    tools::Serialize(os, id);
 }
 
-Res::Ref * Res::Ref::Clone()
-{
-    ASSERT_LOG(_owner != nullptr, "");
-    return _owner->AppendRef();
-}
-
-bool Res::Ref::Modify()
-{
-    return _modify;
-}
-
-bool Res::Ref::Modify(bool modify)
-{
-    _modify = true;
-    return _modify;
-}
-
-void Res::Ref::EncodeBinary(Project * project, std::ofstream & os)
-{
-    tools::Serialize(os, _owner->GetID());
-}
-
-void Res::Ref::DecodeBinary(Project * project, std::ifstream & is)
-{
-    uint id = 0;
+void Res::Ref::DecodeBinary(std::istream & is, Project * project)
+{ 
+    uint id;
     tools::Deserialize(is, id);
-    project->GetRes(id)->AppendRef(this);
+    if (id != ~0) { mOwner.reset(project->GetRes(id)->AppendPtr()); }
 }
 
 // ---
@@ -61,9 +29,9 @@ Res::Res(Project * owner, uint id)
 
 Res::~Res()
 {
-    for (auto & ref : mRefs)
+    for (auto & ptr : mPtrs)
     {
-        ref->_owner = nullptr;
+        ptr->Invalid();
     }
 }
 
@@ -74,9 +42,48 @@ SharePtr<GLObject> Res::Instance()
     return mOwner->GetObject(std::any_cast<uint>(mMeta));
 }
 
+std::string Res::Path()
+{
+    std::string path;
+    switch (mType)
+    {
+    case Res::kNull:
+    case Res::kTxt:
+    case Res::kImg:
+    case Res::kMap:
+    case Res::kFnt:
+        {
+            path = std::any_cast<std::string>(mMeta);
+        }
+        break;
+    case Res::kObj:
+        {
+            auto object = Instance<GLObject>();
+            path.append(object->GetName());
+
+            for (object = object->GetParent(); 
+                 object->GetParent() != nullptr; 
+                 object = object->GetParent())
+            {
+                path.insert(0, "/");
+                path.insert(0, object->GetName());
+            }
+        }
+        break;
+    case Res::kVar:
+        ASSERT_LOG(false, "");
+        break;
+    case Res::kBlueprint:
+        ASSERT_LOG(false, "");
+        break;
+    }
+    return std::move(path);
+}
+
+
 uint Res::GetRefCount()
 {
-    return mRefs.size();
+    return mPtrs.size();
 }
 
 uint Res::GetID()
@@ -86,29 +93,27 @@ uint Res::GetID()
 
 void Res::WakeRefs()
 { 
-    for (auto & ref : mRefs)
+    for (auto & ptr : mPtrs)
     {
-        ref->Modify(true);
+        ptr->Modify(true);
     }
 }
 
-Res::Ref * Res::AppendRef()
+Res::Ptr * Res::AppendPtr()
 {
-    return mRefs.emplace_back(new Ref(this));
+    return mPtrs.emplace_back(new Ptr(this));
 }
 
-Res::Ref * Res::AppendRef(Ref * ref)
+Res::Ref Res::AppendRef()
 {
-    ref->_owner = this;
-    return mRefs.emplace_back(ref);
+    return Ref(AppendPtr());
 }
 
-void Res::DeleteRef(Ref * ref)
-{ 
-    auto it = std::remove(mRefs.begin(), mRefs.end(), ref);
-    ASSERT_LOG(it != mRefs.end(), ""); 
-    mRefs.erase(it);
-    delete ref;
+void Res::DeletePtr(Ptr * ptr)
+{
+    auto it = std::remove(mPtrs.begin(), mPtrs.end(), ptr);
+    ASSERT_LOG(it != mPtrs.end(), ""); 
+    mPtrs.erase(it);
 }
 
 Res::TypeEnum Res::Type()
@@ -193,41 +198,4 @@ void Res::DecodeBinary(std::istream & is, Project * project)
     }
 }
 
-std::string Res::Path()
-{
-    std::string path;
-    switch (mType)
-    {
-    case Res::kNull:
-    case Res::kTxt:
-    case Res::kImg:
-    case Res::kMap:
-    case Res::kFnt:
-        {
-            path = std::any_cast<std::string>(mMeta);
-        }
-        break;
-    case Res::kObj:
-        {
-            auto object = Instance<GLObject>();
-            path.append(object->GetName());
-
-            for (   object = object->GetParent(); 
-                    object->GetParent() != nullptr; 
-                    object = object->GetParent())
-            {
-                path.insert(0, "/");
-                path.insert(0, object->GetName());
-            }
-        }
-        break;
-    case Res::kVar:
-        ASSERT_LOG(false, "");
-        break;
-    case Res::kBlueprint:
-        ASSERT_LOG(false, "");
-        break;
-    }
-    return std::move(path);
-}
 

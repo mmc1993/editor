@@ -100,7 +100,7 @@ bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
     mProject = Global::Ref().mEditorSys->GetProject().get();
     mProject->Retrieve();
 
-    auto init = std::any_cast<const InitParam_t &>(param.mParam);
+    auto init = std::any_cast<const InitArgs_t &>(param.mParam);
     mPreSearch = std::get<0>(init);
     mOptSelect = std::get<1>(init);
     NewSearch(std::upper(mPreSearch));

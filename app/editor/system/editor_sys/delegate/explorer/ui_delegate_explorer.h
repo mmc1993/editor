@@ -11,8 +11,8 @@
 class UIDelegateExplorer : public UIDelegateBase {
 public:
     static const glm::vec4 sTypeColors[Res::Length];
-    using SelectFunc_t  = std::function<void (Res::Ref *)>;
-    using InitParam_t   = std::tuple<std::string, SelectFunc_t>;
+    using SelectFn_t = std::function<void (Res::Ref)>;
+    using InitArgs_t = std::tuple<std::string, SelectFn_t>;
 
     //  搜索信息
     struct SearchStat {
@@ -59,9 +59,9 @@ private:
     SharePtr<UIObjectLayout> mRefsLayout;
     SharePtr<UIObjectTextBox> mSearchText;
     //  参数
-    std::string                     mPreSearch;
-    std::vector<std::string>        mLimitType;
-    std::function<void(Res::Ref *)> mOptSelect;
+    SelectFn_t               mOptSelect;
+    std::string              mPreSearch;
+    std::vector<std::string> mLimitType;
     //  内部状态
     std::vector<SearchItem> mSearchItems;       //  搜索结果
     SearchStat              mSearchStat;        //  搜索状态

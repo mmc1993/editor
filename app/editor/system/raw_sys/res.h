@@ -20,54 +20,133 @@ public:
 
     static const std::string sTypeString[TypeEnum::Length];
 
-    class Ref {
+    class Ptr {
     public:
-        static bool Check(Ref *& ref)
+        Ptr(Res* owner)
+            : mModify(true)
+            , mOwner(owner)
+        { }
+
+        ~Ptr()
         {
-            if (!ref->Check())
+            if (mOwner != nullptr)
             {
-                ref = nullptr;
+                mOwner->DeletePtr(this);
             }
-            return ref != nullptr;
         }
 
-        Ref(Res * owner);
-        ~Ref();
+        uint GetID()
+        {
+            return mOwner->GetID();
+        }
 
-        Ref * Clone();
-        bool Modify();
-        bool Modify(bool modify);
+        bool Valid()
+        {
+            return mOwner != nullptr;
+        }
+
+        void Invalid()
+        {
+            mOwner = nullptr;
+        }
+
+        bool Modify()
+        {
+            return mModify;
+        }
+
+        bool Modify(bool modify)
+        {
+            mModify=modify;
+            return mModify;
+        }
+
+        Ptr * Clone()
+        {
+            return mOwner->AppendPtr();
+        }
 
         std::string Path()
         {
-            ASSERT_LOG(_owner != nullptr, "");
-            return _owner->Path();
+            ASSERT_LOG(mOwner != nullptr, "");
+            return mOwner->Path();
         }
 
         template <class T>
         SharePtr<T> Instance()
         {
-            ASSERT_LOG(_owner != nullptr, "");
+            ASSERT_LOG(mOwner != nullptr, "");
             Modify(false);
-            return _owner->Instance<T>();
+            return mOwner->Instance<T>();
         }
 
-        bool Check()
+    private:
+        Res* mOwner;
+        bool mModify;
+    };
+
+    class Ref : public Serializer {
+    public:
+        Ref(Ptr * owner): mOwner(owner)
+        { }
+
+        Ref(const Ref & other)
         {
-            return _owner != nullptr;
+            *this = other;
         }
 
-        void EncodeBinary(Project * project, std::ofstream & os);
-        void DecodeBinary(Project * project, std::ifstream & is);
+        Ref(Ref && other)
+        {
+            *this = std::move(other);
+        }
+
+        Ref & operator=(Ref && other)
+        {
+            mValue.reset();
+            mOwner.reset();
+            mValue.swap(other.mValue);
+            mOwner.swap(other.mOwner);
+            return *this;
+        }
+
+        Ref & operator=(const Ref & other)
+        {
+            mValue     = other.mValue;
+            mOwner.reset(other.mOwner->Clone());
+            return *this; 
+        }
+
+        ~Ref()
+        { }
+
+        bool Vaild()
+        {
+            return mOwner != nullptr;
+        }
+
+        std::string Path()
+        {
+            ASSERT_LOG(Vaild(), "");
+            return mOwner->Path();
+        }
+
+        template <class T>
+        SharePtr<T> Instance()
+        {
+            ASSERT_LOG(Vaild(), "");
+            if (mOwner->Modify())
+            {
+                mValue = mOwner->Instance<T>();
+            }
+            return std::any_cast<SharePtr<T>>(mValue);
+        }
+
+        virtual void EncodeBinary(std::ostream & os, Project * project) override;
+        virtual void DecodeBinary(std::istream & is, Project * project) override;
 
     private:
-        friend class Res;
-        Ref(const Ref & other) = delete;
-        Ref & operator=(const Ref & other) = delete;
-
-    private:
-        Res * _owner;
-        bool  _modify;
+        UniquePtr<Ptr> mOwner;
+        std::any       mValue;
     };
 
 public:
@@ -76,22 +155,17 @@ public:
 
     //  实例化对象
     template <class T>
-    SharePtr<T> Instance()
-    {
-        static_assert(false);
-    }
-
-    template <>
-    SharePtr<GLObject> Instance();
+    SharePtr<T> Instance() { static_assert(false); }
+    template <> SharePtr<GLObject> Instance();
 
     std::string Path();
     uint GetRefCount();
     uint GetID();
 
     void WakeRefs();
-    Ref * AppendRef();
-    Ref * AppendRef(Ref * ref);
-    void  DeleteRef(Ref * ref);
+    Ptr * AppendPtr();
+    Ref   AppendRef();
+    void  DeletePtr(Ptr * ptr);
 
     TypeEnum Type();
     TypeEnum Type(TypeEnum type);
@@ -102,9 +176,9 @@ public:
     template <class T>
     void BindMeta(const T & val)
     {
-        if (!_meta.has_value() || std::any_cast<T &>(_meta) != val)
+        if (!mMeta.has_value() || std::any_cast<T &>(mMeta) != val)
         {
-            _meta = val; WakeRefs();
+            mMeta = val; WakeRefs();
         }
     }
 
@@ -115,6 +189,6 @@ private:
     uint                mID;
     TypeEnum            mType;      //  类型
     std::any            mMeta;      //  元数据
-    std::vector<Ref *>  mRefs;      //  引用列表
+    std::vector<Ptr *>  mPtrs;      //  引用列表
     Project *           mOwner;     //  项目归属
 };
