@@ -1,12 +1,10 @@
 #pragma once
 
-#include "../../include.h"
-#include "../interface/serializer.h"
+#include "serializer.h"
 
-class Project;
 class GLObject;
 
-class Res : public interface::Serializer {
+class Res : public Serializer {
 public:
     enum TypeEnum {
         kNull,      //  无
@@ -110,13 +108,13 @@ public:
         }
     }
 
-    virtual void EncodeBinary(std::ofstream & os) override;
-    virtual void DecodeBinary(std::ifstream & is) override;
+    virtual void EncodeBinary(std::ostream & os, Project * project) override;
+    virtual void DecodeBinary(std::istream & is, Project * project) override;
 
 private:
-    uint                _id;
-    TypeEnum            _type;      //  类型
-    std::any            _meta;      //  元数据
-    std::vector<Ref *>  _refs;      //  引用列表
-    Project *           _owner;     //  项目归属
+    uint                mID;
+    TypeEnum            mType;      //  类型
+    std::any            mMeta;      //  元数据
+    std::vector<Ref *>  mRefs;      //  引用列表
+    Project *           mOwner;     //  项目归属
 };

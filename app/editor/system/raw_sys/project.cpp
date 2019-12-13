@@ -34,7 +34,7 @@ void Project::Load(const std::string & url)
     uint num = 0; tools::Deserialize(is, num);
     for (auto i = 0; i != num; ++i)
     {
-        auto res = new Res(this);
+        auto res    = new Res(this);
         res->DecodeBinary(is, this);
         auto pair = std::make_pair(res->GetID(), res);
         _resources.insert(pair);
@@ -72,9 +72,9 @@ void Project::Save(const std::string & url)
     std::ofstream os;
     //  写入资源
     os.open(GetResURL(saveURL), std::ios::binary);
-    tools::Serialize(os,    _gid);
-    uint num =  _resources.size();
-    tools::Serialize(os,     num);
+    tools::Serialize(os, _gid);
+    uint num = _resources.size();
+    tools::Serialize(os,  num);
     for (auto & pair : _resources)
     {
         pair.second->EncodeBinary(os, this);
@@ -82,7 +82,7 @@ void Project::Save(const std::string & url)
     os.close();
 
     //  写入Obj对象
-    os.open(saveURL,    std::ios::binary);
+    os.open(saveURL, std::ios::binary);
     _object->EncodeBinary(os, this);
     os.close();
 }

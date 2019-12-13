@@ -54,14 +54,14 @@ void Res::Ref::DecodeBinary(Project * project, std::ifstream & is)
 //  Res
 // ---
 Res::Res(Project * owner, uint id)
-    : _id(id)
-    , _type(kNull)
-    , _owner(owner)
+    : mID(id)
+    , mType(kNull)
+    , mOwner(owner)
 { }
 
 Res::~Res()
 {
-    for (auto & ref : _refs)
+    for (auto & ref : mRefs)
     {
         ref->_owner = nullptr;
     }
@@ -71,47 +71,55 @@ template <>
 SharePtr<GLObject> Res::Instance()
 {
     ASSERT_LOG(Type() == Res::kObj, "");
-    return _owner->GetObject(std::any_cast<uint>(_meta));
+    return mOwner->GetObject(std::any_cast<uint>(mMeta));
 }
 
 uint Res::GetRefCount()
 {
-    return _refs.size();
+    return mRefs.size();
 }
 
 uint Res::GetID()
 {
-    return _id;
+    return mID;
+}
+
+void Res::WakeRefs()
+{ 
+    for (auto & ref : mRefs)
+    {
+        ref->Modify(true);
+    }
 }
 
 Res::Ref * Res::AppendRef()
 {
-    return _refs.emplace_back(new Ref(this));
+    return mRefs.emplace_back(new Ref(this));
 }
 
 Res::Ref * Res::AppendRef(Ref * ref)
 {
     ref->_owner = this;
-    return _refs.emplace_back(ref);
+    return mRefs.emplace_back(ref);
 }
 
 void Res::DeleteRef(Ref * ref)
 { 
-    auto it = std::remove(_refs.begin(), _refs.end(), ref);
-    ASSERT_LOG(it != _refs.end(), ""); 
-    _refs.erase(it);
+    auto it = std::remove(mRefs.begin(), mRefs.end(), ref);
+    ASSERT_LOG(it != mRefs.end(), ""); 
+    mRefs.erase(it);
     delete ref;
 }
 
 Res::TypeEnum Res::Type()
 { 
-    return _type;
+    return mType;
 }
 
 Res::TypeEnum Res::Type(TypeEnum type)
 { 
-    _type = type;
-    return _type;
+    mType = type;
+    return mType;
 }
 
 const std::string & Res::TypeString()
@@ -124,62 +132,62 @@ const std::string & Res::TypeString(uint type)
     return sTypeString[type];
 }
 
-void Res::EncodeBinary(std::ofstream & os)
+void Res::EncodeBinary(std::ostream & os, Project * project)
 {
-    tools::Serialize(os, _id);
-    tools::Serialize(os, _type);
-    switch (_type)
+    tools::Serialize(os, mID);
+    tools::Serialize(os, mType);
+    switch (mType)
     {
     case Res::kNull:
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
     case Res::kFnt:
-        tools::Serialize(os, std::any_cast<std::string &>(_meta));
+        tools::Serialize(os, std::any_cast<std::string &>(mMeta));
         break;
     case Res::kObj:
-        tools::Serialize(os, std::any_cast<uint>(_meta));
+        tools::Serialize(os, std::any_cast<uint>(mMeta));
         break;
     case Res::kVar:
-        tools::Serialize(os, std::any_cast<uint>(_meta));
+        tools::Serialize(os, std::any_cast<uint>(mMeta));
         break;
     case Res::kBlueprint:
-        tools::Serialize(os, std::any_cast<uint>(_meta));
+        tools::Serialize(os, std::any_cast<uint>(mMeta));
         break;
     }
 }
 
-void Res::DecodeBinary(std::ifstream & is)
+void Res::DecodeBinary(std::istream & is, Project * project)
 {
-    tools::Deserialize(is, _id);
-    tools::Deserialize(is, _type);
-    switch (_type)
+    tools::Deserialize(is, mID);
+    tools::Deserialize(is, mType);
+    switch (mType)
     {
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
     case Res::kFnt:
         {
-            _meta.emplace<std::string>();
-            tools::Deserialize(is, std::any_cast<std::string &>(_meta));
+            mMeta.emplace<std::string>();
+            tools::Deserialize(is, std::any_cast<std::string &>(mMeta));
         }
         break;
     case Res::kObj:
         {
-            _meta.emplace<uint>();
-            tools::Deserialize(is, std::any_cast<uint &>(_meta));
+            mMeta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(mMeta));
         }
         break;
     case Res::kVar:
         {
-            _meta.emplace<uint>();
-            tools::Deserialize(is, std::any_cast<uint &>(_meta));
+            mMeta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(mMeta));
         }
         break;
     case Res::kBlueprint:
         {
-            _meta.emplace<uint>();
-            tools::Deserialize(is, std::any_cast<uint &>(_meta));
+            mMeta.emplace<uint>();
+            tools::Deserialize(is, std::any_cast<uint &>(mMeta));
         }
         break;
     }
@@ -188,7 +196,7 @@ void Res::DecodeBinary(std::ifstream & is)
 std::string Res::Path()
 {
     std::string path;
-    switch (_type)
+    switch (mType)
     {
     case Res::kNull:
     case Res::kTxt:
@@ -196,7 +204,7 @@ std::string Res::Path()
     case Res::kMap:
     case Res::kFnt:
         {
-            path = std::any_cast<std::string>(_meta);
+            path = std::any_cast<std::string>(mMeta);
         }
         break;
     case Res::kObj:
@@ -223,10 +231,3 @@ std::string Res::Path()
     return std::move(path);
 }
 
-void Res::WakeRefs()
-{ 
-    for (auto & ref : _refs)
-    {
-        ref->Modify(true);
-    }
-}
