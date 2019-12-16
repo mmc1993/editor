@@ -30,6 +30,7 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
+    Res::Ref            _tex;
     std::string         _url;
     glm::vec2           _size;
     glm::vec2           _anchor;

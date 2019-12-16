@@ -1,4 +1,6 @@
 #include "ui_property.h"
+#include "../../ui_sys/ui_sys.h"
+#include "../../ui_sys/ui_list.h"
 
 bool UIComponentHeader::OnEnter()
 {
@@ -150,11 +152,10 @@ bool UIPropertyAsset::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
+    auto path = GetNewValue().Path();
     if (ImGui::InputText(
-        ImID(this).c_str(),
-        GetNewValue().data(), GetNewValue().size(),
-        ImGuiInputTextFlags_CallbackResize |
-        ImGuiInputTextFlags_EnterReturnsTrue,
+        ImID(this).c_str(), path.data(), path.size(),
+        ImGuiInputTextFlags_ReadOnly,
         &imgui_tools::OnResizeBuffer,
         &GetNewValue()))
     {
@@ -164,7 +165,7 @@ bool UIPropertyAsset::OnEnter()
 
     if (ImGui::Button("Select"))
     {
-
+        //Global::Ref().mUISys->OpenWindow(UIFile_Explorer, );
     }
 
     ImGui::Columns(1);

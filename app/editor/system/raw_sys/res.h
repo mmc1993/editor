@@ -87,7 +87,7 @@ public:
 
     class Ref : public Serializer {
     public:
-        Ref(Ptr * owner): mOwner(owner)
+        Ref(Ptr * owner = nullptr): mOwner(owner)
         { }
 
         Ref(const Ref & other)
@@ -116,6 +116,16 @@ public:
             return *this; 
         }
 
+        bool operator==(const Ref & other)
+        {
+            return mOwner == other.mOwner;
+        }
+
+        bool operator!=(const Ref & other)
+        {
+            return !operator==(other);
+        }
+
         ~Ref()
         { }
 
@@ -126,8 +136,9 @@ public:
 
         std::string Path()
         {
-            ASSERT_LOG(Vaild(), "");
-            return mOwner->Path();
+            return Vaild()
+                ? mOwner->Path()
+                :  std::string();
         }
 
         template <class T>

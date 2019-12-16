@@ -3,6 +3,7 @@
 #include "raw.h"
 #include "gl_object.h"
 #include "serializer.h"
+#include "../raw_sys/res.h"
 #include "../interface/render.h"
 #include "../ui_sys/ui_parse/ui_parse.h"
 #include "../ui_sys/ui_object/ui_object.h"

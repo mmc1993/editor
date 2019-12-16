@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../ui_sys/ui_object/ui_object.h"
+#include "../../raw_sys/res.h"
 
 class UIComponentHeader : public UIObject {
 public:
@@ -130,8 +131,8 @@ public:
     UIPropertyFlag(
         uint & value,
         const std::string & title,
-        const Handler_t & handler, uint mask)
-        : UIPropertyObject<uint>(value, title, handler), _mask(mask)
+        const Handler_t & handler, const std::any & params)
+        : UIPropertyObject<uint>(value, title, handler), _mask(std::any_cast<uint>(params))
     { }
 
     virtual bool OnEnter() override;
@@ -251,14 +252,31 @@ public:
 // ---
 //   Ù–‘ UIPropertyAsset
 // ---
-class UIPropertyAsset: public UIPropertyObject<std::string> {
+class UIPropertyAsset: public UIPropertyObject<Res::Ref> {
 public:
     UIPropertyAsset(
-        std::string & value,
+        Res::Ref & value,
         const std::string & title,
-        const Handler_t & handler)
-        : UIPropertyObject<std::string>(value, title, handler)
-    { }
+        const Handler_t & handler, const std::any & params)
+        : UIPropertyObject<Res::Ref>(value, title, handler)
+    {
+        const auto & tuple = std::any_cast<const std::tuple<uint, std::function<void(Res::Ref)>> &>(params);
+        auto flag = std::get<0>(tuple);
+        auto func = std::get<1>(tuple);
+        for (auto bit = 0; flag != 0; flag >>= 1, ++bit)
+        {
+            if (flag & 1)
+            {
+                mSearch.append(Res::TypeString(1 << bit));
+                mSearch.append(" ");
+            }
+        }
+        mSelect = func;
+    }
 
     virtual bool OnEnter() override;
+
+private:
+    std::string                     mSearch;
+    std::function<void(Res::Ref)>   mSelect;
 };

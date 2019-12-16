@@ -76,7 +76,7 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
         case UIParser::StringValueTypeEnum::kBool:
             result.push_back(std::create_ptr<UIPropertyBool>(*(bool *)property.mMember, property.mName, modifyfunc)); break;
         case UIParser::StringValueTypeEnum::kFlag:
-            result.push_back(std::create_ptr<UIPropertyFlag>(*(uint *)property.mMember, property.mName, modifyfunc, std::any_cast<uint>(property.mExtend))); break;
+            result.push_back(std::create_ptr<UIPropertyFlag>(*(uint *)property.mMember, property.mName, modifyfunc, property.mExtend)); break;
         case UIParser::StringValueTypeEnum::kFloat:
             result.push_back(std::create_ptr<UIPropertyFloat>(*(float *)property.mMember, property.mName, modifyfunc)); break;
         case UIParser::StringValueTypeEnum::kString:
@@ -90,7 +90,7 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
         case UIParser::StringValueTypeEnum::kColor4:
             result.push_back(std::create_ptr<UIPropertyColor4>(*(glm::vec4 *)property.mMember, property.mName, modifyfunc)); break;
         case UIParser::StringValueTypeEnum::kAsset:
-            result.push_back(std::create_ptr<UIPropertyAsset>(*(std::string *)property.mMember, property.mName, modifyfunc)); break;
+            result.push_back(std::create_ptr<UIPropertyAsset>(*(Res::Ref *)property.mMember, property.mName, modifyfunc, property.mExtend)); break;
         }
     }
     return std::move(result);
