@@ -260,9 +260,7 @@ public:
         const Handler_t & handler, const std::any & params)
         : UIPropertyObject<Res::Ref>(value, title, handler)
     {
-        const auto & tuple = std::any_cast<const std::tuple<uint, std::function<void(Res::Ref)>> &>(params);
-        auto flag = std::get<0>(tuple);
-        auto func = std::get<1>(tuple);
+        auto flag = std::any_cast<uint>(params);
         for (auto bit = 0; flag != 0; flag >>= 1, ++bit)
         {
             if (flag & 1)
@@ -271,7 +269,7 @@ public:
                 mSearch.append(" ");
             }
         }
-        mSelect = func;
+        mSearch.append("|");
     }
 
     virtual bool OnEnter() override;

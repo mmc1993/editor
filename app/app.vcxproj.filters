@@ -974,9 +974,6 @@
     <ClInclude Include="editor\system\ui_sys\ui_menu.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="editor\system\editor_sys\property\ui_property.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="editor\tools\glsl_tool.h">
       <Filter>头文件</Filter>
     </ClInclude>
@@ -1044,6 +1041,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\raw_sys\serializer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\property\ui_property.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

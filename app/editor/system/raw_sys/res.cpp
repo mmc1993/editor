@@ -1,5 +1,6 @@
 #include "res.h"
 #include "project.h"
+#include "raw_sys.h"
 
 const std::string Res::sTypeString[TypeEnum::Length] = {
     "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUEPRINT"
@@ -33,13 +34,6 @@ Res::~Res()
     {
         ptr->Invalid();
     }
-}
-
-template <>
-SharePtr<GLObject> Res::Instance()
-{
-    ASSERT_LOG(Type() == Res::kObj, "");
-    return mOwner->GetObject(std::any_cast<uint>(mMeta));
 }
 
 std::string Res::Path()
@@ -168,6 +162,7 @@ void Res::DecodeBinary(std::istream & is, Project * project)
     tools::Deserialize(is, mType);
     switch (mType)
     {
+    case Res::kNull:
     case Res::kTxt:
     case Res::kImg:
     case Res::kMap:
@@ -196,6 +191,18 @@ void Res::DecodeBinary(std::istream & is, Project * project)
         }
         break;
     }
+}
+
+SharePtr<GLObject> Res::InstanceObj()
+{
+    ASSERT_LOG(Type() == Res::kObj, "");
+    return mOwner->GetObject(std::any_cast<uint>(mMeta));
+}
+
+SharePtr<GLTexture> Res::InstanceTex()
+{
+    ASSERT_LOG(Type() == Res::kImg, "");
+    return Global::Ref().mRawSys->Get<GLTexture>(Path());
 }
 
 

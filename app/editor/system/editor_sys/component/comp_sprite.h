@@ -31,7 +31,6 @@ private:
 
 private:
     Res::Ref            _tex;
-    std::string         _url;
     glm::vec2           _size;
     glm::vec2           _anchor;
     uint                _update;

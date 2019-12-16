@@ -1,5 +1,4 @@
 #include "comp_sprite.h"
-#include "../../raw_sys/raw.h"
 #include "../../raw_sys/raw_sys.h"
 #include "../../raw_sys/comp_transform.h"
 
@@ -22,7 +21,7 @@ CompSprite::CompSprite()
 
 void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (!_url.empty())
+    if (_tex.Vaild())
     {
         Update();
 
@@ -44,23 +43,23 @@ const std::string & CompSprite::GetName()
 void CompSprite::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _url);
     tools::Serialize(os, _size);
     tools::Serialize(os, _anchor);
+    _tex.EncodeBinary(os, project);
 }
 
 void CompSprite::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _url);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);
+    _tex.DecodeBinary(is, project);
 }
 
 bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "Url")
+    if (title == "Tex")
     {
         _update |= kTexture;
     }
@@ -74,7 +73,7 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
 std::vector<Component::Property> CompSprite::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Url", &_url);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Tex", &_tex, (uint)Res::TypeEnum::kImg);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size", &_size);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor", &_anchor);
     return std::move(props);
@@ -88,13 +87,9 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
-            auto first = _texture == nullptr;
-            _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
-            if (first)
-            {
-                _size.x = (float)_texture->GetW();
-                _size.y = (float)_texture->GetH();
-            }
+            _texture = _tex.Instance<GLTexture>();
+            _size.x = (float)_texture->GetW();
+            _size.y = (float)_texture->GetH();
         }
 
         if (_update & kTrackPoint)

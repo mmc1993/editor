@@ -1,6 +1,7 @@
 #pragma once
 
 #include "serializer.h"
+#include "raw.h"
 
 class GLObject;
 
@@ -111,9 +112,10 @@ public:
 
         Ref & operator=(const Ref & other)
         {
-            mValue     = other.mValue;
-            mOwner.reset(other.mOwner->Clone());
-            return *this; 
+            mValue = other.mValue;
+            mOwner.reset(!Vaild()? nullptr
+                : other.mOwner->Clone());
+            return *this;
         }
 
         bool operator==(const Ref & other)
@@ -166,8 +168,21 @@ public:
 
     //  实例化对象
     template <class T>
-    SharePtr<T> Instance() { static_assert(false); }
-    template <> SharePtr<GLObject> Instance();
+    SharePtr<T> Instance()
+    { 
+        if constexpr        (std::is_same_v<T, GLObject>)
+        {
+            return InstanceObj();
+        }
+        else if constexpr   (std::is_same_v<T, GLTexture>)
+        {
+            return InstanceTex();
+        }
+        else
+        {
+            static_assert(false);
+        }
+    }
 
     std::string Path();
     uint GetRefCount();
@@ -195,6 +210,10 @@ public:
 
     virtual void EncodeBinary(std::ostream & os, Project * project) override;
     virtual void DecodeBinary(std::istream & is, Project * project) override;
+
+private:
+    SharePtr<GLObject>  InstanceObj();
+    SharePtr<GLTexture> InstanceTex();
 
 private:
     uint                mID;

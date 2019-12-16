@@ -51,8 +51,8 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
 
             if (mouse.mKey == 2 && mouse.mAct == 3 && mouse.mObject == object)
             {
-                std::string                     arg0("image");
-                std::function<void(Res::Ref *)> arg1 = nullptr;
+                std::string                   arg0("image");
+                std::function<void(Res::Ref)> arg1 = nullptr;
                 Global::Ref().mUISys->OpenWindow(UIFile_Explorer, std::make_tuple(arg0, arg1));
             }
 

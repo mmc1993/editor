@@ -66,6 +66,7 @@
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\explorer\ui_delegate_explorer.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\ui_delegate_base.h" />
+    <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />
     <ClInclude Include="editor\system\raw_sys\component.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_field_of_view.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_render_target.h" />
@@ -86,7 +87,6 @@
     <ClInclude Include="editor\include.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_glfw.h" />
     <ClInclude Include="editor\opengl3\imgui_impl_opengl3.h" />
-    <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />
     <ClInclude Include="editor\system\event_sys\event_sys.h" />
     <ClInclude Include="editor\system\interface\render.h" />
     <ClInclude Include="editor\system\raw_sys\raw.h" />
