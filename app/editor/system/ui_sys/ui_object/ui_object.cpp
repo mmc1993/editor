@@ -644,7 +644,7 @@ SharePtr<UIObject> UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Even
     {
         return GetParent()->CallEventMessage(e, param);
     }
-    return was ? shared_from_this() : nullptr;
+    return was ? param.mObject : nullptr;
 }
 
 SharePtr<UIObject> UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Event & param)
