@@ -113,8 +113,9 @@ public:
         Ref & operator=(const Ref & other)
         {
             mValue = other.mValue;
-            mOwner.reset(!other.Vaild()? nullptr
-                : other.mOwner->Clone());
+            mOwner.reset(other.mOwner && other.mOwner->Valid()
+                       ? other.mOwner->Clone()
+                       : nullptr);
             return *this;
         }
 
@@ -131,22 +132,24 @@ public:
         ~Ref()
         { }
 
-        bool Vaild() const
+        bool Check()
         {
+            if (mOwner && !mOwner->Valid())
+            {
+                mOwner.reset();
+            }
             return mOwner != nullptr;
         }
 
         std::string Path()
         {
-            return Vaild()
-                ? mOwner->Path()
-                :  std::string();
+            return Check() ? mOwner->Path() : std::string();
         }
 
         template <class T>
         SharePtr<T> Instance()
         {
-            ASSERT_LOG(Vaild(), "");
+            ASSERT_LOG(mOwner,"");
             if (mOwner->Modify())
             {
                 mValue = mOwner->Instance<T>();

@@ -150,16 +150,6 @@ bool UIPropertyColor4::OnEnter()
 
 bool UIPropertyAsset::OnEnter()
 {
-    if (!mSelect)
-    {
-        auto self = CastPtr<UIPropertyAsset>(shared_from_this());
-        mSelect = [self] (Res::Ref ref)
-        {
-            self->GetNewValue() = ref;
-            self->Modify();
-        };
-    }
-
     UIPropertyObject::OnEnter();
 
     auto path = GetNewValue().Path();
@@ -170,7 +160,13 @@ bool UIPropertyAsset::OnEnter()
 
     if (ImGui::Button("Select"))
     {
-        Global::Ref().mUISys->OpenWindow(UIFile_Explorer, std::make_tuple(mSearch, mSelect));
+        auto self = CastPtr<UIPropertyAsset>(shared_from_this());
+        std::function<void(Res::Ref)> func = [self](Res::Ref ref)
+        {
+            self->GetNewValue() = ref;
+            self->Modify();
+        };
+        Global::Ref().mUISys->OpenWindow(UIFile_Explorer, std::make_tuple(mSearch, func));
     }
 
     ImGui::Columns(1);

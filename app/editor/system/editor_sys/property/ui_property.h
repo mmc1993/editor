@@ -276,5 +276,4 @@ public:
 
 private:
     std::string                     mSearch;
-    std::function<void(Res::Ref)>   mSelect;
 };

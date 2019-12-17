@@ -21,7 +21,7 @@ CompSprite::CompSprite()
 
 void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (_tex.Vaild())
+    if (_tex.Check())
     {
         Update();
 
@@ -29,7 +29,7 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("uniform_texture", _texture));
+        command.mTextures.push_back(std::make_pair("uniform_texture", _tex.Instance<GLTexture>()));
         canvas->Post(command);
     }
 }
@@ -87,9 +87,8 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
-            _texture = _tex.Instance<GLTexture>();
-            _size.x = (float)_texture->GetW();
-            _size.y = (float)_texture->GetH();
+            _size.x = (float)_tex.Instance<GLTexture>()->GetW();
+            _size.y = (float)_tex.Instance<GLTexture>()->GetH();
         }
 
         if (_update & kTrackPoint)
@@ -103,7 +102,7 @@ void CompSprite::Update()
             _trackPoints.at(3).x = -_size.x *      _anchor.x;
             _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
-            auto & offset=_texture->GetOffset();
+            auto & offset = _tex.Instance<GLTexture>()->GetOffset();
             std::vector<GLMesh::Vertex> vertexs;
             vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
             vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));

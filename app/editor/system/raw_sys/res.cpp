@@ -8,7 +8,7 @@ const std::string Res::sTypeString[TypeEnum::Length] = {
 
 void Res::Ref::EncodeBinary(std::ostream & os, Project * project)
 { 
-    uint id = Vaild() ? mOwner->GetID() : ~0;
+    uint id = mOwner ? mOwner->GetID() : ~0;
     tools::Serialize(os, id);
 }
 

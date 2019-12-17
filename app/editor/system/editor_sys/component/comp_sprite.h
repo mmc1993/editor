@@ -36,6 +36,5 @@ private:
     uint                _update;
 
     SharePtr<GLMesh>    _mesh;
-    SharePtr<GLTexture> _texture;
     SharePtr<GLProgram> _program;
 };
