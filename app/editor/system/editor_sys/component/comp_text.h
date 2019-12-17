@@ -5,11 +5,6 @@
 class CompText 
     : public Component
     , public std::enable_shared_from_this<CompText> {
-public:
-    enum UpdateEnum {
-        kFont = 0x1,
-        kMesh = 0x2,
-    };
 
 public:
     CompText();
@@ -29,14 +24,11 @@ protected:
 
 
 private:
-    void UpdateFont();
     void UpdateMesh();
     void OnDrawCallback(const interface::RenderCommand & command, uint pos);
 
 private:
-    uint _update;
-
-    std::string _url;
+    Res::Ref    _fnt;
     std::string _text;
     glm::vec2   _size;
     glm::vec2   _anchor;
@@ -45,7 +37,6 @@ private:
     glm::vec4   _outColor;
     glm::vec4   _color;
 
-    SharePtr<GLFont>    _font;
     SharePtr<GLMesh>    _mesh;
     SharePtr<GLProgram> _program;
 };

@@ -9,7 +9,6 @@ CompText::CompText()
     , _color(1.0f)
     , _anchor(0.0f)
     , _size(100.0f)
-    , _update(kFont | kMesh)
     , _outDelta(0)
     , _outColor(0)
 {
@@ -33,7 +32,8 @@ const std::string & CompText::GetName()
 void CompText::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _url);
+    _fnt.EncodeBinary(os, project);
+
     tools::Serialize(os, _text);
     tools::Serialize(os, _size);
     tools::Serialize(os, _anchor);
@@ -46,7 +46,8 @@ void CompText::EncodeBinary(std::ostream & os, Project * project)
 void CompText::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _url);
+    _fnt.DecodeBinary(is, project);
+    
     tools::Deserialize(is, _text);
     tools::Deserialize(is, _size);
     tools::Deserialize(is, _anchor);
@@ -59,11 +60,6 @@ void CompText::DecodeBinary(std::istream & is, Project * project)
 bool CompText::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "URL")
-    {
-        _update |= kFont;
-    }
-    _update |= kMesh;
     return true;
 }
 
@@ -72,21 +68,17 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        if (!_url.empty())
-        {
-            if (_update & kFont) { UpdateFont(); }
-            if (_update & kMesh) { UpdateMesh(); }
-        }
-        _update = 0;
+        if (_fnt.Check()) { UpdateMesh(); }
     }
 
-    if (!_url.empty())
+    if (_fnt.Check())
     {
         interface::FowardCommand command;
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.emplace_back("uniform_texture", _font->RefTexture());
+        command.mTextures.emplace_back("uniform_texture",
+                _fnt.Instance<GLFont>()->RefTexture());
         command.mCallback = std::bind(
             &CompText::OnDrawCallback, this,
             std::placeholders::_1,
@@ -97,7 +89,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "URL",       &_url);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &_fnt, (uint)(Res::TypeEnum::kFnt));
     props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &_text);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &_size);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
@@ -145,14 +137,7 @@ void CompText::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
     auto coord = GetOwner()->LocalToParent(_size * _anchor + min);
     GetOwner()->GetTransform()->Position(coord.x, coord.y);
 
-    _update |= kMesh;
-
     AddState(StateEnum::kUpdate, true);
-}
-
-void CompText::UpdateFont()
-{
-    _font = Global::Ref().mRawSys->Get<GLFont>(_url);
 }
 
 void CompText::UpdateMesh()
@@ -168,22 +153,21 @@ void CompText::UpdateMesh()
 
     std::vector<GLMesh::Vertex> points;
 
-    auto codes = _font->RefWord(_text);
-    auto texW  = _font->RefTexture()->GetW();
-    auto texH  = _font->RefTexture()->GetH();
+    auto codes = _fnt.Instance<GLFont>()->RefWord(_text);
+    auto texW  = _fnt.Instance<GLFont>()->RefTexture()->GetW();
+    auto texH  = _fnt.Instance<GLFont>()->RefTexture()->GetH();
     auto posX  = 0.0f;
     auto posY  = 0.0f;
     auto lineH = 0.0f;
     for (auto i = 0; i != codes.size(); ++i)
     {
-        const auto & word = _font->RefWord(codes.at(i));
+        const auto & word = _fnt.Instance<GLFont>()->RefWord(codes.at(i));
         auto wordW = (word.mUV.z - word.mUV.x) * texW;
         auto wordH = (word.mUV.w - word.mUV.y) * texH;
         //  ½Ø¶Ï¿í¶È
         if (posX + wordW  > _size.x)
         {
-            posX  = 0.0f;
-            posY += lineH;
+            posX = 0.0f; posY += lineH;
         }
         //  ½Ø¶Ï¸ß¶È
         if (posX + wordW > _size.x ||
