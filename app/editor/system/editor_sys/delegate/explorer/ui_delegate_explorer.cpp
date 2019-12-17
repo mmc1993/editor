@@ -146,6 +146,8 @@ void UIDelegateExplorer::OnEvent(EventSys::TypeEnum type, const std::any & param
             ListClick1(nullptr);
 
             mRes2Obj.at(arg0)->GetParent()->DeleteThis();
+            mObj2Res.erase(mRes2Obj.at(arg0));
+            mRes2Obj.erase(arg0);
         }
         break;
     }
