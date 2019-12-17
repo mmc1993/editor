@@ -113,7 +113,7 @@ public:
         Ref & operator=(const Ref & other)
         {
             mValue = other.mValue;
-            mOwner.reset(!Vaild()? nullptr
+            mOwner.reset(!other.Vaild()? nullptr
                 : other.mOwner->Clone());
             return *this;
         }
@@ -131,7 +131,7 @@ public:
         ~Ref()
         { }
 
-        bool Vaild()
+        bool Vaild() const
         {
             return mOwner != nullptr;
         }

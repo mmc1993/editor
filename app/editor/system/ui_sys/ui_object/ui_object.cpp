@@ -659,6 +659,11 @@ SharePtr<UIObject> UIObject::PostEventMessage(UIEventEnum e, const UIEvent::Even
 UIObjectLayout::UIObjectLayout() : UIObject(UITypeEnum::kLayout, new UIStateLayout())
 { }
 
+void UIObjectLayout::Close()
+{
+    GetState<UIStateLayout>()->mWindowInfo.mOpen = false;
+}
+
 bool UIObjectLayout::OnEnter()
 {
     auto state = GetState<UIStateLayout>();
@@ -705,22 +710,21 @@ bool UIObjectLayout::OnEnter()
                 ImGui::SetNextWindowSize(size);
             }
 
-            bool isOpen = true;
             if (state->IsModel)
             {
                 if (!ImGui::IsPopupOpen(ImID(name).c_str()))
                 {
                     ImGui::OpenPopup(ImID(name).c_str());
                 }
-                ret = ImGui::BeginPopupModal(ImID(name).c_str(), &isOpen, flag);
+                ret = ImGui::BeginPopupModal(ImID(name).c_str(), &state->mWindowInfo.mOpen, flag);
             }
             else
             {
-                ret = ImGui::Begin(ImID(name).c_str(), &isOpen, flag);
+                ret = ImGui::Begin(ImID(name).c_str(), &state->mWindowInfo.mOpen, flag);
             }
 
             //  计算正确的坐标和尺寸(Window通过ImGui管理坐标和尺寸, 在这里只需要更新它就行了)
-            if (isOpen)
+            if (state->mWindowInfo.mOpen)
             {
                 move = ImGui::GetWindowPos();
                 size = ImGui::GetWindowSize();
@@ -739,7 +743,7 @@ bool UIObjectLayout::OnEnter()
                 Global::Ref().mUISys->FreeWindow(shared_from_this());
             }
 
-            ret = ret && isOpen;
+            ret = ret && state->mWindowInfo.mOpen;
         }
     }
     else
@@ -772,16 +776,11 @@ void UIObjectLayout::OnLeave(bool ret)
         {
             UIMenu::RenderPopup();
         }
-        if (state->IsModel)
+        if (Global::Ref().mUISys->CheckOpen(shared_from_this()))
         {
-            if (Global::Ref().mUISys->CheckOpen(shared_from_this()))
-            {
-                ImGui::EndPopup();
-            }
-        }
-        else
-        {
-            ImGui::End();
+            !state->IsModel
+                ? ImGui::End()
+                : ImGui::EndPopup();
         }
     }
     else

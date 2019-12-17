@@ -81,6 +81,12 @@ public:
         StretchFocus() : mObject(nullptr) {}
     } mStretchFocus;
 
+    //  ´°¿ÚÐÅÏ¢
+    struct WindowInfo {
+        bool mOpen;
+        WindowInfo() : mOpen(true) { }
+    } mWindowInfo;
+
     UIStateLayout();
 };
 

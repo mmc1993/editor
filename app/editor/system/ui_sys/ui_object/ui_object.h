@@ -82,6 +82,8 @@ class UIObjectLayout : public UIObject {
 public:
     UIObjectLayout();
 
+    void Close();
+
 private:
     virtual bool OnEnter() override;
     virtual void OnLeave(bool ret) override;
