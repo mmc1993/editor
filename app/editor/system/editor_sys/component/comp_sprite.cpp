@@ -61,7 +61,8 @@ bool CompSprite::OnModifyProperty(const std::any & oldValue, const std::any & ne
     AddState(StateEnum::kUpdate, true);
     if (title == "Tex")
     {
-        _update |= kTexture;
+        _update |= kTexture 
+                | kTrackPoint;
     }
     if (title == "Size" || title == "Anchor")
     {
