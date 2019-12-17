@@ -205,4 +205,9 @@ SharePtr<GLTexture> Res::InstanceTex()
     return Global::Ref().mRawSys->Get<GLTexture>(Path());
 }
 
+SharePtr<GLFont> Res::InstanceFnt()
+{
+    ASSERT_LOG(Type() == Res::kFnt, "");
+    return Global::Ref().mRawSys->Get<GLFont>(Path());
+}
 

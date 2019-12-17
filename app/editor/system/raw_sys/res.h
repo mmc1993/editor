@@ -181,6 +181,10 @@ public:
         {
             return InstanceTex();
         }
+        else if constexpr (std::is_same_v<T, GLFont>)
+        {
+            return InstanceFnt();
+        }
         else
         {
             static_assert(false);
@@ -217,6 +221,7 @@ public:
 private:
     SharePtr<GLObject>  InstanceObj();
     SharePtr<GLTexture> InstanceTex();
+    SharePtr<GLFont>    InstanceFnt();
 
 private:
     uint                mID;
