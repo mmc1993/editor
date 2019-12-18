@@ -148,6 +148,45 @@ private:
 };
 
 // ---
+//  RawMap
+// ---
+class RawMap : public Raw {
+public:
+    struct Map {
+        uint mTileW;
+        uint mTileH;
+        uint mSizeW;
+        uint mSizeH;
+        uint mRow;
+        uint mCol;
+    };
+
+    struct Atlas {
+        uint mBase;
+        uint mSpace;
+        uint mOffset;
+        uint mRow, mCol;
+        SharePtr<RawTexture> mTexture;
+    };
+
+public:
+    RawMap();
+    ~RawMap();
+    virtual bool Init(const std::string & url) override;
+    const std::vector<Atlas> &           GetAtlass() { return mAtlass; }
+    const std::vector<RawMesh::Vertex> & GetPoints() { return mPoints; }
+
+private:
+    void UpdateVertexs(const mmc::Json::Pointer & data);
+    std::tuple<glm::vec4, uint>   GetTileInfo(uint idx);
+
+private:
+    Map                          mMap;
+    std::vector<Atlas>           mAtlass;
+    std::vector<RawMesh::Vertex> mPoints;
+};
+
+// ---
 //  RawFont
 // ---
 class RawFont : public Raw {

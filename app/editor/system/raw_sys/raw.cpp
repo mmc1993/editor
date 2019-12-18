@@ -221,6 +221,92 @@ bool RawTexture::InitFromAtlas(const std::string & url)
 }
 
 // ---
+//  RawMap
+// ---
+RawMap::RawMap()
+{ }
+
+RawMap::~RawMap()
+{ }
+
+bool RawMap::Init(const std::string & url)
+{
+    auto tmx = mmc::Json::FromFile(url);
+    ASSERT_LOG(tmx != nullptr, url.c_str());
+
+    auto folder = tools::GetFileFolder(url);
+    for (auto & value : tmx->At("tilesets"))
+    {
+        auto atlasURL = folder + value.mVal->At("source")->ToString();
+        auto baseIndex = (uint)value.mVal->At("firstgid")->ToNumber();
+        auto atlasJson = mmc::Json::FromFile(atlasURL);
+        ASSERT_LOG(atlasJson != nullptr, atlasURL.c_str());
+
+        Atlas atlas;
+        auto image = tools::GetFileFolder(atlasURL) + atlasJson->At("image")->ToString();
+        atlas.mTexture  = Global::Ref().mRawSys->Get<RawTexture>(image);
+        atlas.mOffset   = (uint)atlasJson->At("margin"      )->ToNumber();
+        atlas.mSpace    = (uint)atlasJson->At("spacing"     )->ToNumber();
+        atlas.mCol      = (uint)atlasJson->At("columns"     )->ToNumber();
+        atlas.mRow      = (uint)atlasJson->At("tilecount"   )->ToNumber() / atlas.mCol;
+        atlas.mBase  = baseIndex;
+        mAtlass.push_back(atlas);
+    }
+
+    mMap.mSizeW = (uint)tmx->At("width"     )->ToNumber();
+    mMap.mSizeH = (uint)tmx->At("height"    )->ToNumber();
+    mMap.mTileW = (uint)tmx->At("tilewidth" )->ToNumber();
+    mMap.mTileH = (uint)tmx->At("tileheight")->ToNumber();
+    for (auto & layer : tmx->At("layers"))
+    {
+        UpdateVertexs(layer.mVal->At("data"));
+    }
+    return true;
+}
+
+void RawMap::UpdateVertexs(const mmc::Json::Pointer & data)
+{ 
+    for (auto i = 0; i != data->GetCount(); ++i)
+    {
+        if (auto index = (uint)data->At(i)->ToNumber(); index!= 0)
+        {
+            auto [uv, atlasPos] = GetTileInfo(index);
+
+            glm::vec4 quad;
+            quad.x =                                     (float)(i % mMap.mSizeW * mMap.mTileW);
+            quad.y = (mMap.mSizeH  - 1) *  mMap.mTileH - (float)(i / mMap.mSizeH * mMap.mTileH);
+            quad.z = quad.x + mMap.mTileW + 0.5f;
+            quad.w = quad.y + mMap.mTileH + 0.5f;
+
+            mPoints.emplace_back(glm::vec2(quad.x, quad.y), glm::vec4((float)atlasPos), glm::vec2(uv.x, uv.y));
+            mPoints.emplace_back(glm::vec2(quad.z, quad.y), glm::vec4((float)atlasPos), glm::vec2(uv.z, uv.y));
+            mPoints.emplace_back(glm::vec2(quad.z, quad.w), glm::vec4((float)atlasPos), glm::vec2(uv.z, uv.w));
+            mPoints.emplace_back(glm::vec2(quad.x, quad.y), glm::vec4((float)atlasPos), glm::vec2(uv.x, uv.y));
+            mPoints.emplace_back(glm::vec2(quad.z, quad.w), glm::vec4((float)atlasPos), glm::vec2(uv.z, uv.w));
+            mPoints.emplace_back(glm::vec2(quad.x, quad.w), glm::vec4((float)atlasPos), glm::vec2(uv.x, uv.w));
+        }
+    }
+}
+
+std::tuple<glm::vec4, uint> RawMap::GetTileInfo(uint idx)
+{
+    uint atlasPos = 0;
+    for (auto i = 0; mAtlass.size() != i; atlasPos = i++)
+    {
+        if (idx < mAtlass.at(i).mBase) { break; }
+    }
+    glm::vec4 quad;
+    auto & atlas = mAtlass.at(atlasPos);
+    auto x =                  (idx - atlas.mBase) % atlas.mCol;
+    auto y = atlas.mRow - 1 - (idx - atlas.mBase) / atlas.mCol;
+    quad.x = (float)(x * mMap.mTileW + x * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetW();
+    quad.y = (float)(y * mMap.mTileH + y * atlas.mSpace + atlas.mOffset) / atlas.mTexture->GetH();
+    quad.z = quad.x + (float)mMap.mTileW / atlas.mTexture->GetW();
+    quad.w = quad.y + (float)mMap.mTileH / atlas.mTexture->GetH();
+    return { quad, atlasPos, };
+}
+
+// ---
 //  RawFont
 // ---
 RawFont::RawFont()
