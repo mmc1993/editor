@@ -25,15 +25,15 @@ private:
     void GenMesh();
     glm::vec2 RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
     glm::vec2 RayExtended(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
-    void OnDrawCallback(SharePtr<GLImage> texture, const interface::RenderCommand & command, uint texturePos);
+    void OnDrawCallback(SharePtr<RawImage> texture, const interface::RenderCommand & command, uint texturePos);
 
 private:
     std::string _clipObjectURL;
     std::string _polyObjectURL;
     glm::vec4   _color;
 
-    SharePtr<GLMesh>                    _mesh;
-    SharePtr<GLProgram>                 _program;
+    SharePtr<RawMesh>                    _mesh;
+    SharePtr<RawProgram>                 _program;
     std::vector<glm::vec2>              _segments;
     WeakPtr<CompRenderTarget>           _sampler;
     std::vector<WeakPtr<CompPolygon>>   _polyObjects;

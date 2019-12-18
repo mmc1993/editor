@@ -28,14 +28,14 @@ bool CompRenderTarget::OnModifyProperty(const std::any & oldValue, const std::an
     return true;
 }
 
-SharePtr<GLImage> CompRenderTarget::RefTextureBuffer()
+SharePtr<RawImage> CompRenderTarget::RefTextureBuffer()
 {
     return _textureBuffer;
 }
 
 void CompRenderTarget::OnAdd()
 { 
-    _textureBuffer = std::create_ptr<GLImage>();
+    _textureBuffer = std::create_ptr<RawImage>();
     _textureBuffer->InitNull(GL_RGBA);
 }
 

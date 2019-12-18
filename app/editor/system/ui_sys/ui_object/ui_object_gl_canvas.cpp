@@ -14,11 +14,11 @@ const glm::vec4 UIObjectGLCanvas::VAL_TrackPointColors[32] = {
 UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UIStateGLCanvas())
 {
     auto state = GetState<UIStateGLCanvas>();
-    state->mRenderTextures[0] = std::create_ptr<GLImage>();
+    state->mRenderTextures[0] = std::create_ptr<RawImage>();
     state->mRenderTextures[0]->InitNull(GL_RGBA);
-    state->mRenderTextures[1] = std::create_ptr<GLImage>();
+    state->mRenderTextures[1] = std::create_ptr<RawImage>();
     state->mRenderTextures[1]->InitNull(GL_RGBA);
-    state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_SOLID_FILL);
+    state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
 void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & command)
@@ -149,7 +149,7 @@ void UIObjectGLCanvas::DrawTrackPoint()
         {
             if (object->GetComponents().at(i0)->HasState(Component::StateEnum::kActive))
             {
-                std::vector<GLMesh::Vertex> points;
+                std::vector<RawMesh::Vertex> points;
                 auto & component = object->GetComponents().at(i0);
                 auto & trackPoints = component->GetTrackPoints();
                 for (auto i1 = 0; i1 != trackPoints.size(); ++i1)
@@ -190,7 +190,7 @@ void UIObjectGLCanvas::DrawSelectRect()
         if (min.y > max.y) std::swap(min.y, max.y);
 
         //  Моід
-        std::vector<GLMesh::Vertex> points;
+        std::vector<RawMesh::Vertex> points;
         points.emplace_back(glm::vec2(min.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
         points.emplace_back(glm::vec2(max.x, min.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
         points.emplace_back(glm::vec2(max.x, max.y), glm::vec4(0.7f, 0.9f, 0.1f, 0.2f));
@@ -262,7 +262,7 @@ void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
     }
 }
 
-void UIObjectGLCanvas::Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform)
+void UIObjectGLCanvas::Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
     const auto & matrixV = GetMatrixStack().Top(interface::MatrixStack::kView);
@@ -577,14 +577,14 @@ glm::mat4 UIObjectGLCanvas::GetMatViewProj()
     return GetMatProj() * GetMatView();
 }
 
-SharePtr<GLMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
+SharePtr<RawMesh> & UIObjectGLCanvas::GetMeshBuffer(size_t idx)
 {
     auto state = GetState<UIStateGLCanvas>();
     if (idx == state->mMeshBuffer.size())
     {
-        auto mesh = std::create_ptr<GLMesh>();
-        mesh->Init({}, {}, GLMesh::Vertex::kV 
-                         | GLMesh::Vertex::kC);
+        auto mesh = std::create_ptr<RawMesh>();
+        mesh->Init({}, {}, RawMesh::Vertex::kV 
+                         | RawMesh::Vertex::kC);
         state->mMeshBuffer.push_back(mesh);
     }
     return state->mMeshBuffer.at(idx);

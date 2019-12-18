@@ -53,8 +53,8 @@ private:
     glm::vec4           _color;
     std::string         _url;
 
-    SharePtr<GLMesh>    _mesh;
-    SharePtr<GLTexture> _texture;
-    SharePtr<GLProgram> _program;
+    SharePtr<RawMesh>    _mesh;
+    SharePtr<RawTexture> _texture;
+    SharePtr<RawProgram> _program;
     std::vector<Segment> _segments;
 };

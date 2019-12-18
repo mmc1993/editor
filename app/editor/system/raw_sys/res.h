@@ -177,11 +177,11 @@ public:
         {
             return InstanceObj();
         }
-        else if constexpr   (std::is_same_v<T, GLTexture>)
+        else if constexpr   (std::is_same_v<T, RawTexture>)
         {
             return InstanceTex();
         }
-        else if constexpr (std::is_same_v<T, GLFont>)
+        else if constexpr (std::is_same_v<T, RawFont>)
         {
             return InstanceFnt();
         }
@@ -220,8 +220,8 @@ public:
 
 private:
     SharePtr<GLObject>  InstanceObj();
-    SharePtr<GLTexture> InstanceTex();
-    SharePtr<GLFont>    InstanceFnt();
+    SharePtr<RawTexture> InstanceTex();
+    SharePtr<RawFont>    InstanceFnt();
 
 private:
     uint                mID;

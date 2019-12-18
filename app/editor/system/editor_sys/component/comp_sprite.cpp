@@ -9,11 +9,11 @@ CompSprite::CompSprite()
 {
     _trackPoints.resize(4);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({},{}, GLMesh::Vertex::kV | 
-                       GLMesh::Vertex::kUV);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+                       RawMesh::Vertex::kUV);
 
-    _program = std::create_ptr<GLProgram>();
+    _program = std::create_ptr<RawProgram>();
     _program->Init(tools::GL_PROGRAM_SPRITE);
 
     AddState(StateEnum::kModifyTrackPoint, true);
@@ -29,7 +29,7 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("uniform_texture", _tex.Instance<GLTexture>()));
+        command.mTextures.push_back(std::make_pair("uniform_texture", _tex.Instance<RawTexture>()));
         canvas->Post(command);
     }
 }
@@ -88,8 +88,8 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
-            _size.x = (float)_tex.Instance<GLTexture>()->GetW();
-            _size.y = (float)_tex.Instance<GLTexture>()->GetH();
+            _size.x = (float)_tex.Instance<RawTexture>()->GetW();
+            _size.y = (float)_tex.Instance<RawTexture>()->GetH();
         }
 
         if (_update & kTrackPoint)
@@ -103,8 +103,8 @@ void CompSprite::Update()
             _trackPoints.at(3).x = -_size.x *      _anchor.x;
             _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
-            auto & offset = _tex.Instance<GLTexture>()->GetOffset();
-            std::vector<GLMesh::Vertex> vertexs;
+            std::vector<RawMesh::Vertex> vertexs;
+            auto & offset = _tex.Instance<RawTexture>()->GetOffset();
             vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
             vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
             vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));

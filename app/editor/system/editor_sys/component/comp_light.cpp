@@ -9,11 +9,11 @@ CompLight::CompLight()
     _trackPoints.emplace_back(0,  0);
     _trackPoints.emplace_back(0, 30);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({},{}, GLMesh::Vertex::kV | 
-                       GLMesh::Vertex::kC);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+                       RawMesh::Vertex::kC);
 
-    _program = std::create_ptr<GLProgram>();
+    _program = std::create_ptr<RawProgram>();
     _program->Init(tools::GL_PROGRAM_LIGHT);
 
     AddState(StateEnum::kInsertTrackPoint, true);
@@ -85,7 +85,7 @@ void CompLight::Update()
         if (_trackPoints.size() == 2)
         {
             std::vector<uint>           indexs;
-            std::vector<GLMesh::Vertex> points;
+            std::vector<RawMesh::Vertex> points;
 
             auto radius = glm::length(_trackPoints.at(1) - _trackPoints.at(0));
             for (auto i = 0; i != 360; i += 10)
@@ -128,7 +128,7 @@ void CompLight::Update()
         }
         else
         {
-            std::vector<GLMesh::Vertex> points;
+            std::vector<RawMesh::Vertex> points;
             auto convex = tools::GenConvexPoints(_trackPoints);
             for (auto i = 1; i != convex.size() - 1; ++i)
             {

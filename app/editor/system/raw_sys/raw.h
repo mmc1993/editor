@@ -15,9 +15,9 @@ protected:
 };
 
 // ---
-//  GLMesh
+//  RawMesh
 // ---
-class GLMesh : public Raw {
+class RawMesh : public Raw {
 public:
     struct Vertex {
         glm::vec2 v;
@@ -55,9 +55,9 @@ public:
         }
     };
 
-    GLMesh();
+    RawMesh();
 
-    ~GLMesh();
+    ~RawMesh();
 
     virtual bool Init(const std::string & url) override;
 
@@ -91,12 +91,12 @@ private:
 };
 
 // ---
-//  GLImage
+//  RawImage
 // ---
-class GLImage: Raw {
+class RawImage : public Raw {
 public:
-    GLImage();
-    ~GLImage();
+    RawImage();
+    ~RawImage();
     void SetParam(int key, int val);
     void ModifyWH(uint w, uint h);
     void InitNull(uint fmt);
@@ -107,9 +107,9 @@ public:
 };
 
 // ---
-//  GLTexture
+//  RawTexture
 // ---
-class GLTexture : public Raw {
+class RawTexture : public Raw {
 public:
     struct Filter {
         uint mMin;
@@ -125,14 +125,14 @@ public:
     };
 
 public:
-    GLTexture();
-    ~GLTexture();
+    RawTexture();
+    ~RawTexture();
     uint GetID() { return _refimg->mID; }
     uint GetImageW() { return _refimg->mW; }
     uint GetImageH() { return _refimg->mH; }
     uint GetImageFormat() { return _refimg->mFormat; }
     const glm::vec4 & GetOffset() { return  _offset; }
-    SharePtr<GLImage> & GetRefImage() { return _refimg; }
+    SharePtr<RawImage> & GetRefImage() { return _refimg; }
     uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
     uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
 
@@ -143,14 +143,14 @@ private:
     bool InitFromAtlas(const std::string & url);
 
 private:
-    SharePtr<GLImage> _refimg;
+    SharePtr<RawImage> _refimg;
     glm::vec4         _offset;
 };
 
 // ---
-//  GLFont
+//  RawFont
 // ---
-class GLFont : public Raw {
+class RawFont : public Raw {
 public:
     struct Char {
         uint      mID; //  ×ÖUnicode±àÂë
@@ -166,9 +166,9 @@ public:
     };
 
 public:
-    GLFont();
-    ~GLFont();
-    const SharePtr<GLTexture> & RefTexture();
+    RawFont();
+    ~RawFont();
+    const SharePtr<RawTexture> & RefTexture();
     const Char & RefWord(char word);
     const Char & RefWord(uint code);
     //const Word & RefWord(const char * word, uint count);
@@ -180,13 +180,13 @@ private:
 
 private:
     FontInfo            _info;
-    SharePtr<GLTexture> _texture;
+    SharePtr<RawTexture> _texture;
 };
 
 // ---
-//  GLProgram
+//  RawProgram
 // ---
-class GLProgram : public Raw {
+class RawProgram : public Raw {
 public:
     struct Value {
         enum TypeEnum {
@@ -216,7 +216,7 @@ public:
         {
             if constexpr (std::is_arithmetic_v<T>)
                 mType = kNumber;
-            else if constexpr (std::is_same_v<T, GLTexture *>)
+            else if constexpr (std::is_same_v<T, RawTexture *>)
                 mType = kTexture;
             else if constexpr (std::is_same_v<T, glm::mat3>)
                 mType = kMatrix3;
@@ -250,8 +250,8 @@ public:
         Pass() { memset(this, 0, sizeof(Pass)); }
     };
 public:
-    GLProgram();
-    ~GLProgram();
+    RawProgram();
+    ~RawProgram();
 
     virtual bool Init(const std::string & url) override;
 
@@ -286,17 +286,17 @@ private:
 };
 
 // ---
-//  GLMaterial
+//  RawMaterial
 // ---
-class GLMaterial : public Raw {
+class RawMaterial : public Raw {
 public:
     struct Texture {
-        std::string         mKey;
-        SharePtr<GLTexture> mTex;
+        std::string          mKey;
+        SharePtr<RawTexture> mTex;
 
         Texture(
             const std::string & key = std::string(), 
-            const SharePtr<GLTexture> & tex = nullptr)
+            const SharePtr<RawTexture> & tex = nullptr)
             : mKey(key), mTex(tex)
         { }
 
@@ -307,21 +307,21 @@ public:
     };
 
 public:
-    GLMaterial();
+    RawMaterial();
 
     virtual bool Init(const std::string & url) override;
 
-    const SharePtr<GLMesh> & GetMesh();
-    void SetMesh(const SharePtr<GLMesh> & mesh);
+    const SharePtr<RawMesh> & GetMesh();
+    void SetMesh(const SharePtr<RawMesh> & mesh);
 
-    const SharePtr<GLProgram> & GetProgram();
-    void SetProgram(const SharePtr<GLProgram> & program);
+    const SharePtr<RawProgram> & GetProgram();
+    void SetProgram(const SharePtr<RawProgram> & program);
 
     const std::vector<Texture> & GetTextures();
-    void SetTexture(const std::string & key, const SharePtr<GLTexture> & tex);
+    void SetTexture(const std::string & key, const SharePtr<RawTexture> & tex);
 
 private:
-    SharePtr<GLMesh>      _mesh;
-    SharePtr<GLProgram>   _program;
-    std::vector<Texture>  _textures;
+    SharePtr<RawMesh>    _mesh;
+    SharePtr<RawProgram> _program;
+    std::vector<Texture> _textures;
 };

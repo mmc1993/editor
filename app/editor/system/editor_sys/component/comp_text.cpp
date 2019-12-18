@@ -14,11 +14,11 @@ CompText::CompText()
 {
     _trackPoints.resize(4);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({},{}, GLMesh::Vertex::kV | 
-                       GLMesh::Vertex::kC | 
-                       GLMesh::Vertex::kUV);
-    _program = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_FONT_SDF);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+                       RawMesh::Vertex::kC | 
+                       RawMesh::Vertex::kUV);
+    _program = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FONT_SDF);
 
     AddState(StateEnum::kModifyTrackPoint, true);
 }
@@ -78,7 +78,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.emplace_back("uniform_texture",
-                _fnt.Instance<GLFont>()->RefTexture());
+                _fnt.Instance<RawFont>()->RefTexture());
         command.mCallback = std::bind(
             &CompText::OnDrawCallback, this,
             std::placeholders::_1,
@@ -151,17 +151,17 @@ void CompText::UpdateMesh()
     _trackPoints.at(3).x = -_size.x *      _anchor.x;
     _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
 
-    std::vector<GLMesh::Vertex> points;
+    std::vector<RawMesh::Vertex> points;
 
-    auto codes = _fnt.Instance<GLFont>()->RefWord(_text);
-    auto texW  = _fnt.Instance<GLFont>()->RefTexture()->GetW();
-    auto texH  = _fnt.Instance<GLFont>()->RefTexture()->GetH();
+    auto codes = _fnt.Instance<RawFont>()->RefWord(_text);
+    auto texW  = _fnt.Instance<RawFont>()->RefTexture()->GetW();
+    auto texH  = _fnt.Instance<RawFont>()->RefTexture()->GetH();
     auto posX  = 0.0f;
     auto posY  = 0.0f;
     auto lineH = 0.0f;
     for (auto i = 0; i != codes.size(); ++i)
     {
-        const auto & word = _fnt.Instance<GLFont>()->RefWord(codes.at(i));
+        const auto & word = _fnt.Instance<RawFont>()->RefWord(codes.at(i));
         auto wordW = (word.mUV.z - word.mUV.x) * texW;
         auto wordH = (word.mUV.w - word.mUV.y) * texH;
         //  ½Ø¶Ï¿í¶È

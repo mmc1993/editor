@@ -37,6 +37,6 @@ private:
     glm::vec4   _outColor;
     glm::vec4   _color;
 
-    SharePtr<GLMesh>    _mesh;
-    SharePtr<GLProgram> _program;
+    SharePtr<RawMesh>    _mesh;
+    SharePtr<RawProgram> _program;
 };

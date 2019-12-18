@@ -6,11 +6,11 @@
 CompFieldOfView::CompFieldOfView()
     : _color(1.0f)
 {
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | 
-                        GLMesh::Vertex::kC);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({}, {}, RawMesh::Vertex::kV | 
+                        RawMesh::Vertex::kC);
 
-    _program = Global::Ref().mRawSys->Get<GLProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
+    _program = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
 
     AddState(StateEnum::kActive, false);
 }
@@ -172,7 +172,7 @@ void CompFieldOfView::GenView()
 
 void CompFieldOfView::GenMesh()
 {
-    std::vector<GLMesh::Vertex> points;
+    std::vector<RawMesh::Vertex> points;
     auto count = _segments.size() - 1;
     for (auto i = 0; i != count; ++i)
     {
@@ -234,7 +234,7 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
     return result;
 }
 
-void CompFieldOfView::OnDrawCallback(SharePtr<GLImage> texture, const interface::RenderCommand & command, uint texturePos)
+void CompFieldOfView::OnDrawCallback(SharePtr<RawImage> texture, const interface::RenderCommand & command, uint texturePos)
 { 
     auto & cmd = (const interface::PostCommand &)command;
     cmd.mProgram->BindUniformTex2D("uniform_sample", 

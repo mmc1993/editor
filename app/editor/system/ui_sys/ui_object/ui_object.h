@@ -151,7 +151,7 @@ public:
     void Post(const interface::PostCommand  & cmd);
     void Post(const interface::TargetCommand & cmd);
     void Post(const interface::FowardCommand & cmd);
-    void Post(const SharePtr<GLProgram> & program, const glm::mat4 & transform);
+    void Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
     void OpEditObject(const SharePtr<GLObject> & object);
@@ -183,7 +183,7 @@ private:
     glm::mat4 GetMatView();
     glm::mat4 GetMatProj();
     glm::mat4 GetMatViewProj();
-    SharePtr<GLMesh> & GetMeshBuffer(size_t idx);
+    SharePtr<RawMesh> & GetMeshBuffer(size_t idx);
     bool HasOpMode(UIStateGLCanvas::Operation::OpModeEnum op);
     void AddOpMode(UIStateGLCanvas::Operation::OpModeEnum op, bool add);
 

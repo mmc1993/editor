@@ -12,12 +12,12 @@ CompLightning::CompLightning()
     _trackPoints.emplace_back(0, 0  );
     _trackPoints.emplace_back(0, 100);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({},{}, GLMesh::Vertex::kV | 
-                       GLMesh::Vertex::kC |
-                       GLMesh::Vertex::kUV);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+                       RawMesh::Vertex::kC |
+                       RawMesh::Vertex::kUV);
 
-    _program = std::create_ptr<GLProgram>();
+    _program = std::create_ptr<RawProgram>();
     _program->Init(tools::GL_PROGRAM_LIGHTNING);
 
     AddState(StateEnum::kModifyTrackPoint, true);
@@ -103,7 +103,7 @@ void CompLightning::Update()
 
         if (!_url.empty() && _update & kTexture)
         {
-            _texture = Global::Ref().mRawSys->Get<GLTexture>(_url);
+            _texture = Global::Ref().mRawSys->Get<RawTexture>(_url);
             _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
@@ -163,7 +163,7 @@ void CompLightning::GenSegm(float width, std::queue<Segment> & input, std::vecto
 
 void CompLightning::GenMesh(float scale, const std::vector<Segment> & segments)
 {
-    std::vector<GLMesh::Vertex> points;
+    std::vector<RawMesh::Vertex> points;
     for (auto & segment : segments)
     {
         auto mid = glm::lerp(segment.mStart, segment.mEnded, 0.5f);

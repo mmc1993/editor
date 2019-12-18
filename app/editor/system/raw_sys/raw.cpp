@@ -2,31 +2,31 @@
 #include "raw_sys.h"
 
 // ---
-//  GLMesh
+//  RawMesh
 // ---
-GLMesh::GLMesh() : _vao(0), _vbo(0), _ebo(0), _vCount(0), _eCount(0)
+RawMesh::RawMesh() : _vao(0), _vbo(0), _ebo(0), _vCount(0), _eCount(0)
 { }
 
-GLMesh::~GLMesh()
+RawMesh::~RawMesh()
 {
     glDeleteBuffers(1, &_vbo);
     glDeleteBuffers(1, &_ebo);
     glDeleteVertexArrays(1, &_vao);
 }
 
-bool GLMesh::Init(const std::string & url)
+bool RawMesh::Init(const std::string & url)
 {
     //  _TODO
     //  暂时用不上
     return true;
 }
 
-void GLMesh::Init(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint enabled, uint vUsage, uint eUsage)
+void RawMesh::Init(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint enabled, uint vUsage, uint eUsage)
 {
     Init(points.data(), (uint)points.size(), indexs.data(), (uint)indexs.size(), enabled, vUsage, eUsage);
 }
 
-void GLMesh::Init(const Vertex * points, const uint pointsLength, const uint * indexs, const uint indexsLength, uint enabled, uint vUsage, uint eUsage)
+void RawMesh::Init(const Vertex * points, const uint pointsLength, const uint * indexs, const uint indexsLength, uint enabled, uint vUsage, uint eUsage)
 {
     _vCount = pointsLength;
     _eCount = indexsLength;
@@ -61,7 +61,7 @@ void GLMesh::Init(const Vertex * points, const uint pointsLength, const uint * i
     glBindVertexArray(0);
 }
 
-void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint vUsage, uint eUsage)
+void RawMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint vUsage, uint eUsage)
 {
     _vCount = points.size();
     _eCount = indexs.size();
@@ -73,7 +73,7 @@ void GLMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void GLMesh::Draw(uint primitive)
+void RawMesh::Draw(uint primitive)
 {
     glBindVertexArray(GetVAO());
     if (GetECount() == 0)
@@ -88,21 +88,21 @@ void GLMesh::Draw(uint primitive)
 }
 
 // ---
-//  GLImage
+//  RawImage
 // ---
-GLImage::GLImage()
+RawImage::RawImage()
     : mFormat(0)
     , mID(0)
     , mW(0)
     , mH(0)
 { }
 
-GLImage::~GLImage()
+RawImage::~RawImage()
 {
     glDeleteTextures(1, &mID);
 }
 
-void GLImage::ModifyWH(uint w, uint h)
+void RawImage::ModifyWH(uint w, uint h)
 {
     mW = w; mH = h;
     glBindTexture(GL_TEXTURE_2D, mID);
@@ -110,7 +110,7 @@ void GLImage::ModifyWH(uint w, uint h)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void GLImage::InitNull(uint fmt)
+void RawImage::InitNull(uint fmt)
 {
     mFormat          = fmt;
     glGenTextures(1, &mID);
@@ -120,7 +120,7 @@ void GLImage::InitNull(uint fmt)
     SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
-bool GLImage::Init(const std::string & url)
+bool RawImage::Init(const std::string & url)
 {
     stbi_set_flip_vertically_on_load(true);
 
@@ -149,7 +149,7 @@ bool GLImage::Init(const std::string & url)
     return mID != 0;
 }
 
-void GLImage::SetParam(int key, int val)
+void RawImage::SetParam(int key, int val)
 {
     glBindTexture(GL_TEXTURE_2D, mID);
     glTexParameteri(GL_TEXTURE_2D, key, val);
@@ -157,25 +157,25 @@ void GLImage::SetParam(int key, int val)
 }
 
 // ---
-//  GLTexture
+//  RawTexture
 // ---
-GLTexture::GLTexture()
+RawTexture::RawTexture()
 { }
 
-GLTexture::~GLTexture()
+RawTexture::~RawTexture()
 { }
 
-bool GLTexture::Init(const std::string & url)
+bool RawTexture::Init(const std::string & url)
 {
     auto ret = InitFromImage(url) || InitFromAtlas(url);
     ASSERT_LOG(ret, url.c_str());
     return ret;
 }
 
-bool GLTexture::InitFromImage(const std::string & url)
+bool RawTexture::InitFromImage(const std::string & url)
 {
     if (!tools::IsFileExists(url)) { return false; }
-    _refimg = std::create_ptr<GLImage>();
+    _refimg = std::create_ptr<RawImage>();
     if (_refimg->Init(url))
     {
         _offset.x = 0.0f;
@@ -187,7 +187,7 @@ bool GLTexture::InitFromImage(const std::string & url)
     return false;
 }
 
-bool GLTexture::InitFromAtlas(const std::string & url)
+bool RawTexture::InitFromAtlas(const std::string & url)
 {
     ASSERT_LOG(tools::GetFileSuffix(url) == ".png", url.c_str());
 
@@ -210,7 +210,7 @@ bool GLTexture::InitFromAtlas(const std::string & url)
     if (atlas != nullptr) 
     {
         name = path + atlas->At("meta","image")->ToString();
-        _refimg = Global::Ref().mRawSys->Get<GLImage>(name);
+        _refimg = Global::Ref().mRawSys->Get<RawImage>(name);
         _offset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / _refimg->mW;
         _offset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / _refimg->mH;
         _offset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / _refimg->mW + _offset.x;
@@ -221,30 +221,30 @@ bool GLTexture::InitFromAtlas(const std::string & url)
 }
 
 // ---
-//  GLFont
+//  RawFont
 // ---
-GLFont::GLFont()
+RawFont::RawFont()
 { }
 
-GLFont::~GLFont()
+RawFont::~RawFont()
 { }
 
-const SharePtr<GLTexture> & GLFont::RefTexture()
+const SharePtr<RawTexture> & RawFont::RefTexture()
 {
     return _texture;
 }
 
-const GLFont::Char & GLFont::RefWord(char word)
+const RawFont::Char & RawFont::RefWord(char word)
 {
     return RefWord((uint)word);
 }
 
-const GLFont::Char & GLFont::RefWord(uint code)
+const RawFont::Char & RawFont::RefWord(uint code)
 {
     return _info.mChars.at(code);
 }
 
-std::vector<uint> GLFont::RefWord(const std::string & text)
+std::vector<uint> RawFont::RefWord(const std::string & text)
 {
     std::vector<uint> result;
     for (auto & word : text)
@@ -254,7 +254,7 @@ std::vector<uint> GLFont::RefWord(const std::string & text)
     return std::move(result);
 }
 
-bool GLFont::Init(const std::string & url)
+bool RawFont::Init(const std::string & url)
 {
     std::ifstream is(url);
     std::string line;
@@ -279,7 +279,7 @@ bool GLFont::Init(const std::string & url)
     Parse(tools::Split(line, " "), &_info.mPage);
 
     auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
-    _texture = Global::Ref().mRawSys->Get<GLTexture>(texurl);
+    _texture = Global::Ref().mRawSys->Get<RawTexture>(texurl);
     _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -309,7 +309,7 @@ bool GLFont::Init(const std::string & url)
     return true;
 }
 
-void GLFont::Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output)
+void RawFont::Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output)
 {
     for (const auto & pair : pairs)
     {
@@ -326,12 +326,12 @@ void GLFont::Parse(const std::vector<std::string> & pairs, std::map<std::string,
 }
 
 // ---
-//  GLProgram
+//  RawProgram
 // ---
-GLProgram::GLProgram() : _use(GL_INVALID_INDEX)
+RawProgram::RawProgram() : _use(GL_INVALID_INDEX)
 { }
 
-GLProgram::~GLProgram()
+RawProgram::~RawProgram()
 {
     for (auto & pass : _passs)
     {
@@ -339,7 +339,7 @@ GLProgram::~GLProgram()
     }
 }
 
-bool GLProgram::Init(const std::string & url)
+bool RawProgram::Init(const std::string & url)
 {
     //  解析Shader
     const auto ParseShader = [&](
@@ -366,7 +366,7 @@ bool GLProgram::Init(const std::string & url)
         const char * endFlag,
         std::string & vBuffer,
         std::string & fBuffer,
-        GLProgram::Pass * pass)
+        RawProgram::Pass * pass)
     {
         std::string line;
         while (std::getline(is, line))
@@ -537,17 +537,17 @@ bool GLProgram::Init(const std::string & url)
     return true;
 }
 
-uint GLProgram::GetUse()
+uint RawProgram::GetUse()
 {
     return _use;
 }
 
-uint GLProgram::GetPassCount()
+uint RawProgram::GetPassCount()
 {
     return (uint)_passs.size();
 }
 
-void GLProgram::UsePass(uint i)
+void RawProgram::UsePass(uint i)
 {
     const auto & pass = _passs.at(i);
     //  开启混合
@@ -577,7 +577,7 @@ void GLProgram::UsePass(uint i)
     _use = pass.mID;
 }
 
-void GLProgram::AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength)
+void RawProgram::AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength)
 {
     _passs.push_back(pass);
     _passs.back().mID = glCreateProgram();
@@ -609,64 +609,64 @@ void GLProgram::AddPass(const Pass & pass, const char * vString, uint vLength, c
     GLsizei size = 0;
     GLchar error[256] = { 0 };
     glGetProgramInfoLog(_passs.back().mID, sizeof(error), &size, error);
-    ASSERT_LOG(ret != 0, "Pass GLProgram Error. {0}", error);
+    ASSERT_LOG(ret != 0, "Pass Error. {0}", error);
 #endif
 }
 
 // ---
-//  GLMaterial
+//  RawMaterial
 // ---
-GLMaterial::GLMaterial() : _mesh(nullptr), _program(nullptr)
+RawMaterial::RawMaterial() : _mesh(nullptr), _program(nullptr)
 { }
 
-bool GLMaterial::Init(const std::string & url)
+bool RawMaterial::Init(const std::string & url)
 {
     auto json = mmc::Json::FromFile(url);
     ASSERT_LOG(json, "URL: {0}", url);
     if (json->HasKey("mesh"))
     {
-        SetMesh(Global::Ref().mRawSys->Get<GLMesh>(json->At("mesh")->ToString()));
+        SetMesh(Global::Ref().mRawSys->Get<RawMesh>(json->At("mesh")->ToString()));
     }
     if (json->HasKey("program"))
     {
-        SetProgram(Global::Ref().mRawSys->Get<GLProgram>(json->At("program")->ToString()));
+        SetProgram(Global::Ref().mRawSys->Get<RawProgram>(json->At("program")->ToString()));
     }
     if (json->HasKey("textures"))
     {
         for (auto value : json->At("textures"))
         {
-            SetTexture(value.mVal->At("key")->ToString(), Global::Ref().mRawSys->Get<GLTexture>(value.mVal->At("val")->ToString()));
+            SetTexture(value.mVal->At("key")->ToString(), Global::Ref().mRawSys->Get<RawTexture>(value.mVal->At("val")->ToString()));
         }
     }
     return true;
 }
 
-const SharePtr<GLMesh> & GLMaterial::GetMesh()
+const SharePtr<RawMesh> & RawMaterial::GetMesh()
 {
     return _mesh;
 }
 
-void GLMaterial::SetMesh(const SharePtr<GLMesh> & mesh)
+void RawMaterial::SetMesh(const SharePtr<RawMesh> & mesh)
 {
     _mesh = mesh;
 }
 
-const SharePtr<GLProgram>& GLMaterial::GetProgram()
+const SharePtr<RawProgram>& RawMaterial::GetProgram()
 {
     return _program;
 }
 
-void GLMaterial::SetProgram(const SharePtr<GLProgram> & program)
+void RawMaterial::SetProgram(const SharePtr<RawProgram> & program)
 {
     _program = program;
 }
 
-const std::vector<GLMaterial::Texture> & GLMaterial::GetTextures()
+const std::vector<RawMaterial::Texture> & RawMaterial::GetTextures()
 {
     return _textures;
 }
 
-void GLMaterial::SetTexture(const std::string & key, const SharePtr<GLTexture> & tex)
+void RawMaterial::SetTexture(const std::string & key, const SharePtr<RawTexture> & tex)
 {
     auto it = std::find(_textures.begin(), _textures.end(), key);
     if (it != _textures.end()) { it->mKey = key;it->mTex = tex; }

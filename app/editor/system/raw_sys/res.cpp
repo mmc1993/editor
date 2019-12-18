@@ -199,15 +199,15 @@ SharePtr<GLObject> Res::InstanceObj()
     return mOwner->GetObject(std::any_cast<uint>(mMeta));
 }
 
-SharePtr<GLTexture> Res::InstanceTex()
+SharePtr<RawTexture> Res::InstanceTex()
 {
     ASSERT_LOG(Type() == Res::kImg, "");
-    return Global::Ref().mRawSys->Get<GLTexture>(Path());
+    return Global::Ref().mRawSys->Get<RawTexture>(Path());
 }
 
-SharePtr<GLFont> Res::InstanceFnt()
+SharePtr<RawFont> Res::InstanceFnt()
 {
     ASSERT_LOG(Type() == Res::kFnt, "");
-    return Global::Ref().mRawSys->Get<GLFont>(Path());
+    return Global::Ref().mRawSys->Get<RawFont>(Path());
 }
 

@@ -15,7 +15,7 @@ private:
         uint mSpace;
         uint mOffset;
         uint mRow, mCol;
-        SharePtr<GLTexture> mTexture;
+        SharePtr<RawTexture> mTexture;
     };
 
 public:
@@ -41,7 +41,7 @@ private:
         const mmc::Json::Pointer & data,
         const std::vector<Atlas> & atlass,
         std::vector<uint>        & indexs,
-        std::vector<GLMesh::Vertex> & points);
+        std::vector<RawMesh::Vertex> & points);
     glm::vec4 GetTileQuad(
         uint idx, uint tileW, uint tileH, 
         const std::vector<Atlas> & atlass,
@@ -52,7 +52,7 @@ private:
     glm::vec2       _size;
     uint            _update;
 
-    SharePtr<GLMesh>                    _mesh;
-    SharePtr<GLProgram>                 _program;
-    std::vector<SharePtr<GLTexture>>    _textures;
+    SharePtr<RawMesh>                    _mesh;
+    SharePtr<RawProgram>                 _program;
+    std::vector<SharePtr<RawTexture>>    _textures;
 };

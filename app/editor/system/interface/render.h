@@ -2,13 +2,13 @@
 
 #include "../../include.h"
 
-class GLFont;
-class GLMesh;
-class GLImage;
+class RawFont;
+class RawMesh;
+class RawImage;
 class GLObject;
-class GLProgram;
-class GLTexture;
-class GLMaterial;
+class RawProgram;
+class RawTexture;
+class RawMaterial;
 class Component;
 
 namespace interface {
@@ -19,9 +19,9 @@ namespace interface {
 
     //  正向渲染那
     struct FowardCommand : public RenderCommand {
-        using TextureArray = std::vector<std::pair<std::string, SharePtr<GLTexture>>>;
-        SharePtr<GLMesh>    mMesh;
-        SharePtr<GLProgram> mProgram;
+        using TextureArray = std::vector<std::pair<std::string, SharePtr<RawTexture>>>;
+        SharePtr<RawMesh>    mMesh;
+        SharePtr<RawProgram> mProgram;
         TextureArray        mTextures;
         glm::mat4 mTransform;               //  矩阵
     };
@@ -32,8 +32,8 @@ namespace interface {
             kSample,        //  采样
             kSwap,          //  交换
         };
-        SharePtr<GLProgram> mProgram;       //  着色器
-        SharePtr<GLMesh> mMesh;             //  网格
+        SharePtr<RawProgram> mProgram;       //  着色器
+        SharePtr<RawMesh> mMesh;             //  网格
         glm::mat4 mTransform;               //  矩阵
         TypeEnum mType;
     };
@@ -45,7 +45,7 @@ namespace interface {
             kPop,
         };
         TypeEnum            mType;
-        SharePtr<GLImage>   mTexture;
+        SharePtr<RawImage>   mTexture;
     };
 
     struct MatrixStack {

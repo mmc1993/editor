@@ -7,12 +7,12 @@ CompTilemap::CompTilemap()
 {
     _trackPoints.resize(4);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({}, {}, GLMesh::Vertex::kV | 
-                        GLMesh::Vertex::kC |
-                        GLMesh::Vertex::kUV);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({}, {}, RawMesh::Vertex::kV | 
+                        RawMesh::Vertex::kC |
+                        RawMesh::Vertex::kUV);
 
-    _program = std::create_ptr<GLProgram>();
+    _program = std::create_ptr<RawProgram>();
     _program->Init(tools::GL_PROGRAM_TILEMAP);
 }
 
@@ -109,7 +109,7 @@ void CompTilemap::UpdateTilemap()
 
         Atlas atlas;
         auto image = tools::GetFileFolder(atlasURL) + atlasJson->At("image")->ToString();
-        atlas.mTexture  = Global::Ref().mRawSys->Get<GLTexture>(image);
+        atlas.mTexture  = Global::Ref().mRawSys->Get<RawTexture>(image);
         atlas.mOffset   = (uint)atlasJson->At(  "margin"      )->ToNumber();
         atlas.mSpace    = (uint)atlasJson->At(  "spacing"     )->ToNumber();
         atlas.mCol      = (uint)atlasJson->At(  "columns"     )->ToNumber();
@@ -119,7 +119,7 @@ void CompTilemap::UpdateTilemap()
     }
 
     std::vector<uint>           indexs;
-    std::vector<GLMesh::Vertex> points;
+    std::vector<RawMesh::Vertex> points;
     auto mapW   = (uint)tmx->At(    "width"         )->ToNumber();
     auto mapH   = (uint)tmx->At(    "height"        )->ToNumber();
     auto tileW  = (uint)tmx->At(    "tilewidth"     )->ToNumber();
@@ -144,7 +144,7 @@ void CompTilemap::UpdateVertexs(
     const mmc::Json::Pointer & data, 
     const std::vector<Atlas> & atlass, 
     std::vector<uint>        & indexs, 
-    std::vector<GLMesh::Vertex> & points)
+    std::vector<RawMesh::Vertex> & points)
 {
     for (auto i = 0; i != data->GetCount(); ++i)
     {

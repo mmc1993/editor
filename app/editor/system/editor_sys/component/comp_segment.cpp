@@ -13,11 +13,11 @@ CompSegment::CompSegment()
     _trackPoints.emplace_back( 50, 50);
     _trackPoints.emplace_back( 50,  0);
 
-    _mesh = std::create_ptr<GLMesh>();
-    _mesh->Init({},{}, GLMesh::Vertex::kV | 
-                       GLMesh::Vertex::kC);
+    _mesh = std::create_ptr<RawMesh>();
+    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+                       RawMesh::Vertex::kC);
 
-    _program = std::create_ptr<GLProgram>();
+    _program = std::create_ptr<RawProgram>();
     _program->Init(tools::GL_PROGRAM_SEGMENT);
 
     AddState(StateEnum::kModifyTrackPoint, true);
@@ -202,7 +202,7 @@ void CompSegment::GenSegm()
 
 void CompSegment::GenMesh()
 {
-    std::vector<GLMesh::Vertex> points;
+    std::vector<RawMesh::Vertex> points;
     std::vector<uint>           indexs;
     for (auto i = 0; i != _segments.size() - 1; ++i)
     {

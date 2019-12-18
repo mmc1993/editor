@@ -43,7 +43,7 @@ private:
     float               _smooth;
     uint                _update;
 
-    SharePtr<GLMesh>    _mesh;
-    SharePtr<GLProgram> _program;
+    SharePtr<RawMesh>    _mesh;
+    SharePtr<RawProgram> _program;
     std::vector<glm::vec2> _segments;
 };

@@ -1043,7 +1043,7 @@ bool UIObjectImageBox::OnEnter()
     //  Ë¢ÐÂÎÆÀí
     if (!state->LSkin.empty() && (state->mSkinTex == nullptr || state->LSkin != state->LSkin_))
     {
-        state->mSkinTex = Global::Ref().mRawSys->Get<GLTexture>(state->LSkin);
+        state->mSkinTex = Global::Ref().mRawSys->Get<RawTexture>(state->LSkin);
     }
 
     if (state->IsButton)

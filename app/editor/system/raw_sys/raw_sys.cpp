@@ -12,23 +12,23 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
     auto suffix = tools::GetFileSuffix(url);
     if (suffix == ".fnt")
     {
-        raw = std::create_ptr<GLFont>();
+        raw = std::create_ptr<RawFont>();
     }
     else if (suffix == ".obj")
     {
-        raw = std::create_ptr<GLMesh>();
+        raw = std::create_ptr<RawMesh>();
     }
     else if (suffix == ".png")
     {
-        raw = std::create_ptr<GLTexture>();
+        raw = std::create_ptr<RawTexture>();
     }
     else if (suffix == ".program")
     {
-        raw = std::create_ptr<GLProgram>();
+        raw = std::create_ptr<RawProgram>();
     }
     else if (suffix == ".material")
     {
-        raw = std::create_ptr<GLMaterial>();
+        raw = std::create_ptr<RawMaterial>();
     }
     if (raw->Init(url))
     {

@@ -35,6 +35,6 @@ private:
     glm::vec2           _anchor;
     uint                _update;
 
-    SharePtr<GLMesh>    _mesh;
-    SharePtr<GLProgram> _program;
+    SharePtr<RawMesh>    _mesh;
+    SharePtr<RawProgram> _program;
 };

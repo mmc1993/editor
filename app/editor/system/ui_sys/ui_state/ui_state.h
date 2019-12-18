@@ -104,7 +104,7 @@ public:
 
 class UIStateImageBox : public UIState {
 public:
-    SharePtr<GLTexture> mSkinTex;
+    SharePtr<RawTexture> mSkinTex;
 
     UIStateImageBox();
 };
@@ -126,12 +126,12 @@ public:
     struct TargetCommand {
         std::vector<interface::PostCommand>     mPostCommands;      //  后期
         std::vector<interface::FowardCommand>   mFowardCommands;    //  正向
-        SharePtr<GLImage>                       mRenderTextures[2];
+        SharePtr<RawImage>                       mRenderTextures[2];
     };
 
 public:
     GLuint mRenderTarget;
-    SharePtr<GLImage> mRenderTextures[2];
+    SharePtr<RawImage> mRenderTextures[2];
     interface::MatrixStack    mMatrixStack;
     std::stack<TargetCommand>  mCommandStack;
     std::vector<TargetCommand> mCommandArray;
@@ -162,8 +162,8 @@ public:
         { }
     } mOperation;
 
-    std::vector<SharePtr<GLMesh>> mMeshBuffer;
-    SharePtr<GLProgram>   mGLProgramSolidFill;
+    std::vector<SharePtr<RawMesh>> mMeshBuffer;
+    SharePtr<RawProgram>   mGLProgramSolidFill;
 
 public:
     UIStateGLCanvas();
