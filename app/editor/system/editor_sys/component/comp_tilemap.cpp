@@ -28,11 +28,25 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTextures   = mTextures;
+        command.mTransform  = canvas->GetMatrixStack().GetM();
+
+        //  绑定渲染回调
         command.mCallback = std::bind(
             &CompTilemap::OnDrawCallback,
             CastPtr<CompTilemap>(shared_from_this()),
             std::placeholders::_1, std::placeholders::_2);
-        command.mTransform  = canvas->GetMatrixStack().GetM();
+
+        //  设置裁剪矩形
+        auto min = command.mTransform * glm::vec4(_trackPoints.at(0), 0, 1);
+        auto max = command.mTransform * glm::vec4(_trackPoints.at(2), 0, 1);
+        command.mClipview.x = min.x;
+        command.mClipview.y = min.y;
+        command.mClipview.z = max.x;
+        command.mClipview.w = max.y;
+
+        //  启用裁剪
+        command.mEnabled = interface::FowardCommand::kClipView;
+
         canvas->Post(command);
     }
 }

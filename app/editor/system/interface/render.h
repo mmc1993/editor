@@ -19,14 +19,18 @@ namespace interface {
 
     //  ÕýÏòäÖÈ¾ÄÇ
     struct FowardCommand : public RenderCommand {
+        enum EnabledEnum {
+            kClipView = 0x1,
+        };
+
         using TextureArray = std::vector<std::pair<std::string, SharePtr<RawTexture>>>;
         SharePtr<RawMesh>    mMesh;
         SharePtr<RawProgram> mProgram;
         TextureArray        mTextures;
         glm::mat4           mTransform;
         glm::vec4           mClipview;
-        bool                mIsClipview;
-        FowardCommand(): mIsClipview(false)
+        uint                mEnabled;
+        FowardCommand(): mEnabled(0)
         { }
     };
 

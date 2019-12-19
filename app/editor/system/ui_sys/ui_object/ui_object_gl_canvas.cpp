@@ -46,6 +46,7 @@ void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & comma
 
 void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & command)
 {
+    auto state = GetState();
     for (auto & cmd : command.mFowardCommands)
     {
         for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
@@ -56,12 +57,31 @@ void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & com
             {
                 cmd.mProgram->BindUniformTex2D(texture.first.c_str(), texture.second->GetID(), texNum++);
             }
-            cmd.Call(texNum                  );
+            if (cmd.mEnabled & interface::FowardCommand::kClipView)
+            {
+                glEnable(GL_SCISSOR_TEST);
+                auto matrixVP = GetMatrixStack().GetP() * GetMatrixStack().GetV();
+                auto min = ProjectScreen({ cmd.mClipview.x, cmd.mClipview.y });
+                auto max = ProjectScreen({ cmd.mClipview.z, cmd.mClipview.w });
+                min.y = state->Move.w - min.y;
+                max.y = state->Move.w - max.y;
+                if (min.x > max.x) { std::swap(min.x, max.x); }
+                if (min.y > max.y) { std::swap(min.y, max.y); }
+                glScissor(
+                    (iint)min.x, (iint)min.y,
+                    (iint)max.x - (iint)min.x,
+                    (iint)max.y - (iint)min.y);
+            }
             Post(cmd.mProgram, cmd.mTransform);
-            cmd.mMesh->Draw(GL_TRIANGLES     );
+            cmd.Call(texNum);
+            cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            //cmd.mMesh->Draw(GL_TRIANGLES     );
+            //cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+            if (cmd.mEnabled & interface::FowardCommand::kClipView)
+            {
+                glDisable(GL_SCISSOR_TEST);
+            }
         }
     }
 }
