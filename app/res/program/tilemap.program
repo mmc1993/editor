@@ -13,12 +13,18 @@ Pass Beg
         } v_out_;
 
         uniform mat4 uniform_matrix_mvp;
+        uniform vec2 anchor_;
+        uniform vec2 size_;
 
         void main()
         {
             v_out_.mUV  = a_uv_;
             v_out_.mTex = int(a_c_.r);
-            gl_Position = uniform_matrix_mvp * vec4(a_v_, 0, 1);
+
+            vec2 coord;
+            coord.x = -size_.x * anchor_.x + a_v_.x;
+            coord.y = -size_.y * anchor_.y + a_v_.y;
+            gl_Position = uniform_matrix_mvp * vec4(coord, 0, 1);
         }
     VShader End
 

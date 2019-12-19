@@ -20,6 +20,7 @@ protected:
 
 private:
     void Update();
+    void OnDrawCallback(const interface::RenderCommand & command, uint texturePos);
 
 private:
     using TexturePair = std::pair<std::string, SharePtr<RawTexture>>;

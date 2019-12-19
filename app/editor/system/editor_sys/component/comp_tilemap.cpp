@@ -25,6 +25,10 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTextures   = mTextures;
+        command.mCallback = std::bind(
+            &CompTilemap::OnDrawCallback,
+            CastPtr<CompTilemap>(shared_from_this()),
+            std::placeholders::_1, std::placeholders::_2);
         command.mTransform  = canvas->GetMatrixStack().GetM();
         canvas->Post(command);
     }
@@ -85,11 +89,17 @@ void CompTilemap::Update()
                 mSize.x = (float)map->GetMap().mPixelW;
                 mSize.y = (float)map->GetMap().mPixelH;
             }
-            //  ÖØ½¨µØÍ¼
             _trackPoints.at(0).x = 0;       _trackPoints.at(0).y = 0;
             _trackPoints.at(1).x = mSize.x; _trackPoints.at(1).y = 0;
             _trackPoints.at(2).x = mSize.x; _trackPoints.at(2).y = mSize.y;
             _trackPoints.at(3).x = 0;       _trackPoints.at(3).y = mSize.y;
         }
     }
+}
+
+void CompTilemap::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+{ 
+    auto & forward = (const interface::FowardCommand &)(command);
+    forward.mProgram->BindUniformVector("anchor_", mAnchor);
+    forward.mProgram->BindUniformVector("size_",   mSize);
 }
