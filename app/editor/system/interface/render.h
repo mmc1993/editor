@@ -23,7 +23,11 @@ namespace interface {
         SharePtr<RawMesh>    mMesh;
         SharePtr<RawProgram> mProgram;
         TextureArray        mTextures;
-        glm::mat4 mTransform;               //  æÿ’Û
+        glm::mat4           mTransform;
+        glm::vec4           mClipview;
+        bool                mIsClipview;
+        FowardCommand(): mIsClipview(false)
+        { }
     };
 
     //  ∫Û∆⁄‰÷»æ
