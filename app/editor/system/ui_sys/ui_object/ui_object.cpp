@@ -367,7 +367,7 @@ void UIObject::RenderDrag()
     auto state = GetState<UIStateLayout>();
     if (state->mDrag.mDragObj != nullptr)
     {
-        auto drawList = ImGui::GetWindowDrawList();
+        auto drawList = ImGui::GetForegroundDrawList();
         //  绘制拖动节点
         const auto & rect = state->mDrag.mDragObj->ToWorldRect();
         drawList->AddRect(ImVec2(rect.x, rect.y), ImVec2(rect.x + rect.z, rect.y + rect.w), DRAG_COLOR, 3);
@@ -910,8 +910,8 @@ void UIObjectLayout::HandleStretch()
     auto rootState = GetObject()->GetState<UIStateLayout>();
     if (rootState->mStretchFocus.mObject == nullptr && ImGui::IsItemHovered())
     {
-        const auto & world = ToWorldCoord();
         const auto & mouse = ImGui::GetMousePos();
+        const auto & world = ToWorldCoord();
         const auto & move = thisState->Move;
         const auto direct = tools::IsOnRect(
             glm::vec4(world.x, world.y, move.z, move.w),
@@ -923,7 +923,7 @@ void UIObjectLayout::HandleStretch()
             case DirectEnum::kU: case DirectEnum::kD: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS); break;
             case DirectEnum::kL: case DirectEnum::kR: ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW); break;
             }
-            if (ImGui::IsMouseDown(0))
+            if (ImGui::IsMouseClicked(0))
             {
                 rootState->mStretchFocus.mObject = GetState<UIStateLayout>()->mJoin[direct].mIn.first != nullptr
                                                 ? GetState<UIStateLayout>()->mJoin[direct].mIn.first : this;

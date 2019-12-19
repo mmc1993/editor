@@ -36,6 +36,11 @@ public:
             }
         }
 
+        bool operator==(const Ptr & other)
+        {
+            return mOwner == other.mOwner;
+        }
+
         uint GetID()
         {
             return mOwner->GetID();
@@ -121,7 +126,10 @@ public:
 
         bool operator==(const Ref & other)
         {
-            return mOwner == other.mOwner;
+            return  mOwner != nullptr
+                &&  other.mOwner != nullptr
+                && *mOwner == *other.mOwner
+                ||  mOwner ==  other.mOwner;
         }
 
         bool operator!=(const Ref & other)
