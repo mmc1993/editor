@@ -22,6 +22,10 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
     {
         raw = std::create_ptr<RawTexture>();
     }
+    else if (suffix == ".map")
+    {
+        raw = std::create_ptr<RawMap>();
+    }
     else if (suffix == ".program")
     {
         raw = std::create_ptr<RawProgram>();

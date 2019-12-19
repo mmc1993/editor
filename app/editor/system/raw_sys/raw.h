@@ -153,10 +153,12 @@ private:
 class RawMap : public Raw {
 public:
     struct Map {
-        uint mTileW;
-        uint mTileH;
+        uint mPixelW;
+        uint mPixelH;
         uint mSizeW;
         uint mSizeH;
+        uint mTileW;
+        uint mTileH;
         uint mRow;
         uint mCol;
     };
@@ -173,6 +175,7 @@ public:
     RawMap();
     ~RawMap();
     virtual bool Init(const std::string & url) override;
+    const Map &                          GetMap() { return mMap; }
     const std::vector<Atlas> &           GetAtlass() { return mAtlass; }
     const std::vector<RawMesh::Vertex> & GetPoints() { return mPoints; }
 

@@ -211,3 +211,8 @@ SharePtr<RawFont> Res::InstanceFnt()
     return Global::Ref().mRawSys->Get<RawFont>(Path());
 }
 
+SharePtr<RawMap> Res::InstanceMap()
+{
+    return Global::Ref().mRawSys->Get<RawMap>(Path());
+}
+

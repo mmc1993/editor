@@ -4,20 +4,6 @@
 #include "../../raw_sys/raw_sys.h"
 
 class CompTilemap : public Component {
-private:
-    enum UpdateEnum { 
-        kTilemap    = 1,
-        kTrackPoint = 2,
-    };
-
-    struct Atlas {
-        uint mBase;
-        uint mSpace;
-        uint mOffset;
-        uint mRow, mCol;
-        SharePtr<RawTexture> mTexture;
-    };
-
 public:
     CompTilemap();
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
@@ -34,25 +20,15 @@ protected:
 
 private:
     void Update();
-    void UpdateTilemap();
-    void UpdateVertexs(
-        uint mapW, uint mapH,
-        uint tileW, uint tileH,
-        const mmc::Json::Pointer & data,
-        const std::vector<Atlas> & atlass,
-        std::vector<uint>        & indexs,
-        std::vector<RawMesh::Vertex> & points);
-    glm::vec4 GetTileQuad(
-        uint idx, uint tileW, uint tileH, 
-        const std::vector<Atlas> & atlass,
-        uint & atlasIndex);
 
 private:
-    std::string     _url;
-    glm::vec2       _size;
-    uint            _update;
+    using TexturePair = std::pair<std::string, SharePtr<RawTexture>>;
 
-    SharePtr<RawMesh>                    _mesh;
-    SharePtr<RawProgram>                 _program;
-    std::vector<SharePtr<RawTexture>>    _textures;
+    Res::Ref        mMap;
+    glm::vec2       mSize;
+    glm::vec2       mAnchor;
+
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
+    std::vector<TexturePair> mTextures;
 };

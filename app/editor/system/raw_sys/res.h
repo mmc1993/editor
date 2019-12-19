@@ -8,14 +8,14 @@ class GLObject;
 class Res : public Serializer {
 public:
     enum TypeEnum {
-        kNull,      //  无
-        kTxt,       //  文本
-        kImg,       //  图片
-        kMap,       //  地图
-        kFnt,       //  字体
-        kObj,       //  对象
-        kVar,       //  变量
-        kBlueprint, //  蓝图
+        kNull,       //  无
+        kTxt,        //  文本
+        kImg,        //  图片
+        kMap,        //  地图
+        kFnt,        //  字体
+        kObj,        //  对象
+        kVar,        //  变量
+        kBlueprint,  //  蓝图
         Length,
     };
 
@@ -140,6 +140,11 @@ public:
             }
             return mOwner != nullptr;
         }
+        
+        bool Modify()
+        {
+            return mOwner->Modify();
+        }
 
         std::string Path()
         {
@@ -185,6 +190,10 @@ public:
         {
             return InstanceFnt();
         }
+        else if constexpr (std::is_same_v<T, RawMap>)
+        {
+            return InstanceMap();
+        }
         else
         {
             static_assert(false);
@@ -219,9 +228,10 @@ public:
     virtual void DecodeBinary(std::istream & is, Project * project) override;
 
 private:
-    SharePtr<GLObject>  InstanceObj();
+    SharePtr<GLObject>   InstanceObj();
     SharePtr<RawTexture> InstanceTex();
     SharePtr<RawFont>    InstanceFnt();
+    SharePtr<RawMap>     InstanceMap();
 
 private:
     uint                mID;

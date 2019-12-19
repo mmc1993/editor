@@ -257,6 +257,8 @@ bool RawMap::Init(const std::string & url)
     mMap.mSizeH = (uint)tmx->At("height"    )->ToNumber();
     mMap.mTileW = (uint)tmx->At("tilewidth" )->ToNumber();
     mMap.mTileH = (uint)tmx->At("tileheight")->ToNumber();
+    mMap.mPixelW = mMap.mSizeW * mMap.mTileW;
+    mMap.mPixelH = mMap.mSizeH * mMap.mTileH;
     for (auto & layer : tmx->At("layers"))
     {
         UpdateVertexs(layer.mVal->At("data"));

@@ -260,14 +260,10 @@ public:
         const Handler_t & handler, const std::any & params)
         : UIPropertyObject<Res::Ref>(value, title, handler)
     {
-        auto flag = std::any_cast<uint>(params);
-        for (auto bit = 0; flag != 0; flag >>= 1, ++bit)
+        for (auto type : std::any_cast<std::vector<uint>>(params))
         {
-            if (flag & 1)
-            {
-                mSearch.append(Res::TypeString(1 << bit));
-                mSearch.append(" ");
-            }
+            mSearch.append(Res::TypeString(type));
+            mSearch.append(" ");
         }
         mSearch.append("|");
     }
