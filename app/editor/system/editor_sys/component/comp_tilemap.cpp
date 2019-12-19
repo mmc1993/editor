@@ -62,6 +62,7 @@ void CompTilemap::EncodeBinary(std::ostream & os, Project * project)
     Component::EncodeBinary(os, project);
     mMap.EncodeBinary(os, project);
     tools::Serialize(os, mSize);
+    tools::Serialize(os, mMapWH);
     tools::Serialize(os, mAnchor);
 }
 
@@ -70,6 +71,7 @@ void CompTilemap::DecodeBinary(std::istream & is, Project * project)
     Component::DecodeBinary(is, project);
     mMap.DecodeBinary(is, project);
     tools::Deserialize(is, mSize);
+    tools::Deserialize(is, mMapWH);
     tools::Deserialize(is, mAnchor);
 }
 
@@ -98,6 +100,8 @@ void CompTilemap::Update()
         {
             auto map = mMap.Instance<RawMap>();
             mMesh->Update(map->GetPoints(),{});
+            mMapWH.x = (float)map->GetMap().mPixelW;
+            mMapWH.y = (float)map->GetMap().mPixelH;
             for (auto i = 0; i != map->GetAtlass().size(); ++i)
             {
                 const auto & atlas = map->GetAtlass().at(i);
@@ -127,7 +131,7 @@ void CompTilemap::OnDrawCallback(const interface::RenderCommand & command, uint 
 { 
     auto & forward = (const interface::FowardCommand &)(command);
     forward.mProgram->BindUniformVector("anchor_", mAnchor);
-    forward.mProgram->BindUniformVector("size_",   mSize);
+    forward.mProgram->BindUniformVector("mapwh_",  mMapWH);
 }
 
 void CompTilemap::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)

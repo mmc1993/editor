@@ -30,6 +30,7 @@ private:
 
     Res::Ref        mMap;
     glm::vec2       mSize;
+    glm::vec2       mMapWH;
     glm::vec2       mAnchor;
 
     SharePtr<RawMesh>    mMesh;
