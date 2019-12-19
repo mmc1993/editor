@@ -1,5 +1,6 @@
 #include "comp_tilemap.h"
 #include "../../raw_sys/raw_sys.h"
+#include "../../raw_sys/comp_transform.h"
 
 CompTilemap::CompTilemap()
     : mSize(0.0f, 0.0f)
@@ -13,6 +14,8 @@ CompTilemap::CompTilemap()
 
     mProgram = std::create_ptr<RawProgram>();
     mProgram->Init(tools::GL_PROGRAM_TILEMAP);
+
+    AddState(StateEnum::kModifyTrackPoint, true);
 }
 
 void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
@@ -94,6 +97,15 @@ void CompTilemap::Update()
             _trackPoints.at(2).x = mSize.x; _trackPoints.at(2).y = mSize.y;
             _trackPoints.at(3).x = 0;       _trackPoints.at(3).y = mSize.y;
         }
+
+        _trackPoints.at(0).x = -mSize.x *      mAnchor.x;
+        _trackPoints.at(0).y = -mSize.y *      mAnchor.y;
+        _trackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
+        _trackPoints.at(1).y = -mSize.y *      mAnchor.y;
+        _trackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
+        _trackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
+        _trackPoints.at(3).x = -mSize.x *      mAnchor.x;
+        _trackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
     }
 }
 
@@ -103,3 +115,49 @@ void CompTilemap::OnDrawCallback(const interface::RenderCommand & command, uint 
     forward.mProgram->BindUniformVector("anchor_", mAnchor);
     forward.mProgram->BindUniformVector("size_",   mSize);
 }
+
+void CompTilemap::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
+{
+    glm::vec2 min, max;
+    switch (index)
+    {
+    case 0:
+        min.x = std::min(point.x, _trackPoints.at(2).x);
+        min.y = std::min(point.y, _trackPoints.at(2).y);
+        max.x = _trackPoints.at(2).x;
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 1:
+        min.x = _trackPoints.at(0).x;
+        min.y = std::min(point.y, _trackPoints.at(3).y);
+        max.x = std::max(point.x, _trackPoints.at(3).x);
+        max.y = _trackPoints.at(2).y;
+        break;
+    case 2:
+        min.x = _trackPoints.at(0).x;
+        min.y = _trackPoints.at(0).y;
+        max.x = std::max(point.x, _trackPoints.at(0).x);
+        max.y = std::max(point.y, _trackPoints.at(0).y);
+        break;
+    case 3:
+        min.x = std::min(point.x, _trackPoints.at(1).x);
+        min.y = _trackPoints.at(0).y;
+        max.x = _trackPoints.at(2).x;
+        max.y = std::max(point.y, _trackPoints.at(1).y);
+        break;
+    }
+
+    mSize.x = max.x - min.x;
+    mSize.y = max.y - min.y;
+
+    auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
+    GetOwner()->GetTransform()->Position(coord.x, coord.y);
+
+    AddState(StateEnum::kUpdate, true);
+}
+
+void CompTilemap::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
+{ }
+
+void CompTilemap::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
+{ }
