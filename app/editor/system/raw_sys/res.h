@@ -216,12 +216,18 @@ public:
     static const std::string & TypeString(uint type);
 
     template <class T>
-    void BindMeta(const T & val)
+    void Meta(const T & val)
     {
         if (!mMeta.has_value() || std::any_cast<T &>(mMeta) != val)
         {
             mMeta = val; WakeRefs();
         }
+    }
+
+    template <class T>
+    T Meta()
+    {
+        return std::any_cast<T>(mMeta);
     }
 
     virtual void EncodeBinary(std::ostream & os, Project * project) override;

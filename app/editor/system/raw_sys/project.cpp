@@ -132,7 +132,7 @@ bool Project::RenameRes(Res * res, const std::string & url)
         try
         {
             std::filesystem::rename(res->Path(), url);
-            res->BindMeta(url);
+            res->Meta(url);
             return true;
         }
         catch (const std::exception &)
@@ -163,20 +163,31 @@ void Project::Retrieve()
     std::set<std::string>   set0;     //  нд╪Ч
     std::set<uint>          set1;     //  id
 
-    for (auto pair : _resources)
+    for (auto it = _resources.begin(); it != _resources.end();)
     {
-        switch (pair.second->Type())
+        auto tmp = it;
+        switch (it->second->Type())
         {
         case Res::kNull:
         case Res::kTxt:
         case Res::kImg:
         case Res::kMap:
         case Res::kFnt:
-            set0.insert(pair.second->Path());
+            if (tools::IsFileExists(it->second->Meta<std::string>()))
+            {
+                set0.insert(it->second->Meta<std::string>()); ++it;
+            }
             break;
         case Res::kObj:
-            set1.insert(pair.second->Instance<GLObject>()->GetID());
+            if (IsExistObject(it->second->Meta<uint>()))
+            {
+                set1.insert(it->second->Meta<uint>()); ++it;
+            }
             break;
+        }
+        if (tmp == it)
+        {
+            delete it->second; it = _resources.erase(it); 
         }
     }
 
@@ -186,7 +197,7 @@ void Project::Retrieve()
             if (0 == set0.count(path))
             {
                 auto res = NewRes();
-                res->BindMeta(path);
+                res->Meta(path);
                 res->Type(Res::kNull);
             }
         });
@@ -207,7 +218,7 @@ void Project::Retrieve()
         if (0 == set1.count(objid))
         {
             auto res = NewRes();
-            res->BindMeta(objid);
+            res->Meta(objid);
             res->Type(Res::kObj);
         }
         list.pop_front();

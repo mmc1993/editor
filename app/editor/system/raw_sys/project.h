@@ -21,6 +21,7 @@ public:
     void Save(const std::string & url);
 
     //  ¶ÔÏó
+    bool IsExistObject(uint id) { return _objects.count(id) != 0; }
     const SharePtr<GLObject> & GetObject()        { return _object; }
     const SharePtr<GLObject> & GetObject(uint id) { return _objects.at(id); }
 
