@@ -230,6 +230,18 @@ Res * Project::GetRes(uint id)
     return _resources.at(id);
 }
 
+Res * Project::GetResFromPGID(uint PGID)
+{
+    auto it = std::find_if(_resources.begin(), _resources.end(),
+        [PGID] (const std::pair<uint, Res *> & pair)
+        {
+            return (pair.second->Type() == Res::TypeEnum::kObj 
+                 || pair.second->Type() == Res::TypeEnum::kVar)
+                 && pair.second->Meta<uint>() == PGID;
+        });
+    return it != _resources.end() ? it->second : nullptr;
+}
+
 std::vector<Res*> Project::GetResByType(const std::vector<Res::TypeEnum> & types)
 {
     std::vector<Res *> result;

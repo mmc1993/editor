@@ -53,6 +53,8 @@ public:
     void OptFreeProject();
 
     /// 资源
+    //  通过Project Global ID删除资源
+    void OptDeleteResFromPGID(uint PGID);
     //  删除资源
     void OptDeleteRes(Res * res);
     //  修改资源

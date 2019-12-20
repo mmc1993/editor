@@ -62,9 +62,9 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &_clipObject);
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &_polyObject);
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",    &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &_clipObject, std::vector<uint>{ Res::TypeEnum::kObj });
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &_polyObject, std::vector<uint>{ Res::TypeEnum::kObj });
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",   &_color);
     return std::move(props);
 }
 

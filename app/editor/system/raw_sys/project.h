@@ -36,6 +36,7 @@ public:
 
     void Retrieve();    //  ¼ìË÷
     Res * GetRes(uint id);
+    Res * GetResFromPGID(uint PGID);
     std::vector<Res *> GetResByType(const std::vector<Res::TypeEnum> & types);
 
 private:

@@ -7,7 +7,7 @@
         "Graphics/Segment",
         "Graphics/Lightning",
         "Graphics/FieldOfView",
-        "Graphics/LayerRender",
+        "Graphics/RenderTarget",
         "Utility/Polygon"
     ]
 }
