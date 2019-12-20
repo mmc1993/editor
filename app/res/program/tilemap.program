@@ -14,7 +14,7 @@ Pass Beg
 
         uniform mat4 uniform_matrix_mvp;
         uniform vec2 anchor_;
-        uniform vec2 mapwh_;
+        uniform vec2 map_wh_;
 
         void main()
         {
@@ -22,8 +22,8 @@ Pass Beg
             v_out_.mTex = int(a_c_.r);
 
             vec2 coord;
-            coord.x = -mapwh_.x * anchor_.x + a_v_.x;
-            coord.y = -mapwh_.y * anchor_.y + a_v_.y;
+            coord.x = -map_wh_.x * anchor_.x + a_v_.x;
+            coord.y = -map_wh_.y * anchor_.y + a_v_.y;
             gl_Position = uniform_matrix_mvp * vec4(coord, 0, 1);
         }
     VShader End

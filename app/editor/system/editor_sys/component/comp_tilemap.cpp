@@ -131,7 +131,7 @@ void CompTilemap::OnDrawCallback(const interface::RenderCommand & command, uint 
 { 
     auto & forward = (const interface::FowardCommand &)(command);
     forward.mProgram->BindUniformVector("anchor_", mAnchor);
-    forward.mProgram->BindUniformVector("mapwh_",  mMapWH);
+    forward.mProgram->BindUniformVector("map_wh_",  mMapWH);
 }
 
 void CompTilemap::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
