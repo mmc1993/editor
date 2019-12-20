@@ -5,6 +5,9 @@
 #include "comp_polygon.h"
 
 class CompFieldOfView : public Component {
+private:
+    static const auto sExtPointGroupNum = 5;
+
 public:
     CompFieldOfView();
 

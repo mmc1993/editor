@@ -114,41 +114,24 @@ void CompFieldOfView::GenView()
         if (tools::Equal(point,            segments.at(i)))
         {
             const auto normal = segments.at(i + 1)-segments.at(i);
-            if (auto cross = glm::cross(point, normal); cross > 0)
-            {
-                //  在左侧
-                auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
-                _rayPoints.emplace_back(RayExtended(segments, point + offset));
-            }
-            else if (cross < 0)
-            {
-                //  在右侧
-                auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
-                _rayPoints.emplace_back(RayExtended(segments, point + offset));
-            }
-            else
-            {
-                ASSERT_LOG(false, "");
-            }
-            //_extPoints.emplace_back(point);
-            //{
-            //    //  向右延长
-            //    auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
-            //    _rayPoints.emplace_back(RayExtended(segments, point + offset));
+            auto cross = glm::cross(point, normal);
+            ASSERT_LOG(cross != 0.0f, "");
+            auto offset = cross > 0
+                ? glm::normalize(glm::vec2(point.y, -point.x))  //  向右延长
+                : glm::normalize(glm::vec2(-point.y, point.x)); //  向左延长
 
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
-            //}
-            //{
-            //    //  向左延长
-            //    auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
-            //    _rayPoints.emplace_back(RayExtended(segments, point + offset));
+            _rayPoints.emplace_back(RayExtended(segments, point + offset));
 
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
-            //    //_extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
-            //}
+            //  TODO_
+            //  计算扩展射线
+            _extPoints.emplace_back(point);
+            for (auto i = 0; i != sExtPointGroupNum - 2; ++i)
+            {
+                auto s = 10.0f * (sExtPointGroupNum - i) / sExtPointGroupNum;
+                auto p = RayExtended(segments, point + offset * s);
+                _extPoints.emplace_back(p);
+            }
+            _extPoints.emplace_back(_rayPoints.back());
         }
         _rayPoints.emplace_back(point);
     }
@@ -187,32 +170,14 @@ void CompFieldOfView::GenMesh()
     }
     //  扩展线段, 5个点一组, 第一个点是远点, 剩下4个点按2个分2组
     {
-        auto count = _extPoints.size();
-        for (auto i = 0; i != count; )
+        for (auto i = 0; i != _extPoints.size(); i += sExtPointGroupNum)
         {
-            auto & o = _extPoints.at(i++);
-            auto & r0 = _extPoints.at(i++);
-            auto & r1 = _extPoints.at(i++);
-            //auto & r2 = _extPoints.at(i++);
-            auto & l0 = _extPoints.at(i++);
-            auto & l1 = _extPoints.at(i++);
-            //auto & l2 = _extPoints.at(i++);
-
-            points.emplace_back(o, _color * 0.8f);
-            points.emplace_back(r0, _color * 0.8f);
-            points.emplace_back(r1, _color * 0.8f);
-
-            //points.emplace_back(o, _color * 0.5f);
-            //points.emplace_back(r1, _color * 0.5f);
-            //points.emplace_back(r2, _color * 0.5f);
-
-            points.emplace_back(o, _color * 0.5f);
-            points.emplace_back(l0, _color * 0.5f);
-            points.emplace_back(l1, _color * 0.5f);
-
-            //points.emplace_back(o, _color * 0.8f);
-            //points.emplace_back(l1, _color * 0.8f);
-            //points.emplace_back(l2, _color * 0.8f);
+            for (auto j = 0; j != sExtPointGroupNum - 2; ++j)
+            {
+                points.emplace_back(_extPoints.at(i));
+                points.emplace_back(_extPoints.at(i + 1));
+                points.emplace_back(_extPoints.at(i + 2));
+            }
         }
     }
 
