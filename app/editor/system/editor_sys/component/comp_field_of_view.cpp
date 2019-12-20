@@ -11,8 +11,6 @@ CompFieldOfView::CompFieldOfView()
                         RawMesh::Vertex::kC);
 
     _program = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
-
-    AddState(StateEnum::kActive, false);
 }
 
 const std::string & CompFieldOfView::GetName()

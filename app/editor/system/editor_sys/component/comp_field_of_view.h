@@ -32,8 +32,8 @@ private:
     std::string _polyObjectURL;
     glm::vec4   _color;
 
-    SharePtr<RawMesh>                    _mesh;
-    SharePtr<RawProgram>                 _program;
+    SharePtr<RawMesh>                   _mesh;
+    SharePtr<RawProgram>                _program;
     std::vector<glm::vec2>              _segments;
     WeakPtr<CompRenderTarget>           _sampler;
     std::vector<WeakPtr<CompPolygon>>   _polyObjects;
