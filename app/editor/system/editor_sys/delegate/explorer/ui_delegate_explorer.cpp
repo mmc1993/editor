@@ -12,7 +12,7 @@ const glm::vec4 UIDelegateExplorer::sTypeColors[Res::Length]
     glm::vec4(1.0f, 1.0f, 0.0f, 1.0f),
 };
 
-bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject>& object)
+bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     switch (e)
     {

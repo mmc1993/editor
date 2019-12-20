@@ -1,6 +1,6 @@
 ﻿#include "ui_delegate_main.h"
 
-bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
+bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
@@ -27,7 +27,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             if (mouse.mKey == 1 && mouse.mAct == 3)
             {
                 std::vector<std::string> buffer;
-                if (mouse.mObject == object)
+                if (mouse.mObject == GetOwner())
                 {
                     buffer.push_back("Add Object");
                     UIMenu::PopMenu(mouse.mObject, buffer);
@@ -47,7 +47,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 }
             }
 
-            if (mouse.mKey == 2 && mouse.mAct == 3 && mouse.mObject == object)
+            if (mouse.mKey == 2 && mouse.mAct == 3 && mouse.mObject == GetOwner())
             {
                 std::string                   arg0("image");
                 std::function<void(Res::Ref)> arg1 = nullptr;
@@ -55,7 +55,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
             }
 
             //  左键单击
-            if (mouse.mKey == 0 && mouse.mAct == 3 && mouse.mObject != object)
+            if (mouse.mKey == 0 && mouse.mAct == 3 && mouse.mObject != GetOwner())
             {
                 auto objectID = _obj2id.at(mouse.mObject->GetParent());
                 if      (mouse.mObject->GetParent()->GetObjects().at(0) == mouse.mObject)
@@ -84,7 +84,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
                 }
             }
 
-            if (    mouse.mObject != object
+            if (    mouse.mObject != GetOwner()
                 &&  (mouse.mKey == 0 || mouse.mKey == 1)
                 &&  (mouse.mAct == 2 || mouse.mAct == 3) 
                 &&  mouse.mObject->GetParent()->GetObjects().at(2) == mouse.mObject)
@@ -356,12 +356,12 @@ void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & ob
     *iter = uiobject;
 }
 
-bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
+bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     return true;
 }
 
-bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
+bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
@@ -444,7 +444,7 @@ void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<GLObject>
     GetOwner()->DeleteObject(std::distance(components.begin(), it));
 }
 
-bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
+bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
@@ -498,7 +498,7 @@ void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & ob
     CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelected(object, select);
 }
 
-bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
+bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (e == UIEventEnum::kMenu)
     {

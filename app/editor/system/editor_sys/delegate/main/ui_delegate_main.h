@@ -18,7 +18,7 @@ protected:
 //  对象列表
 class UIEventDelegateMainObjList : public UIEventDelegateMain {
 public:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
 private:
     void InitObjects(
@@ -44,13 +44,13 @@ private:
 //  资源列表
 class UIEventDelegateMainResList : public UIEventDelegateMain {
 public:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 
 //  组件列表
 class UIEventDelegateMainComList : public UIEventDelegateMain {
 public:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
 private:
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
@@ -62,7 +62,7 @@ private:
 //  舞台
 class UIEventDelegateMainStage : public UIEventDelegateMain {
 public:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
 private:
     void OnEvent(EventSys::TypeEnum type, const std::any & param);
@@ -74,5 +74,5 @@ private:
 //  全局
 class UIEventDelegateMainGlobal : public UIEventDelegateMain {
 public:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };

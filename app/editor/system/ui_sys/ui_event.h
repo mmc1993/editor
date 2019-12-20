@@ -124,7 +124,7 @@ public:
     //  事件代理
     class DelegateHandler {
     public:
-        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, const SharePtr<UIObject> & object) = 0;
+        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event) = 0;
 
         SharePtr<UIObject> GetOwner()
         {

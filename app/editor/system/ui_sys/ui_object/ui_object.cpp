@@ -331,7 +331,7 @@ void UIObject::WakeInit(const std::any & param)
             std::back_inserter(list));
         if (front->_delegate != nullptr)
         {
-            front->_delegate->OnCallEventMessage(UIEventEnum::kInit, event, front->shared_from_this());
+            front->_delegate->OnCallEventMessage(UIEventEnum::kInit, event);
         }
     }
 }
@@ -635,7 +635,7 @@ SharePtr<UIObject> UIObject::CallEventMessage(UIEventEnum e, const UIEvent::Even
 
     if (_delegate != nullptr)
     {
-        was = _delegate->OnCallEventMessage(e, param, shared_from_this()) || was;
+        was = _delegate->OnCallEventMessage(e, param) || was;
     }
     
     if (!was && GetParent() != nullptr)

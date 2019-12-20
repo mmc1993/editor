@@ -30,7 +30,7 @@ public:
     };
 
 private:
-    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object) override;
+    virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
     bool OnEventMouse(const UIEvent::Mouse & param);
     bool OnEventEdit(const UIEvent::Edit & param);
     bool OnEventMenu(const UIEvent::Menu & param);
