@@ -33,6 +33,6 @@ private:
     uint                _update;
     float               _border;
     glm::vec4           _color;
-    SharePtr<RawProgram> _program;
     SharePtr<RawMesh>    _mesh;
+    SharePtr<RawProgram> _program;
 };
