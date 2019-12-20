@@ -1,22 +1,13 @@
 #pragma once
 
-#include "../../../../include.h"
-#include "../../../raw_sys/project.h"
-#include "../../../raw_sys/comp_transform.h"
-#include "../../../event_sys/event_sys.h"
-#include "../../../cfg_sys/cfg_sys.h"
-#include "../../../ui_sys/ui_sys.h"
-#include "../../../ui_sys/ui_list.h"
-#include "../../property/ui_property.h"
-#include "../../editor_sys.h"
+#include "../ui_delegate_base.h"
 
-class UIEventDelegateMain : public UIEvent::DelegateHandler {
-protected:
-    EventSys::Listener mListener;
-};
+#include "../../../raw_sys/comp_transform.h"
+#include "../../property/ui_property.h"
+#include "../../../ui_sys/ui_list.h"
 
 //  对象列表
-class UIEventDelegateMainObjList : public UIEventDelegateMain {
+class UIEventDelegateMainObjList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -42,13 +33,13 @@ private:
 };
 
 //  资源列表
-class UIEventDelegateMainResList : public UIEventDelegateMain {
+class UIEventDelegateMainResList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 
 //  组件列表
-class UIEventDelegateMainComList : public UIEventDelegateMain {
+class UIEventDelegateMainComList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -60,7 +51,7 @@ private:
 };
 
 //  舞台
-class UIEventDelegateMainStage : public UIEventDelegateMain {
+class UIEventDelegateMainStage : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -72,7 +63,7 @@ private:
 };
 
 //  全局
-class UIEventDelegateMainGlobal : public UIEventDelegateMain {
+class UIEventDelegateMainGlobal : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
