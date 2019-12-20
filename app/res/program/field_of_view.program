@@ -26,7 +26,6 @@ BlendFunc One Zero
             vec4 mColor;
         } v_out_;
 
-        uniform sampler2D uniform_screen;
         uniform sampler2D uniform_sample;
 
         out vec4 color_;

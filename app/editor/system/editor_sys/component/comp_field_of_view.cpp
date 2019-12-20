@@ -149,13 +149,12 @@ void CompFieldOfView::GenMesh()
     auto count = _segments.size() - 1;
     for (auto i = 0; i != count; ++i)
     {
-        auto & a = _segments.at((i + count - 1) % count + 1);
-        auto & b = _segments.at( i                      + 1);
-        auto & c = _segments.at((i         + 1) % count + 1);
+        auto & a = _segments.at( i              + 1);
+        auto & b = _segments.at((i + 1) % count + 1);
 
         points.emplace_back(_segments.front(), _color);
+        points.emplace_back(a, _color);
         points.emplace_back(b, _color);
-        points.emplace_back(c, _color);
     }
 
     _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
