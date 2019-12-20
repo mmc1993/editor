@@ -12,6 +12,8 @@ public:
         return CastPtr<T>(ptr);
     }
 
+    const type_info & QueryType(const std::string & url);
+
     void Clear();
 private:
     SharePtr<Raw> Import(const std::string & url);

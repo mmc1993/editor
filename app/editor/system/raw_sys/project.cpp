@@ -1,4 +1,5 @@
 #include "project.h"
+#include "raw_sys.h"
 
 Project::Project(): _gid(0)
 { }
@@ -198,7 +199,23 @@ void Project::Retrieve()
             {
                 auto res = NewRes();
                 res->Meta(path);
-                res->Type(Res::kNull);
+                auto & type = Global::Ref().mRawSys->QueryType(path);
+                if      (type == typeid(RawTexture))
+                {
+                    res->Type(Res::kImg);
+                }
+                else if (type == typeid(RawFont))
+                {
+                    res->Type(Res::kFnt);
+                }
+                else if (type == typeid(RawMap))
+                {
+                    res->Type(Res::kMap);
+                }
+                else
+                {
+                    res->Type(Res::kNull);
+                }
             }
         });
 
@@ -214,11 +231,11 @@ void Project::Retrieve()
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        auto objid = front->GetID();
-        if (0 == set1.count(objid))
+        auto objectid =front->GetID();
+        if (0 == set1.count(objectid))
         {
             auto res = NewRes();
-            res->Meta(objid);
+            res->Meta(objectid);
             res->Type(Res::kObj);
         }
         list.pop_front();

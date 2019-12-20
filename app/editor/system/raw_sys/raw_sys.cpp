@@ -41,6 +41,36 @@ SharePtr<Raw> RawSys::Import(const std::string & url)
     return raw;
 }
 
+const type_info & RawSys::QueryType(const std::string & url)
+{
+    auto suffix = tools::GetFileSuffix(url);
+    if (suffix == ".fnt")
+    {
+        return typeid(RawFont);
+    }
+    else if (suffix == ".obj")
+    {
+        return typeid(RawMesh);
+    }
+    else if (suffix == ".png")
+    {
+        return typeid(RawTexture);
+    }
+    else if (suffix == ".map")
+    {
+        return typeid(RawMap);
+    }
+    else if (suffix == ".program")
+    {
+        return typeid(RawProgram);
+    }
+    else if (suffix == ".material")
+    {
+        return typeid(RawMaterial);
+    }
+    return typeid(void);
+}
+
 void RawSys::Clear()
 {
     for (auto it = _resources.begin(); it != _resources.end();)
