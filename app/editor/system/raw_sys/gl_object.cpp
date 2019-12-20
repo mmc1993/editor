@@ -5,8 +5,8 @@
 
 GLObject::GLObject()
     : mID(~0)
-    , _state(kActive)
-    , _parent(nullptr)
+    , mState(kActive)
+    , mParent(nullptr)
 {
     //  PS:
     //      这个构造函数仅在从文件反序列化时使用.
@@ -14,8 +14,8 @@ GLObject::GLObject()
 
 GLObject::GLObject(uint id)
     : mID(id)
-    , _state(kActive)
-    , _parent(nullptr)
+    , mState(kActive)
+    , mParent(nullptr)
 {
     mTransform = std::create_ptr<CompTransform>();
     AddComponent(mTransform);
@@ -32,7 +32,7 @@ void GLObject::EncodeBinary(std::ostream & os, Project * project)
     //  自身
     tools::Serialize(os, mID);
     tools::Serialize(os, mName);
-    tools::Serialize(os, _state);
+    tools::Serialize(os, mState);
 
     //  组件
     auto count = GetComponents().size();
@@ -56,7 +56,7 @@ void GLObject::DecodeBinary(std::istream & is, Project * project)
     //  自身
     tools::Deserialize(is, mID);
     tools::Deserialize(is, mName);
-    tools::Deserialize(is, _state);
+    tools::Deserialize(is, mState);
     //  组件
     size_t count;
     tools::Deserialize(is, count);
@@ -88,7 +88,7 @@ void GLObject::InsertObject(const SharePtr<GLObject> & object, const std::string
     auto insert = std::next(mChildren.begin(), 
              std::min(pos, mChildren.size()));
     mChildren.insert(insert, object);
-    object->_parent = this;
+    object->mParent = this;
     object->mName = name;
 }
 
@@ -119,7 +119,7 @@ void GLObject::DeleteObject(size_t idx)
 {
     ASSERT_LOG(idx < mChildren.size(), "Object DelChildIdx: {0}", idx);
     auto it = std::next(mChildren.begin(), idx);
-    (*it)->_parent = nullptr;
+    (*it)->mParent = nullptr;
     mChildren.erase(it);
 }
 
@@ -235,13 +235,13 @@ const std::string & GLObject::GetName() const
 
 void GLObject::AddState(uint state, bool add)
 {
-    if (add) _state |=  state;
-    else     _state &= ~state;
+    if (add) mState |=  state;
+    else     mState &= ~state;
 }
 
 uint GLObject::HasState(uint state)
 {
-    return _state & state;
+    return mState & state;
 }
 
 bool GLObject::HasParent(const SharePtr<GLObject> & object)
@@ -271,7 +271,7 @@ void GLObject::SetParent(GLObject * parent)
 
 SharePtr<GLObject> GLObject::GetParent()
 {
-    return _parent != nullptr? _parent->shared_from_this(): nullptr;
+    return mParent != nullptr? mParent->shared_from_this(): nullptr;
 }
 
 void GLObject::SetTransform(const SharePtr<CompTransform> & transform)

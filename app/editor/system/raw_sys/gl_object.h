@@ -97,9 +97,9 @@ public:
 
 private:
     uint                                mID;
-    uint                                _state;
+    uint                                mState;
     std::string                         mName;
-    GLObject *                          _parent;
+    GLObject *                          mParent;
     SharePtr<CompTransform>             mTransform;
     std::vector<SharePtr<GLObject>>     mChildren;
     std::vector<SharePtr<Component>>    mComponents;

@@ -131,10 +131,10 @@ public:
     uint GetImageW() { return mRefImg->mW; }
     uint GetImageH() { return mRefImg->mH; }
     uint GetImageFormat() { return mRefImg->mFormat; }
-    const glm::vec4 & GetOffset() { return  _offset; }
+    const glm::vec4 & GetOffset() { return  mOffset; }
     SharePtr<RawImage> & GetRefImage() { return mRefImg; }
-    uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
-    uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
+    uint GetW() { return (uint)(GetImageW() * (mOffset.w - mOffset.x)); }
+    uint GetH() { return (uint)(GetImageH() * (mOffset.z - mOffset.y)); }
 
     virtual bool Init(const std::string & url) override;
 
@@ -144,7 +144,7 @@ private:
 
 private:
     SharePtr<RawImage> mRefImg;
-    glm::vec4         _offset;
+    glm::vec4         mOffset;
 };
 
 // ---
@@ -221,7 +221,7 @@ private:
     void Parse(const std::vector<std::string> & pairs, std::map<std::string, std::string> * output);
 
 private:
-    FontInfo            _info;
+    FontInfo            mInfo;
     SharePtr<RawTexture> mTexture;
 };
 

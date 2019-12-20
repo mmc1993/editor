@@ -35,27 +35,27 @@ public:
     //  ¼àÌýÆ÷
     class Listener {
     public:
-        Listener(): _owner(nullptr)
+        Listener(): mOwner(nullptr)
         { }
 
         ~Listener()
         {
-            ASSERT_LOG(_listens.empty() || _owner != nullptr, "");
+            ASSERT_LOG(_listens.empty() || mOwner != nullptr, "");
             for (auto listen : _listens)
             {
-                _owner->Del(listen);
+                mOwner->Del(listen);
             }
         }
 
         void Add(TypeEnum id, const func_t & func, EventSys * owner = nullptr)
         {
-            if (owner != nullptr) { _owner = owner; }
-            ASSERT_LOG(_owner != nullptr, "");
-            _listens.push_back(_owner->Add(id, func));
+            if (owner != nullptr) { mOwner = owner; }
+            ASSERT_LOG(mOwner != nullptr, "");
+            _listens.push_back(mOwner->Add(id, func));
         }
 
     private:
-        EventSys * _owner;
+        EventSys * mOwner;
         std::vector<size_t> _listens;
     };
 

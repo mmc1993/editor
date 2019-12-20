@@ -47,13 +47,13 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    uint                _update;
+    uint                mUpdate;
     float               mScale;
-    float               _width;
+    float               mWidth;
     glm::vec4           mColor;
-    Res::Ref            _tex;
+    Res::Ref            mTex;
 
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;
-    std::vector<Segment> _segments;
+    std::vector<Segment> mSegments;
 };

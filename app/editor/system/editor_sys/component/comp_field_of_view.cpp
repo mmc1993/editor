@@ -22,16 +22,16 @@ const std::string & CompFieldOfView::GetName()
 void CompFieldOfView::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    _clipObject.EncodeBinary(os, project);
-    _polyObject.EncodeBinary(os, project);
+    mClipObject.EncodeBinary(os, project);
+    mPolyObject.EncodeBinary(os, project);
     tools::Serialize(os, mColor);
 }
 
 void CompFieldOfView::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    _clipObject.DecodeBinary(is, project);
-    _polyObject.DecodeBinary(is, project);
+    mClipObject.DecodeBinary(is, project);
+    mPolyObject.DecodeBinary(is, project);
     tools::Deserialize(is, mColor);
 }
 
@@ -43,7 +43,7 @@ bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any
 
 void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (_clipObject.Check() && _polyObject.Check())
+    if (mClipObject.Check() && mPolyObject.Check())
     {
         Update();
 
@@ -62,8 +62,8 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &_clipObject, std::vector<uint>{ Res::TypeEnum::kObj });
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &_polyObject, std::vector<uint>{ Res::TypeEnum::kObj });
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &mClipObject, std::vector<uint>{ Res::TypeEnum::kObj });
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &mPolyObject, std::vector<uint>{ Res::TypeEnum::kObj });
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",   &mColor);
     return std::move(props);
 }
@@ -74,13 +74,13 @@ void CompFieldOfView::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (_clipObject.Modify())
+        if (mClipObject.Modify())
         {
-            ASSERT_LOG(_clipObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
+            ASSERT_LOG(mClipObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
         }
-        if (_polyObject.Modify())
+        if (mPolyObject.Modify())
         {
-            ASSERT_LOG(_polyObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
+            ASSERT_LOG(mPolyObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
         }
     }
     GenView();
@@ -92,7 +92,7 @@ void CompFieldOfView::GenView()
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
     std::vector<glm::vec2> segments;
-    for (auto & polygon : _polyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
+    for (auto & polygon : mPolyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
     {
         for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
         {
@@ -204,7 +204,7 @@ void CompFieldOfView::OnDrawCallback(const interface::RenderCommand & command, u
 {
     auto & cmd = (const interface::PostCommand &)command;
     cmd.mProgram->BindUniformTex2D("uniform_sample", 
-        _clipObject.Instance<GLObject>()
+        mClipObject.Instance<GLObject>()
             ->GetComponent<CompRenderTarget>()
             ->RefTextureBuffer()->mID, texturePos);
 }

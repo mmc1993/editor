@@ -5,9 +5,9 @@
 
 CompSegment::CompSegment()
     : mColor(1)
-    , _width(1)
-    , _smooth(1.0f)
-    , _update(kSegment | kMesh)
+    , mWidth(1)
+    , mSmooth(1.0f)
+    , mUpdate(kSegment | kMesh)
 {
     mTrackPoints.emplace_back(-50,  0);
     mTrackPoints.emplace_back( 50, 50);
@@ -45,18 +45,18 @@ const std::string & CompSegment::GetName()
 void CompSegment::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _width);
+    tools::Serialize(os, mWidth);
     tools::Serialize(os, mColor);
-    tools::Serialize(os, _smooth);
+    tools::Serialize(os, mSmooth);
     tools::Serialize(os, mTrackPoints);
 }
 
 void CompSegment::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _width);
+    tools::Deserialize(is, mWidth);
     tools::Deserialize(is, mColor);
-    tools::Deserialize(is, _smooth);
+    tools::Deserialize(is, mSmooth);
     tools::Deserialize(is, mTrackPoints);
 }
 
@@ -65,13 +65,13 @@ bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & n
     AddState(StateEnum::kUpdate, true);
     if (title == "Width" || title == "Color")
     {
-        _update |= kMesh;
+        mUpdate |= kMesh;
     }
     else if (title == "Smooth")
     {
         auto value = std::any_cast<float>(newValue);
-        _smooth = std::clamp(value, 0.01f, 1.0f);
-        _update |= kSegment;
+        mSmooth = std::clamp(value, 0.01f, 1.0f);
+        mUpdate |= kSegment;
         return false;
     }
     return true;
@@ -80,9 +80,9 @@ bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & n
 std::vector<Component::Property> CompSegment::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &_width);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &mWidth);
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &mColor);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Smooth", &mSmooth);
     return std::move(props);
 }
 
@@ -91,11 +91,11 @@ void CompSegment::Update()
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        if (_update & kSegment)
+        if (mUpdate & kSegment)
         {
             GenSegm();
         }
-        if (_update & (kSegment | kMesh))
+        if (mUpdate & (kSegment | kMesh))
         {
             GenMesh();
         }
@@ -129,12 +129,12 @@ void CompSegment::GenSegm()
         }
     }
 
-    _segments.clear();
+    mSegments.clear();
     if (ctrlPoints.size() == 2)
     {
         //  1次贝塞尔曲线
-        _segments.emplace_back(ctrlPoints.at(0));
-        _segments.emplace_back(ctrlPoints.at(1));
+        mSegments.emplace_back(ctrlPoints.at(0));
+        mSegments.emplace_back(ctrlPoints.at(1));
     }
     else
     {
@@ -145,19 +145,19 @@ void CompSegment::GenSegm()
             auto & b = ctrlPoints.at((i * 2) + 1);
             auto & c = ctrlPoints.at((i + 1) * 2);
             auto & d = mTrackPoints.at(i + 1);
-            auto count = iint(1.0f / _smooth);
+            auto count = iint(1.0f / mSmooth);
             for (auto s = 0; s != count; ++s)
             {
-                DrawBezier(a, b, c, d, s * _smooth);
+                DrawBezier(a, b, c, d, s * mSmooth);
             }
         }
-        _segments.emplace_back(mTrackPoints.back());
+        mSegments.emplace_back(mTrackPoints.back());
     }
 
     //  拉卡朗日插值
-    //if (_smooth != 1.0f)
+    //if (mSmooth != 1.0f)
     //{
-    //    _segments.clear();
+    //    mSegments.clear();
     //    auto points = mTrackPoints;
     //    std::sort(points.begin(), points.end(), 
     //        [](const auto & a, const auto & b) { return a.x < b.x; });
@@ -169,8 +169,8 @@ void CompSegment::GenSegm()
     //    auto beg = points.front().x;
     //    auto end = points.back().x;
     //    auto distance  = end - beg;
-    //    auto step  = distance * _smooth;
-    //    auto count = int(1.0f / _smooth);
+    //    auto step  = distance * mSmooth;
+    //    auto count = int(1.0f / mSmooth);
     //    for (auto i = 0; i != count; ++i)
     //    {
     //        auto y = 0.0f;
@@ -190,13 +190,13 @@ void CompSegment::GenSegm()
     //            }
     //            y += m0 / m1 * selfY;
     //        }
-    //        _segments.emplace_back(x, y);
+    //        mSegments.emplace_back(x, y);
     //    }
-    //    _segments.emplace_back(points.back());
+    //    mSegments.emplace_back(points.back());
     //}
     //else
     //{
-    //    _segments = mTrackPoints;
+    //    mSegments = mTrackPoints;
     //}
 }
 
@@ -204,12 +204,12 @@ void CompSegment::GenMesh()
 {
     std::vector<RawMesh::Vertex> points;
     std::vector<uint>           indexs;
-    for (auto i = 0; i != _segments.size() - 1; ++i)
+    for (auto i = 0; i != mSegments.size() - 1; ++i)
     {
-        auto & a = _segments.at(i    );
-        auto & b = _segments.at(i + 1);
+        auto & a = mSegments.at(i    );
+        auto & b = mSegments.at(i + 1);
         auto dir = glm::vec2(+(b -a).y, -(b -a).x);
-        auto offset = glm::normalize(dir) * _width;
+        auto offset = glm::normalize(dir) * mWidth;
 
         if (i != 0)
         {
@@ -245,19 +245,19 @@ void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm
     auto p2 = glm::lerp(c, d, t);
     auto p3 = glm::lerp(p0, p1, t);
     auto p4 = glm::lerp(p1, p2, t);
-    _segments.emplace_back(glm::lerp(p3, p4, t));
+    mSegments.emplace_back(glm::lerp(p3, p4, t));
 }
 
 void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    _update |= kSegment;
+    mUpdate |= kSegment;
     AddState(StateEnum::kUpdate, true);
     mTrackPoints.at(index) = point;
 }
 
 void CompSegment::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    _update |= kSegment;
+    mUpdate |= kSegment;
     AddState(StateEnum::kUpdate, true);
     mTrackPoints.insert(std::next(mTrackPoints.begin(), index), point);
 }
@@ -266,7 +266,7 @@ void CompSegment::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point
 {
     if (mTrackPoints.size() > 2)
     {
-        _update |= kSegment;
+        mUpdate |= kSegment;
         AddState(StateEnum::kUpdate, true);
         mTrackPoints.erase(std::next(mTrackPoints.begin(), index));
     }

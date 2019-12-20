@@ -1,7 +1,7 @@
 #include "project.h"
 #include "raw_sys.h"
 
-Project::Project(): _gid(0)
+Project::Project(): mGID(0)
 { }
 
 Project::~Project()
@@ -15,7 +15,7 @@ Project::~Project()
 
 void Project::New(const std::string & url)
 {
-    _gid = 0x0;
+    mGID = 0x0;
     mURL = url;
     mObject = NewObject();
 }
@@ -29,7 +29,7 @@ void Project::Load(const std::string & url)
     //  加载资源
     is.open(GetResURL(url), std::ios::binary);
     ASSERT_LOG(is, url.c_str());
-    tools::Deserialize(is,_gid);
+    tools::Deserialize(is,mGID);
 
     //  读入Res对象
     uint num = 0; tools::Deserialize(is, num);
@@ -73,7 +73,7 @@ void Project::Save(const std::string & url)
     std::ofstream os;
     //  写入资源
     os.open(GetResURL(saveURL), std::ios::binary);
-    tools::Serialize(os, _gid);
+    tools::Serialize(os, mGID);
     uint num = _resources.size();
     tools::Serialize(os,  num);
     for (auto & pair : _resources)
@@ -90,8 +90,8 @@ void Project::Save(const std::string & url)
 
 SharePtr<GLObject> Project::NewObject()
 {
-    auto object = std::create_ptr<GLObject>(++_gid);
-    mObjects.insert(std::make_pair(_gid, object));
+    auto object = std::create_ptr<GLObject>(++mGID);
+    mObjects.insert(std::make_pair(mGID, object));
     return object;
 }
 
@@ -282,7 +282,7 @@ std::vector<Res*> Project::GetResByType(const std::vector<Res::TypeEnum> & types
 
 Res * Project::NewRes()
 {
-    auto res = new Res(this, ++_gid);
-    _resources.emplace(_gid, res);
+    auto res = new Res(this, ++mGID);
+    _resources.emplace(mGID, res);
     return res;
 }

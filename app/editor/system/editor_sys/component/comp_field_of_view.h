@@ -29,8 +29,8 @@ private:
 
 private:
     glm::vec4   mColor;
-    Res::Ref    _clipObject;
-    Res::Ref    _polyObject;
+    Res::Ref    mClipObject;
+    Res::Ref    mPolyObject;
 
     SharePtr<RawMesh>      mMesh;
     SharePtr<RawProgram>   mProgram;

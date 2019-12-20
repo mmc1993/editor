@@ -8,15 +8,15 @@ class UIObject: public std::enable_shared_from_this<UIObject> {
 public:
     UIObject(UITypeEnum type = UITypeEnum::kOther, UIState * state = new UIState())
         : mType(type)
-        , _state(state)
-        , _parent(nullptr)
+        , mState(state)
+        , mParent(nullptr)
     { }
 
     virtual ~UIObject()
     { }
 
     template <class T = UIState>
-    T * GetState() { return (T *)_state.get(); }
+    T * GetState() { return (T *)mState.get(); }
     
     SharePtr<UIObject> GetObject(const std::initializer_list<std::string> & list);
     std::vector<SharePtr<UIObject>>   GetObjects(UITypeEnum type);
@@ -72,8 +72,8 @@ public:
 private:
     bool                                mVisible;       //  标记当前节点是否渲染
     UITypeEnum                          mType;
-    UIObject *                          _parent;
-    UniquePtr<UIState>                  _state;
+    UIObject *                          mParent;
+    UniquePtr<UIState>                  mState;
     std::vector<SharePtr<UIObject>>     mChildren;
     UniquePtr<UIEvent::DelegateHandler> _delegate;
 };

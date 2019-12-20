@@ -13,7 +13,7 @@ public:
     virtual bool OnModifyProperty(const std::any & oldValue, 
                                   const std::any & newValue, 
                                   const std::string & title) override;
-    std::vector<glm::vec2> & GetSegments() { return _segments; }
+    std::vector<glm::vec2> & GetSegments() { return mSegments; }
 
 protected:
     virtual std::vector<Property> CollectProperty() override;
@@ -24,5 +24,5 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    std::vector<glm::vec2> _segments;
+    std::vector<glm::vec2> mSegments;
 };

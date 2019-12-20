@@ -2,8 +2,8 @@
 #include "../../raw_sys/comp_transform.h"
 
 CompLight::CompLight()
-    : _border(20)
-    , _update(kTrackPoint | kBorder)
+    : mBorder(20)
+    , mUpdate(kTrackPoint | kBorder)
     , mColor(1.0f, 1.0f, 1.0f, 0.5f)
 {
     mTrackPoints.emplace_back(0,  0);
@@ -43,7 +43,7 @@ void CompLight::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
     tools::Serialize(os, mColor);
-    tools::Serialize(os, _border);
+    tools::Serialize(os, mBorder);
     tools::Serialize(os, mTrackPoints);
 }
 
@@ -51,7 +51,7 @@ void CompLight::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
     tools::Deserialize(is, mColor);
-    tools::Deserialize(is, _border);
+    tools::Deserialize(is, mBorder);
     tools::Deserialize(is, mTrackPoints);
 }
 
@@ -60,7 +60,7 @@ bool CompLight::OnModifyProperty(const std::any & oldValue, const std::any & new
     AddState(StateEnum::kUpdate, true);
     if (title == "Border")
     {
-        _border = std::max(0.0f, std::any_cast<float>(newValue));
+        mBorder = std::max(0.0f, std::any_cast<float>(newValue));
         return false;
     }
     return true;
@@ -70,7 +70,7 @@ std::vector<Component::Property> CompLight::CollectProperty()
 {
     auto props = Component::CollectProperty();
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &mColor);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Border", &_border);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Border", &mBorder);
     return std::move(props);
 }
 
@@ -98,8 +98,8 @@ void CompLight::Update()
                     y * radius + mTrackPoints.at(0).y), mColor);
                 //  Õ‚ª∑
                 points.emplace_back(glm::vec2(
-                    x * (radius + _border) + mTrackPoints.at(0).x, 
-                    y * (radius + _border) + mTrackPoints.at(0).y), 
+                    x * (radius + mBorder) + mTrackPoints.at(0).x, 
+                    y * (radius + mBorder) + mTrackPoints.at(0).y), 
                     glm::vec4(0));
             }
             ASSERT_LOG(points.size() % 2 == 0, "");
@@ -138,7 +138,7 @@ void CompLight::Update()
             }
 
             auto color = glm::vec4(mColor.x, mColor.y, mColor.z, 0);
-            auto outer = tools::GenOuterRing(convex, _border, 10.0);
+            auto outer = tools::GenOuterRing(convex, mBorder, 10.0);
             for (auto i = 0; i != outer.size(); ++i)
             {
                 auto & a0 = outer.at(i++);

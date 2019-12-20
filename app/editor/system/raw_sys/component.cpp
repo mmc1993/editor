@@ -50,12 +50,12 @@ void Component::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 
 void Component::EncodeBinary(std::ostream & os, Project * project)
 { 
-    tools::Serialize(os, _state);
+    tools::Serialize(os, mState);
 }
 
 void Component::DecodeBinary(std::istream & is, Project * project)
 { 
-    tools::Deserialize(is, _state);
+    tools::Deserialize(is, mState);
 }
 
 std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
@@ -104,7 +104,7 @@ const std::vector<glm::vec2> & Component::GetTrackPoints()
 std::vector<Component::Property> Component::CollectProperty()
 {
     return {
-        {UIParser::StringValueTypeEnum::kFlag, "Active", &_state, (uint)StateEnum::kActive},
+        {UIParser::StringValueTypeEnum::kFlag, "Active", &mState, (uint)StateEnum::kActive},
     };
 }
 

@@ -128,17 +128,17 @@ public:
 
         SharePtr<UIObject> GetOwner()
         {
-            ASSERT_LOG(!_owner.expired(), "");
-            return _owner.lock();
+            ASSERT_LOG(!mOwner.expired(), "");
+            return mOwner.lock();
         }
 
         void SetOwner(const SharePtr<UIObject> & owner)
         {
-            _owner = owner;
+            mOwner = owner;
         }
 
         virtual ~DelegateHandler() { }
     private:
-        WeakPtr<UIObject> _owner;
+        WeakPtr<UIObject> mOwner;
     };
 };

@@ -178,10 +178,10 @@ bool RawTexture::InitFromImage(const std::string & url)
     mRefImg = std::create_ptr<RawImage>();
     if (mRefImg->Init(url))
     {
-        _offset.x = 0.0f;
-        _offset.y = 0.0f;
-        _offset.z = 1.0f;
-        _offset.w = 1.0f;
+        mOffset.x = 0.0f;
+        mOffset.y = 0.0f;
+        mOffset.z = 1.0f;
+        mOffset.w = 1.0f;
         return true;
     }
     return false;
@@ -211,10 +211,10 @@ bool RawTexture::InitFromAtlas(const std::string & url)
     {
         name = path + atlas->At("meta","image")->ToString();
         mRefImg = Global::Ref().mRawSys->Get<RawImage>(name);
-        _offset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / mRefImg->mW;
-        _offset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / mRefImg->mH;
-        _offset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / mRefImg->mW + _offset.x;
-        _offset.w = atlas->At("frames", url, "frame", "h")->ToNumber() / mRefImg->mH + _offset.y;
+        mOffset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / mRefImg->mW;
+        mOffset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / mRefImg->mH;
+        mOffset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / mRefImg->mW + mOffset.x;
+        mOffset.w = atlas->At("frames", url, "frame", "h")->ToNumber() / mRefImg->mH + mOffset.y;
     }
 
     return mRefImg != nullptr;
@@ -329,7 +329,7 @@ const RawFont::Char & RawFont::RefWord(char word)
 
 const RawFont::Char & RawFont::RefWord(uint code)
 {
-    return _info.mChars.at(code);
+    return mInfo.mChars.at(code);
 }
 
 std::vector<uint> RawFont::RefWord(const std::string & text)
@@ -352,28 +352,28 @@ bool RawFont::Init(const std::string & url)
     ASSERT_LOG(word == "info", line.c_str());
     std::getline(is, line);
     line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mInfo);
+    Parse(tools::Split(line, " "), &mInfo.mInfo);
 
     is >> word;
     ASSERT_LOG(word == "common", line.c_str());
     std::getline(is, line);
     line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mCommon);
+    Parse(tools::Split(line, " "), &mInfo.mCommon);
 
     is >> word;
     ASSERT_LOG(word == "page", line.c_str());
     std::getline(is, line);
     line = std::lstrip(line, ' ');
-    Parse(tools::Split(line, " "), &_info.mPage);
+    Parse(tools::Split(line, " "), &mInfo.mPage);
 
-    auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
+    auto texurl = tools::GetFileFolder(url) + mInfo.mPage.at("file");
     mTexture = Global::Ref().mRawSys->Get<RawTexture>(texurl);
     mTexture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     mTexture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     std::getline(is, line);
-    auto texW = std::stof(_info.mCommon.at("scaleW"));
-    auto texH = std::stof(_info.mCommon.at("scaleH"));
+    auto texW = std::stof(mInfo.mCommon.at("scaleW"));
+    auto texH = std::stof(mInfo.mCommon.at("scaleH"));
     while (is >> word && word == "char")
     {
         //  id=:3, x=:3, y=:3, width=:6, height=:7, xoffset=:7, yoffset=:7, xadvance=:8
@@ -389,7 +389,7 @@ bool RawFont::Init(const std::string & url)
         value.mUV.y = 1.0f - value.mUV.y;
         value.mUV.w = 1.0f - value.mUV.w;
 
-        _info.mChars.emplace(value.mID, value);
+        mInfo.mChars.emplace(value.mID, value);
 
         std::getline(is, line);
     }

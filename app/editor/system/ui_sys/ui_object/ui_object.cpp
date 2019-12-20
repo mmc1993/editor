@@ -44,7 +44,7 @@ void UIObject::InsertObject(const SharePtr<UIObject> & object)
 {
     ASSERT_LOG(object->GetParent() == nullptr, "");
     mChildren.push_back(object);
-    object->_parent = this;
+    object->mParent = this;
 }
 
 void UIObject::DeleteObject(const SharePtr<UIObject> & object)
@@ -52,7 +52,7 @@ void UIObject::DeleteObject(const SharePtr<UIObject> & object)
     auto it = std::find(mChildren.begin(), mChildren.end(), object);
     if (it != mChildren.end()) 
     { 
-        (*it)->_parent = nullptr;
+        (*it)->mParent = nullptr;
         mChildren.erase(it); 
     }
 }
@@ -75,8 +75,8 @@ void UIObject::ClearObjects()
 
 SharePtr<UIObject> UIObject::GetParent()
 {
-    return _parent != nullptr
-        ? _parent->shared_from_this()
+    return mParent != nullptr
+        ? mParent->shared_from_this()
         : nullptr;
 }
 

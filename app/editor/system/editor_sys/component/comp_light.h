@@ -30,8 +30,8 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    uint                _update;
-    float               _border;
+    uint                mUpdate;
+    float               mBorder;
     glm::vec4           mColor;
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;

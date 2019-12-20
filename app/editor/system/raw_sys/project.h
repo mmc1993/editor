@@ -53,5 +53,5 @@ private:
 
     SharePtr<GLObject> mObject;
     std::string        mURL;       //  项目路径
-    uint               _gid;       //  全局ID
+    uint               mGID;       //  全局ID
 };

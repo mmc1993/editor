@@ -6,8 +6,8 @@
 CompLightning::CompLightning()
     : mColor(1)
     , mScale(1)
-    , _width(1)
-    , _update(kTexture | kSegment | kMesh)
+    , mWidth(1)
+    , mUpdate(kTexture | kSegment | kMesh)
 {
     mTrackPoints.emplace_back(0, 0  );
     mTrackPoints.emplace_back(0, 100);
@@ -27,7 +27,7 @@ CompLightning::CompLightning()
 
 void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (_tex.Check())
+    if (mTex.Check())
     {
         Update();
 
@@ -35,7 +35,7 @@ void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("texture0", _tex.Instance<RawTexture>()));
+        command.mTextures.push_back(std::make_pair("texture0", mTex.Instance<RawTexture>()));
         canvas->Post(command);
     }
 }
@@ -49,9 +49,9 @@ const std::string & CompLightning::GetName()
 void CompLightning::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    _tex.EncodeBinary(os, project);
+    mTex.EncodeBinary(os, project);
     tools::Serialize(os, mScale);
-    tools::Serialize(os, _width);
+    tools::Serialize(os, mWidth);
     tools::Serialize(os, mColor);
     tools::Serialize(os, mTrackPoints);
 }
@@ -59,9 +59,9 @@ void CompLightning::EncodeBinary(std::ostream & os, Project * project)
 void CompLightning::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    _tex.DecodeBinary(is, project);
+    mTex.DecodeBinary(is, project);
     tools::Deserialize(is, mScale);
-    tools::Deserialize(is, _width);
+    tools::Deserialize(is, mWidth);
     tools::Deserialize(is, mColor);
     tools::Deserialize(is, mTrackPoints);
 }
@@ -71,16 +71,16 @@ bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any &
     AddState(StateEnum::kUpdate, true);
     if (title == "Tex")
     {
-        _update |= kTexture;
+        mUpdate |= kTexture;
     }
     else if (title == "Width")
     {
-        _update |= kSegment;
+        mUpdate |= kSegment;
     }
     else if (title == "Scale" 
           || title == "Color")
     {
-        _update |= kMesh;
+        mUpdate |= kMesh;
     }
     return true;
 }
@@ -88,9 +88,9 @@ bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any &
 std::vector<Component::Property> CompLightning::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Tex",    &_tex,      std::vector<uint>{ Res::TypeEnum::kImg });
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Tex",    &mTex,      std::vector<uint>{ Res::TypeEnum::kImg });
     props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Scale",  &mScale);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width",  &_width);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width",  &mWidth);
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &mColor);
     return std::move(props);
 }
@@ -101,13 +101,13 @@ void CompLightning::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (_tex.Modify())
+        if (mTex.Modify())
         {
-            _tex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            _tex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            mTex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            mTex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
-        if (_update & kSegment)
+        if (mUpdate & kSegment)
         {
             std::queue<Segment> input;
             for (auto i = 0; i != mTrackPoints.size() - 1; ++i)
@@ -116,15 +116,15 @@ void CompLightning::Update()
                 auto & b = mTrackPoints.at(i + 1);
                 input.emplace(a, b, 0);
             }
-            GenSegm(_width, input, _segments);
+            GenSegm(mWidth, input, mSegments);
         }
 
-        if (_update & (kSegment | kMesh))
+        if (mUpdate & (kSegment | kMesh))
         {
-            GenMesh(mScale, _segments);
+            GenMesh(mScale, mSegments);
         }
 
-        _update = 0;
+        mUpdate = 0;
     }
 }
 
@@ -190,14 +190,14 @@ void CompLightning::GenMesh(float scale, const std::vector<Segment> & segments)
 void CompLightning::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
-    _update |= UpdateEnum::kSegment;
+    mUpdate |= UpdateEnum::kSegment;
     mTrackPoints.at(index) = point;
 }
 
 void CompLightning::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
     AddState(StateEnum::kUpdate, true);
-    _update |= UpdateEnum::kSegment;
+    mUpdate |= UpdateEnum::kSegment;
     mTrackPoints.insert(std::next(mTrackPoints.begin(), index), point);
 }
 
@@ -206,7 +206,7 @@ void CompLightning::OnDeleteTrackPoint(const size_t index, const glm::vec2 & poi
     AddState(StateEnum::kUpdate, true);
     if (mTrackPoints.size() > 1)
     {
-        _update |= UpdateEnum::kSegment;
+        mUpdate |= UpdateEnum::kSegment;
         mTrackPoints.erase(std::next(mTrackPoints.begin(), index));
     }
 }

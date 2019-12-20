@@ -39,11 +39,11 @@ private:
 
 private:
     glm::vec4           mColor;
-    float               _width;     //  Ïß¿í
-    float               _smooth;
-    uint                _update;
+    float               mWidth;     //  Ïß¿í
+    float               mSmooth;
+    uint                mUpdate;
 
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;
-    std::vector<glm::vec2> _segments;
+    std::vector<glm::vec2> mSegments;
 };
