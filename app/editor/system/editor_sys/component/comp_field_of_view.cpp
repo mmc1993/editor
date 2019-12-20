@@ -91,7 +91,7 @@ void CompFieldOfView::GenView()
 {
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
-    std::vector<glm::vec2> segments;
+    std::vector<glm::vec2> points;
     for (auto & polygon : _polyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
     {
         for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
@@ -100,33 +100,33 @@ void CompFieldOfView::GenView()
             const auto & b = polygon->GetSegments().at((i + 1) % n);
             auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
             auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
-            segments.emplace_back(worldA);
-            segments.emplace_back(worldB);
+            points.emplace_back(worldA);
+            points.emplace_back(worldB);
         }
     }
 
-    _segments.clear();
-    _segments.emplace_back(0.0f);
-    for (auto i = 0; i != segments.size(); i += 2)
+    _rayPoints.clear();
+    _rayPoints.emplace_back(0.0f);
+    for (auto i = 0; i != points.size(); i += 2)
     {
-        auto point = RayTracking(segments, segments.at(i));
-        if (tools::Equal(point, segments.at(i)))
+        auto point = RayTracking(points, points.at(i));
+        if (tools::Equal(point, points.at(i)))
         {
-            {
-                //  向左延长
-                auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
-                _segments.emplace_back(RayExtended(segments, point + offset));
-            }
             {
                 //  向右延长
                 auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
-                _segments.emplace_back(RayExtended(segments, point + offset));
+                _rayPoints.emplace_back(RayExtended(points, point + offset));
+            }
+            {
+                //  向左延长
+                auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
+                _rayPoints.emplace_back(RayExtended(points, point + offset));
             }
         }
-        _segments.emplace_back(point);
+        _rayPoints.emplace_back(point);
     }
 
-    std::sort(_segments.begin() + 1, _segments.end(), [] (const glm::vec2 & a, const glm::vec2 & b)
+    std::sort(_rayPoints.begin() + 1, _rayPoints.end(), [] (const glm::vec2 & a, const glm::vec2 & b)
         {
             uint q0 = 0, q1 = 0;
             if      (a.x >= 0 && a.y >= 0) q0 = 0;
@@ -146,13 +146,13 @@ void CompFieldOfView::GenView()
 void CompFieldOfView::GenMesh()
 {
     std::vector<RawMesh::Vertex> points;
-    auto count = _segments.size() - 1;
+    auto count = _rayPoints.size() - 1;
     for (auto i = 0; i != count; ++i)
     {
-        auto & a = _segments.at( i              + 1);
-        auto & b = _segments.at((i + 1) % count + 1);
+        auto & a = _rayPoints.at( i              + 1);
+        auto & b = _rayPoints.at((i + 1) % count + 1);
 
-        points.emplace_back(_segments.front(), _color);
+        points.emplace_back(_rayPoints.front(), _color);
         points.emplace_back(a, _color);
         points.emplace_back(b, _color);
     }
