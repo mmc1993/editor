@@ -48,13 +48,13 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         Update();
 
         interface::PostCommand command;
-        command.mMesh           = _mesh;
-        command.mProgram        = _program;
-        command.mTransform      = canvas->GetMatrixStack().GetM();
-        command.mType           = interface::PostCommand::kSample;
-        command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback,
-                                CastPtr<CompFieldOfView>(shared_from_this()), 
-                                std::placeholders::_1, std::placeholders::_2);
+        command.mMesh      = _mesh;
+        command.mProgram   = _program;
+        command.mTransform = canvas->GetMatrixStack().GetM();
+        command.mType      = interface::PostCommand::kSample;
+        command.mCallback  = std::bind(&CompFieldOfView::OnDrawCallback,
+                           CastPtr<CompFieldOfView>(shared_from_this()), 
+                           std::placeholders::_1, std::placeholders::_2);
         canvas->Post(command);
     }
 }
@@ -119,19 +119,7 @@ void CompFieldOfView::GenView()
             auto offset = cross > 0
                 ? glm::normalize(glm::vec2(point.y, -point.x))  //  向右延长
                 : glm::normalize(glm::vec2(-point.y, point.x)); //  向左延长
-
             _rayPoints.emplace_back(RayExtended(segments, point + offset));
-
-            //  TODO_
-            //  计算扩展射线
-            _extPoints.emplace_back(point);
-            for (auto i = 0; i != sExtPointGroupNum - 2; ++i)
-            {
-                auto s = 10.0f * (sExtPointGroupNum - i) / sExtPointGroupNum;
-                auto p = RayExtended(segments, point + offset * s);
-                _extPoints.emplace_back(p);
-            }
-            _extPoints.emplace_back(_rayPoints.back());
         }
         _rayPoints.emplace_back(point);
     }
@@ -156,31 +144,15 @@ void CompFieldOfView::GenView()
 void CompFieldOfView::GenMesh()
 {
     std::vector<RawMesh::Vertex> points;
+    auto count = _rayPoints.size() - 1;
+    for (auto i = 0; i != count; ++i)
     {
-        auto count = _rayPoints.size() - 1;
-        for (auto i = 0; i != count; ++i)
-        {
-            auto & a = _rayPoints.at( i              + 1);
-            auto & b = _rayPoints.at((i + 1) % count + 1);
-
-            points.emplace_back(_rayPoints.front(), _color);
-            points.emplace_back(a, _color);
-            points.emplace_back(b, _color);
-        }
+        auto & a = _rayPoints.at( i              + 1);
+        auto & b = _rayPoints.at((i + 1) % count + 1);
+        points.emplace_back(_rayPoints.front(), _color);
+        points.emplace_back(a, _color);
+        points.emplace_back(b, _color);
     }
-    //  扩展线段, 5个点一组, 第一个点是远点, 剩下4个点按2个分2组
-    {
-        for (auto i = 0; i != _extPoints.size(); i += sExtPointGroupNum)
-        {
-            for (auto j = 0; j != sExtPointGroupNum - 2; ++j)
-            {
-                points.emplace_back(_extPoints.at(i));
-                points.emplace_back(_extPoints.at(i + 1));
-                points.emplace_back(_extPoints.at(i + 2));
-            }
-        }
-    }
-
     _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }
 

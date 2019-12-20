@@ -5,9 +5,6 @@
 #include "comp_polygon.h"
 
 class CompFieldOfView : public Component {
-private:
-    static const auto sExtPointGroupNum = 5;
-
 public:
     CompFieldOfView();
 
@@ -39,5 +36,4 @@ private:
     SharePtr<RawProgram>   _program;
 
     std::vector<glm::vec2> _rayPoints;
-    std::vector<glm::vec2> _extPoints;
 };
