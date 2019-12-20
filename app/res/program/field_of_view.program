@@ -33,11 +33,10 @@ BlendFunc One Zero
         void main()
         {
             vec2 size = textureSize(uniform_sample, 0);
-            float u = gl_FragCoord.x / size.x;
-            float v = gl_FragCoord.y / size.y;
-            color_ = texture(uniform_sample, vec2(u, v));
+            vec2 uv = vec2(gl_FragCoord.x / size.x,
+                           gl_FragCoord.y / size.y);
+            color_ = texture(uniform_sample, uv);
             color_.a = v_out_.mColor.a;
-            color_.rgb *= v_out_.mColor.rgb;
         }
     FShader End
 Pass End

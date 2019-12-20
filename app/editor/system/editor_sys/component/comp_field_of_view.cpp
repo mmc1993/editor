@@ -105,7 +105,6 @@ void CompFieldOfView::GenView()
         }
     }
 
-    _extPoints.clear();
     _rayPoints.clear();
     _rayPoints.emplace_back(0.0f);
     for (auto i = 0; i != segments.size(); i += 2)

@@ -34,6 +34,5 @@ private:
 
     SharePtr<RawMesh>      _mesh;
     SharePtr<RawProgram>   _program;
-
     std::vector<glm::vec2> _rayPoints;
 };
