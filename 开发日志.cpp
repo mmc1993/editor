@@ -206,7 +206,7 @@ ok  //  UIEventEnum 剥离
 // --      Type|Path > Word0 Word1
 
 // OnCallEventMessage 消除第三个参数
-移动 pack_atlas tool
+// 移动 pack_atlas tool
 
 
 
