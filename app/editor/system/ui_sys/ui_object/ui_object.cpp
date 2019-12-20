@@ -312,8 +312,11 @@ glm::vec4 UIObject::ToWorldRect()
 
 void UIObject::BindDelegate(UIEvent::DelegateHandler * delegate)
 {
-    ASSERT_LOG(_delegate == nullptr, "");
     _delegate.reset(delegate);
+    if (delegate != nullptr)
+    {
+        _delegate->SetOwner(shared_from_this());
+    }
 }
 
 void UIObject::WakeInit(const std::any & param)

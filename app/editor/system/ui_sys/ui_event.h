@@ -124,19 +124,17 @@ public:
     //  事件代理
     class DelegateHandler {
     public:
-        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, const SharePtr<UIObject> & object)
-        {
-            if (type == UIEventEnum::kInit)
-            {
-                _owner = object;
-            }
-            return false;
-        }
+        virtual bool OnCallEventMessage(UIEventEnum type, const Event & event, const SharePtr<UIObject> & object) = 0;
 
         SharePtr<UIObject> GetOwner()
         {
             ASSERT_LOG(!_owner.expired(), "");
             return _owner.lock();
+        }
+
+        void SetOwner(const SharePtr<UIObject> & owner)
+        {
+            _owner = owner;
         }
 
         virtual ~DelegateHandler() { }

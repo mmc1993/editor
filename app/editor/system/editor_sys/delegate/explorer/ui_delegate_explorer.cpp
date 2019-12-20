@@ -14,7 +14,6 @@ const glm::vec4 UIDelegateExplorer::sTypeColors[Res::Length]
 
 bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject>& object)
 {
-    auto ret = UIDelegateBase::OnCallEventMessage(e, param, object);
     switch (e)
     {
     case UIEventEnum::kMouse:
@@ -26,7 +25,7 @@ bool UIDelegateExplorer::OnCallEventMessage(UIEventEnum e, const UIEvent::Event 
     case UIEventEnum::kInit:
         return OnEventInit((const UIEvent::Init &)param);
     }
-    return ret;
+    return false;
 }
 
 bool UIDelegateExplorer::OnEventMouse(const UIEvent::Mouse & param)

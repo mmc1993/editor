@@ -2,8 +2,6 @@
 
 bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
-    UIEventDelegateMain::OnCallEventMessage(e, param, object);
-
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
@@ -360,14 +358,11 @@ void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & ob
 
 bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
-    UIEventDelegateMain::OnCallEventMessage(e, param, object);
     return true;
 }
 
 bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
-    UIEventDelegateMain::OnCallEventMessage(e, param, object);
-
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
@@ -451,8 +446,6 @@ void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<GLObject>
 
 bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
-    UIEventDelegateMain::OnCallEventMessage(e, param, object);
-
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
@@ -507,8 +500,6 @@ void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & ob
 
 bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param, const SharePtr<UIObject> & object)
 {
-    UIEventDelegateMain::OnCallEventMessage(e, param, object);
-    
     if (e == UIEventEnum::kMenu)
     {
         auto & menu = (const UIEvent::Menu &)param;
