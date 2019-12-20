@@ -132,12 +132,12 @@ public:
         uint & value,
         const std::string & title,
         const Handler_t & handler, const std::any & params)
-        : UIPropertyObject<uint>(value, title, handler), _mask(std::any_cast<uint>(params))
+        : UIPropertyObject<uint>(value, title, handler), mMask(std::any_cast<uint>(params))
     { }
 
     virtual bool OnEnter() override;
 private:
-    uint _mask;
+    uint mMask;
 };
 
 // ---

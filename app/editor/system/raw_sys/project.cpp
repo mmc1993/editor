@@ -16,13 +16,13 @@ Project::~Project()
 void Project::New(const std::string & url)
 {
     _gid = 0x0;
-    _url = url;
-    _object = NewObject();
+    mURL = url;
+    mObject = NewObject();
 }
 
 void Project::Load(const std::string & url)
 {
-    ASSERT_LOG(_object == nullptr, url.c_str());
+    ASSERT_LOG(mObject == nullptr, url.c_str());
     ASSERT_LOG(_resources.empty(), url.c_str());
     std::ifstream is;
 
@@ -45,13 +45,13 @@ void Project::Load(const std::string & url)
     //  加载对象
     is.open(url, std::ios::binary);
     ASSERT_LOG(is,    url.c_str());
-    _object.reset(new  GLObject());
-    _object->DecodeBinary(is,this);
+    mObject.reset(new  GLObject());
+    mObject->DecodeBinary(is,this);
     is.close();
-    _url = url;
+    mURL = url;
 
     //  生成Object Map
-    std::deque<SharePtr<GLObject>> list{ _object };
+    std::deque<SharePtr<GLObject>> list{ mObject };
     while (!list.empty())
     {
         auto & front = list.front();
@@ -59,7 +59,7 @@ void Project::Load(const std::string & url)
             front->GetObjects().begin(),
             front->GetObjects().end(),
             std::back_inserter(list));
-        _objects.insert(std::make_pair(front->GetID(), front));
+        mObjects.insert(std::make_pair(front->GetID(), front));
         list.pop_front();
     }
     Retrieve();
@@ -67,8 +67,8 @@ void Project::Load(const std::string & url)
 
 void Project::Save(const std::string & url)
 {
-    ASSERT_LOG(_object != nullptr, url.c_str());
-    const auto & saveURL = url.empty()?_url:url;
+    ASSERT_LOG(mObject != nullptr, url.c_str());
+    const auto & saveURL = url.empty()?mURL:url;
 
     std::ofstream os;
     //  写入资源
@@ -84,20 +84,20 @@ void Project::Save(const std::string & url)
 
     //  写入Obj对象
     os.open(saveURL, std::ios::binary);
-    _object->EncodeBinary(os, this);
+    mObject->EncodeBinary(os, this);
     os.close();
 }
 
 SharePtr<GLObject> Project::NewObject()
 {
     auto object = std::create_ptr<GLObject>(++_gid);
-    _objects.insert(std::make_pair(_gid, object));
+    mObjects.insert(std::make_pair(_gid, object));
     return object;
 }
 
 void Project::DeleteObject(const uint & id)
 {
-    _objects.erase(id);
+    mObjects.erase(id);
 }
 
 void Project::DeleteObject(const SharePtr<GLObject> & object)
@@ -221,8 +221,8 @@ void Project::Retrieve()
 
     //  对象
     std::deque<SharePtr<GLObject>> list{
-        _object->GetObjects().begin(),
-        _object->GetObjects().end()
+        mObject->GetObjects().begin(),
+        mObject->GetObjects().end()
     };
     while (!list.empty())
     {

@@ -28,15 +28,15 @@ private:
     void OnDrawCallback(const interface::RenderCommand & command, uint pos);
 
 private:
-    Res::Ref    _font;
-    std::string _text;
-    glm::vec2   _size;
-    glm::vec2   _anchor;
+    Res::Ref    mFont;
+    std::string mText;
+    glm::vec2   mSize;
+    glm::vec2   mAnchor;
 
-    float       _outDelta; //  ÎÄ×Ö±ßÔµÆ½»¬·¶Î§
-    glm::vec4   _outColor;
-    glm::vec4   _color;
+    float       mOutDelta; //  ÎÄ×Ö±ßÔµÆ½»¬·¶Î§
+    glm::vec4   mOutColor;
+    glm::vec4   mColor;
 
-    SharePtr<RawMesh>    _mesh;
-    SharePtr<RawProgram> _program;
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
 };

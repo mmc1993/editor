@@ -28,11 +28,11 @@ private:
     void OnDrawCallback(const interface::RenderCommand & command, uint texturePos);
 
 private:
-    glm::vec4   _color;
+    glm::vec4   mColor;
     Res::Ref    _clipObject;
     Res::Ref    _polyObject;
 
-    SharePtr<RawMesh>      _mesh;
-    SharePtr<RawProgram>   _program;
+    SharePtr<RawMesh>      mMesh;
+    SharePtr<RawProgram>   mProgram;
     std::vector<glm::vec2> _tracks;
 };

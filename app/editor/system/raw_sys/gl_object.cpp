@@ -4,7 +4,7 @@
 #include "../ui_sys/ui_object/ui_object.h"
 
 GLObject::GLObject()
-    : _id(~0)
+    : mID(~0)
     , _state(kActive)
     , _parent(nullptr)
 {
@@ -13,12 +13,12 @@ GLObject::GLObject()
 }
 
 GLObject::GLObject(uint id)
-    : _id(id)
+    : mID(id)
     , _state(kActive)
     , _parent(nullptr)
 {
-    _transform = std::create_ptr<CompTransform>();
-    AddComponent(_transform);
+    mTransform = std::create_ptr<CompTransform>();
+    AddComponent(mTransform);
 }
 
 GLObject::~GLObject()
@@ -30,8 +30,8 @@ GLObject::~GLObject()
 void GLObject::EncodeBinary(std::ostream & os, Project * project)
 {
     //  自身
-    tools::Serialize(os, _id);
-    tools::Serialize(os, _name);
+    tools::Serialize(os, mID);
+    tools::Serialize(os, mName);
     tools::Serialize(os, _state);
 
     //  组件
@@ -54,8 +54,8 @@ void GLObject::EncodeBinary(std::ostream & os, Project * project)
 void GLObject::DecodeBinary(std::istream & is, Project * project)
 {
     //  自身
-    tools::Deserialize(is, _id);
-    tools::Deserialize(is, _name);
+    tools::Deserialize(is, mID);
+    tools::Deserialize(is, mName);
     tools::Deserialize(is, _state);
     //  组件
     size_t count;
@@ -85,11 +85,11 @@ void GLObject::DecodeBinary(std::istream & is, Project * project)
 void GLObject::InsertObject(const SharePtr<GLObject> & object, const std::string & name, uint pos)
 {
     ASSERT_LOG(object->GetParent() == nullptr, name.c_str());
-    auto insert = std::next(_children.begin(), 
-             std::min(pos, _children.size()));
-    _children.insert(insert, object);
+    auto insert = std::next(mChildren.begin(), 
+             std::min(pos, mChildren.size()));
+    mChildren.insert(insert, object);
     object->_parent = this;
-    object->_name = name;
+    object->mName = name;
 }
 
 void GLObject::InsertObject(const SharePtr<GLObject> & object, uint pos)
@@ -99,35 +99,35 @@ void GLObject::InsertObject(const SharePtr<GLObject> & object, uint pos)
 
 void GLObject::DeleteObject(const SharePtr<GLObject> & object)
 {
-    auto it = std::find(_children.begin(), _children.end(), object);
-    ASSERT_LOG(it != _children.end(), "Object DelChildIdx");
-    DeleteObject(std::distance(_children.begin(), it));
+    auto it = std::find(mChildren.begin(), mChildren.end(), object);
+    ASSERT_LOG(it != mChildren.end(), "Object DelChildIdx");
+    DeleteObject(std::distance(mChildren.begin(), it));
 }
 
 void GLObject::DeleteObject(const std::string & name)
 {
-    auto it = std::find_if(_children.begin(), _children.end(),
+    auto it = std::find_if(mChildren.begin(), mChildren.end(),
         [name] (const SharePtr<GLObject> & object) 
-        { return object->_name == name; });
-    if (it != _children.end())
+        { return object->mName == name; });
+    if (it != mChildren.end())
     {
-        DeleteObject(std::distance(_children.begin(), it));
+        DeleteObject(std::distance(mChildren.begin(), it));
     }
 }
 
 void GLObject::DeleteObject(size_t idx)
 {
-    ASSERT_LOG(idx < _children.size(), "Object DelChildIdx: {0}", idx);
-    auto it = std::next(_children.begin(), idx);
+    ASSERT_LOG(idx < mChildren.size(), "Object DelChildIdx: {0}", idx);
+    auto it = std::next(mChildren.begin(), idx);
     (*it)->_parent = nullptr;
-    _children.erase(it);
+    mChildren.erase(it);
 }
 
 void GLObject::ClearObjects()
 {
-    while (!_children.empty())
+    while (!mChildren.empty())
     {
-        DeleteObject(_children.back());
+        DeleteObject(mChildren.back());
     }
 }
 
@@ -172,28 +172,28 @@ int GLObject::Relation(const SharePtr<GLObject> & target)
 
 SharePtr<GLObject> GLObject::GetObject(const std::string & name)
 {
-    auto it = std::find_if(_children.begin(), _children.end(),
+    auto it = std::find_if(mChildren.begin(), mChildren.end(),
         [name] (const SharePtr<GLObject> & object)
-        { return object->_name == name; });
-    return it != _children.end() ? *it : nullptr;
+        { return object->mName == name; });
+    return it != mChildren.end() ? *it : nullptr;
 }
 
 SharePtr<GLObject> GLObject::GetObject(const size_t idx)
 {
-    ASSERT_LOG(idx < _children.size(), "Object GetChildIdx: {0}", idx);
-    return *std::next(_children.begin(), idx);
+    ASSERT_LOG(idx < mChildren.size(), "Object GetChildIdx: {0}", idx);
+    return *std::next(mChildren.begin(), idx);
 }
 
 std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 {
-    return _children;
+    return mChildren;
 }
 
 void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
     canvas->GetMatrixStack().Mul(interface::MatrixStack::kModel, GetTransform()->GetMatrix());
 
-    for (auto component : _components)
+    for (auto component : mComponents)
     {
         if (component->HasState(Component::StateEnum::kActive))
         {
@@ -202,7 +202,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
         }
     }
 
-    for (auto object : _children)
+    for (auto object : mChildren)
     {
         if (object->HasState(GLObject::StateEnum::kActive))
         {
@@ -210,7 +210,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
         }
     }
 
-    for (auto component : _components)
+    for (auto component : mComponents)
     {
         if (component->HasState(Component::StateEnum::kActive))
         {
@@ -223,14 +223,14 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 
 std::string GLObject::SetName(const std::string & name)
 {
-    auto old = std::move(_name);
-    _name.operator=(name);
+    auto old = std::move(mName);
+    mName.operator=(name);
     return std::move(old);
 }
 
 const std::string & GLObject::GetName() const
 {
-    return _name;
+    return mName;
 }
 
 void GLObject::AddState(uint state, bool add)
@@ -265,7 +265,7 @@ void GLObject::SetParent(GLObject * parent)
     }
     if (parent != nullptr)
     {
-        parent->InsertObject(shared_from_this(), _name);
+        parent->InsertObject(shared_from_this(), mName);
     }
 }
 
@@ -276,14 +276,14 @@ SharePtr<GLObject> GLObject::GetParent()
 
 void GLObject::SetTransform(const SharePtr<CompTransform> & transform)
 {
-    ASSERT_LOG(_transform == nullptr, "");
-    _transform = transform;
+    ASSERT_LOG(mTransform == nullptr, "");
+    mTransform = transform;
 }
 
 SharePtr<CompTransform> GLObject::GetTransform()
 {
-    ASSERT_LOG(_transform != nullptr, "");
-    return _transform;
+    ASSERT_LOG(mTransform != nullptr, "");
+    return mTransform;
 }
 
 glm::mat4 GLObject::GetWorldMatrix()
@@ -298,39 +298,39 @@ const glm::mat4 & GLObject::GetLocalMatrix()
 
 void GLObject::ClearComponents()
 {
-	while (!_components.empty())
+	while (!mComponents.empty())
 	{
-        _components.back()->OnDel();
-        _components.back()->SetOwner(nullptr);
-		_components.pop_back();
+        mComponents.back()->OnDel();
+        mComponents.back()->SetOwner(nullptr);
+		mComponents.pop_back();
 	}
 }
 
 void GLObject::AddComponent(const SharePtr<Component> & component)
 {
-    ASSERT_LOG(_id != ~0, "");
-    _components.push_back(component);
+    ASSERT_LOG(mID != ~0, "");
+    mComponents.push_back(component);
     component->SetOwner(this);
     component->OnAdd();
 }
 
 void GLObject::DelComponent(const SharePtr<Component> & component)
 {
-    auto it = std::find(_components.begin(), _components.end(), component);
-    if (it != _components.end()) { (*it)->OnDel(); _components.erase(it); }
+    auto it = std::find(mComponents.begin(), mComponents.end(), component);
+    if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
 }
 
 void GLObject::DelComponent(const std::type_info & type)
 {
-    auto it = std::find_if(_components.begin(), _components.end(),
+    auto it = std::find_if(mComponents.begin(), mComponents.end(),
         [&type](const SharePtr<Component> & component) 
         { return typeid(*component) == type; });
-    if (it != _components.end()) { (*it)->OnDel(); _components.erase(it); }
+    if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
 }
 
 std::vector<SharePtr<Component>> & GLObject::GetComponents()
 {
-    return _components;
+    return mComponents;
 }
 
 glm::vec2 GLObject::WorldToLocal(const glm::vec2 & point)

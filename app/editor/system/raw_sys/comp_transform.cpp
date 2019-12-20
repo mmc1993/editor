@@ -1,14 +1,14 @@
 #include "comp_transform.h"
 
 CompTransform::CompTransform()
-    : _angle(0      )
-    , _scale(1, 1   )
-    , _position(0, 0)
+    : mAngle(0      )
+    , mScale(1, 1   )
+    , mPosition(0, 0)
 {
-    _trackPoints.push_back(glm::vec2(-10, -10));
-    _trackPoints.push_back(glm::vec2( 10, -10));
-    _trackPoints.push_back(glm::vec2( 10,  10));
-    _trackPoints.push_back(glm::vec2(-10,  10));
+    mTrackPoints.push_back(glm::vec2(-10, -10));
+    mTrackPoints.push_back(glm::vec2( 10, -10));
+    mTrackPoints.push_back(glm::vec2( 10,  10));
+    mTrackPoints.push_back(glm::vec2(-10,  10));
     AddState(StateEnum::kModifyTrackPoint, true);
     AddState(StateEnum::kUpdate,           true);
 }
@@ -24,76 +24,76 @@ void CompTransform::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 void CompTransform::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _angle);
-    tools::Serialize(os, _scale);
-    tools::Serialize(os, _position);
+    tools::Serialize(os, mAngle);
+    tools::Serialize(os, mScale);
+    tools::Serialize(os, mPosition);
 }
 
 void CompTransform::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _angle);
-    tools::Deserialize(is, _scale);
-    tools::Deserialize(is, _position);
+    tools::Deserialize(is, mAngle);
+    tools::Deserialize(is, mScale);
+    tools::Deserialize(is, mPosition);
 }
 
 void CompTransform::Position(float x, float y)
 {
-    _position.x = x;
-    _position.y = y;
+    mPosition.x = x;
+    mPosition.y = y;
     AddState(StateEnum::kUpdate, true);
 }
 
 void CompTransform::Angle(float r)
 {
-    _angle = r;
+    mAngle = r;
     AddState(StateEnum::kUpdate, true);
 }
 
 void CompTransform::Scale(float x, float y)
 {
-    _scale.x = x;
-    _scale.y = y;
+    mScale.x = x;
+    mScale.y = y;
     AddState(StateEnum::kUpdate, true);
 }
 
 CompTransform & CompTransform::AddPosition(float x, float y)
 {
-    Position(_position.x + x, _position.y + y);
+    Position(mPosition.x + x, mPosition.y + y);
     return *this;
 }
 
 CompTransform & CompTransform::AddScale(float x, float y)
 {
-    Scale(_scale.x + x, _scale.y + y);
+    Scale(mScale.x + x, mScale.y + y);
     return *this;
 }
 
 CompTransform & CompTransform::AddAngle(float r)
 {
-    Angle(_angle + r);
+    Angle(mAngle + r);
     return *this;
 }
 
 const glm::vec2 & CompTransform::GetPosition() const
 {
-    return _position;
+    return mPosition;
 }
 
 const glm::vec2 & CompTransform::GetScale() const
 {
-    return _scale;
+    return mScale;
 }
 
 float CompTransform::GetAngle() const
 {
-    return _angle;
+    return mAngle;
 }
 
 const glm::mat4 & CompTransform::GetMatrix()
 {
     UpdateMatrix();
-    return _matrix;
+    return mMatrix;
 }
 
 glm::mat4 CompTransform::GetMatrixFromRoot()
@@ -127,7 +127,7 @@ glm::vec2 CompTransform::GetWorldPosition()
 
 glm::mat4 CompTransform::GetAngleMatrix()
 {
-    return glm::rotate(glm::mat4(1), glm::radians(_angle), glm::vec3(0, 0, 1));
+    return glm::rotate(glm::mat4(1), glm::radians(mAngle), glm::vec3(0, 0, 1));
 }
 
 const std::string & CompTransform::GetName()
@@ -139,9 +139,9 @@ const std::string & CompTransform::GetName()
 std::vector<Component::Property> CompTransform::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Poosition", &_position);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Scale"    , &_scale);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat  , "Angle"    , &_angle);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Poosition", &mPosition);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Scale"    , &mScale);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat  , "Angle"    , &mAngle);
     return std::move(props);
 }
 
@@ -159,8 +159,8 @@ void CompTransform::UpdateMatrix()
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        _matrix = glm::translate(glm::mat4(1), glm::vec3(_position, 0));
-        _matrix = glm::rotate(_matrix, glm::radians(_angle), glm::vec3(0, 0, 1));
-        _matrix = glm::scale(_matrix, glm::vec3(_scale, 1));
+        mMatrix = glm::translate(glm::mat4(1), glm::vec3(mPosition, 0));
+        mMatrix = glm::rotate(mMatrix, glm::radians(mAngle), glm::vec3(0, 0, 1));
+        mMatrix = glm::scale(mMatrix, glm::vec3(mScale, 1));
     }
 }

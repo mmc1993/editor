@@ -4,21 +4,21 @@
 #include "../../raw_sys/comp_transform.h"
 
 CompSegment::CompSegment()
-    : _color(1)
+    : mColor(1)
     , _width(1)
     , _smooth(1.0f)
     , _update(kSegment | kMesh)
 {
-    _trackPoints.emplace_back(-50,  0);
-    _trackPoints.emplace_back( 50, 50);
-    _trackPoints.emplace_back( 50,  0);
+    mTrackPoints.emplace_back(-50,  0);
+    mTrackPoints.emplace_back( 50, 50);
+    mTrackPoints.emplace_back( 50,  0);
 
-    _mesh = std::create_ptr<RawMesh>();
-    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+    mMesh = std::create_ptr<RawMesh>();
+    mMesh->Init({},{}, RawMesh::Vertex::kV | 
                        RawMesh::Vertex::kC);
 
-    _program = std::create_ptr<RawProgram>();
-    _program->Init(tools::GL_PROGRAM_SEGMENT);
+    mProgram = std::create_ptr<RawProgram>();
+    mProgram->Init(tools::GL_PROGRAM_SEGMENT);
 
     AddState(StateEnum::kModifyTrackPoint, true);
     AddState(StateEnum::kInsertTrackPoint, true);
@@ -30,8 +30,8 @@ void CompSegment::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     Update();
 
     interface::FowardCommand command;
-    command.mMesh       = _mesh;
-    command.mProgram    = _program;
+    command.mMesh       = mMesh;
+    command.mProgram    = mProgram;
     command.mTransform  = canvas->GetMatrixStack().GetM();
     canvas->Post(command);
 }
@@ -46,18 +46,18 @@ void CompSegment::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
     tools::Serialize(os, _width);
-    tools::Serialize(os, _color);
+    tools::Serialize(os, mColor);
     tools::Serialize(os, _smooth);
-    tools::Serialize(os, _trackPoints);
+    tools::Serialize(os, mTrackPoints);
 }
 
 void CompSegment::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
     tools::Deserialize(is, _width);
-    tools::Deserialize(is, _color);
+    tools::Deserialize(is, mColor);
     tools::Deserialize(is, _smooth);
-    tools::Deserialize(is, _trackPoints);
+    tools::Deserialize(is, mTrackPoints);
 }
 
 bool CompSegment::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -81,7 +81,7 @@ std::vector<Component::Property> CompSegment::CollectProperty()
 {
     auto props = Component::CollectProperty();
     props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &_width);
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &mColor);
     props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Smooth", &_smooth);
     return std::move(props);
 }
@@ -107,14 +107,14 @@ void CompSegment::GenSegm()
     //  ±´Èû¶û²åÖµ
     std::vector<glm::vec2> ctrlPoints;
 
-    if (_trackPoints.size() > 2)
+    if (mTrackPoints.size() > 2)
     {
-        auto size = _trackPoints.size();
+        auto size = mTrackPoints.size();
         for (auto i = 0; i != size; ++i)
         {
-            auto & a = _trackPoints.at((i + size - 1) % size);
-            auto & b = _trackPoints.at(i                    );
-            auto & c = _trackPoints.at((i + 1)        % size);
+            auto & a = mTrackPoints.at((i + size - 1) % size);
+            auto & b = mTrackPoints.at(i                    );
+            auto & c = mTrackPoints.at((i + 1)        % size);
 
             auto mid0 = glm::lerp(a, b, 0.5f);
             auto mid1 = glm::lerp(b, c, 0.5f);
@@ -139,26 +139,26 @@ void CompSegment::GenSegm()
     else
     {
         //  N´Î±´Èû¶ûÇúÏß
-        for (auto i = 0; i != _trackPoints.size() - 1; ++i)
+        for (auto i = 0; i != mTrackPoints.size() - 1; ++i)
         {
-            auto & a = _trackPoints.at(i    );
+            auto & a = mTrackPoints.at(i    );
             auto & b = ctrlPoints.at((i * 2) + 1);
             auto & c = ctrlPoints.at((i + 1) * 2);
-            auto & d = _trackPoints.at(i + 1);
+            auto & d = mTrackPoints.at(i + 1);
             auto count = iint(1.0f / _smooth);
             for (auto s = 0; s != count; ++s)
             {
                 DrawBezier(a, b, c, d, s * _smooth);
             }
         }
-        _segments.emplace_back(_trackPoints.back());
+        _segments.emplace_back(mTrackPoints.back());
     }
 
     //  À­¿¨ÀÊÈÕ²åÖµ
     //if (_smooth != 1.0f)
     //{
     //    _segments.clear();
-    //    auto points = _trackPoints;
+    //    auto points = mTrackPoints;
     //    std::sort(points.begin(), points.end(), 
     //        [](const auto & a, const auto & b) { return a.x < b.x; });
     //    auto iter = std::unique(points.begin(), points.end(), 
@@ -196,7 +196,7 @@ void CompSegment::GenSegm()
     //}
     //else
     //{
-    //    _segments = _trackPoints;
+    //    _segments = mTrackPoints;
     //}
 }
 
@@ -230,12 +230,12 @@ void CompSegment::GenMesh()
         indexs.emplace_back(points.size() + 2);
         indexs.emplace_back(points.size() + 3);
 
-        points.emplace_back(a + offset, _color);
-        points.emplace_back(b + offset, _color);
-        points.emplace_back(b - offset, _color);
-        points.emplace_back(a - offset, _color);
+        points.emplace_back(a + offset, mColor);
+        points.emplace_back(b + offset, mColor);
+        points.emplace_back(b - offset, mColor);
+        points.emplace_back(a - offset, mColor);
     }
-    _mesh->Update(points, indexs);
+    mMesh->Update(points, indexs);
 }
 
 void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d, float t)
@@ -252,23 +252,23 @@ void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point
 {
     _update |= kSegment;
     AddState(StateEnum::kUpdate, true);
-    _trackPoints.at(index) = point;
+    mTrackPoints.at(index) = point;
 }
 
 void CompSegment::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
     _update |= kSegment;
     AddState(StateEnum::kUpdate, true);
-    _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
+    mTrackPoints.insert(std::next(mTrackPoints.begin(), index), point);
 }
 
 void CompSegment::OnDeleteTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    if (_trackPoints.size() > 2)
+    if (mTrackPoints.size() > 2)
     {
         _update |= kSegment;
         AddState(StateEnum::kUpdate, true);
-        _trackPoints.erase(std::next(_trackPoints.begin(), index));
+        mTrackPoints.erase(std::next(mTrackPoints.begin(), index));
     }
 }
 

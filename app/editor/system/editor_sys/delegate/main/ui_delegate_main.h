@@ -12,7 +12,7 @@
 
 class UIEventDelegateMain : public UIEvent::DelegateHandler {
 protected:
-    EventSys::Listener _listener;
+    EventSys::Listener mListener;
 };
 
 //  对象列表

@@ -5,20 +5,20 @@
 #include "../../raw_sys/comp_transform.h"
 
 CompText::CompText()
-    : _text("M")
-    , _color(1.0f)
-    , _anchor(0.0f)
-    , _size(100.0f)
-    , _outDelta(0)
-    , _outColor(0)
+    : mText("M")
+    , mColor(1.0f)
+    , mAnchor(0.0f)
+    , mSize(100.0f)
+    , mOutDelta(0)
+    , mOutColor(0)
 {
-    _trackPoints.resize(4);
+    mTrackPoints.resize(4);
 
-    _mesh = std::create_ptr<RawMesh>();
-    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+    mMesh = std::create_ptr<RawMesh>();
+    mMesh->Init({},{}, RawMesh::Vertex::kV | 
                        RawMesh::Vertex::kC | 
                        RawMesh::Vertex::kUV);
-    _program = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FONT_SDF);
+    mProgram = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FONT_SDF);
 
     AddState(StateEnum::kModifyTrackPoint, true);
 }
@@ -32,29 +32,29 @@ const std::string & CompText::GetName()
 void CompText::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    _font.EncodeBinary(os, project);
+    mFont.EncodeBinary(os, project);
 
-    tools::Serialize(os, _text);
-    tools::Serialize(os, _size);
-    tools::Serialize(os, _anchor);
+    tools::Serialize(os, mText);
+    tools::Serialize(os, mSize);
+    tools::Serialize(os, mAnchor);
 
-    tools::Serialize(os, _color);
-    tools::Serialize(os, _outColor);
-    tools::Serialize(os, _outDelta);
+    tools::Serialize(os, mColor);
+    tools::Serialize(os, mOutColor);
+    tools::Serialize(os, mOutDelta);
 }
 
 void CompText::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    _font.DecodeBinary(is, project);
+    mFont.DecodeBinary(is, project);
     
-    tools::Deserialize(is, _text);
-    tools::Deserialize(is, _size);
-    tools::Deserialize(is, _anchor);
+    tools::Deserialize(is, mText);
+    tools::Deserialize(is, mSize);
+    tools::Deserialize(is, mAnchor);
 
-    tools::Deserialize(is, _color);
-    tools::Deserialize(is, _outColor);
-    tools::Deserialize(is, _outDelta);
+    tools::Deserialize(is, mColor);
+    tools::Deserialize(is, mOutColor);
+    tools::Deserialize(is, mOutDelta);
 }
 
 bool CompText::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -68,17 +68,17 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        if (_font.Check()) { UpdateMesh(); }
+        if (mFont.Check()) { UpdateMesh(); }
     }
 
-    if (_font.Check())
+    if (mFont.Check())
     {
         interface::FowardCommand command;
-        command.mMesh       = _mesh;
-        command.mProgram    = _program;
+        command.mMesh       = mMesh;
+        command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.emplace_back("uniform_texture",
-                _font.Instance<RawFont>()->RefTexture());
+                mFont.Instance<RawFont>()->RefTexture());
         command.mCallback = std::bind(
             &CompText::OnDrawCallback, this,
             std::placeholders::_1,
@@ -89,13 +89,13 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &_font,     (uint)(Res::TypeEnum::kFnt));
-    props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &_text);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &_size);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "Color",     &_color);
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "OutColor",  &_outColor);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat,   "OutDelta",  &_outDelta);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &mFont,     (uint)(Res::TypeEnum::kFnt));
+    props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &mText);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &mSize);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &mAnchor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "Color",     &mColor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "OutColor",  &mOutColor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat,   "OutDelta",  &mOutDelta);
 
     return std::move(props);
 }
@@ -106,35 +106,35 @@ void CompText::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
     switch (index)
     {
     case 0:
-        min.x = std::min(point.x, _trackPoints.at(2).x);
-        min.y = std::min(point.y, _trackPoints.at(2).y);
-        max.x = _trackPoints.at(2).x;
-        max.y = _trackPoints.at(2).y;
+        min.x = std::min(point.x, mTrackPoints.at(2).x);
+        min.y = std::min(point.y, mTrackPoints.at(2).y);
+        max.x = mTrackPoints.at(2).x;
+        max.y = mTrackPoints.at(2).y;
         break;
     case 1:
-        min.x = _trackPoints.at(0).x;
-        min.y = std::min(point.y, _trackPoints.at(3).y);
-        max.x = std::max(point.x, _trackPoints.at(3).x);
-        max.y = _trackPoints.at(2).y;
+        min.x = mTrackPoints.at(0).x;
+        min.y = std::min(point.y, mTrackPoints.at(3).y);
+        max.x = std::max(point.x, mTrackPoints.at(3).x);
+        max.y = mTrackPoints.at(2).y;
         break;
     case 2:
-        min.x = _trackPoints.at(0).x;
-        min.y = _trackPoints.at(0).y;
-        max.x = std::max(point.x, _trackPoints.at(0).x);
-        max.y = std::max(point.y, _trackPoints.at(0).y);
+        min.x = mTrackPoints.at(0).x;
+        min.y = mTrackPoints.at(0).y;
+        max.x = std::max(point.x, mTrackPoints.at(0).x);
+        max.y = std::max(point.y, mTrackPoints.at(0).y);
         break;
     case 3:
-        min.x = std::min(point.x, _trackPoints.at(1).x);
-        min.y = _trackPoints.at(0).y;
-        max.x = _trackPoints.at(2).x;
-        max.y = std::max(point.y, _trackPoints.at(1).y);
+        min.x = std::min(point.x, mTrackPoints.at(1).x);
+        min.y = mTrackPoints.at(0).y;
+        max.x = mTrackPoints.at(2).x;
+        max.y = std::max(point.y, mTrackPoints.at(1).y);
         break;
     }
 
-    _size.x = max.x - min.x;
-    _size.y = max.y - min.y;
+    mSize.x = max.x - min.x;
+    mSize.y = max.y - min.y;
 
-    auto coord = GetOwner()->LocalToParent(_size * _anchor + min);
+    auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
     GetOwner()->GetTransform()->Position(coord.x, coord.y);
 
     AddState(StateEnum::kUpdate, true);
@@ -142,65 +142,65 @@ void CompText::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 
 void CompText::UpdateMesh()
 {
-    _trackPoints.at(0).x = -_size.x *      _anchor.x;
-    _trackPoints.at(0).y = -_size.y *      _anchor.y;
-    _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
-    _trackPoints.at(1).y = -_size.y *      _anchor.y;
-    _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
-    _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-    _trackPoints.at(3).x = -_size.x *      _anchor.x;
-    _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+    mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
+    mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;
+    mTrackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
+    mTrackPoints.at(1).y = -mSize.y *      mAnchor.y;
+    mTrackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
+    mTrackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
+    mTrackPoints.at(3).x = -mSize.x *      mAnchor.x;
+    mTrackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
 
     std::vector<RawMesh::Vertex> points;
 
-    auto codes = _font.Instance<RawFont>()->RefWord(_text);
-    auto texW  = _font.Instance<RawFont>()->RefTexture()->GetW();
-    auto texH  = _font.Instance<RawFont>()->RefTexture()->GetH();
+    auto codes = mFont.Instance<RawFont>()->RefWord(mText);
+    auto texW  = mFont.Instance<RawFont>()->RefTexture()->GetW();
+    auto texH  = mFont.Instance<RawFont>()->RefTexture()->GetH();
     auto posX  = 0.0f;
     auto posY  = 0.0f;
     auto lineH = 0.0f;
     for (auto i = 0; i != codes.size(); ++i)
     {
-        const auto & word = _font.Instance<RawFont>()->RefWord(codes.at(i));
+        const auto & word = mFont.Instance<RawFont>()->RefWord(codes.at(i));
         auto wordW = (word.mUV.z - word.mUV.x) * texW;
         auto wordH = (word.mUV.w - word.mUV.y) * texH;
         //  ½Ø¶Ï¿í¶È
-        if (posX + wordW  > _size.x)
+        if (posX + wordW  > mSize.x)
         {
             posX = 0.0f; posY += lineH;
         }
         //  ½Ø¶Ï¸ß¶È
-        if (posX + wordW > _size.x ||
-            posY + wordH > _size.y)
+        if (posX + wordW > mSize.x ||
+            posY + wordH > mSize.y)
         {
             break;
         }
         lineH = std::max(lineH, wordH);
 
-        auto x = _trackPoints.at(3).x + posX;
-        auto y = _trackPoints.at(3).y - posY;
+        auto x = mTrackPoints.at(3).x + posX;
+        auto y = mTrackPoints.at(3).y - posY;
         glm::vec2 p0(x,         y);
         glm::vec2 p1(x + wordW, y);
         glm::vec2 p2(x + wordW, y - wordH);
         glm::vec2 p3(x,         y - wordH);
 
-        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.w));
-        points.emplace_back(p1, _color, glm::vec2(word.mUV.z, word.mUV.w));
-        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.y));
+        points.emplace_back(p0, mColor, glm::vec2(word.mUV.x, word.mUV.w));
+        points.emplace_back(p1, mColor, glm::vec2(word.mUV.z, word.mUV.w));
+        points.emplace_back(p2, mColor, glm::vec2(word.mUV.z, word.mUV.y));
 
-        points.emplace_back(p0, _color, glm::vec2(word.mUV.x, word.mUV.w));
-        points.emplace_back(p2, _color, glm::vec2(word.mUV.z, word.mUV.y));
-        points.emplace_back(p3, _color, glm::vec2(word.mUV.x, word.mUV.y));
+        points.emplace_back(p0, mColor, glm::vec2(word.mUV.x, word.mUV.w));
+        points.emplace_back(p2, mColor, glm::vec2(word.mUV.z, word.mUV.y));
+        points.emplace_back(p3, mColor, glm::vec2(word.mUV.x, word.mUV.y));
 
         posX += wordW;
     }
 
-    _mesh->Update(points, { });
+    mMesh->Update(points, { });
 }
 
 void CompText::OnDrawCallback(const interface::RenderCommand & command, uint pos)
 { 
     auto forward = (const interface::FowardCommand &)(command);
-    forward.mProgram->BindUniformNumber("out_delta_", _outDelta);
-    forward.mProgram->BindUniformVector("out_color_", _outColor);
+    forward.mProgram->BindUniformNumber("out_delta_", mOutDelta);
+    forward.mProgram->BindUniformVector("out_color_", mOutColor);
 }

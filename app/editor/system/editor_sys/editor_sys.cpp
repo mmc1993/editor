@@ -14,24 +14,24 @@ void EditorSys::OptInsertObject(SharePtr<GLObject> object, SharePtr<GLObject> pa
 
 void EditorSys::OptSelectObject(SharePtr<GLObject> object, bool select, bool multi)
 {
-    auto iter = std::find(_selected.begin(), _selected.end(), object);
-    auto has = iter != _selected.end();
+    auto iter = std::find(mSelected.begin(), mSelected.end(), object);
+    auto has = iter != mSelected.end();
     if (select)
     {
         if (!multi)
         {
-            while (!_selected.empty() && (_selected.back() != object || _selected.back() != _selected.front()))
+            while (!mSelected.empty() && (mSelected.back() != object || mSelected.back() != mSelected.front()))
             {
-                if (_selected.back() == object)
-                    OptSelectObject(_selected.front(), false, false);
+                if (mSelected.back() == object)
+                    OptSelectObject(mSelected.front(), false, false);
                 else
-                    OptSelectObject(_selected.back(), false, false);
+                    OptSelectObject(mSelected.back(), false, false);
             }
         }
 
         if (!has && object)
         {
-            _selected.push_back(object);
+            mSelected.push_back(object);
             Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSelectObject, std::make_tuple(object, true, multi));
         }
     }
@@ -39,7 +39,7 @@ void EditorSys::OptSelectObject(SharePtr<GLObject> object, bool select, bool mul
     {
         if (has)
         {
-            _selected.erase(iter);
+            mSelected.erase(iter);
             Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSelectObject, std::make_tuple(object, false, multi));
         }
     }
@@ -222,37 +222,37 @@ void EditorSys::OptDeleteComponent(uint objectID, const SharePtr<Component>& com
 void EditorSys::OptNewProject(const std::string & url)
 {
     OptFreeProject();
-    _project.reset(new Project());
-    _project->New(url);
+    mProject.reset(new Project());
+    mProject->New(url);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
 }
 
 void EditorSys::OptOpenProject(const std::string & url)
 {
     OptFreeProject();
-    _project.reset(new Project());
-    _project->Load(url);
+    mProject.reset(new Project());
+    mProject->Load(url);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kOpenProject, nullptr);
 }
 
 void EditorSys::OptSaveProject(const std::string & url)
 {
-    if (_project != nullptr)
+    if (mProject != nullptr)
     {
-        _project->Save(url);
+        mProject->Save(url);
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kSaveProject, nullptr);
     }
 }
 
 void EditorSys::OptFreeProject()
 {
-    if (_project != nullptr)
+    if (mProject != nullptr)
     {
-        while (!_selected.empty())
+        while (!mSelected.empty())
         {
-            EditorSys::OptSelectObject(_selected.back(), false);
+            EditorSys::OptSelectObject(mSelected.back(), false);
         }
-        _project.reset();
+        mProject.reset();
         Global::Ref().mEventSys->Post(EventSys::TypeEnum::kFreeProject, nullptr);
     }
 }
@@ -305,14 +305,14 @@ void EditorSys::OpenDialogOpenProject(const std::string & url)
 bool EditorSys::IsOpenProject()
 {
     ASSERT_LOG(
-        (_project == nullptr) || 
-        (_project != nullptr && _project->IsOpen()), "");
-    return _project != nullptr;
+        (mProject == nullptr) || 
+        (mProject != nullptr && mProject->IsOpen()), "");
+    return mProject != nullptr;
 }
 
 const UniquePtr<Project> & EditorSys::GetProject()
 {
-    return _project;
+    return mProject;
 }
 
 std::string EditorSys::ObjectName(const SharePtr<GLObject> & object)
@@ -345,6 +345,6 @@ bool EditorSys::ObjectName(uint id, const std::string & name)
 
 const std::vector<SharePtr<GLObject>> & EditorSys::GetSelectedObjects()
 {
-    return _selected;
+    return mSelected;
 }
 

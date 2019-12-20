@@ -30,25 +30,25 @@ bool CompRenderTarget::OnModifyProperty(const std::any & oldValue, const std::an
 
 SharePtr<RawImage> CompRenderTarget::RefTextureBuffer()
 {
-    return _textureBuffer;
+    return mTextureBuffer;
 }
 
 void CompRenderTarget::OnAdd()
 { 
-    _textureBuffer = std::create_ptr<RawImage>();
-    _textureBuffer->InitNull(GL_RGBA);
+    mTextureBuffer = std::create_ptr<RawImage>();
+    mTextureBuffer->InitNull(GL_RGBA);
 }
 
 void CompRenderTarget::OnDel()
 {
-    _textureBuffer.reset();
+    mTextureBuffer.reset();
 }
 
 void CompRenderTarget::OnStart(UIObjectGLCanvas * canvas)
 { 
     interface::TargetCommand command;
     command.mType       = interface::TargetCommand::kPush;
-    command.mTexture    = _textureBuffer;
+    command.mTexture    = mTextureBuffer;
     canvas->Post(command);
 }
 

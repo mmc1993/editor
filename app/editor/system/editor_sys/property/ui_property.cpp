@@ -35,11 +35,11 @@ bool UIPropertyFlag::OnEnter()
 {
     UIPropertyObject::OnEnter();
 
-    auto flag = (GetNewValue() & _mask) == _mask;
+    auto flag = (GetNewValue() & mMask) == mMask;
     if (ImGui::Checkbox(ImID(this).c_str(), &flag))
     {
-        if (flag) { GetNewValue() |=  _mask; }
-        else      { GetNewValue() &= ~_mask; }
+        if (flag) { GetNewValue() |=  mMask; }
+        else      { GetNewValue() &= ~mMask; }
         Modify();
     }
     ImGui::Columns(1);

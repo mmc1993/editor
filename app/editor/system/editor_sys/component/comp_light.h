@@ -32,7 +32,7 @@ private:
 private:
     uint                _update;
     float               _border;
-    glm::vec4           _color;
-    SharePtr<RawMesh>    _mesh;
-    SharePtr<RawProgram> _program;
+    glm::vec4           mColor;
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
 };

@@ -4,17 +4,17 @@
 CompLight::CompLight()
     : _border(20)
     , _update(kTrackPoint | kBorder)
-    , _color(1.0f, 1.0f, 1.0f, 0.5f)
+    , mColor(1.0f, 1.0f, 1.0f, 0.5f)
 {
-    _trackPoints.emplace_back(0,  0);
-    _trackPoints.emplace_back(0, 30);
+    mTrackPoints.emplace_back(0,  0);
+    mTrackPoints.emplace_back(0, 30);
 
-    _mesh = std::create_ptr<RawMesh>();
-    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+    mMesh = std::create_ptr<RawMesh>();
+    mMesh->Init({},{}, RawMesh::Vertex::kV | 
                        RawMesh::Vertex::kC);
 
-    _program = std::create_ptr<RawProgram>();
-    _program->Init(tools::GL_PROGRAM_LIGHT);
+    mProgram = std::create_ptr<RawProgram>();
+    mProgram->Init(tools::GL_PROGRAM_LIGHT);
 
     AddState(StateEnum::kInsertTrackPoint, true);
     AddState(StateEnum::kDeleteTrackPoint, true);
@@ -28,8 +28,8 @@ void CompLight::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     interface::PostCommand command;
     command.mTransform  = canvas->GetMatrixStack().GetM();
     command.mType       = interface::PostCommand::kSample;
-    command.mProgram    = _program;
-    command.mMesh       = _mesh;
+    command.mProgram    = mProgram;
+    command.mMesh       = mMesh;
     canvas->Post(command);
 }
 
@@ -42,17 +42,17 @@ const std::string & CompLight::GetName()
 void CompLight::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _color);
+    tools::Serialize(os, mColor);
     tools::Serialize(os, _border);
-    tools::Serialize(os, _trackPoints);
+    tools::Serialize(os, mTrackPoints);
 }
 
 void CompLight::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _color);
+    tools::Deserialize(is, mColor);
     tools::Deserialize(is, _border);
-    tools::Deserialize(is, _trackPoints);
+    tools::Deserialize(is, mTrackPoints);
 }
 
 bool CompLight::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -69,37 +69,37 @@ bool CompLight::OnModifyProperty(const std::any & oldValue, const std::any & new
 std::vector<Component::Property> CompLight::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &mColor);
     props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Border", &_border);
     return std::move(props);
 }
 
 void CompLight::Update()
 {
-    ASSERT_LOG(_trackPoints.size() >= 2, "");
+    ASSERT_LOG(mTrackPoints.size() >= 2, "");
 
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (_trackPoints.size() == 2)
+        if (mTrackPoints.size() == 2)
         {
             std::vector<uint>           indexs;
             std::vector<RawMesh::Vertex> points;
 
-            auto radius = glm::length(_trackPoints.at(1) - _trackPoints.at(0));
+            auto radius = glm::length(mTrackPoints.at(1) - mTrackPoints.at(0));
             for (auto i = 0; i != 360; i += 10)
             {
                 auto x = std::cos(glm::radians((float)i));
                 auto y = std::sin(glm::radians((float)i));
                 //  内环
                 points.emplace_back(glm::vec2(
-                    x * radius + _trackPoints.at(0).x, 
-                    y * radius + _trackPoints.at(0).y), _color);
+                    x * radius + mTrackPoints.at(0).x, 
+                    y * radius + mTrackPoints.at(0).y), mColor);
                 //  外环
                 points.emplace_back(glm::vec2(
-                    x * (radius + _border) + _trackPoints.at(0).x, 
-                    y * (radius + _border) + _trackPoints.at(0).y), 
+                    x * (radius + _border) + mTrackPoints.at(0).x, 
+                    y * (radius + _border) + mTrackPoints.at(0).y), 
                     glm::vec4(0));
             }
             ASSERT_LOG(points.size() % 2 == 0, "");
@@ -124,20 +124,20 @@ void CompLight::Update()
                 indexs.emplace_back(2 * ((i + 1) % middle));
             }
 
-            _mesh->Update(points, indexs);
+            mMesh->Update(points, indexs);
         }
         else
         {
             std::vector<RawMesh::Vertex> points;
-            auto convex = tools::GenConvexPoints(_trackPoints);
+            auto convex = tools::GenConvexPoints(mTrackPoints);
             for (auto i = 1; i != convex.size() - 1; ++i)
             {
-                points.emplace_back(convex.at(0), _color);
-                points.emplace_back(convex.at(i), _color);
-                points.emplace_back(convex.at(i + 1), _color);
+                points.emplace_back(convex.at(0), mColor);
+                points.emplace_back(convex.at(i), mColor);
+                points.emplace_back(convex.at(i + 1), mColor);
             }
 
-            auto color = glm::vec4(_color.x, _color.y, _color.z, 0);
+            auto color = glm::vec4(mColor.x, mColor.y, mColor.z, 0);
             auto outer = tools::GenOuterRing(convex, _border, 10.0);
             for (auto i = 0; i != outer.size(); ++i)
             {
@@ -145,47 +145,47 @@ void CompLight::Update()
                 auto & a1 = outer.at(i++);
                 auto & b0 = outer.at(i++);
                 auto & b1 = outer.at(i++);
-                points.emplace_back(a0, _color);
+                points.emplace_back(a0, mColor);
                 points.emplace_back(a1,  color);
                 points.emplace_back(b1,  color);
 
-                points.emplace_back(a0, _color);
+                points.emplace_back(a0, mColor);
                 points.emplace_back(b1,  color);
-                points.emplace_back(b0, _color);
+                points.emplace_back(b0, mColor);
 
                 if (!tools::Equal(outer.at(i), a0))
                 {
-                    points.emplace_back(b0, _color);
+                    points.emplace_back(b0, mColor);
                     points.emplace_back(b1,  color);
                     for (; !tools::Equal(outer.at(i), a0); ++i)
                     {
                         points.emplace_back(outer.at(i), color);
-                        points.emplace_back(b0,         _color);
+                        points.emplace_back(b0,         mColor);
                         points.emplace_back(outer.at(i), color);
                     }
                     points.emplace_back(outer.at((i + 2) % outer.size()), color);
                 }
                 else
                 {
-                    points.emplace_back(b0, _color);
+                    points.emplace_back(b0, mColor);
                     points.emplace_back(b1,  color);
                     points.emplace_back(outer.at((i + 2) % outer.size()), color);
                 }
             }
-            _mesh->Update(points, {});
+            mMesh->Update(points, {});
         }
     }
 }
 
 void CompLight::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    _trackPoints.at(index) = point;
+    mTrackPoints.at(index) = point;
     AddState(StateEnum::kUpdate, true);
 }
 
 void CompLight::OnInsertTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    _trackPoints.insert(std::next(_trackPoints.begin(), index), point);
+    mTrackPoints.insert(std::next(mTrackPoints.begin(), index), point);
     AddState(StateEnum::kUpdate, true);
 }
 

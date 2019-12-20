@@ -21,5 +21,5 @@ protected:
     virtual void OnLeave(UIObjectGLCanvas * canvas) override;
 
 private:
-    SharePtr<RawImage> _textureBuffer;
+    SharePtr<RawImage> mTextureBuffer;
 };

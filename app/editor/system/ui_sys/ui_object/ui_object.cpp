@@ -29,7 +29,7 @@ SharePtr<UIObject> UIObject::GetObject(const std::initializer_list<std::string> 
 std::vector<SharePtr<UIObject>> UIObject::GetObjects(UITypeEnum type)
 {
     std::vector<SharePtr<UIObject>> result;
-    std::copy_if(_children.begin(), _children.end(), std::back_inserter(result), 
+    std::copy_if(mChildren.begin(), mChildren.end(), std::back_inserter(result), 
         [type](const SharePtr<UIObject> & object) 
         { return object->GetType() == type; });
     return std::move(result);
@@ -37,29 +37,29 @@ std::vector<SharePtr<UIObject>> UIObject::GetObjects(UITypeEnum type)
 
 std::vector<SharePtr<UIObject>> & UIObject::GetObjects()
 {
-    return _children;
+    return mChildren;
 }
 
 void UIObject::InsertObject(const SharePtr<UIObject> & object)
 {
     ASSERT_LOG(object->GetParent() == nullptr, "");
-    _children.push_back(object);
+    mChildren.push_back(object);
     object->_parent = this;
 }
 
 void UIObject::DeleteObject(const SharePtr<UIObject> & object)
 {
-    auto it = std::find(_children.begin(), _children.end(), object);
-    if (it != _children.end()) 
+    auto it = std::find(mChildren.begin(), mChildren.end(), object);
+    if (it != mChildren.end()) 
     { 
         (*it)->_parent = nullptr;
-        _children.erase(it); 
+        mChildren.erase(it); 
     }
 }
 
 void UIObject::DeleteObject(size_t index)
 {
-    DeleteObject(*(_children.begin() + index));
+    DeleteObject(*(mChildren.begin() + index));
 }
 
 void UIObject::DeleteThis()
@@ -70,7 +70,7 @@ void UIObject::DeleteThis()
 
 void UIObject::ClearObjects()
 {
-    _children.clear();
+    mChildren.clear();
 }
 
 SharePtr<UIObject> UIObject::GetParent()
@@ -92,12 +92,12 @@ SharePtr<UIObject> UIObject::GetObject()
 
 UITypeEnum UIObject::GetType()
 {
-    return _type;
+    return mType;
 }
 
 bool UIObject::IsVisible()
 {
-    return _visible;
+    return mVisible;
 }
 
 void UIObject::ResetLayout()
@@ -109,7 +109,7 @@ void UIObject::ResetLayout()
     state->Move_ = state->Move;
     state->LSkin_ = state->LSkin;
 
-    for (auto & child : _children)
+    for (auto & child : mChildren)
     {
         child->ResetLayout();
     }
@@ -203,7 +203,7 @@ void UIObject::ApplyLayout()
 void UIObject::Render(float dt, bool visible)
 {
     auto state = GetState();
-    _visible = visible;
+    mVisible = visible;
     ApplyLayout();
 
     auto ret = false;
@@ -214,21 +214,21 @@ void UIObject::Render(float dt, bool visible)
         UpdateSize();
     }
 
-    if (state->IsSameline && !_children.empty())
+    if (state->IsSameline && !mChildren.empty())
     {
-        if (_children.size() >= 1)
+        if (mChildren.size() >= 1)
         {
-            _children.at(0)->Render(dt, ret);
+            mChildren.at(0)->Render(dt, ret);
         }
-        for (auto i = 1; i != _children.size(); ++i)
+        for (auto i = 1; i != mChildren.size(); ++i)
         {
             if (visible) {ImGui::SameLine();}
-            _children.at(i)->Render(dt, ret);
+            mChildren.at(i)->Render(dt, ret);
         }
     }
     else
     {
-        for (auto child : _children)
+        for (auto child : mChildren)
         {
             child->Render(dt, ret);
         }

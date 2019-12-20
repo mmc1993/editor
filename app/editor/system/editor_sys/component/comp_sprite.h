@@ -31,10 +31,10 @@ private:
 
 private:
     Res::Ref            _tex;
-    glm::vec2           _size;
-    glm::vec2           _anchor;
+    glm::vec2           mSize;
+    glm::vec2           mAnchor;
     uint                _update;
 
-    SharePtr<RawMesh>    _mesh;
-    SharePtr<RawProgram> _program;
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
 };

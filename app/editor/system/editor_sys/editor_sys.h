@@ -5,8 +5,8 @@
 
 class EditorSys {
 private:
-    UniquePtr<Project>              _project;
-    std::vector<SharePtr<GLObject>> _selected;
+    UniquePtr<Project>              mProject;
+    std::vector<SharePtr<GLObject>> mSelected;
 
 public:
     /// ∂‘œÛ

@@ -12,18 +12,18 @@ public:
     ~Project();
 
     //  项目
-    bool IsOpen() const { return _object != nullptr; }
-    const std::string & GetURL() const { return _url; }
-    const std::string & GetDIR() const { return tools::GetFileFolder(_url); }
+    bool IsOpen() const { return mObject != nullptr; }
+    const std::string & GetURL() const { return mURL; }
+    const std::string & GetDIR() const { return tools::GetFileFolder(mURL); }
     
     void New(const std::string & url);
     void Load(const std::string & url);
     void Save(const std::string & url);
 
     //  对象
-    bool IsExistObject(uint id) { return _objects.count(id) != 0; }
-    const SharePtr<GLObject> & GetObject()        { return _object; }
-    const SharePtr<GLObject> & GetObject(uint id) { return _objects.at(id); }
+    bool IsExistObject(uint id) { return mObjects.count(id) != 0; }
+    const SharePtr<GLObject> & GetObject()        { return mObject; }
+    const SharePtr<GLObject> & GetObject(uint id) { return mObjects.at(id); }
 
     SharePtr<GLObject> NewObject();
     void DeleteObject(const uint & id);
@@ -49,9 +49,9 @@ private:
 
 private:
     std::map<uint, Res *>               _resources;     //  资源
-    std::map<uint, SharePtr<GLObject>>  _objects;       //  对象
+    std::map<uint, SharePtr<GLObject>>  mObjects;       //  对象
 
-    SharePtr<GLObject> _object;
-    std::string        _url;       //  项目路径
+    SharePtr<GLObject> mObject;
+    std::string        mURL;       //  项目路径
     uint               _gid;       //  全局ID
 };

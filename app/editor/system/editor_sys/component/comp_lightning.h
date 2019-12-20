@@ -48,12 +48,12 @@ private:
 
 private:
     uint                _update;
-    float               _scale;
+    float               mScale;
     float               _width;
-    glm::vec4           _color;
+    glm::vec4           mColor;
     Res::Ref            _tex;
 
-    SharePtr<RawMesh>    _mesh;
-    SharePtr<RawProgram> _program;
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
     std::vector<Segment> _segments;
 };

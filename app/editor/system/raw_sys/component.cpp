@@ -98,7 +98,7 @@ std::vector<SharePtr<UIObject>> Component::CreateUIPropertys()
 
 const std::vector<glm::vec2> & Component::GetTrackPoints()
 {
-    return _trackPoints;
+    return mTrackPoints;
 }
 
 std::vector<Component::Property> Component::CollectProperty()

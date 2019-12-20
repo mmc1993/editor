@@ -44,8 +44,8 @@ private:
     void UpdateMatrix();
 
 private:
-    float     _angle;
-    glm::vec2 _scale;
-    glm::mat4 _matrix;
-    glm::vec2 _position;
+    float     mAngle;
+    glm::vec2 mScale;
+    glm::mat4 mMatrix;
+    glm::vec2 mPosition;
 };

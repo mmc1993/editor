@@ -7,7 +7,7 @@
 class UIObject: public std::enable_shared_from_this<UIObject> {
 public:
     UIObject(UITypeEnum type = UITypeEnum::kOther, UIState * state = new UIState())
-        : _type(type)
+        : mType(type)
         , _state(state)
         , _parent(nullptr)
     { }
@@ -70,11 +70,11 @@ public:
     SharePtr<UIObject> PostEventMessage(UIEventEnum e, const UIEvent::Event & param);
 
 private:
-    bool                                _visible;       //  标记当前节点是否渲染
-    UITypeEnum                          _type;
+    bool                                mVisible;       //  标记当前节点是否渲染
+    UITypeEnum                          mType;
     UIObject *                          _parent;
     UniquePtr<UIState>                  _state;
-    std::vector<SharePtr<UIObject>>     _children;
+    std::vector<SharePtr<UIObject>>     mChildren;
     UniquePtr<UIEvent::DelegateHandler> _delegate;
 };
 

@@ -88,9 +88,9 @@ bool UIDelegateExplorer::OnEventMenu(const UIEvent::Menu & param)
 bool UIDelegateExplorer::OnEventInit(const UIEvent::Init & param)
 {
     //  ×¢²á¼àÌý
-    _listener.Add(EventSys::TypeEnum::kSetResType, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-    _listener.Add(EventSys::TypeEnum::kRenameRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-    _listener.Add(EventSys::TypeEnum::kDeleteRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+    mListener.Add(EventSys::TypeEnum::kSetResType, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+    mListener.Add(EventSys::TypeEnum::kRenameRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+    mListener.Add(EventSys::TypeEnum::kDeleteRes, std::bind(&UIDelegateExplorer::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
 
     mListLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutList" }));
     mTypeLayout = CastPtr<UIObjectLayout>(GetOwner()->GetObject({ "LayoutType" }));

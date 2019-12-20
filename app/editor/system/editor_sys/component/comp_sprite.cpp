@@ -3,18 +3,18 @@
 #include "../../raw_sys/comp_transform.h"
 
 CompSprite::CompSprite()
-    : _size(0.0f, 0.0f)
-    , _anchor(0.5f, 0.5f)
+    : mSize(0.0f, 0.0f)
+    , mAnchor(0.5f, 0.5f)
     , _update(kTexture | kTrackPoint)
 {
-    _trackPoints.resize(4);
+    mTrackPoints.resize(4);
 
-    _mesh = std::create_ptr<RawMesh>();
-    _mesh->Init({},{}, RawMesh::Vertex::kV | 
+    mMesh = std::create_ptr<RawMesh>();
+    mMesh->Init({},{}, RawMesh::Vertex::kV | 
                        RawMesh::Vertex::kUV);
 
-    _program = std::create_ptr<RawProgram>();
-    _program->Init(tools::GL_PROGRAM_SPRITE);
+    mProgram = std::create_ptr<RawProgram>();
+    mProgram->Init(tools::GL_PROGRAM_SPRITE);
 
     AddState(StateEnum::kModifyTrackPoint, true);
 }
@@ -26,8 +26,8 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         Update();
 
         interface::FowardCommand command;
-        command.mMesh       = _mesh;
-        command.mProgram    = _program;
+        command.mMesh       = mMesh;
+        command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.push_back(std::make_pair("uniform_texture", _tex.Instance<RawTexture>()));
         canvas->Post(command);
@@ -43,16 +43,16 @@ const std::string & CompSprite::GetName()
 void CompSprite::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _size);
-    tools::Serialize(os, _anchor);
+    tools::Serialize(os, mSize);
+    tools::Serialize(os, mAnchor);
     _tex.EncodeBinary(os, project);
 }
 
 void CompSprite::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _size);
-    tools::Deserialize(is, _anchor);
+    tools::Deserialize(is, mSize);
+    tools::Deserialize(is, mAnchor);
     _tex.DecodeBinary(is, project);
 }
 
@@ -75,8 +75,8 @@ std::vector<Component::Property> CompSprite::CollectProperty()
 {
     auto props = Component::CollectProperty();
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Tex",      &_tex,      std::vector<uint>{ (uint)Res::TypeEnum::kImg });
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &_size);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &_anchor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &mSize);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
     return std::move(props);
 }
 
@@ -88,28 +88,28 @@ void CompSprite::Update()
 
         if (_update & kTexture)
         {
-            _size.x = (float)_tex.Instance<RawTexture>()->GetW();
-            _size.y = (float)_tex.Instance<RawTexture>()->GetH();
+            mSize.x = (float)_tex.Instance<RawTexture>()->GetW();
+            mSize.y = (float)_tex.Instance<RawTexture>()->GetH();
         }
 
         if (_update & kTrackPoint)
         {
-            _trackPoints.at(0).x = -_size.x *      _anchor.x;
-            _trackPoints.at(0).y = -_size.y *      _anchor.y;
-            _trackPoints.at(1).x =  _size.x * (1 - _anchor.x);
-            _trackPoints.at(1).y = -_size.y *      _anchor.y;
-            _trackPoints.at(2).x =  _size.x * (1 - _anchor.x);
-            _trackPoints.at(2).y =  _size.y * (1 - _anchor.y);
-            _trackPoints.at(3).x = -_size.x *      _anchor.x;
-            _trackPoints.at(3).y =  _size.y * (1 - _anchor.y);
+            mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
+            mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;
+            mTrackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
+            mTrackPoints.at(1).y = -mSize.y *      mAnchor.y;
+            mTrackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
+            mTrackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
+            mTrackPoints.at(3).x = -mSize.x *      mAnchor.x;
+            mTrackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
 
             std::vector<RawMesh::Vertex> vertexs;
             auto & offset = _tex.Instance<RawTexture>()->GetOffset();
-            vertexs.emplace_back(_trackPoints.at(0), glm::vec2(offset.x, offset.y));
-            vertexs.emplace_back(_trackPoints.at(1), glm::vec2(offset.z, offset.y));
-            vertexs.emplace_back(_trackPoints.at(2), glm::vec2(offset.z, offset.w));
-            vertexs.emplace_back(_trackPoints.at(3), glm::vec2(offset.x, offset.w));
-            _mesh->Update(vertexs, { 0, 1, 2, 0, 2, 3 });
+            vertexs.emplace_back(mTrackPoints.at(0), glm::vec2(offset.x, offset.y));
+            vertexs.emplace_back(mTrackPoints.at(1), glm::vec2(offset.z, offset.y));
+            vertexs.emplace_back(mTrackPoints.at(2), glm::vec2(offset.z, offset.w));
+            vertexs.emplace_back(mTrackPoints.at(3), glm::vec2(offset.x, offset.w));
+            mMesh->Update(vertexs, { 0, 1, 2, 0, 2, 3 });
         }
         _update = 0;
     }
@@ -121,35 +121,35 @@ void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
     switch (index)
     {
     case 0:
-        min.x = std::min(point.x, _trackPoints.at(2).x);
-        min.y = std::min(point.y, _trackPoints.at(2).y);
-        max.x = _trackPoints.at(2).x;
-        max.y = _trackPoints.at(2).y;
+        min.x = std::min(point.x, mTrackPoints.at(2).x);
+        min.y = std::min(point.y, mTrackPoints.at(2).y);
+        max.x = mTrackPoints.at(2).x;
+        max.y = mTrackPoints.at(2).y;
         break;
     case 1:
-        min.x = _trackPoints.at(0).x;
-        min.y = std::min(point.y, _trackPoints.at(3).y);
-        max.x = std::max(point.x, _trackPoints.at(3).x);
-        max.y = _trackPoints.at(2).y;
+        min.x = mTrackPoints.at(0).x;
+        min.y = std::min(point.y, mTrackPoints.at(3).y);
+        max.x = std::max(point.x, mTrackPoints.at(3).x);
+        max.y = mTrackPoints.at(2).y;
         break;
     case 2:
-        min.x = _trackPoints.at(0).x;
-        min.y = _trackPoints.at(0).y;
-        max.x = std::max(point.x, _trackPoints.at(0).x);
-        max.y = std::max(point.y, _trackPoints.at(0).y);
+        min.x = mTrackPoints.at(0).x;
+        min.y = mTrackPoints.at(0).y;
+        max.x = std::max(point.x, mTrackPoints.at(0).x);
+        max.y = std::max(point.y, mTrackPoints.at(0).y);
         break;
     case 3:
-        min.x = std::min(point.x, _trackPoints.at(1).x);
-        min.y = _trackPoints.at(0).y;
-        max.x = _trackPoints.at(2).x;
-        max.y = std::max(point.y, _trackPoints.at(1).y);
+        min.x = std::min(point.x, mTrackPoints.at(1).x);
+        min.y = mTrackPoints.at(0).y;
+        max.x = mTrackPoints.at(2).x;
+        max.y = std::max(point.y, mTrackPoints.at(1).y);
         break;
     }
 
-    _size.x = max.x - min.x;
-    _size.y = max.y - min.y;
+    mSize.x = max.x - min.x;
+    mSize.y = max.y - min.y;
 
-    auto coord = GetOwner()->LocalToParent(_size * _anchor + min);
+    auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
     GetOwner()->GetTransform()->Position(coord.x, coord.y);
 
     _update |= kTrackPoint;

@@ -79,15 +79,15 @@ public:
         uint eUsage = GL_STATIC_DRAW);
 
     void Draw(uint primitive);
-    uint GetVAO() const { return _vao; }
-    uint GetVBO() const { return _vbo; }
-    uint GetEBO() const { return _ebo; }
-    uint GetVCount() const { return _vCount; }
-    uint GetECount() const { return _eCount; }
+    uint GetVAO() const { return mVAO; }
+    uint GetVBO() const { return mVBO; }
+    uint GetEBO() const { return mEBO; }
+    uint GetVCount() const { return mVCount; }
+    uint GetECount() const { return mECount; }
 
 private:
-    uint _vao, _vbo, _ebo;
-    uint _vCount, _eCount;
+    uint mVAO, mVBO, mEBO;
+    uint mVCount, mECount;
 };
 
 // ---
@@ -127,12 +127,12 @@ public:
 public:
     RawTexture();
     ~RawTexture();
-    uint GetID() { return _refimg->mID; }
-    uint GetImageW() { return _refimg->mW; }
-    uint GetImageH() { return _refimg->mH; }
-    uint GetImageFormat() { return _refimg->mFormat; }
+    uint GetID() { return mRefImg->mID; }
+    uint GetImageW() { return mRefImg->mW; }
+    uint GetImageH() { return mRefImg->mH; }
+    uint GetImageFormat() { return mRefImg->mFormat; }
     const glm::vec4 & GetOffset() { return  _offset; }
-    SharePtr<RawImage> & GetRefImage() { return _refimg; }
+    SharePtr<RawImage> & GetRefImage() { return mRefImg; }
     uint GetW() { return (uint)(GetImageW() * (_offset.w - _offset.x)); }
     uint GetH() { return (uint)(GetImageH() * (_offset.z - _offset.y)); }
 
@@ -143,7 +143,7 @@ private:
     bool InitFromAtlas(const std::string & url);
 
 private:
-    SharePtr<RawImage> _refimg;
+    SharePtr<RawImage> mRefImg;
     glm::vec4         _offset;
 };
 
@@ -222,7 +222,7 @@ private:
 
 private:
     FontInfo            _info;
-    SharePtr<RawTexture> _texture;
+    SharePtr<RawTexture> mTexture;
 };
 
 // ---
@@ -301,13 +301,13 @@ public:
     uint GetPassCount();
     void UsePass(uint i);
     void AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength);
-    void BindUniformNumber(const char * const key, double val) const { glUniform1f(glGetUniformLocation(_use, key), static_cast<float>(val)); }
-    void BindUniformVector(const char * const key, const glm::vec2 & val) const { glUniform2f(glGetUniformLocation(_use, key), val.x, val.y); }
-    void BindUniformVector(const char * const key, const glm::vec3 & val) const { glUniform3f(glGetUniformLocation(_use, key), val.x, val.y, val.z); }
-    void BindUniformVector(const char * const key, const glm::vec4 & val) const { glUniform4f(glGetUniformLocation(_use, key), val.x, val.y, val.z, val.w); }
-    void BindUniformMatrix(const char * const key, const glm::mat3 & val) const { glUniformMatrix3fv(glGetUniformLocation(_use, key), 1, GL_FALSE, &val[0][0]); }
-    void BindUniformMatrix(const char * const key, const glm::mat4 & val) const { glUniformMatrix4fv(glGetUniformLocation(_use, key), 1, GL_FALSE, &val[0][0]); }
-    void BindUniformTex2D(const char * const key, const uint val, iint pos) const { glActiveTexture(GL_TEXTURE0 + pos); glBindTexture(GL_TEXTURE_2D,  val); glUniform1i(glGetUniformLocation(_use, key), pos); }
+    void BindUniformNumber(const char * const key, double val) const { glUniform1f(glGetUniformLocation(mUse, key), static_cast<float>(val)); }
+    void BindUniformVector(const char * const key, const glm::vec2 & val) const { glUniform2f(glGetUniformLocation(mUse, key), val.x, val.y); }
+    void BindUniformVector(const char * const key, const glm::vec3 & val) const { glUniform3f(glGetUniformLocation(mUse, key), val.x, val.y, val.z); }
+    void BindUniformVector(const char * const key, const glm::vec4 & val) const { glUniform4f(glGetUniformLocation(mUse, key), val.x, val.y, val.z, val.w); }
+    void BindUniformMatrix(const char * const key, const glm::mat3 & val) const { glUniformMatrix3fv(glGetUniformLocation(mUse, key), 1, GL_FALSE, &val[0][0]); }
+    void BindUniformMatrix(const char * const key, const glm::mat4 & val) const { glUniformMatrix4fv(glGetUniformLocation(mUse, key), 1, GL_FALSE, &val[0][0]); }
+    void BindUniformTex2D(const char * const key, const uint val, iint pos) const { glActiveTexture(GL_TEXTURE0 + pos); glBindTexture(GL_TEXTURE_2D,  val); glUniform1i(glGetUniformLocation(mUse, key), pos); }
 
 private:
     void AssertPass(uint shaderID, const std::string & errorTxt) const
@@ -324,7 +324,7 @@ private:
 
 private:
     std::vector<Pass> _passs;
-    uint              _use;
+    uint              mUse;
 };
 
 // ---
@@ -363,7 +363,7 @@ public:
     void SetTexture(const std::string & key, const SharePtr<RawTexture> & tex);
 
 private:
-    SharePtr<RawMesh>    _mesh;
-    SharePtr<RawProgram> _program;
-    std::vector<Texture> _textures;
+    SharePtr<RawMesh>    mMesh;
+    SharePtr<RawProgram> mProgram;
+    std::vector<Texture> mTextures;
 };

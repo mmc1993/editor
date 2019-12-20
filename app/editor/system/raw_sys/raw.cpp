@@ -4,14 +4,14 @@
 // ---
 //  RawMesh
 // ---
-RawMesh::RawMesh() : _vao(0), _vbo(0), _ebo(0), _vCount(0), _eCount(0)
+RawMesh::RawMesh() : mVAO(0), mVBO(0), mEBO(0), mVCount(0), mECount(0)
 { }
 
 RawMesh::~RawMesh()
 {
-    glDeleteBuffers(1, &_vbo);
-    glDeleteBuffers(1, &_ebo);
-    glDeleteVertexArrays(1, &_vao);
+    glDeleteBuffers(1, &mVBO);
+    glDeleteBuffers(1, &mEBO);
+    glDeleteVertexArrays(1, &mVAO);
 }
 
 bool RawMesh::Init(const std::string & url)
@@ -28,19 +28,19 @@ void RawMesh::Init(const std::vector<Vertex> & points, const std::vector<uint> &
 
 void RawMesh::Init(const Vertex * points, const uint pointsLength, const uint * indexs, const uint indexsLength, uint enabled, uint vUsage, uint eUsage)
 {
-    _vCount = pointsLength;
-    _eCount = indexsLength;
+    mVCount = pointsLength;
+    mECount = indexsLength;
 
-    glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
+    glGenVertexArrays(1, &mVAO);
+    glBindVertexArray(mVAO);
 
-    glGenBuffers(1, &_vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * _vCount, points, vUsage);
+    glGenBuffers(1, &mVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mVCount, points, vUsage);
 
-    glGenBuffers(1, &_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * _eCount, indexs, eUsage);
+    glGenBuffers(1, &mEBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mECount, indexs, eUsage);
 
     auto idx = 0;
     if (Vertex::kV & enabled)
@@ -63,10 +63,10 @@ void RawMesh::Init(const Vertex * points, const uint pointsLength, const uint * 
 
 void RawMesh::Update(const std::vector<Vertex> & points, const std::vector<uint> & indexs, uint vUsage, uint eUsage)
 {
-    _vCount = points.size();
-    _eCount = indexs.size();
-    glBindBuffer(GL_ARRAY_BUFFER,         _vbo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+    mVCount = points.size();
+    mECount = indexs.size();
+    glBindBuffer(GL_ARRAY_BUFFER,         mVBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
     glBufferData(GL_ARRAY_BUFFER,         sizeof(Vertex) * points.size(), points.data(), vUsage);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint)   * indexs.size(), indexs.data(), eUsage);
     glBindBuffer(GL_ARRAY_BUFFER,         0);
@@ -175,8 +175,8 @@ bool RawTexture::Init(const std::string & url)
 bool RawTexture::InitFromImage(const std::string & url)
 {
     if (!tools::IsFileExists(url)) { return false; }
-    _refimg = std::create_ptr<RawImage>();
-    if (_refimg->Init(url))
+    mRefImg = std::create_ptr<RawImage>();
+    if (mRefImg->Init(url))
     {
         _offset.x = 0.0f;
         _offset.y = 0.0f;
@@ -210,14 +210,14 @@ bool RawTexture::InitFromAtlas(const std::string & url)
     if (atlas != nullptr) 
     {
         name = path + atlas->At("meta","image")->ToString();
-        _refimg = Global::Ref().mRawSys->Get<RawImage>(name);
-        _offset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / _refimg->mW;
-        _offset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / _refimg->mH;
-        _offset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / _refimg->mW + _offset.x;
-        _offset.w = atlas->At("frames", url, "frame", "h")->ToNumber() / _refimg->mH + _offset.y;
+        mRefImg = Global::Ref().mRawSys->Get<RawImage>(name);
+        _offset.x = atlas->At("frames", url, "frame", "x")->ToNumber() / mRefImg->mW;
+        _offset.y = atlas->At("frames", url, "frame", "y")->ToNumber() / mRefImg->mH;
+        _offset.z = atlas->At("frames", url, "frame", "w")->ToNumber() / mRefImg->mW + _offset.x;
+        _offset.w = atlas->At("frames", url, "frame", "h")->ToNumber() / mRefImg->mH + _offset.y;
     }
 
-    return _refimg != nullptr;
+    return mRefImg != nullptr;
 }
 
 // ---
@@ -319,7 +319,7 @@ RawFont::~RawFont()
 
 const SharePtr<RawTexture> & RawFont::RefTexture()
 {
-    return _texture;
+    return mTexture;
 }
 
 const RawFont::Char & RawFont::RefWord(char word)
@@ -367,9 +367,9 @@ bool RawFont::Init(const std::string & url)
     Parse(tools::Split(line, " "), &_info.mPage);
 
     auto texurl = tools::GetFileFolder(url) + _info.mPage.at("file");
-    _texture = Global::Ref().mRawSys->Get<RawTexture>(texurl);
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    mTexture = Global::Ref().mRawSys->Get<RawTexture>(texurl);
+    mTexture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    mTexture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     std::getline(is, line);
     auto texW = std::stof(_info.mCommon.at("scaleW"));
@@ -416,7 +416,7 @@ void RawFont::Parse(const std::vector<std::string> & pairs, std::map<std::string
 // ---
 //  RawProgram
 // ---
-RawProgram::RawProgram() : _use(GL_INVALID_INDEX)
+RawProgram::RawProgram() : mUse(GL_INVALID_INDEX)
 { }
 
 RawProgram::~RawProgram()
@@ -627,7 +627,7 @@ bool RawProgram::Init(const std::string & url)
 
 uint RawProgram::GetUse()
 {
-    return _use;
+    return mUse;
 }
 
 uint RawProgram::GetPassCount()
@@ -662,7 +662,7 @@ void RawProgram::UsePass(uint i)
         glDisable(GL_STENCIL_TEST);
     }
     glUseProgram(pass.mID);
-    _use = pass.mID;
+    mUse = pass.mID;
 }
 
 void RawProgram::AddPass(const Pass & pass, const char * vString, uint vLength, const char * fString, uint fLength)
@@ -704,7 +704,7 @@ void RawProgram::AddPass(const Pass & pass, const char * vString, uint vLength, 
 // ---
 //  RawMaterial
 // ---
-RawMaterial::RawMaterial() : _mesh(nullptr), _program(nullptr)
+RawMaterial::RawMaterial() : mMesh(nullptr), mProgram(nullptr)
 { }
 
 bool RawMaterial::Init(const std::string & url)
@@ -731,33 +731,33 @@ bool RawMaterial::Init(const std::string & url)
 
 const SharePtr<RawMesh> & RawMaterial::GetMesh()
 {
-    return _mesh;
+    return mMesh;
 }
 
 void RawMaterial::SetMesh(const SharePtr<RawMesh> & mesh)
 {
-    _mesh = mesh;
+    mMesh = mesh;
 }
 
 const SharePtr<RawProgram>& RawMaterial::GetProgram()
 {
-    return _program;
+    return mProgram;
 }
 
 void RawMaterial::SetProgram(const SharePtr<RawProgram> & program)
 {
-    _program = program;
+    mProgram = program;
 }
 
 const std::vector<RawMaterial::Texture> & RawMaterial::GetTextures()
 {
-    return _textures;
+    return mTextures;
 }
 
 void RawMaterial::SetTexture(const std::string & key, const SharePtr<RawTexture> & tex)
 {
-    auto it = std::find(_textures.begin(), _textures.end(), key);
-    if (it != _textures.end()) { it->mKey = key;it->mTex = tex; }
-    else { _textures.emplace_back(key, tex); }
+    auto it = std::find(mTextures.begin(), mTextures.end(), key);
+    if (it != mTextures.end()) { it->mKey = key;it->mTex = tex; }
+    else { mTextures.emplace_back(key, tex); }
 }
 

@@ -51,7 +51,7 @@ public:
     void SetParent(GLObject * parent);
     SharePtr<GLObject> GetParent();
 
-    uint GetID() { return _id; }
+    uint GetID() { return mID; }
 
     void SetTransform(const SharePtr<CompTransform> & transform);
     SharePtr<CompTransform> GetTransform();
@@ -72,10 +72,10 @@ public:
     template <class T>
     SharePtr<T> GetComponent()
     {
-        auto iter = std::find_if(_components.begin(), _components.end(),
+        auto iter = std::find_if(mComponents.begin(), mComponents.end(),
            [](const SharePtr<Component> & component) 
            { return typeid(*component) == typeid(T); });
-        return CastPtr<T>(iter != _components.end() ? *iter : nullptr);
+        return CastPtr<T>(iter != mComponents.end() ? *iter : nullptr);
     }
 
     template <class T>
@@ -87,7 +87,7 @@ public:
         {
             result.push_back(self);
         }
-        for (const auto & v : _children)
+        for (const auto & v : mChildren)
         {
             auto ret = std::move(v->GetComponentsInChildren<T>());
             result.insert(result.end(), ret.begin(), ret.end());
@@ -96,11 +96,11 @@ public:
     }
 
 private:
-    uint                                _id;
+    uint                                mID;
     uint                                _state;
-    std::string                         _name;
+    std::string                         mName;
     GLObject *                          _parent;
-    SharePtr<CompTransform>             _transform;
-    std::vector<SharePtr<GLObject>>     _children;
-    std::vector<SharePtr<Component>>    _components;
+    SharePtr<CompTransform>             mTransform;
+    std::vector<SharePtr<GLObject>>     mChildren;
+    std::vector<SharePtr<Component>>    mComponents;
 };

@@ -96,5 +96,5 @@ protected:
 protected:
     size_t              _state;
     GLObject *          _owner;
-    std::vector<glm::vec2> _trackPoints;
+    std::vector<glm::vec2> mTrackPoints;
 };

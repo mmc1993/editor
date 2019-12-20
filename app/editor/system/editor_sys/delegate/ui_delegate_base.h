@@ -9,5 +9,5 @@
 
 class UIDelegateBase : public UIEvent::DelegateHandler {
 protected:
-    EventSys::Listener _listener;
+    EventSys::Listener mListener;
 };

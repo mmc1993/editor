@@ -18,5 +18,5 @@ public:
     const std::vector<SharePtr<UIObject>> & GetWindows();
 
 private:
-    std::vector<SharePtr<UIObject>> _windows;
+    std::vector<SharePtr<UIObject>> mWindows;
 };

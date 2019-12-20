@@ -4,13 +4,13 @@
 #include "../../raw_sys/raw_sys.h"
 
 CompFieldOfView::CompFieldOfView()
-    : _color(1.0f)
+    : mColor(1.0f)
 {
-    _mesh = std::create_ptr<RawMesh>();
-    _mesh->Init({}, {}, RawMesh::Vertex::kV | 
+    mMesh = std::create_ptr<RawMesh>();
+    mMesh->Init({}, {}, RawMesh::Vertex::kV | 
                         RawMesh::Vertex::kC);
 
-    _program = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
+    mProgram = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_FIELD_OF_VIEW);
 }
 
 const std::string & CompFieldOfView::GetName()
@@ -24,7 +24,7 @@ void CompFieldOfView::EncodeBinary(std::ostream & os, Project * project)
     Component::EncodeBinary(os, project);
     _clipObject.EncodeBinary(os, project);
     _polyObject.EncodeBinary(os, project);
-    tools::Serialize(os, _color);
+    tools::Serialize(os, mColor);
 }
 
 void CompFieldOfView::DecodeBinary(std::istream & is, Project * project)
@@ -32,7 +32,7 @@ void CompFieldOfView::DecodeBinary(std::istream & is, Project * project)
     Component::DecodeBinary(is, project);
     _clipObject.DecodeBinary(is, project);
     _polyObject.DecodeBinary(is, project);
-    tools::Deserialize(is, _color);
+    tools::Deserialize(is, mColor);
 }
 
 bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -48,8 +48,8 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         Update();
 
         interface::PostCommand command;
-        command.mMesh      = _mesh;
-        command.mProgram   = _program;
+        command.mMesh      = mMesh;
+        command.mProgram   = mProgram;
         command.mTransform = canvas->GetMatrixStack().GetM();
         command.mType      = interface::PostCommand::kSample;
         command.mCallback  = std::bind(&CompFieldOfView::OnDrawCallback,
@@ -64,7 +64,7 @@ std::vector<Component::Property> CompFieldOfView::CollectProperty()
     auto props = Component::CollectProperty();
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &_clipObject, std::vector<uint>{ Res::TypeEnum::kObj });
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &_polyObject, std::vector<uint>{ Res::TypeEnum::kObj });
-    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",   &_color);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",   &mColor);
     return std::move(props);
 }
 
@@ -147,11 +147,11 @@ void CompFieldOfView::GenMesh()
     {
         auto & a = _tracks.at( i              + 1);
         auto & b = _tracks.at((i + 1) % count + 1);
-        points.emplace_back(_tracks.front(), _color);
-        points.emplace_back(a, _color);
-        points.emplace_back(b, _color);
+        points.emplace_back(_tracks.front(), mColor);
+        points.emplace_back(a, mColor);
+        points.emplace_back(b, mColor);
     }
-    _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
+    mMesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
 }
 
 glm::vec2 CompFieldOfView::RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point)

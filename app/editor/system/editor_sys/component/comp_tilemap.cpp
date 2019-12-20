@@ -6,7 +6,7 @@ CompTilemap::CompTilemap()
     : mSize(0.0f, 0.0f)
     , mAnchor(0.5f, 0.5f)
 {
-    _trackPoints.resize(4);
+    mTrackPoints.resize(4);
 
     mMesh = std::create_ptr<RawMesh>();
     mMesh ->Init({}, {}, RawMesh::Vertex::kV | 
@@ -38,8 +38,8 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
             std::placeholders::_1, std::placeholders::_2);
 
         //  ÉèÖÃ²Ã¼ô¾ØÐÎ
-        auto min = command.mTransform * glm::vec4(_trackPoints.at(0), 0, 1);
-        auto max = command.mTransform * glm::vec4(_trackPoints.at(2), 0, 1);
+        auto min = command.mTransform * glm::vec4(mTrackPoints.at(0), 0, 1);
+        auto max = command.mTransform * glm::vec4(mTrackPoints.at(2), 0, 1);
         command.mClipview.x = min.x;
         command.mClipview.y = min.y;
         command.mClipview.z = max.x;
@@ -111,20 +111,20 @@ void CompTilemap::Update()
                 mSize.x = (float)map->GetMap().mPixelW;
                 mSize.y = (float)map->GetMap().mPixelH;
             }
-            _trackPoints.at(0).x = 0;       _trackPoints.at(0).y = 0;
-            _trackPoints.at(1).x = mSize.x; _trackPoints.at(1).y = 0;
-            _trackPoints.at(2).x = mSize.x; _trackPoints.at(2).y = mSize.y;
-            _trackPoints.at(3).x = 0;       _trackPoints.at(3).y = mSize.y;
+            mTrackPoints.at(0).x = 0;       mTrackPoints.at(0).y = 0;
+            mTrackPoints.at(1).x = mSize.x; mTrackPoints.at(1).y = 0;
+            mTrackPoints.at(2).x = mSize.x; mTrackPoints.at(2).y = mSize.y;
+            mTrackPoints.at(3).x = 0;       mTrackPoints.at(3).y = mSize.y;
         }
 
-        _trackPoints.at(0).x = -mSize.x *      mAnchor.x;
-        _trackPoints.at(0).y = -mSize.y *      mAnchor.y;
-        _trackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
-        _trackPoints.at(1).y = -mSize.y *      mAnchor.y;
-        _trackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
-        _trackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
-        _trackPoints.at(3).x = -mSize.x *      mAnchor.x;
-        _trackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
+        mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
+        mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;
+        mTrackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
+        mTrackPoints.at(1).y = -mSize.y *      mAnchor.y;
+        mTrackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
+        mTrackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
+        mTrackPoints.at(3).x = -mSize.x *      mAnchor.x;
+        mTrackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
     }
 }
 
@@ -141,28 +141,28 @@ void CompTilemap::OnModifyTrackPoint(const size_t index, const glm::vec2 & point
     switch (index)
     {
     case 0:
-        min.x = std::min(point.x, _trackPoints.at(2).x);
-        min.y = std::min(point.y, _trackPoints.at(2).y);
-        max.x = _trackPoints.at(2).x;
-        max.y = _trackPoints.at(2).y;
+        min.x = std::min(point.x, mTrackPoints.at(2).x);
+        min.y = std::min(point.y, mTrackPoints.at(2).y);
+        max.x = mTrackPoints.at(2).x;
+        max.y = mTrackPoints.at(2).y;
         break;
     case 1:
-        min.x = _trackPoints.at(0).x;
-        min.y = std::min(point.y, _trackPoints.at(3).y);
-        max.x = std::max(point.x, _trackPoints.at(3).x);
-        max.y = _trackPoints.at(2).y;
+        min.x = mTrackPoints.at(0).x;
+        min.y = std::min(point.y, mTrackPoints.at(3).y);
+        max.x = std::max(point.x, mTrackPoints.at(3).x);
+        max.y = mTrackPoints.at(2).y;
         break;
     case 2:
-        min.x = _trackPoints.at(0).x;
-        min.y = _trackPoints.at(0).y;
-        max.x = std::max(point.x, _trackPoints.at(0).x);
-        max.y = std::max(point.y, _trackPoints.at(0).y);
+        min.x = mTrackPoints.at(0).x;
+        min.y = mTrackPoints.at(0).y;
+        max.x = std::max(point.x, mTrackPoints.at(0).x);
+        max.y = std::max(point.y, mTrackPoints.at(0).y);
         break;
     case 3:
-        min.x = std::min(point.x, _trackPoints.at(1).x);
-        min.y = _trackPoints.at(0).y;
-        max.x = _trackPoints.at(2).x;
-        max.y = std::max(point.y, _trackPoints.at(1).y);
+        min.x = std::min(point.x, mTrackPoints.at(1).x);
+        min.y = mTrackPoints.at(0).y;
+        max.x = mTrackPoints.at(2).x;
+        max.y = std::max(point.y, mTrackPoints.at(1).y);
         break;
     }
 
