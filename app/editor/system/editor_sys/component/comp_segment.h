@@ -38,8 +38,8 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    float               _width;     //  Ïß¿í
     glm::vec4           _color;
+    float               _width;     //  Ïß¿í
     float               _smooth;
     uint                _update;
 

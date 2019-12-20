@@ -27,15 +27,15 @@ CompLightning::CompLightning()
 
 void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    Update();
-
-    if (_texture != nullptr)
+    if (_tex.Check())
     {
+        Update();
+
         interface::FowardCommand command;
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("texture0", _texture));
+        command.mTextures.push_back(std::make_pair("texture0", _tex.Instance<RawTexture>()));
         canvas->Post(command);
     }
 }
@@ -49,7 +49,7 @@ const std::string & CompLightning::GetName()
 void CompLightning::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, _url);
+    _tex.EncodeBinary(os, project);
     tools::Serialize(os, _scale);
     tools::Serialize(os, _width);
     tools::Serialize(os, _color);
@@ -59,7 +59,7 @@ void CompLightning::EncodeBinary(std::ostream & os, Project * project)
 void CompLightning::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, _url);
+    _tex.DecodeBinary(is, project);
     tools::Deserialize(is, _scale);
     tools::Deserialize(is, _width);
     tools::Deserialize(is, _color);
@@ -69,7 +69,7 @@ void CompLightning::DecodeBinary(std::istream & is, Project * project)
 bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "Url")
+    if (title == "Tex")
     {
         _update |= kTexture;
     }
@@ -88,9 +88,9 @@ bool CompLightning::OnModifyProperty(const std::any & oldValue, const std::any &
 std::vector<Component::Property> CompLightning::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Url", &_url);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Scale", &_scale);
-    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width", &_width);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Tex",    &_tex,      std::vector<uint>{ Res::TypeEnum::kImg });
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Scale",  &_scale);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Width",  &_width);
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color", &_color);
     return std::move(props);
 }
@@ -101,14 +101,13 @@ void CompLightning::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (!_url.empty() && _update & kTexture)
+        if (_tex.Modify())
         {
-            _texture = Global::Ref().mRawSys->Get<RawTexture>(_url);
-            _texture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            _texture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            _tex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            _tex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
-        if (!_url.empty() && _update & kSegment)
+        if (_update & kSegment)
         {
             std::queue<Segment> input;
             for (auto i = 0; i != _trackPoints.size() - 1; ++i)
@@ -120,7 +119,7 @@ void CompLightning::Update()
             GenSegm(_width, input, _segments);
         }
 
-        if (!_url.empty() && (_update & (kSegment | kMesh)))
+        if (_update & (kSegment | kMesh))
         {
             GenMesh(_scale, _segments);
         }

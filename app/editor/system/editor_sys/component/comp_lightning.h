@@ -40,7 +40,7 @@ private:
     void Update();
     void GenMesh(float scale, const std::vector<Segment> & segments);
     void GenSegm(float width,
-        std::queue<Segment> & input, 
+        std::queue<Segment>  & input, 
         std::vector<Segment> & output);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
@@ -51,10 +51,9 @@ private:
     float               _scale;
     float               _width;
     glm::vec4           _color;
-    std::string         _url;
+    Res::Ref            _tex;
 
     SharePtr<RawMesh>    _mesh;
-    SharePtr<RawTexture> _texture;
     SharePtr<RawProgram> _program;
     std::vector<Segment> _segments;
 };
