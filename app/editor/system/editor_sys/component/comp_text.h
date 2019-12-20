@@ -28,7 +28,7 @@ private:
     void OnDrawCallback(const interface::RenderCommand & command, uint pos);
 
 private:
-    Res::Ref    _fnt;
+    Res::Ref    _font;
     std::string _text;
     glm::vec2   _size;
     glm::vec2   _anchor;

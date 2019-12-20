@@ -32,7 +32,7 @@ const std::string & CompText::GetName()
 void CompText::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    _fnt.EncodeBinary(os, project);
+    _font.EncodeBinary(os, project);
 
     tools::Serialize(os, _text);
     tools::Serialize(os, _size);
@@ -46,7 +46,7 @@ void CompText::EncodeBinary(std::ostream & os, Project * project)
 void CompText::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    _fnt.DecodeBinary(is, project);
+    _font.DecodeBinary(is, project);
     
     tools::Deserialize(is, _text);
     tools::Deserialize(is, _size);
@@ -68,17 +68,17 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-        if (_fnt.Check()) { UpdateMesh(); }
+        if (_font.Check()) { UpdateMesh(); }
     }
 
-    if (_fnt.Check())
+    if (_font.Check())
     {
         interface::FowardCommand command;
         command.mMesh       = _mesh;
         command.mProgram    = _program;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mTextures.emplace_back("uniform_texture",
-                _fnt.Instance<RawFont>()->RefTexture());
+                _font.Instance<RawFont>()->RefTexture());
         command.mCallback = std::bind(
             &CompText::OnDrawCallback, this,
             std::placeholders::_1,
@@ -89,7 +89,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &_fnt, (uint)(Res::TypeEnum::kFnt));
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &_font,     (uint)(Res::TypeEnum::kFnt));
     props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &_text);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &_size);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &_anchor);
@@ -153,15 +153,15 @@ void CompText::UpdateMesh()
 
     std::vector<RawMesh::Vertex> points;
 
-    auto codes = _fnt.Instance<RawFont>()->RefWord(_text);
-    auto texW  = _fnt.Instance<RawFont>()->RefTexture()->GetW();
-    auto texH  = _fnt.Instance<RawFont>()->RefTexture()->GetH();
+    auto codes = _font.Instance<RawFont>()->RefWord(_text);
+    auto texW  = _font.Instance<RawFont>()->RefTexture()->GetW();
+    auto texH  = _font.Instance<RawFont>()->RefTexture()->GetH();
     auto posX  = 0.0f;
     auto posY  = 0.0f;
     auto lineH = 0.0f;
     for (auto i = 0; i != codes.size(); ++i)
     {
-        const auto & word = _fnt.Instance<RawFont>()->RefWord(codes.at(i));
+        const auto & word = _font.Instance<RawFont>()->RefWord(codes.at(i));
         auto wordW = (word.mUV.z - word.mUV.x) * texW;
         auto wordH = (word.mUV.w - word.mUV.y) * texH;
         //  ½Ø¶Ï¿í¶È
