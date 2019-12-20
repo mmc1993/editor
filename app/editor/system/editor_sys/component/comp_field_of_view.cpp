@@ -105,8 +105,7 @@ void CompFieldOfView::GenView()
         }
     }
 
-    _rayPoints.clear();
-    _rayPoints.emplace_back(0.0f);
+    _tracks.clear(); _tracks.emplace_back(0.0f);
     for (auto i = 0; i != segments.size(); i += 2)
     {
         auto point = RayTracking(segments, segments.at(i));
@@ -118,12 +117,12 @@ void CompFieldOfView::GenView()
             auto offset = cross > 0
                 ? glm::normalize(glm::vec2(point.y, -point.x))  //  向右延长
                 : glm::normalize(glm::vec2(-point.y, point.x)); //  向左延长
-            _rayPoints.emplace_back(RayExtended(segments, point + offset));
+            _tracks.emplace_back(RayExtended(segments, point + offset));
         }
-        _rayPoints.emplace_back(point);
+        _tracks.emplace_back(point);
     }
 
-    std::sort(_rayPoints.begin() + 1, _rayPoints.end(), [] (const glm::vec2 & a, const glm::vec2 & b)
+    std::sort(_tracks.begin() + 1, _tracks.end(), [] (const glm::vec2 & a, const glm::vec2 & b)
         {
             uint q0 = 0, q1 = 0;
             if      (a.x >= 0 && a.y >= 0) q0 = 0;
@@ -143,12 +142,12 @@ void CompFieldOfView::GenView()
 void CompFieldOfView::GenMesh()
 {
     std::vector<RawMesh::Vertex> points;
-    auto count = _rayPoints.size() - 1;
+    auto count = _tracks.size() - 1;
     for (auto i = 0; i != count; ++i)
     {
-        auto & a = _rayPoints.at( i              + 1);
-        auto & b = _rayPoints.at((i + 1) % count + 1);
-        points.emplace_back(_rayPoints.front(), _color);
+        auto & a = _tracks.at( i              + 1);
+        auto & b = _tracks.at((i + 1) % count + 1);
+        points.emplace_back(_tracks.front(), _color);
         points.emplace_back(a, _color);
         points.emplace_back(b, _color);
     }
