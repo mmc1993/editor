@@ -137,6 +137,38 @@ void GLObject::DeleteThis()
     GetParent()->DeleteObject(shared_from_this());
 }
 
+int GLObject::Relation(const SharePtr<GLObject> & target)
+{
+    //  ×Ô¼º
+    if (this == target.get())
+    {
+        return 1;
+    }
+    //  ³¤±²
+    for (auto parent = target->GetParent(); 
+              parent != nullptr;
+              parent = parent->GetParent())
+    {
+        if (this == parent.get()) { return 2; }
+    }
+    //  Íí±²
+    std::deque<SharePtr<GLObject>> list{ 
+        GetObjects().begin(),
+        GetObjects().end() };
+    while (!list.empty())
+    {
+        auto & front = list.front();
+        if (front.get() == this)
+        {
+            return 3;
+        }
+        list.insert(list.end(),
+            front->GetObjects().begin(),
+            front->GetObjects().end());
+    }
+    return 0;
+}
+
 SharePtr<GLObject> GLObject::GetObject(const std::string & name)
 {
     auto it = std::find_if(_children.begin(), _children.end(),

@@ -22,17 +22,17 @@ const std::string & CompFieldOfView::GetName()
 void CompFieldOfView::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
+    _clipObject.EncodeBinary(os, project);
+    _polyObject.EncodeBinary(os, project);
     tools::Serialize(os, _color);
-    tools::Serialize(os, _clipObjectURL);
-    tools::Serialize(os, _polyObjectURL);
 }
 
 void CompFieldOfView::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
+    _clipObject.DecodeBinary(is, project);
+    _polyObject.DecodeBinary(is, project);
     tools::Deserialize(is, _color);
-    tools::Deserialize(is, _clipObjectURL);
-    tools::Deserialize(is, _polyObjectURL);
 }
 
 bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -43,19 +43,18 @@ bool CompFieldOfView::OnModifyProperty(const std::any & oldValue, const std::any
 
 void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    Update();
-
-    if (!_sampler.expired())
+    if (_clipObject.Check() && _polyObject.Check())
     {
-        auto sample = _sampler.lock()->RefTextureBuffer();
+        Update();
+
         interface::PostCommand command;
         command.mMesh           = _mesh;
         command.mProgram        = _program;
         command.mTransform      = canvas->GetMatrixStack().GetM();
         command.mType           = interface::PostCommand::kSample;
         command.mCallback       = std::bind(&CompFieldOfView::OnDrawCallback,
-                                    CastPtr<CompFieldOfView>(shared_from_this()), 
-                                    sample, std::placeholders::_1, std::placeholders::_2);
+                                CastPtr<CompFieldOfView>(shared_from_this()), 
+                                std::placeholders::_1, std::placeholders::_2);
         canvas->Post(command);
     }
 }
@@ -63,8 +62,8 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompFieldOfView::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kString, "Poly URL", &_polyObjectURL);
-    props.emplace_back(UIParser::StringValueTypeEnum::kString, "Clip URL", &_clipObjectURL);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Clip Obj", &_clipObject);
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset, "Poly Obj", &_polyObject);
     props.emplace_back(UIParser::StringValueTypeEnum::kColor4, "Color",    &_color);
     return std::move(props);
 }
@@ -75,32 +74,17 @@ void CompFieldOfView::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        //  更新射线点
-        auto track = Global::Ref().mEditorSys->GetProject()->GetObject();
-        for (auto & name : tools::Split(_polyObjectURL, "/"))
+        if (_clipObject.Modify())
         {
-            track = track->GetObject(name);
-            ASSERT_LOG(track != nullptr, name.c_str());
+            ASSERT_LOG(_clipObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
         }
-        for (auto & polygon : track->GetComponentsInChildren<CompPolygon>())
+        if (_polyObject.Modify())
         {
-            _polyObjects.emplace_back(polygon);
+            ASSERT_LOG(_polyObject.Instance<GLObject>()->Relation(GetOwner()) == 0, "");
         }
-
-        //  更新裁剪层
-        track = Global::Ref().mEditorSys->GetProject()->GetObject();
-        for (auto & name : tools::Split(_clipObjectURL, "/"))
-        {
-            track = track->GetObject(name);
-            ASSERT_LOG(track != nullptr, name.c_str());
-        }
-        _sampler = track->GetComponent<CompRenderTarget>();
     }
-    if (!_sampler.expired())
-    {
-        GenView();
-        GenMesh();
-    }
+    GenView();
+    GenMesh();
 }
 
 void CompFieldOfView::GenView()
@@ -108,25 +92,16 @@ void CompFieldOfView::GenView()
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
     std::vector<glm::vec2> segments;
-    for (auto it = _polyObjects.begin(); it != _polyObjects.end(); )
+    for (auto & polygon : _polyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
     {
-        if (it->expired())
+        for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
         {
-            it = _polyObjects.erase(it);
-        }
-        else
-        {
-            auto polygon = it->lock();
-            for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
-            {
-                const auto & a = polygon->GetSegments().at(i          );
-                const auto & b = polygon->GetSegments().at((i + 1) % n);
-                auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
-                auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
-                segments.emplace_back(worldA);
-                segments.emplace_back(worldB);
-            }
-            ++it;
+            const auto & a = polygon->GetSegments().at(i          );
+            const auto & b = polygon->GetSegments().at((i + 1) % n);
+            auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
+            auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
+            segments.emplace_back(worldA);
+            segments.emplace_back(worldB);
         }
     }
 
@@ -232,11 +207,13 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
     return result;
 }
 
-void CompFieldOfView::OnDrawCallback(SharePtr<RawImage> texture, const interface::RenderCommand & command, uint texturePos)
-{ 
+void CompFieldOfView::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+{
     auto & cmd = (const interface::PostCommand &)command;
     cmd.mProgram->BindUniformTex2D("uniform_sample", 
-                                    texture->mID, 
-                                    texturePos);
+        _clipObject.Instance<GLObject>()
+            ->GetComponent<CompRenderTarget>()
+            ->RefTextureBuffer()->mID, 
+        texturePos);
 }
 

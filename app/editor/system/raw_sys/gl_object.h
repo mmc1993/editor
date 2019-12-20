@@ -31,6 +31,9 @@ public:
     void ClearObjects();
     void DeleteThis();
 
+    //  确认节点关系, 0 没关系, 1 自己, 2 长辈, 3 晚辈
+    int Relation(const SharePtr<GLObject> & target);
+
     SharePtr<GLObject> GetObject(const std::string & name);
     SharePtr<GLObject> GetObject(const size_t idx);
     std::vector<SharePtr<GLObject>> & GetObjects();

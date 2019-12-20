@@ -145,6 +145,7 @@ public:
             if (mOwner && !mOwner->Valid())
             {
                 mOwner.reset();
+                mValue.reset();
             }
             return mOwner != nullptr;
         }
