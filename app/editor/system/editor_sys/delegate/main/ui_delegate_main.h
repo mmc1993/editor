@@ -22,8 +22,8 @@ public:
 
 private:
     void InitObjects(
-        const SharePtr<UIObject> & uiobject,
-        const SharePtr<GLObject> & globject);
+        const SharePtr<UIObject> & uiparent,
+        const SharePtr<GLObject> & glparent);
     SharePtr<UIObject> NewObject(uint id, const std::string & name);
 
     void OnEvent(EventSys::TypeEnum type, const std::any & param);

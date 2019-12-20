@@ -157,13 +157,20 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
     return false;
 }
 
-void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiobject, const SharePtr<GLObject> & globject)
+void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiparent, const SharePtr<GLObject> & glparent)
 {
-    for (auto & object : globject->GetObjects())
+    for (auto & object : glparent->GetObjects())
     {
         auto obj = NewObject(object->GetID(), object->GetName());
-        InitObjects(obj, object);
-        uiobject->InsertObject(obj);
+        InitObjects(obj,   object);
+        if (uiparent == GetOwner())
+        {
+            uiparent->InsertObject(obj);
+        }
+        else
+        {
+            uiparent->GetObject({ uiparent->GetState()->Name })->InsertObject(obj);
+        }
     }
 }
 

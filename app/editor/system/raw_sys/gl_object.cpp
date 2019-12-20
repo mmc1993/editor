@@ -165,6 +165,7 @@ int GLObject::Relation(const SharePtr<GLObject> & target)
         list.insert(list.end(),
             front->GetObjects().begin(),
             front->GetObjects().end());
+        list.pop_front();
     }
     return 0;
 }

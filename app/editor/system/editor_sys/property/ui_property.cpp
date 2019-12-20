@@ -158,7 +158,7 @@ bool UIPropertyAsset::OnEnter()
         &imgui_tools::OnResizeBuffer, &GetNewValue());
     ImGui::SameLine();
 
-    if (ImGui::Button(ImID("Select").c_str()))
+    if (ImGui::Button(SFormat("Select##{0}", GetTitle()).c_str()))
     {
         auto self = CastPtr<UIPropertyAsset>(shared_from_this());
         std::function<void(Res::Ref)> func = [self](Res::Ref ref)
