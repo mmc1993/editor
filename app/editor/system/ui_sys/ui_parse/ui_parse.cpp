@@ -8,11 +8,11 @@
 //  UI事件委托映射表
 // ...
 static std::map<std::string, UIEvent::DelegateHandler *(*)()> s_DelegateMap = {
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainStage(); }),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_global", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainGlobal(); }),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainObjList(); }),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainResList(); }),
-    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", []() { return (UIEvent::DelegateHandler *)new UIEventDelegateMainComList(); }),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_stage", []() { return (UIEvent::DelegateHandler *)new UIDelegateMainStage(); }),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_global", []() { return (UIEvent::DelegateHandler *)new UIDelegateMainGlobal(); }),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_obj_list", []() { return (UIEvent::DelegateHandler *)new UIDelegateMainObjList(); }),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_res_list", []() { return (UIEvent::DelegateHandler *)new UIDelegateMainResList(); }),
+    std::make_pair("editor/editor/delegate/main/uievent_delegate_main_com_list", []() { return (UIEvent::DelegateHandler *)new UIDelegateMainComList(); }),
     std::make_pair("editor/editor/delegate/explorer/ui_delegate_explorer", []() { return (UIEvent::DelegateHandler *)new UIDelegateExplorer(); }),
 };
 

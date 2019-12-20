@@ -7,7 +7,7 @@
 #include "../../../ui_sys/ui_list.h"
 
 //  对象列表
-class UIEventDelegateMainObjList : public UIDelegateBase {
+class UIDelegateMainObjList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -33,13 +33,13 @@ private:
 };
 
 //  资源列表
-class UIEventDelegateMainResList : public UIDelegateBase {
+class UIDelegateMainResList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };
 
 //  组件列表
-class UIEventDelegateMainComList : public UIDelegateBase {
+class UIDelegateMainComList : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -51,7 +51,7 @@ private:
 };
 
 //  舞台
-class UIEventDelegateMainStage : public UIDelegateBase {
+class UIDelegateMainStage : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 
@@ -63,7 +63,7 @@ private:
 };
 
 //  全局
-class UIEventDelegateMainGlobal : public UIDelegateBase {
+class UIDelegateMainGlobal : public UIDelegateBase {
 public:
     virtual bool OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param) override;
 };

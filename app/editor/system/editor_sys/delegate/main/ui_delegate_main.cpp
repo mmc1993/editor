@@ -1,18 +1,18 @@
 ﻿#include "ui_delegate_main.h"
 
-bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
-        mListener.Add(EventSys::TypeEnum::kOpenProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kFreeProject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kInsertObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
-        mListener.Add(EventSys::TypeEnum::kMoveObject, std::bind(&UIEventDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kOpenProject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kFreeProject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kInsertObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kDeleteObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kRenameObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kSelectObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kStateObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
+        mListener.Add(EventSys::TypeEnum::kMoveObject, std::bind(&UIDelegateMainObjList::OnEvent, this, std::placeholders::_1, std::placeholders::_2), Global::Ref().mEventSys);
         return true;
     }
 
@@ -155,7 +155,7 @@ bool UIEventDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent
     return false;
 }
 
-void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiparent, const SharePtr<GLObject> & glparent)
+void UIDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiparent, const SharePtr<GLObject> & glparent)
 {
     for (auto & object : glparent->GetObjects())
     {
@@ -172,7 +172,7 @@ void UIEventDelegateMainObjList::InitObjects(const SharePtr<UIObject> & uiparent
     }
 }
 
-SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::string & name)
+SharePtr<UIObject> UIDelegateMainObjList::NewObject(uint id, const std::string & name)
 {
     auto layout = mmc::Json::Hash();
     layout->Insert(mmc::Json::List(), "__Children");
@@ -220,7 +220,7 @@ SharePtr<UIObject> UIEventDelegateMainObjList::NewObject(uint id, const std::str
     return object;
 }
 
-void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any & param)
+void UIDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
     switch (type)
     {
@@ -269,7 +269,7 @@ void UIEventDelegateMainObjList::OnEvent(EventSys::TypeEnum type, const std::any
     }
 }
 
-void UIEventDelegateMainObjList::OnEventOpenProject()
+void UIDelegateMainObjList::OnEventOpenProject()
 {
     ASSERT_LOG(_obj2id.empty(), "");
     ASSERT_LOG(_id2obj.empty(), "");
@@ -279,14 +279,14 @@ void UIEventDelegateMainObjList::OnEventOpenProject()
     InitObjects(GetOwner(), Global::Ref().mEditorSys->GetProject()->GetObject());
 }
 
-void UIEventDelegateMainObjList::OnEventFreeProject()
+void UIDelegateMainObjList::OnEventFreeProject()
 {
     _obj2id.clear();
     _id2obj.clear();
     GetOwner()->ClearObjects();
 }
 
-void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & object)
+void UIDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & object)
 {
     if (object->GetParent() == Global::Ref().mEditorSys->GetProject()->GetObject())
     {
@@ -307,7 +307,7 @@ void UIEventDelegateMainObjList::OnEventInsertObject(const SharePtr<GLObject> & 
     object->GetTransform()->Position(coord.x, coord.y);
 }
 
-void UIEventDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& object)
+void UIDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& object)
 {
     auto uiobject = _id2obj.at(object->GetID());
     _id2obj.erase(object->GetID());
@@ -315,7 +315,7 @@ void UIEventDelegateMainObjList::OnEventDeleteObject(const SharePtr<GLObject>& o
     uiobject->DeleteThis();
 }
 
-void UIEventDelegateMainObjList::OnEventRenameObject(const SharePtr<GLObject>& object, const std::string & name)
+void UIDelegateMainObjList::OnEventRenameObject(const SharePtr<GLObject>& object, const std::string & name)
 {
     auto uiobject0 = _id2obj.at(object->GetID());
     auto uiobject1 = uiobject0->GetObject({name});
@@ -323,7 +323,7 @@ void UIEventDelegateMainObjList::OnEventRenameObject(const SharePtr<GLObject>& o
     uiobject1->GetState()->Name = object->GetName();
 }
 
-void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
+void UIDelegateMainObjList::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
     auto uiobject = _id2obj.at(object->GetID());
     uiobject->GetObject(
@@ -331,7 +331,7 @@ void UIEventDelegateMainObjList::OnEventSelectObject(const SharePtr<GLObject> & 
     )->GetState()->IsSelect = select;
 }
 
-void UIEventDelegateMainObjList::OnEventStateObject(const SharePtr<GLObject> & object, uint state0, uint state1)
+void UIDelegateMainObjList::OnEventStateObject(const SharePtr<GLObject> & object, uint state0, uint state1)
 {
     auto active = object->HasState(GLObject::StateEnum::kActive);
     auto locked = object->HasState(GLObject::StateEnum::kLocked);
@@ -339,7 +339,7 @@ void UIEventDelegateMainObjList::OnEventStateObject(const SharePtr<GLObject> & o
     _id2obj.at(object->GetID())->GetObjects().at(1)->GetState()->Color = locked ? glm::vec4(1, 0, 0, 1) : glm::vec4(1);
 }
 
-void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent, uint pos)
+void UIDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & object, const SharePtr<GLObject> & parent, uint pos)
 {
     auto tree = GetOwner();
     auto uiobject = _id2obj.at(object->GetID());
@@ -356,33 +356,33 @@ void UIEventDelegateMainObjList::OnEventMoveObject(const SharePtr<GLObject> & ob
     *iter = uiobject;
 }
 
-bool UIEventDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIDelegateMainResList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     return true;
 }
 
-bool UIEventDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIDelegateMainComList::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
         mListener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
-            &UIEventDelegateMainComList::OnEvent, this, 
+            &UIDelegateMainComList::OnEvent, this, 
             std::placeholders::_1, 
             std::placeholders::_2), Global::Ref().mEventSys);
         mListener.Add(EventSys::TypeEnum::kAppendComponent, std::bind(
-            &UIEventDelegateMainComList::OnEvent, this,
+            &UIDelegateMainComList::OnEvent, this,
             std::placeholders::_1,
             std::placeholders::_2), Global::Ref().mEventSys);
         mListener.Add(EventSys::TypeEnum::kDeleteComponent, std::bind(
-            &UIEventDelegateMainComList::OnEvent, this,
+            &UIDelegateMainComList::OnEvent, this,
             std::placeholders::_1,
             std::placeholders::_2), Global::Ref().mEventSys);
     }
     return false;
 }
 
-void UIEventDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any & param)
+void UIDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
     switch (type)
     {
@@ -407,7 +407,7 @@ void UIEventDelegateMainComList::OnEvent(EventSys::TypeEnum type, const std::any
     }
 }
 
-void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
+void UIDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
     GetOwner()->ClearObjects();
 
@@ -426,7 +426,7 @@ void UIEventDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & 
     }
 }
 
-void UIEventDelegateMainComList::OnEventAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
+void UIDelegateMainComList::OnEventAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
     auto header = std::create_ptr<UIComponentHeader>(component->GetName());
     GetOwner()->InsertObject(header);
@@ -437,28 +437,28 @@ void UIEventDelegateMainComList::OnEventAppendComponent(const SharePtr<GLObject>
     }
 }
 
-void UIEventDelegateMainComList::OnEventDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
+void UIDelegateMainComList::OnEventDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
     auto & components = component->GetOwner()->GetComponents();
     auto it = std::find(components.begin(), components.end(), component);
     GetOwner()->DeleteObject(std::distance(components.begin(), it));
 }
 
-bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (UIEventEnum::kInit == e)
     {
         auto & arg = (const UIEvent::Init &)param;
         mListener.Add(EventSys::TypeEnum::kOpenProject, std::bind(
-            &UIEventDelegateMainStage::OnEvent, this,
+            &UIDelegateMainStage::OnEvent, this,
             std::placeholders::_1,
             std::placeholders::_2), Global::Ref().mEventSys);
         mListener.Add(EventSys::TypeEnum::kFreeProject, std::bind(
-            &UIEventDelegateMainStage::OnEvent, this,
+            &UIDelegateMainStage::OnEvent, this,
             std::placeholders::_1,
             std::placeholders::_2), Global::Ref().mEventSys);
         mListener.Add(EventSys::TypeEnum::kSelectObject, std::bind(
-            &UIEventDelegateMainStage::OnEvent, this,
+            &UIDelegateMainStage::OnEvent, this,
             std::placeholders::_1,
             std::placeholders::_2), Global::Ref().mEventSys);
         return true;
@@ -466,7 +466,7 @@ bool UIEventDelegateMainStage::OnCallEventMessage(UIEventEnum e, const UIEvent::
     return false;
 }
 
-void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any & param)
+void UIDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any & param)
 {
     switch (type)
     {
@@ -483,22 +483,22 @@ void UIEventDelegateMainStage::OnEvent(EventSys::TypeEnum type, const std::any &
     }
 }
 
-void UIEventDelegateMainStage::OnEventOpenProject()
+void UIDelegateMainStage::OnEventOpenProject()
 {
 }
 
-void UIEventDelegateMainStage::OnEventFreeProject()
+void UIDelegateMainStage::OnEventFreeProject()
 {
     CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelectedClear();
 }
 
-void UIEventDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
+void UIDelegateMainStage::OnEventSelectObject(const SharePtr<GLObject> & object, bool select, bool multi)
 {
     CastPtr<UIObjectGLCanvas>(GetOwner())->OpEditObject(nullptr);
     CastPtr<UIObjectGLCanvas>(GetOwner())->OpSelected(object, select);
 }
 
-bool UIEventDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
+bool UIDelegateMainGlobal::OnCallEventMessage(UIEventEnum e, const UIEvent::Event & param)
 {
     if (e == UIEventEnum::kMenu)
     {
