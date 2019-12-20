@@ -84,8 +84,8 @@ protected:
 
         auto width = ImGui::GetWindowWidth();
         ImGui::Columns(2, nullptr, false);
-        ImGui::SetColumnWidth(1, width * 0.8f);
-        ImGui::SetColumnOffset(1, width * 0.2f);
+        ImGui::SetColumnWidth(1, width * 0.6f);
+        ImGui::SetColumnOffset(1, width * 0.3f);
 
         ImGui::Text(GetTitle().c_str());
         ImGui::NextColumn();
