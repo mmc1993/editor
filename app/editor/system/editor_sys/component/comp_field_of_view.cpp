@@ -113,24 +113,24 @@ void CompFieldOfView::GenView()
         auto point = RayTracking(segments, segments.at(i));
         if (tools::Equal(point,            segments.at(i)))
         {
-            _extPoints.emplace_back(point);
+            //_extPoints.emplace_back(point);
             {
                 //  向右延长
                 auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
                 _rayPoints.emplace_back(RayExtended(segments, point + offset));
 
-                _extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
                 //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
-                _extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
             }
             {
                 //  向左延长
                 auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
                 _rayPoints.emplace_back(RayExtended(segments, point + offset));
 
-                _extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
                 //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
-                _extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
             }
         }
         _rayPoints.emplace_back(point);

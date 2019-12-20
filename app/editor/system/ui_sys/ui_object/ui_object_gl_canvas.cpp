@@ -39,7 +39,6 @@ void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & comma
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             cmd.mMesh->Draw(GL_TRIANGLES);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            cmd.mMesh->Draw(GL_POINTS);
             if (cmd.mType == interface::PostCommand::kSwap)
             {
                 std::swap(command.mRenderTextures[0]->mID, command.mRenderTextures[1]->mID);
