@@ -91,7 +91,7 @@ void CompFieldOfView::GenView()
 {
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
-    std::vector<glm::vec2> points;
+    std::vector<glm::vec2> segments;
     for (auto & polygon : _polyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
     {
         for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
@@ -100,27 +100,37 @@ void CompFieldOfView::GenView()
             const auto & b = polygon->GetSegments().at((i + 1) % n);
             auto worldA = polygon->GetOwner()->LocalToWorld(a) - origin;
             auto worldB = polygon->GetOwner()->LocalToWorld(b) - origin;
-            points.emplace_back(worldA);
-            points.emplace_back(worldB);
+            segments.emplace_back(worldA);
+            segments.emplace_back(worldB);
         }
     }
 
+    _extPoints.clear();
     _rayPoints.clear();
     _rayPoints.emplace_back(0.0f);
-    for (auto i = 0; i != points.size(); i += 2)
+    for (auto i = 0; i != segments.size(); i += 2)
     {
-        auto point = RayTracking(points, points.at(i));
-        if (tools::Equal(point, points.at(i)))
+        auto point = RayTracking(segments, segments.at(i));
+        if (tools::Equal(point,            segments.at(i)))
         {
+            _extPoints.emplace_back(point);
             {
                 //  向右延长
                 auto offset = glm::normalize(glm::vec2(point.y, -point.x)) * 1.0f;
-                _rayPoints.emplace_back(RayExtended(points, point + offset));
+                _rayPoints.emplace_back(RayExtended(segments, point + offset));
+
+                _extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
+                _extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
             }
             {
                 //  向左延长
                 auto offset = glm::normalize(glm::vec2(-point.y, point.x)) * 1.0f;
-                _rayPoints.emplace_back(RayExtended(points, point + offset));
+                _rayPoints.emplace_back(RayExtended(segments, point + offset));
+
+                _extPoints.emplace_back(RayExtended(segments, point + offset *  1.0f));
+                //_extPoints.emplace_back(RayExtended(segments, point + offset *  5.0f));
+                _extPoints.emplace_back(RayExtended(segments, point + offset * 10.0f));
             }
         }
         _rayPoints.emplace_back(point);
@@ -146,15 +156,47 @@ void CompFieldOfView::GenView()
 void CompFieldOfView::GenMesh()
 {
     std::vector<RawMesh::Vertex> points;
-    auto count = _rayPoints.size() - 1;
-    for (auto i = 0; i != count; ++i)
     {
-        auto & a = _rayPoints.at( i              + 1);
-        auto & b = _rayPoints.at((i + 1) % count + 1);
+        auto count = _rayPoints.size() - 1;
+        for (auto i = 0; i != count; ++i)
+        {
+            auto & a = _rayPoints.at( i              + 1);
+            auto & b = _rayPoints.at((i + 1) % count + 1);
 
-        points.emplace_back(_rayPoints.front(), _color);
-        points.emplace_back(a, _color);
-        points.emplace_back(b, _color);
+            points.emplace_back(_rayPoints.front(), _color);
+            points.emplace_back(a, _color);
+            points.emplace_back(b, _color);
+        }
+    }
+    //  扩展线段, 5个点一组, 第一个点是远点, 剩下4个点按2个分2组
+    {
+        auto count = _extPoints.size();
+        for (auto i = 0; i != count; )
+        {
+            auto & o = _extPoints.at(i++);
+            auto & r0 = _extPoints.at(i++);
+            auto & r1 = _extPoints.at(i++);
+            //auto & r2 = _extPoints.at(i++);
+            auto & l0 = _extPoints.at(i++);
+            auto & l1 = _extPoints.at(i++);
+            //auto & l2 = _extPoints.at(i++);
+
+            points.emplace_back(o, _color * 0.8f);
+            points.emplace_back(r0, _color * 0.8f);
+            points.emplace_back(r1, _color * 0.8f);
+
+            //points.emplace_back(o, _color * 0.5f);
+            //points.emplace_back(r1, _color * 0.5f);
+            //points.emplace_back(r2, _color * 0.5f);
+
+            points.emplace_back(o, _color * 0.5f);
+            points.emplace_back(l0, _color * 0.5f);
+            points.emplace_back(l1, _color * 0.5f);
+
+            //points.emplace_back(o, _color * 0.8f);
+            //points.emplace_back(l1, _color * 0.8f);
+            //points.emplace_back(l2, _color * 0.8f);
+        }
     }
 
     _mesh->Update(points, { }, GL_DYNAMIC_DRAW, GL_DYNAMIC_DRAW);
