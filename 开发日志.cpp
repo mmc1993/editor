@@ -234,6 +234,11 @@ class CollapseTerrain {
 public:
     using Polygon = std::vector<glm::vec2>;
 
+    struct CollapseInfo {
+        Polygon mPolygon;
+        SharePtr<RawMesh> mMesh;
+    }
+
 public:
     void Collapse(const Polygon & polygon);
 
@@ -246,6 +251,7 @@ public:
     SharePtr<RawProgram> mProgram;
     SharePtr<RawTexture> mMaskBuff;
     std::vector<Polygon> mPolygons;
+    std::vector<CollapseInfo> mCollapseQueue;
     std::vector<SharePtr<RawMesh>> mMeshPool;
 }
 
