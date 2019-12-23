@@ -260,13 +260,13 @@ void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
 void UIObjectGLCanvas::Post(const::interface::TargetCommand & cmd)
 {
     auto state = GetState<UIStateGLCanvas>();
-    if (cmd.mType == interface::TargetCommand::kPush)
+    if      (cmd.mType == interface::TargetCommand::TypeEnum::kPush)
     {
         auto & target = state->mCommandStack.emplace();
         target.mRenderTextures[0] = cmd.mTexture;
         target.mRenderTextures[1] = state->mRenderTextures[1];
     }
-    else if (cmd.mType == interface::TargetCommand::kPop)
+    else if (cmd.mType == interface::TargetCommand::TypeEnum::kPop)
     {
         auto && top = std::move(state->mCommandStack.top());
         state->mCommandArray.emplace_back(std::move(top));
