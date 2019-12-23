@@ -216,6 +216,54 @@ ok  //  UIEventEnum 剥离
 
 
 地形破坏
+
+enum EnabledEnum {
+    kTargetColor0 = 0x1,
+    kTargetColor1 = 0x2,
+    kUseCanvasSize = 0x4,
+}
+
+class TargetCommand {
+public:
+    EnabledEnum mEnabled;
+    glm::vec2 mTargetSize;
+    glm::vec4 mTargetColor;
+}
+
+class CollapseTerrain {
+public:
+    using Polygon = std::vector<glm::vec2>;
+
+public:
+    void Collapse(const Polygon & polygon);
+
+public:
+    //  属性
+    Res::Ref    mMap;
+    glm::vec2   mSize;
+
+    //  地形
+    SharePtr<RawMesh> mMesh;
+    SharePtr<RawProgram> mProgram;
+    SharePtr<RawTexture> mMaskBuff;
+    std::vector<Polygon> mPolygons;
+    std::vector<SharePtr<RawMesh>> mMeshPool;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 导航网格
 变形
 变量
