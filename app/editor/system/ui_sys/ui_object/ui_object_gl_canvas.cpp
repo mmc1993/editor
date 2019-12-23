@@ -71,13 +71,12 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
                 max.y = state->Move.w - max.y;
                 if (min.x > max.x) { std::swap(min.x, max.x); }
                 if (min.y > max.y) { std::swap(min.y, max.y); }
-                glScissor(
-                    (iint)min.x, (iint)min.y,
-                    (iint)max.x - (iint)min.x,
-                    (iint)max.y - (iint)min.y);
+                glScissor((iint)min.x, (iint)min.y,
+                          (iint)max.x - (iint)min.x,
+                          (iint)max.y - (iint)min.y);
             }
             Post(cmd.mProgram, cmd.mTransform);
-            cmd.Call(texNum);
+            cmd.Call(texNum             );
             cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             //cmd.mMesh->Draw(GL_TRIANGLES);
@@ -288,6 +287,7 @@ void UIObjectGLCanvas::Post(const::RenderPipline::TargetCommand & cmd)
     if      (cmd.mType == RenderPipline::TargetCommand::TypeEnum::kPush)
     {
         auto & command = state->mTargetCommandArray.emplace_back(cmd);
+        //command.mRenderTextures[0] = command.mRenderTextures[0];
         command.mRenderTextures[1] = state->mRenderTextures[1];
         ++state->mTargetCommandStack;
     }
@@ -421,8 +421,7 @@ glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
 {
     glm::vec3 coord(screen.x, GetState()->Move.w - screen.y, 0);
     glm::vec4 viewPort(0, 0, GetState()->Move.z, GetState()->Move.w);
-    auto result = glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
-    return result;
+    return glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
 }
 
 RenderPipline::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
