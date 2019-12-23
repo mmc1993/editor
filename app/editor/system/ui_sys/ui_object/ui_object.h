@@ -148,10 +148,10 @@ private:
 
 public:
     UIObjectGLCanvas();
-    interface::MatrixStack & GetMatrixStack();
-    void Post(const interface::PostCommand  & cmd);
-    void Post(const interface::TargetCommand & cmd);
-    void Post(const interface::FowardCommand & cmd);
+    RenderPipline::MatrixStack & GetMatrixStack();
+    void Post(const RenderPipline::PostCommand  & cmd);
+    void Post(const RenderPipline::TargetCommand & cmd);
+    void Post(const RenderPipline::FowardCommand & cmd);
     void Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform);
 
     //  ½»»¥²Ù×÷
@@ -165,8 +165,8 @@ public:
     glm::vec2 ProjectWorld(const glm::vec2 & screen);
 
 private:
-    void HandleFowardCommands(interface::TargetCommand & command);
-    void HandlePostCommands(  interface::TargetCommand & command);
+    void HandleFowardCommands(RenderPipline::TargetCommand & command);
+    void HandlePostCommands(  RenderPipline::TargetCommand & command);
     void CollCommands();
     void CallCommands();
 

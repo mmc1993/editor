@@ -25,7 +25,7 @@ protected:
 
 private:
     void UpdateMesh();
-    void OnDrawCallback(const interface::RenderCommand & command, uint pos);
+    void OnDrawCallback(const RenderPipline::RenderCommand & command, uint pos);
 
 private:
     Res::Ref    mFont;

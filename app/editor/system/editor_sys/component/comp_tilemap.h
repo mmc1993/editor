@@ -20,7 +20,7 @@ protected:
 
 private:
     void Update();
-    void OnDrawCallback(const interface::RenderCommand & command, uint texturePos);
+    void OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;

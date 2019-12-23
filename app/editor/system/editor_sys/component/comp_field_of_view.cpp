@@ -47,11 +47,11 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     {
         Update();
 
-        interface::PostCommand command;
+        RenderPipline::PostCommand command;
         command.mMesh      = mMesh;
         command.mProgram   = mProgram;
         command.mTransform = canvas->GetMatrixStack().GetM();
-        command.mType      = interface::PostCommand::kSample;
+        command.mType      = RenderPipline::PostCommand::kSample;
         command.mCallback  = std::bind(&CompFieldOfView::OnDrawCallback,
                            CastPtr<CompFieldOfView>(shared_from_this()), 
                            std::placeholders::_1, std::placeholders::_2);
@@ -200,9 +200,9 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
     return result;
 }
 
-void CompFieldOfView::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+void CompFieldOfView::OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos)
 {
-    auto & cmd = (const interface::PostCommand &)command;
+    auto & cmd = (const RenderPipline::PostCommand &)command;
     cmd.mProgram->BindUniformTex2D("uniform_sample", 
         mClipObject.Instance<GLObject>()
             ->GetComponent<CompRenderTarget>()

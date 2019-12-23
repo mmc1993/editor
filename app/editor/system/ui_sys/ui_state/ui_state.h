@@ -125,9 +125,9 @@ class UIStateGLCanvas : public UIState {
 public:
     GLuint mRenderTarget;
     SharePtr<RawImage> mRenderTextures[2];
-    interface::MatrixStack   mMatrixStack;
-    uint                                    mTargetCommandStack;
-    std::vector<interface::TargetCommand>   mTargetCommandArray;
+    RenderPipline::MatrixStack mMatrixStack;
+    uint                                        mTargetCommandStack;
+    std::vector<RenderPipline::TargetCommand>   mTargetCommandArray;
 
     //  编辑功能相关
     struct Operation {

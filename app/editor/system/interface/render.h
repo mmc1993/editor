@@ -11,7 +11,7 @@ class RawTexture;
 class RawMaterial;
 class Component;
 
-namespace interface {
+namespace RenderPipline {
     struct RenderCommand {
         std::function<void(const RenderCommand &, uint)> mCallback;
         void Call(uint pos) { if (mCallback)mCallback(*this, pos); }

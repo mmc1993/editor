@@ -25,7 +25,7 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     {
         Update();
 
-        interface::FowardCommand command;
+        RenderPipline::FowardCommand command;
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTextures   = mTextures;
@@ -46,7 +46,7 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mClipview.w = max.y;
 
         //  ÆôÓÃ²Ã¼ô
-        command.mEnabled = interface::FowardCommand::kClipView;
+        command.mEnabled = RenderPipline::FowardCommand::kClipView;
 
         canvas->Post(command);
     }
@@ -128,9 +128,9 @@ void CompTilemap::Update()
     }
 }
 
-void CompTilemap::OnDrawCallback(const interface::RenderCommand & command, uint texturePos)
+void CompTilemap::OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos)
 { 
-    auto & forward = (const interface::FowardCommand &)(command);
+    auto & forward = (const RenderPipline::FowardCommand &)(command);
     forward.mProgram->BindUniformVector("anchor_", mAnchor);
     forward.mProgram->BindUniformVector("map_wh_",  mMapWH);
 }

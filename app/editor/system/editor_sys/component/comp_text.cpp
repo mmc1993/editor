@@ -73,7 +73,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 
     if (mFont.Check())
     {
-        interface::FowardCommand command;
+        RenderPipline::FowardCommand command;
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
@@ -198,9 +198,9 @@ void CompText::UpdateMesh()
     mMesh->Update(points, { });
 }
 
-void CompText::OnDrawCallback(const interface::RenderCommand & command, uint pos)
+void CompText::OnDrawCallback(const RenderPipline::RenderCommand & command, uint pos)
 { 
-    auto forward = (const interface::FowardCommand &)(command);
+    auto forward = (const RenderPipline::FowardCommand &)(command);
     forward.mProgram->BindUniformNumber("out_delta_", mOutDelta);
     forward.mProgram->BindUniformVector("out_color_", mOutColor);
 }

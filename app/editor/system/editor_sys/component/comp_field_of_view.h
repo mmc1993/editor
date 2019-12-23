@@ -25,7 +25,7 @@ private:
     void GenMesh();
     glm::vec2 RayTracking(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
     glm::vec2 RayExtended(const std::vector<glm::vec2> & segments, const glm::vec2 & point);
-    void OnDrawCallback(const interface::RenderCommand & command, uint texturePos);
+    void OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos);
 
 private:
     glm::vec4   mColor;

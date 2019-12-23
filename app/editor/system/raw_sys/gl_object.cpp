@@ -191,7 +191,7 @@ std::vector<SharePtr<GLObject>> & GLObject::GetObjects()
 
 void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
 {
-    canvas->GetMatrixStack().Mul(interface::MatrixStack::TypeEnum::kModel, GetTransform()->GetMatrix());
+    canvas->GetMatrixStack().Mul(RenderPipline::MatrixStack::TypeEnum::kModel, GetTransform()->GetMatrix());
 
     for (auto component : mComponents)
     {
@@ -218,7 +218,7 @@ void GLObject::Update(UIObjectGLCanvas * canvas, float dt)
         }
     }
 
-    canvas->GetMatrixStack().Pop(interface::MatrixStack::TypeEnum::kModel);
+    canvas->GetMatrixStack().Pop(RenderPipline::MatrixStack::TypeEnum::kModel);
 }
 
 std::string GLObject::SetName(const std::string & name)

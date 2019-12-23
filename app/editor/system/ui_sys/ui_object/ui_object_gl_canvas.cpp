@@ -21,7 +21,7 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
     state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
-void UIObjectGLCanvas::HandlePostCommands(interface::TargetCommand & command)
+void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command)
 {
     std::swap(command.mRenderTextures[0]->mID,
               command.mRenderTextures[1]->mID);
@@ -40,7 +40,7 @@ void UIObjectGLCanvas::HandlePostCommands(interface::TargetCommand & command)
             //cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             //cmd.mMesh->Draw(GL_POINTS);
-            if (cmd.mType == interface::PostCommand::kSwap)
+            if (cmd.mType == RenderPipline::PostCommand::kSwap)
             {
                 std::swap(command.mRenderTextures[0]->mID, command.mRenderTextures[1]->mID);
             }
@@ -48,7 +48,7 @@ void UIObjectGLCanvas::HandlePostCommands(interface::TargetCommand & command)
     }
 }
 
-void UIObjectGLCanvas::HandleFowardCommands(interface::TargetCommand & command)
+void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & command)
 {
     auto state = GetState();
     for (auto & cmd : command.mFowardCommands)
@@ -61,7 +61,7 @@ void UIObjectGLCanvas::HandleFowardCommands(interface::TargetCommand & command)
             {
                 cmd.mProgram->BindUniformTex2D(texture.first.c_str(), texture.second->GetID(), texNum++);
             }
-            if (cmd.mEnabled & interface::FowardCommand::kClipView)
+            if (cmd.mEnabled & RenderPipline::FowardCommand::kClipView)
             {
                 glEnable(GL_SCISSOR_TEST);
                 auto matrixVP = GetMatrixStack().GetP() * GetMatrixStack().GetV();
@@ -82,7 +82,7 @@ void UIObjectGLCanvas::HandleFowardCommands(interface::TargetCommand & command)
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             //cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            if (cmd.mEnabled & interface::FowardCommand::kClipView)
+            if (cmd.mEnabled & RenderPipline::FowardCommand::kClipView)
             {
                 glDisable(GL_SCISSOR_TEST);
             }
@@ -115,7 +115,7 @@ void UIObjectGLCanvas::CallCommands()
     {
         auto & command = *iter;
 
-        if (command.mEnabledFlag & interface::TargetCommand::kUseCanvasSize)
+        if (command.mEnabledFlag & RenderPipline::TargetCommand::kUseCanvasSize)
         {
             viewport[2].x = 0; viewport[2].z = (int)state->Move.z;
             viewport[2].y = 0; viewport[2].w = (int)state->Move.w;
@@ -147,20 +147,20 @@ void UIObjectGLCanvas::CallCommands()
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
         glClearColor(command.mTargetColor.x, command.mTargetColor.y, command.mTargetColor.z, command.mTargetColor.w);
         uint buffers[2];
-        if (command.mEnabledFlag & (interface::TargetCommand::kTargetColor0 | interface::TargetCommand::kTargetColor0))
+        if (command.mEnabledFlag & (RenderPipline::TargetCommand::kTargetColor0 | RenderPipline::TargetCommand::kTargetColor0))
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_COLOR_ATTACHMENT1;
             glDrawBuffers(2, buffers);
 
         }
-        else if (command.mEnabledFlag & interface::TargetCommand::kTargetColor0)
+        else if (command.mEnabledFlag & RenderPipline::TargetCommand::kTargetColor0)
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_NONE;
             glDrawBuffers(2, buffers);
         }
-        else if (command.mEnabledFlag & interface::TargetCommand::kTargetColor1)
+        else if (command.mEnabledFlag & RenderPipline::TargetCommand::kTargetColor1)
         {
             buffers[0] = GL_NONE;
             buffers[1] = GL_COLOR_ATTACHMENT1;
@@ -275,30 +275,30 @@ void UIObjectGLCanvas::DrawSelectRect()
     }
 }
 
-void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
+void UIObjectGLCanvas::Post(const RenderPipline::PostCommand & cmd)
 {
     auto state = GetState<UIStateGLCanvas>();
     ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
     state->mTargetCommandArray.at(state->mTargetCommandStack).mPostCommands.emplace_back(cmd);
 }
 
-void UIObjectGLCanvas::Post(const::interface::TargetCommand & cmd)
+void UIObjectGLCanvas::Post(const::RenderPipline::TargetCommand & cmd)
 {
     auto state = GetState<UIStateGLCanvas>();
-    if      (cmd.mType == interface::TargetCommand::TypeEnum::kPush)
+    if      (cmd.mType == RenderPipline::TargetCommand::TypeEnum::kPush)
     {
         auto & command = state->mTargetCommandArray.emplace_back(cmd);
         command.mRenderTextures[1] = state->mRenderTextures[1];
         ++state->mTargetCommandStack;
     }
-    else if (cmd.mType == interface::TargetCommand::TypeEnum::kPop)
+    else if (cmd.mType == RenderPipline::TargetCommand::TypeEnum::kPop)
     {
         ASSERT_LOG(state->mTargetCommandStack != 0, "");
         --state->mTargetCommandStack;
     }
 }
 
-void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
+void UIObjectGLCanvas::Post(const RenderPipline::FowardCommand & cmd)
 {
     auto state = GetState<UIStateGLCanvas>();
     ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
@@ -308,8 +308,8 @@ void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 void UIObjectGLCanvas::Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
-    const auto & matrixV = GetMatrixStack().Top(interface::MatrixStack::TypeEnum::kView);
-    const auto & matrixP = GetMatrixStack().Top(interface::MatrixStack::TypeEnum::kProj);
+    const auto & matrixV = GetMatrixStack().Top(RenderPipline::MatrixStack::TypeEnum::kView);
+    const auto & matrixP = GetMatrixStack().Top(RenderPipline::MatrixStack::TypeEnum::kProj);
     const auto & matrixMV = matrixV * transform;
     const auto & matrixVP = matrixP * matrixV;
     const auto & matrixMVP = matrixP * matrixMV;
@@ -425,7 +425,7 @@ glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
     return result;
 }
 
-interface::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
+RenderPipline::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack;
 }
@@ -435,14 +435,14 @@ bool UIObjectGLCanvas::OnEnter()
     if (Global::Ref().mEditorSys->IsOpenProject())
     {
         auto state = GetState<UIStateGLCanvas>();
-        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kModel);
-        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kView, GetMatView());
-        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kProj, GetMatProj());
+        state->mMatrixStack.Identity(RenderPipline::MatrixStack::TypeEnum::kModel);
+        state->mMatrixStack.Identity(RenderPipline::MatrixStack::TypeEnum::kView, GetMatView());
+        state->mMatrixStack.Identity(RenderPipline::MatrixStack::TypeEnum::kProj, GetMatProj());
         CollCommands();
         CallCommands();
-        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kModel);
-        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kView);
-        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kProj);
+        state->mMatrixStack.Pop(RenderPipline::MatrixStack::TypeEnum::kModel);
+        state->mMatrixStack.Pop(RenderPipline::MatrixStack::TypeEnum::kView);
+        state->mMatrixStack.Pop(RenderPipline::MatrixStack::TypeEnum::kProj);
         return true;
     }
     return false;

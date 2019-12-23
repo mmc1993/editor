@@ -25,7 +25,7 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     {
         Update();
 
-        interface::FowardCommand command;
+        RenderPipline::FowardCommand command;
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
