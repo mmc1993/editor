@@ -220,7 +220,7 @@ void UIObjectGLCanvas::DrawTrackPoint()
                 
                 auto & mesh = GetMeshBuffer(i0);
                 state->mGLProgramSolidFill->UsePass(0);
-                Post(state->mGLProgramSolidFill, 
+                Post(state->mGLProgramSolidFill,
                      object->GetWorldMatrix());
                 mesh->Update(points, {});
                 mesh->Draw(GL_LINE_LOOP);
