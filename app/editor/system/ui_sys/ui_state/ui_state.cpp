@@ -59,6 +59,7 @@ UIStateUICanvas::UIStateUICanvas()
 { }
 
 UIStateGLCanvas::UIStateGLCanvas()
+    : mTargetCommandStack(0)
 {
     glGenFramebuffers(1,  &mRenderTarget);
 }

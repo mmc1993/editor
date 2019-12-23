@@ -21,7 +21,7 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
     state->mGLProgramSolidFill = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
-void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & command)
+void UIObjectGLCanvas::HandlePostCommands(interface::TargetCommand & command)
 {
     std::swap(command.mRenderTextures[0]->mID,
               command.mRenderTextures[1]->mID);
@@ -48,7 +48,7 @@ void UIObjectGLCanvas::HandlePostCommands(UIStateGLCanvas::TargetCommand & comma
     }
 }
 
-void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & command)
+void UIObjectGLCanvas::HandleFowardCommands(interface::TargetCommand & command)
 {
     auto state = GetState();
     for (auto & cmd : command.mFowardCommands)
@@ -93,7 +93,7 @@ void UIObjectGLCanvas::HandleFowardCommands(UIStateGLCanvas::TargetCommand & com
 void UIObjectGLCanvas::CollCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    auto & command = state->mCommandArray.emplace_back();
+    auto & command = state->mTargetCommandArray.emplace_back();
     command.mRenderTextures[0] = state->mRenderTextures[0];
     command.mRenderTextures[1] = state->mRenderTextures[1];
     Global::Ref().mEditorSys->GetProject()->GetObject()->Update(this, 0.0f);
@@ -102,63 +102,93 @@ void UIObjectGLCanvas::CollCommands()
 void UIObjectGLCanvas::CallCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    ASSERT_LOG(state->mCommandStack.empty(), "");
+    ASSERT_LOG(state->mTargetCommandStack == 0, "");
     tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
 
-    iint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-    glViewport(0, 0, (iint)state->Move.z, (iint)state->Move.w);
+    //  当前视口, 旧的视口, 新的视口
+    glm::ivec4 viewport[3];
+    glGetIntegerv(GL_VIEWPORT, &viewport[0][0]);
+    glGetIntegerv(GL_VIEWPORT, &viewport[1][0]);
 
-    for (auto iter = state->mCommandArray.rbegin(); 
-              iter != state->mCommandArray.rend(); ++iter)
+    for (auto iter = state->mTargetCommandArray.rbegin(); 
+              iter != state->mTargetCommandArray.rend(); ++iter)
     {
         auto & command = *iter;
-        if (command.mRenderTextures[0]->mW != state->Move.z ||
-            command.mRenderTextures[0]->mH != state->Move.w)
+
+        if (command.mEnabledFlag & interface::TargetCommand::kUseCanvasSize)
         {
-            command.mRenderTextures[0]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
+            viewport[2].x = 0; viewport[2].z = (int)state->Move.z;
+            viewport[2].y = 0; viewport[2].w = (int)state->Move.w;
+        }
+        else
+        {
+            viewport[2] = command.mTargetView;
         }
 
-        if (command.mRenderTextures[1]->mW != state->Move.z ||
-            command.mRenderTextures[1]->mH != state->Move.w)
+        //  调整视口
+        if (viewport[1] != viewport[2])
         {
-            command.mRenderTextures[1]->ModifyWH((uint)state->Move.z, (uint)state->Move.w);
+            viewport[1] = viewport[2];
+            glViewport(viewport[2].x, viewport[2].y, 
+                       viewport[2].z, viewport[2].w);
         }
 
-        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-                                      GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
-        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1,
-                                      GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
-        uint buffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
-        glDrawBuffers(2, buffers);
-        glClearColor(0,0,0, 1.0f);
+        if (command.mRenderTextures[0]->mW != viewport[2].z || command.mRenderTextures[0]->mH != viewport[2].w)
+        {
+            command.mRenderTextures[0]->ModifyWH(viewport[2].z, viewport[2].w);
+        }
+
+        if (command.mRenderTextures[1]->mW != viewport[2].z || command.mRenderTextures[1]->mH != viewport[2].w)
+        {
+            command.mRenderTextures[1]->ModifyWH(viewport[2].z, viewport[2].w);
+        }
+
+        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
+        tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
+        glClearColor(command.mTargetColor.x, command.mTargetColor.y, command.mTargetColor.z, command.mTargetColor.w);
+        uint buffers[2];
+        if (command.mEnabledFlag & (interface::TargetCommand::kTargetColor0 | interface::TargetCommand::kTargetColor0))
+        {
+            buffers[0] = GL_COLOR_ATTACHMENT0;
+            buffers[1] = GL_COLOR_ATTACHMENT1;
+            glDrawBuffers(2, buffers);
+
+        }
+        else if (command.mEnabledFlag & interface::TargetCommand::kTargetColor0)
+        {
+            buffers[0] = GL_COLOR_ATTACHMENT0;
+            buffers[1] = GL_NONE;
+            glDrawBuffers(2, buffers);
+        }
+        else if (command.mEnabledFlag & interface::TargetCommand::kTargetColor1)
+        {
+            buffers[0] = GL_NONE;
+            buffers[1] = GL_COLOR_ATTACHMENT1;
+            glDrawBuffers(2, buffers);
+        }
         glClear(GL_COLOR_BUFFER_BIT);
-        buffers[1]         = GL_NONE;
+        buffers[0] = GL_COLOR_ATTACHMENT0;
+        buffers[1] = GL_NONE;
         glDrawBuffers(2, buffers);
 
         if (!command.mFowardCommands.empty())
         {
             HandleFowardCommands(command);
         }
-        ASSERT_LOG(glGetError() == 0, "");
         if (!command.mPostCommands.empty())
         {
             HandlePostCommands(command);
         }
-        ASSERT_LOG(glGetError() == 0, "");
     }
 
-    state->mCommandArray.clear();
-
-    //  绘制选择区
-    if (!state->mOperation.mSelectObjects.empty())
-    {
-        DrawTrackPoint();
-    }
+    glViewport(0, 0, (int)state->Move.z, (int)state->Move.w);
+    DrawTrackPoint();
     DrawSelectRect();
-    glUseProgram(0);
 
-    glViewport(0, 0, viewport[2], viewport[3]);
+    glUseProgram(0);
+    state->mTargetCommandArray.clear();
+    glViewport(viewport[0].x, viewport[0].y, 
+               viewport[0].z, viewport[0].w);
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 }
 
@@ -189,10 +219,10 @@ void UIObjectGLCanvas::DrawTrackPoint()
                 }
                 
                 auto & mesh = GetMeshBuffer(i0);
-                mesh->Update(points, {});
-
                 state->mGLProgramSolidFill->UsePass(0);
-                Post(state->mGLProgramSolidFill, object->GetWorldMatrix());
+                Post(state->mGLProgramSolidFill, 
+                     object->GetWorldMatrix());
+                mesh->Update(points, {});
                 mesh->Draw(GL_LINE_LOOP);
                 if (HasOpMode(UIStateGLCanvas::Operation::kEdit))
                 {
@@ -247,14 +277,9 @@ void UIObjectGLCanvas::DrawSelectRect()
 
 void UIObjectGLCanvas::Post(const interface::PostCommand & cmd)
 {
-    if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
-    {
-        state->mCommandArray.front().mPostCommands.emplace_back(cmd);
-    }
-    else
-    {
-        state->mCommandStack.top().mPostCommands.emplace_back(cmd);
-    }
+    auto state = GetState<UIStateGLCanvas>();
+    ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
+    state->mTargetCommandArray.at(state->mTargetCommandStack).mPostCommands.emplace_back(cmd);
 }
 
 void UIObjectGLCanvas::Post(const::interface::TargetCommand & cmd)
@@ -262,28 +287,22 @@ void UIObjectGLCanvas::Post(const::interface::TargetCommand & cmd)
     auto state = GetState<UIStateGLCanvas>();
     if      (cmd.mType == interface::TargetCommand::TypeEnum::kPush)
     {
-        auto & target = state->mCommandStack.emplace();
-        target.mRenderTextures[0] = cmd.mTexture;
-        target.mRenderTextures[1] = state->mRenderTextures[1];
+        auto & command = state->mTargetCommandArray.emplace_back(cmd);
+        command.mRenderTextures[1] = state->mRenderTextures[1];
+        ++state->mTargetCommandStack;
     }
     else if (cmd.mType == interface::TargetCommand::TypeEnum::kPop)
     {
-        auto && top = std::move(state->mCommandStack.top());
-        state->mCommandArray.emplace_back(std::move(top));
-        state->mCommandStack.pop();
+        ASSERT_LOG(state->mTargetCommandStack != 0, "");
+        --state->mTargetCommandStack;
     }
 }
 
 void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 {
-    if (auto state = GetState<UIStateGLCanvas>(); state->mCommandStack.empty())
-    {
-        state->mCommandArray.front().mFowardCommands.emplace_back(cmd);
-    }
-    else
-    {
-        state->mCommandStack.top().mFowardCommands.emplace_back(cmd);
-    }
+    auto state = GetState<UIStateGLCanvas>();
+    ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
+    state->mTargetCommandArray.at(state->mTargetCommandStack).mFowardCommands.emplace_back(cmd);
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform)

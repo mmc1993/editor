@@ -51,26 +51,32 @@ namespace interface {
 
     //  分层渲染
     struct TargetCommand : public RenderCommand {
+        //  启动枚举
         enum EnabledEnum {
             kTargetColor0 = 0x1,    //  清除颜色
             kTargetColor1 = 0x2,    //  清除颜色
             kUseCanvasSize = 0x4,   //  使用画布尺寸
         };
-
+        //  进栈/出栈
         enum class TypeEnum {
             kPush,
             kPop,
         };
-        TypeEnum           mType;
-        SharePtr<RawImage> mTexture;
 
-        uint mEnabledFlag;
-        glm::vec2 mTargetSize;
-        glm::vec4 mTargetColor;
+        //  比用参数
+        TypeEnum                    mType;
+        std::vector<PostCommand>    mPostCommands;      //  后期
+        std::vector<FowardCommand>  mFowardCommands;    //  正向
+        SharePtr<RawImage>          mRenderTextures[2];
+
+        //  可选参数
+        uint            mEnabledFlag;       //  启动开关
+        glm::vec4       mTargetColor;
+        glm::vec4       mTargetView;
 
         TargetCommand()
             : mType(TypeEnum::kPush)
-            , mTargetSize(0)
+            , mTargetView(0)
             , mTargetColor(0)
             , mEnabledFlag(kTargetColor0 | kTargetColor1 | kUseCanvasSize)
         { }

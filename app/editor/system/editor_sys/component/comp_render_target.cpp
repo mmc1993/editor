@@ -45,17 +45,17 @@ void CompRenderTarget::OnDel()
 }
 
 void CompRenderTarget::OnStart(UIObjectGLCanvas * canvas)
-{ 
+{
     interface::TargetCommand command;
-    command.mType       = interface::TargetCommand::TypeEnum::kPush;
-    command.mTexture    = mTextureBuffer;
+    command.mType = interface::TargetCommand::TypeEnum::kPush;
+    command.mRenderTextures[0] = mTextureBuffer;
     canvas->Post(command);
 }
 
 void CompRenderTarget::OnLeave(UIObjectGLCanvas * canvas)
 {
     interface::TargetCommand command;
-    command.mType       = interface::TargetCommand::TypeEnum::kPop;
+    command.mType = interface::TargetCommand::TypeEnum::kPop;
     canvas->Post(command);
 }
 

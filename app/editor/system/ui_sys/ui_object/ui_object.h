@@ -165,8 +165,8 @@ public:
     glm::vec2 ProjectWorld(const glm::vec2 & screen);
 
 private:
-    void HandleFowardCommands(UIStateGLCanvas::TargetCommand & command);
-    void HandlePostCommands(UIStateGLCanvas::TargetCommand & command);
+    void HandleFowardCommands(interface::TargetCommand & command);
+    void HandlePostCommands(  interface::TargetCommand & command);
     void CollCommands();
     void CallCommands();
 
