@@ -124,15 +124,15 @@ public:
 class UIStateGLCanvas : public UIState {
 public:
     struct TargetCommand {
-        std::vector<interface::PostCommand>     mPostCommands;      //  后期
-        std::vector<interface::FowardCommand>   mFowardCommands;    //  正向
-        SharePtr<RawImage>                       mRenderTextures[2];
+        std::vector<interface::PostCommand>   mPostCommands;      //  后期
+        std::vector<interface::FowardCommand> mFowardCommands;    //  正向
+        SharePtr<RawImage>                    mRenderTextures[2];
     };
 
 public:
     GLuint mRenderTarget;
     SharePtr<RawImage> mRenderTextures[2];
-    interface::MatrixStack    mMatrixStack;
+    interface::MatrixStack     mMatrixStack;
     std::stack<TargetCommand>  mCommandStack;
     std::vector<TargetCommand> mCommandArray;
 
@@ -158,7 +158,12 @@ public:
         glm::vec3   mViewCoord;
 
         //  初始化
-        Operation(): mOpMode(0), mViewScale(1)
+        Operation()
+            : mOpMode(0)
+            , mViewScale(1)
+            , mViewCoord(0)
+            , mSelectRect(0)
+            , mEditTrackPoint(0)
         { }
     } mOperation;
 
