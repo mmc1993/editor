@@ -78,7 +78,10 @@ public:
     struct StretchFocus {
         UIObject *  mObject;
         DirectEnum  mDirect;
-        StretchFocus() : mObject(nullptr) {}
+        StretchFocus()
+            : mObject(nullptr)
+            , mDirect(DirectEnum::kNone)
+        { }
     } mStretchFocus;
 
     //  ´°¿ÚÐÅÏ¢
