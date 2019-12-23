@@ -68,11 +68,13 @@ public:
         Menu(const std::string & path, const char * edit)
             : mPath(path)
             , mEdit(edit)
+            , mSelect(false)
         { }
 
         Menu(const std::string & path, const std::string & edit)
             : mPath(path)
             , mEdit(edit)
+            , mSelect(false)
         { }
     };
 

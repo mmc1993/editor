@@ -10,6 +10,7 @@ public:
         : mType(type)
         , mState(state)
         , mParent(nullptr)
+        , mVisible(true)
     { }
 
     virtual ~UIObject()

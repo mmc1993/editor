@@ -40,7 +40,7 @@ namespace mmc {
 			Pointer mVal;
 		};
 
-        enum Type {
+        enum class Type {
             kNUMBER,
             kSTRING,
             kHASH,
@@ -183,14 +183,14 @@ namespace mmc {
         static Pointer Hash()
         {
             auto ret = New();
-            ret->_type = Type::kHASH;
+            ret->_type = mmc::Json::Type::kHASH;
             return ret;
         }
 
         static Pointer List()
         {
             auto ret = New();
-            ret->_type = Type::kLIST;
+            ret->_type = mmc::Json::Type::kLIST;
             return ret;
         }
 
@@ -252,17 +252,17 @@ namespace mmc {
         {
             switch (GetType())
             {
-            case kNUMBER:
+            case Type::kNUMBER:
                 {
                     return std::to_string(_number);
                 }
                 break;
-            case kSTRING:
+            case Type::kSTRING:
                 {
                     return "\"" + _string + "\"";
                 }
                 break;
-            case kHASH:
+            case Type::kHASH:
                 {
                     std::vector<std::string> strings;
                     std::string resule("{\n" + std::string(++space, '\t'));
@@ -276,7 +276,7 @@ namespace mmc {
                     return std::move(resule);
                 }
                 break;
-            case kLIST:
+            case Type::kLIST:
                 {
                     std::vector<std::string> strings;
                     for (const auto & ele : _elems)
@@ -286,7 +286,7 @@ namespace mmc {
                     return "[" + tools::Join(strings, ", ") + "]";
                 }
                 break;
-            case kBOOL:
+            case Type::kBOOL:
                 {
                     return ToBool() ? "true" : "false";
                 }
@@ -338,7 +338,7 @@ namespace mmc {
         {
             if constexpr (std::is_arithmetic_v<Key>)
             {
-                if (GetType() == kLIST && key < GetCount())
+                if (GetType() == Type::kLIST && key < GetCount())
                 {
                     return GetElements().at(key).mVal->HasKey(std::forward<Keys>(keys)...);
                 }
@@ -355,7 +355,7 @@ namespace mmc {
         {
             if constexpr (std::is_arithmetic_v<Key>)
             {
-                return GetType() == kLIST && key < GetCount();
+                return GetType() == Type::kLIST && key < GetCount();
             }
             else
             {

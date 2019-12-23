@@ -30,7 +30,10 @@ namespace interface {
         glm::mat4           mTransform;
         glm::vec4           mClipview;
         uint                mEnabled;
-        FowardCommand(): mEnabled(0)
+        FowardCommand()
+            : mEnabled(0)
+            , mClipview(0)
+            , mTransform(0)
         { }
     };
 
@@ -58,7 +61,7 @@ namespace interface {
 
     struct MatrixStack {
     public:
-        enum TypeEnum {
+        enum class TypeEnum {
             kModel,
             kView,
             kProj,
@@ -118,6 +121,6 @@ namespace interface {
         }
 
     private:
-        std::stack<glm::mat4> _matrixs[Length];
+        std::stack<glm::mat4> _matrixs[(uint)TypeEnum::Length];
     };
 }

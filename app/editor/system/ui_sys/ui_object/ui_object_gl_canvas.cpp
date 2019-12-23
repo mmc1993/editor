@@ -289,8 +289,8 @@ void UIObjectGLCanvas::Post(const interface::FowardCommand & cmd)
 void UIObjectGLCanvas::Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform)
 {
     auto state = GetState<UIStateGLCanvas>();
-    const auto & matrixV = GetMatrixStack().Top(interface::MatrixStack::kView);
-    const auto & matrixP = GetMatrixStack().Top(interface::MatrixStack::kProj);
+    const auto & matrixV = GetMatrixStack().Top(interface::MatrixStack::TypeEnum::kView);
+    const auto & matrixP = GetMatrixStack().Top(interface::MatrixStack::TypeEnum::kProj);
     const auto & matrixMV = matrixV * transform;
     const auto & matrixVP = matrixP * matrixV;
     const auto & matrixMVP = matrixP * matrixMV;
@@ -416,14 +416,14 @@ bool UIObjectGLCanvas::OnEnter()
     if (Global::Ref().mEditorSys->IsOpenProject())
     {
         auto state = GetState<UIStateGLCanvas>();
-        state->mMatrixStack.Identity(interface::MatrixStack::kModel);
-        state->mMatrixStack.Identity(interface::MatrixStack::kView, GetMatView());
-        state->mMatrixStack.Identity(interface::MatrixStack::kProj, GetMatProj());
+        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kModel);
+        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kView, GetMatView());
+        state->mMatrixStack.Identity(interface::MatrixStack::TypeEnum::kProj, GetMatProj());
         CollCommands();
         CallCommands();
-        state->mMatrixStack.Pop(interface::MatrixStack::kModel);
-        state->mMatrixStack.Pop(interface::MatrixStack::kView);
-        state->mMatrixStack.Pop(interface::MatrixStack::kProj);
+        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kModel);
+        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kView);
+        state->mMatrixStack.Pop(interface::MatrixStack::TypeEnum::kProj);
         return true;
     }
     return false;

@@ -181,7 +181,7 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
 {
     static const glm::vec2 zero(0, 0);
 
-    glm::vec2 result;
+    glm::vec2 result{ 0 };
     auto crossA = 0.0f;
     auto crossB = 0.0f;
     auto crossC = std::numeric_limits<float>::max();

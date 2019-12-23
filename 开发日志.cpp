@@ -242,7 +242,6 @@ public:
     Res::Ref    mMap;
     glm::vec2   mSize;
 
-    //  地形
     SharePtr<RawMesh> mMesh;
     SharePtr<RawProgram> mProgram;
     SharePtr<RawTexture> mMaskBuff;
