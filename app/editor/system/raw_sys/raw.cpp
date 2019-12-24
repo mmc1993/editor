@@ -368,8 +368,8 @@ bool RawFont::Init(const std::string & url)
 
     auto texurl = tools::GetFileFolder(url) + mInfo.mPage.at("file");
     mTexture = Global::Ref().mRawSys->Get<RawTexture>(texurl);
-    mTexture->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    mTexture->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    mTexture->GetImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    mTexture->GetImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     std::getline(is, line);
     auto texW = std::stof(mInfo.mCommon.at("scaleW"));

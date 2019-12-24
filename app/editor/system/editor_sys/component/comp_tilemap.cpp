@@ -107,7 +107,7 @@ void CompTilemap::Update()
             {
                 const auto & atlas = map->GetAtlass().at(i);
                 auto key = SFormat("uniform_texture{0}", i);
-                mPairImages.emplace_back(key, atlas.mTexture->GetRefImage());
+                mPairImages.emplace_back(key, atlas.mTexture->GetImage());
                 mSize.x = (float)map->GetMap().mPixelW;
                 mSize.y = (float)map->GetMap().mPixelH;
             }

@@ -132,7 +132,7 @@ public:
     uint GetImageH() { return mRefImg->mH; }
     uint GetImageFormat() { return mRefImg->mFormat; }
     const glm::vec4 & GetOffset() { return  mOffset; }
-    SharePtr<RawImage> & GetRefImage() { return mRefImg; }
+    SharePtr<RawImage> & GetImage() { return mRefImg; }
     uint GetW() { return (uint)(GetImageW() * (mOffset.w - mOffset.x)); }
     uint GetH() { return (uint)(GetImageH() * (mOffset.z - mOffset.y)); }
 

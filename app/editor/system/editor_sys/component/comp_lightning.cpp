@@ -35,7 +35,7 @@ void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mPairImages.emplace_back("texture0", mTex.Instance<RawTexture>()->GetRefImage());
+        command.mPairImages.emplace_back("texture0", mTex.Instance<RawTexture>()->GetImage());
         canvas->Post(command);
     }
 }
@@ -103,8 +103,8 @@ void CompLightning::Update()
 
         if (mTex.Modify())
         {
-            mTex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            mTex.Instance<RawTexture>()->GetRefImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            mTex.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            mTex.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
         if (mUpdate & kSegment)
