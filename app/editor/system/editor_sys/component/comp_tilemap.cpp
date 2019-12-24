@@ -46,7 +46,7 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mClipview.w = max.y;
 
         //  ÆôÓÃ²Ã¼ô
-        command.mEnabled = RenderPipline::FowardCommand::kClipView;
+        command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
 
         canvas->Post(command);
     }

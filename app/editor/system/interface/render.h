@@ -13,27 +13,42 @@ class Component;
 
 namespace RenderPipline {
     struct RenderCommand {
+        //  启动枚举
+        enum EnabledEnum {
+            kTargetColor0       = 0x1,      //  清除颜色
+            kTargetColor1       = 0x2,      //  清除颜色
+            kUseCanvasSize      = 0x4,      //  使用画布尺寸
+
+            //  启用功能
+            kClipView    = 0x8,      //  开启裁剪
+            kBlend       = 0x10,     //  开启混合
+        };
+        uint mEnabledFlag;
+
         std::function<void(const RenderCommand &, uint)> mCallback;
         void Call(uint pos) { if (mCallback)mCallback(*this, pos); }
+        RenderCommand(uint enabledFlag): mEnabledFlag(enabledFlag){}
     };
 
     //  正向渲染那
     struct FowardCommand : public RenderCommand {
-        enum EnabledEnum {
-            kClipView = 0x1,
-        };
-
         using PairImage = std::pair<std::string, SharePtr<RawImage>>;
+
         SharePtr<RawMesh>       mMesh;
         SharePtr<RawProgram>    mProgram;
         std::vector<PairImage>  mPairImages;
         glm::mat4               mTransform;
+
+        //  可选参数
         glm::vec4               mClipview;
-        uint                    mEnabled;
+        uint                    mBlendSrc;
+        uint                    mBlendDst;
         FowardCommand()
-            : mEnabled(0)
-            , mClipview(0)
+            : RenderCommand(0)
             , mTransform(0)
+            , mClipview(0)
+            , mBlendSrc(0)
+            , mBlendDst(0)
         { }
     };
 
@@ -43,22 +58,29 @@ namespace RenderPipline {
             kSample,        //  采样
             kSwap,          //  交换
         };
-        SharePtr<RawProgram> mProgram;       //  着色器
-        SharePtr<RawMesh> mMesh;             //  网格
-        glm::mat4 mTransform;               //  矩阵
-        TypeEnum mType;
+        TypeEnum                mType;
+        SharePtr<RawMesh>       mMesh;
+        SharePtr<RawProgram>    mProgram;
+        glm::mat4               mTransform;
+
+        //  可选参数
+        glm::vec4               mClipview;
+        uint                    mBlendSrc;
+        uint                    mBlendDst;
+        PostCommand()
+            : RenderCommand(0)
+            , mTransform(0)
+            , mClipview(0)
+            , mBlendSrc(0)
+            , mBlendDst(0)
+            , mType(kSample)
+        { }
     };
 
     //  分层渲染
     struct TargetCommand : public RenderCommand {
-        //  启动枚举
-        enum EnabledEnum {
-            kTargetColor0 = 0x1,    //  清除颜色
-            kTargetColor1 = 0x2,    //  清除颜色
-            kUseCanvasSize = 0x4,   //  使用画布尺寸
-        };
         //  进栈/出栈
-        enum class TypeEnum {
+        enum TypeEnum {
             kPush,
             kPop,
         };
@@ -67,18 +89,17 @@ namespace RenderPipline {
         TypeEnum                    mType;
         std::vector<PostCommand>    mPostCommands;      //  后期
         std::vector<FowardCommand>  mFowardCommands;    //  正向
-        SharePtr<RawImage>          mRenderTextures[2];
+        SharePtr<RawImage>          mRenderTextures[2]; //  双纹理
 
         //  可选参数
-        uint            mEnabledFlag;       //  启动开关
-        glm::vec4       mTargetColor;
-        glm::vec4       mTargetView;
+        glm::vec4       mClearColor;
+        glm::vec4       mClipView;
 
         TargetCommand()
-            : mType(TypeEnum::kPush)
-            , mTargetView(0)
-            , mTargetColor(0)
-            , mEnabledFlag(kTargetColor0 | kTargetColor1 | kUseCanvasSize)
+            : RenderCommand(kTargetColor0 | kTargetColor1 | kUseCanvasSize)
+            , mType(kPush)
+            , mClipView(0)
+            , mClearColor(0)
         { }
     };
 

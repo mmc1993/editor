@@ -23,6 +23,7 @@ UIObjectGLCanvas::UIObjectGLCanvas() : UIObject(UITypeEnum::kGLCanvas, new UISta
 
 void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command)
 {
+    auto state = GetState();
     std::swap(command.mRenderTextures[0]->mID,
               command.mRenderTextures[1]->mID);
     for (auto & cmd : command.mPostCommands)
@@ -30,12 +31,35 @@ void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command
         for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
         {
             cmd.mProgram->UsePass(i);
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
+            {
+                glEnable(GL_SCISSOR_TEST);
+                auto matrixVP = GetMatrixStack().GetP() * GetMatrixStack().GetV();
+                auto min = ProjectScreen({ cmd.mClipview.x, cmd.mClipview.y });
+                auto max = ProjectScreen({ cmd.mClipview.z, cmd.mClipview.w });
+                min.y = state->Move.w - min.y;
+                max.y = state->Move.w - max.y;
+                if (min.x > max.x) { std::swap(min.x, max.x); }
+                if (min.y > max.y) { std::swap(min.y, max.y); }
+                glScissor(
+                    (iint)min.x, (iint)min.y,
+                    (iint)max.x - (iint)min.x,
+                    (iint)max.y - (iint)min.y);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
+            {
+                glEnable(GL_BLEND);
+                glBlendFunc(cmd.mBlendSrc, cmd.mBlendDst);
+            }
+
             tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
                                           GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
             cmd.mProgram->BindUniformTex2D("uniform_screen", command.mRenderTextures[1]->mID, 0);
-            cmd.Call(1                       );
-            Post(cmd.mProgram, cmd.mTransform);
-            cmd.mMesh->Draw(GL_TRIANGLES     );
+            cmd.Call(1);
+            Post(
+                cmd.mProgram,
+                cmd.mTransform);
+            cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             //cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -43,6 +67,14 @@ void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command
             if (cmd.mType == RenderPipline::PostCommand::kSwap)
             {
                 std::swap(command.mRenderTextures[0]->mID, command.mRenderTextures[1]->mID);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
+            {
+                glDisable(GL_SCISSOR_TEST);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
+            {
+                glDisable(GL_BLEND);
             }
         }
     }
@@ -61,7 +93,7 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
             {
                 cmd.mProgram->BindUniformTex2D(pair.first.c_str(), pair.second->mID, texNum++);
             }
-            if (cmd.mEnabled & RenderPipline::FowardCommand::kClipView)
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
                 glEnable(GL_SCISSOR_TEST);
                 auto matrixVP = GetMatrixStack().GetP() * GetMatrixStack().GetV();
@@ -71,19 +103,28 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
                 max.y = state->Move.w - max.y;
                 if (min.x > max.x) { std::swap(min.x, max.x); }
                 if (min.y > max.y) { std::swap(min.y, max.y); }
-                glScissor((iint)min.x, (iint)min.y,
-                          (iint)max.x - (iint)min.x,
-                          (iint)max.y - (iint)min.y);
+                glScissor(
+                    (iint)min.x, (iint)min.y,
+                    (iint)max.x - (iint)min.x,
+                    (iint)max.y - (iint)min.y);
             }
-            Post(cmd.mProgram, cmd.mTransform);
-            cmd.Call(texNum             );
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
+            {
+                glEnable(GL_BLEND);
+                glBlendFunc(cmd.mBlendSrc, cmd.mBlendDst);
+            }
+            cmd.Call(texNum);
+            Post(
+                cmd.mProgram,
+                cmd.mTransform);
             cmd.mMesh->Draw(GL_TRIANGLES);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            //cmd.mMesh->Draw(GL_TRIANGLES);
-            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-            if (cmd.mEnabled & RenderPipline::FowardCommand::kClipView)
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
                 glDisable(GL_SCISSOR_TEST);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
+            {
+                glDisable(GL_BLEND);
             }
         }
     }
@@ -121,7 +162,7 @@ void UIObjectGLCanvas::CallCommands()
         }
         else
         {
-            viewport[2] = command.mTargetView;
+            viewport[2] = command.mClipView;
         }
 
         //  调整视口
@@ -144,22 +185,22 @@ void UIObjectGLCanvas::CallCommands()
 
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
-        glClearColor(command.mTargetColor.x, command.mTargetColor.y, command.mTargetColor.z, command.mTargetColor.w);
+        glClearColor(command.mClearColor.x, command.mClearColor.y, command.mClearColor.z, command.mClearColor.w);
         uint buffers[2];
-        if (command.mEnabledFlag & (RenderPipline::TargetCommand::kTargetColor0 | RenderPipline::TargetCommand::kTargetColor0))
+        if (command.mEnabledFlag & (RenderPipline::RenderCommand::kTargetColor0 | RenderPipline::RenderCommand::kTargetColor0))
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_COLOR_ATTACHMENT1;
             glDrawBuffers(2, buffers);
 
         }
-        else if (command.mEnabledFlag & RenderPipline::TargetCommand::kTargetColor0)
+        else if (command.mEnabledFlag & RenderPipline::RenderCommand::kTargetColor0)
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_NONE;
             glDrawBuffers(2, buffers);
         }
-        else if (command.mEnabledFlag & RenderPipline::TargetCommand::kTargetColor1)
+        else if (command.mEnabledFlag & RenderPipline::RenderCommand::kTargetColor1)
         {
             buffers[0] = GL_NONE;
             buffers[1] = GL_COLOR_ATTACHMENT1;
