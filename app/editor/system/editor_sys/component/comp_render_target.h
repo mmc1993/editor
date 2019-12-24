@@ -12,7 +12,7 @@ public:
     virtual bool OnModifyProperty(const std::any & oldValue,
                                   const std::any & newValue,
                                   const std::string & title) override;
-    SharePtr<RawImage> GetTexture();
+    SharePtr<RawImage> GetImage();
 
 protected:
     virtual void OnAdd();
@@ -21,5 +21,5 @@ protected:
     virtual void OnLeave(UIObjectGLCanvas * canvas) override;
 
 private:
-    SharePtr<RawImage> mTexture;
+    SharePtr<RawImage> mImage;
 };

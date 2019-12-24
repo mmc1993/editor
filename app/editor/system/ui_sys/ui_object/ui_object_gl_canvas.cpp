@@ -189,6 +189,8 @@ void UIObjectGLCanvas::CallCommands()
     glViewport(viewport[0].x, viewport[0].y, 
                viewport[0].z, viewport[0].w);
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
+
+    ASSERT_LOG(glGetError() == 0, "");
 }
 
 void UIObjectGLCanvas::DrawTrackPoint()

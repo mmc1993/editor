@@ -28,27 +28,27 @@ bool CompRenderTarget::OnModifyProperty(const std::any & oldValue, const std::an
     return true;
 }
 
-SharePtr<RawImage> CompRenderTarget::GetTexture()
+SharePtr<RawImage> CompRenderTarget::GetImage()
 {
-    return mTexture;
+    return mImage;
 }
 
 void CompRenderTarget::OnAdd()
 { 
-    mTexture = std::create_ptr<RawImage>();
-    mTexture->InitNull(GL_RGBA);
+    mImage = std::create_ptr<RawImage>();
+    mImage->InitNull(GL_RGBA);
 }
 
 void CompRenderTarget::OnDel()
 {
-    mTexture.reset();
+    mImage.reset();
 }
 
 void CompRenderTarget::OnStart(UIObjectGLCanvas * canvas)
 {
     RenderPipline::TargetCommand command;
     command.mType = RenderPipline::TargetCommand::TypeEnum::kPush;
-    command.mRenderTextures[0] = mTexture;
+    command.mRenderTextures[0] = mImage;
     canvas->Post(command);
 }
 
@@ -56,7 +56,7 @@ void CompRenderTarget::OnLeave(UIObjectGLCanvas * canvas)
 {
     RenderPipline::TargetCommand command;
     command.mType = RenderPipline::TargetCommand::TypeEnum::kPop;
-    command.mRenderTextures[0] = mTexture;
+    command.mRenderTextures[0] = mImage;
     canvas->Post(command);
 }
 

@@ -30,7 +30,6 @@ protected:
 private:
     void Init();
     void Update();
-    std::vector<glm::vec2> GenEdge(SharePtr<RawImage> image);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
@@ -38,15 +37,16 @@ private:
     //  生成初始Mask
     //  生成初始多边形
 
-
     Res::Ref    mMap;
+    Res::Ref    mTerrain;
     glm::vec2   mSize;
     glm::vec2   mAnchor;
 
     SharePtr<RawMesh> mMesh;
-    SharePtr<RawProgram> mProgram;
     SharePtr<RawImage>   mMaskBuff;
     std::vector<Polygon> mPolygons;
+    SharePtr<RawProgram> mProgram;
     std::vector<CollapseInfo> mCollapseQueue;
     std::vector<SharePtr<RawMesh>> mMeshPool;
+    std::vector<std::pair<std::string, SharePtr<RawImage>>> mPairImages;
 };

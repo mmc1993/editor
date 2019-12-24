@@ -21,15 +21,16 @@ CompCollapseTerrain::CompCollapseTerrain()
 
 void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (mMap.Check())
-    {
-        Update();
+    Update();
 
-        //RenderPipline::FowardCommand command;
-        //command.mMesh       = mMesh;
-        //command.mProgram    = mProgram;
-        //command.mTransform  = canvas->GetMatrixStack().GetM();
-        //canvas->Post(command);
+    if (mMap.Check() && mTerrain.Check())
+    {
+        RenderPipline::FowardCommand command;
+        command.mMesh       = mMesh;
+        command.mProgram    = mProgram;
+        command.mPairImages = mPairImages;
+        command.mTransform  = canvas->GetMatrixStack().GetM();
+        canvas->Post(command);
     }
 }
 
@@ -45,6 +46,7 @@ void CompCollapseTerrain::EncodeBinary(std::ostream & os, Project * project)
     tools::Serialize(os, mSize);
     tools::Serialize(os, mAnchor);
     mMap.EncodeBinary(os, project);
+    mTerrain.EncodeBinary(os, project);
 }
 
 void CompCollapseTerrain::DecodeBinary(std::istream & is, Project * project)
@@ -53,6 +55,7 @@ void CompCollapseTerrain::DecodeBinary(std::istream & is, Project * project)
     tools::Deserialize(is, mSize);
     tools::Deserialize(is, mAnchor);
     mMap.DecodeBinary(is, project);
+    mTerrain.DecodeBinary(is, project);
 }
 
 bool CompCollapseTerrain::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -85,7 +88,22 @@ void CompCollapseTerrain::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        if (mMap.Modify())
+        auto bInit = false;
+        if (mMap.Check() && mMap.Modify())
+        {
+            auto rt = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
+            mPairImages.clear();
+            mPairImages.emplace_back("texture0", rt->GetImage());
+            mPairImages.emplace_back("texture1", mMaskBuff);
+            bInit = true;
+        }
+
+        if (mTerrain.Check() && mTerrain.Modify())
+        {
+            bInit = true;
+        }
+
+        if (bInit)
         {
             Init();
         }
