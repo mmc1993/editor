@@ -7,16 +7,13 @@ public:
     using Polygon = std::vector<glm::vec2>;
 
     struct EraseParam {
-        glm::vec4 mColor;
-        Polygon mPolygon;
+        std::vector<RawMesh::Vertex> mPoints;
         uint mBlendSrc;
         uint mBlendDst;
     };
 
 public:
     CompCollapseTerrain();
-    virtual void OnStart(UIObjectGLCanvas * canvas) override;
-    virtual void OnLeave(UIObjectGLCanvas * canvas) override;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual const std::string & GetName() override;
@@ -26,31 +23,36 @@ public:
                                   const std::any & newValue, 
                                   const std::string & title) override;
 
-    void Collapse(const Polygon & polygon);
+    void Erase(
+        const Polygon & points, 
+        uint blendSrc = GL_ONE,
+        uint blendDst = GL_ZERO,
+        const glm::vec4 & color = glm::vec4(0, 0, 0, 0));
 
 protected:
     virtual std::vector<Property> CollectProperty() override;
 
 private:
     void Init();
-    void Update();
+    void Erase(
+        uint i,
+        UIObjectGLCanvas * canvas,
+        const EraseParam & param);
+    bool Update();      //  返回是否重置地形
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    //  绑定Map
-    //  生成初始Mask
-    //  生成初始多边形
-
     Res::Ref    mMap;
-    Res::Ref    mTerrain;
+    Res::Ref    mJson;
     glm::vec2   mSize;
     glm::vec2   mAnchor;
 
-    SharePtr<RawMesh> mMesh;
-    SharePtr<RawImage>   mMaskBuff;
-    std::vector<Polygon> mPolygons;
-    SharePtr<RawProgram> mProgram;
-    std::deque<EraseParam> mEraseQueue;
-    std::vector<SharePtr<RawMesh>> mMeshPool;
+    SharePtr<RawProgram>            mEraseProgram;
+    std::deque<EraseParam>          mEraseQueue;
+    std::vector<SharePtr<RawMesh>>  mEraseMeshs;
+
+    SharePtr<RawMesh>       mMesh;
+    SharePtr<RawProgram>    mProgram;
+    std::vector<Polygon>    mPolygons;
     std::vector<std::pair<std::string, SharePtr<RawImage>>> mPairImages;
 };

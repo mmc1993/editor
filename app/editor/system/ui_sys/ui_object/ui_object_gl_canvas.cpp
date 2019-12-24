@@ -154,6 +154,7 @@ void UIObjectGLCanvas::CallCommands()
               iter != state->mTargetCommandArray.rend(); ++iter)
     {
         auto & command = *iter;
+        auto err = glGetError();
 
         if (command.mEnabledFlag & RenderPipline::TargetCommand::kClipView)
         {
@@ -172,19 +173,20 @@ void UIObjectGLCanvas::CallCommands()
             glViewport(viewport[2].x, viewport[2].y,
                        viewport[2].z, viewport[2].w);
         }
-
+        err = glGetError();
         if (command.mRenderTextures[0]->mW != viewport[2].z || command.mRenderTextures[0]->mH != viewport[2].w)
         {
             command.mRenderTextures[0]->ModifyWH(viewport[2].z, viewport[2].w);
         }
-
+        err = glGetError();
         if (command.mRenderTextures[1]->mW != viewport[2].z || command.mRenderTextures[1]->mH != viewport[2].w)
         {
             command.mRenderTextures[1]->ModifyWH(viewport[2].z, viewport[2].w);
         }
-
+        err = glGetError();
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
+        err = glGetError();
         glClearColor(command.mClearColor.x, command.mClearColor.y, command.mClearColor.z, command.mClearColor.w);
         uint buffers[2];
         if (command.mEnabledFlag & (RenderPipline::RenderCommand::kTargetColor0 | RenderPipline::RenderCommand::kTargetColor1))
@@ -206,19 +208,25 @@ void UIObjectGLCanvas::CallCommands()
             buffers[1] = GL_COLOR_ATTACHMENT1;
             glDrawBuffers(2, buffers);
         }
+        err = glGetError();
         glClear(GL_COLOR_BUFFER_BIT);
         buffers[0] = GL_COLOR_ATTACHMENT0;
         buffers[1] = GL_NONE;
+        err = glGetError();
         glDrawBuffers(2, buffers);
+        err = glGetError();
 
         if (!command.mFowardCommands.empty())
         {
             HandleFowardCommands(command);
+            err = glGetError();
         }
         if (!command.mPostCommands.empty())
         {
             HandlePostCommands(command);
+            err = glGetError();
         }
+        err = glGetError();
     }
 
     glViewport(0, 0, (int)state->Move.z, (int)state->Move.w);
@@ -231,7 +239,8 @@ void UIObjectGLCanvas::CallCommands()
                viewport[0].z, viewport[0].w);
     tools::RenderTargetBind(0, GL_FRAMEBUFFER);
 
-    ASSERT_LOG(glGetError() == 0, "");
+    auto err = glGetError();
+    ASSERT_LOG(err == 0, "OpenGL Error: {0}", err);
 }
 
 void UIObjectGLCanvas::DrawTrackPoint()
