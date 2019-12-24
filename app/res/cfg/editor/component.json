@@ -8,6 +8,7 @@
         "Graphics/Lightning",
         "Graphics/FieldOfView",
         "Graphics/RenderTarget",
+        "Graphics/CollapseTerrain",
         "Utility/Polygon"
     ]
 }

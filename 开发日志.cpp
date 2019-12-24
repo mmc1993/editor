@@ -217,18 +217,18 @@ ok  //  UIEventEnum 剥离
 
 地形破坏
 
-enum EnabledEnum {
-    kTargetColor0 = 0x1,
-    kTargetColor1 = 0x2,
-    kUseCanvasSize = 0x4,
-}
+// enum EnabledEnum {
+//     kTargetColor0 = 0x1,
+//     kTargetColor1 = 0x2,
+//     kUseCanvasSize = 0x4,
+// }
 
-class TargetCommand {
-public:
-    EnabledEnum mEnabled;
-    glm::vec2 mTargetSize;
-    glm::vec4 mTargetColor;
-}
+// class TargetCommand {
+// public:
+//     EnabledEnum mEnabled;
+//     glm::vec2 mTargetSize;
+//     glm::vec4 mTargetColor;
+// }
 
 class CollapseTerrain {
 public:
