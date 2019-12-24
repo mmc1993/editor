@@ -114,12 +114,11 @@ bool Project::DeleteRes(Res * res)
         res->Type() == Res::kFont)
     {
         std::filesystem::remove(res->Path());
-        _resources.erase(res->GetID());
-        res->WakeRefs();
-        delete  res;
-        return true;
     }
-    return false;
+    _resources.erase(res->GetID());
+    res->WakeRefs();
+    delete  res;
+    return true;
 }
 
 bool Project::RenameRes(Res * res, const std::string & url)
