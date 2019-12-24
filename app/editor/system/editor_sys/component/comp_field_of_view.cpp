@@ -206,6 +206,6 @@ void CompFieldOfView::OnDrawCallback(const RenderPipline::RenderCommand & comman
     cmd.mProgram->BindUniformTex2D("uniform_sample", 
         mClipObject.Instance<GLObject>()
             ->GetComponent<CompRenderTarget>()
-            ->RefTextureBuffer()->mID, texturePos);
+            ->GetTexture()->mID,  texturePos);
 }
 

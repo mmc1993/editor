@@ -1,6 +1,7 @@
 #include "comp_collapse_terrain.h"
 #include "../../raw_sys/raw_sys.h"
 #include "../../raw_sys/comp_transform.h"
+#include "comp_render_target.h"
 
 CompCollapseTerrain::CompCollapseTerrain()
     : mSize(0.0f)
@@ -20,6 +21,17 @@ CompCollapseTerrain::CompCollapseTerrain()
 
 void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
+    if (mMap.Check())
+    {
+        Update();
+
+        //RenderPipline::FowardCommand command;
+        //command.mMesh       = mMesh;
+        //command.mProgram    = mProgram;
+        //command.mTextures   = mTextures;
+        //command.mTransform  = canvas->GetMatrixStack().GetM();
+        //canvas->Post(command);
+    }
 }
 
 const std::string & CompCollapseTerrain::GetName()
@@ -68,6 +80,11 @@ void CompCollapseTerrain::Update()
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
+
+        if (mMap.Modify())
+        {
+            auto renderTarget = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
+        }
 
         mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
         mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;

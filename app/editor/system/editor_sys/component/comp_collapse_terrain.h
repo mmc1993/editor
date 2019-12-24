@@ -33,6 +33,11 @@ private:
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
+    //  绑定Map
+    //  生成初始Mask
+    //  生成初始多边形
+
+
     Res::Ref    mMap;
     glm::vec2   mSize;
     glm::vec2   mAnchor;
@@ -43,4 +48,5 @@ private:
     std::vector<Polygon> mPolygons;
     std::vector<CollapseInfo> mCollapseQueue;
     std::vector<SharePtr<RawMesh>> mMeshPool;
+    std::vector<std::pair<std::string, SharePtr<RawTexture>>> mTextures;
 };
