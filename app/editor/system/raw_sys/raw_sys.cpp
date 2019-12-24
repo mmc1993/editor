@@ -60,6 +60,10 @@ const type_info & RawSys::QueryType(const std::string & url)
     {
         return typeid(RawMap);
     }
+    else if (suffix == ".json")
+    {
+        return typeid(mmc::Json);
+    }
     else if (suffix == ".program")
     {
         return typeid(RawProgram);

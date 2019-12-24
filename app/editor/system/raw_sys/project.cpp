@@ -204,13 +204,17 @@ void Project::Retrieve()
                 {
                     res->Type(Res::kImg);
                 }
+                else if (type == typeid(RawMap))
+                {
+                    res->Type(Res::kMap);
+                }
                 else if (type == typeid(RawFont))
                 {
                     res->Type(Res::kFont);
                 }
-                else if (type == typeid(RawMap))
+                else if (type == typeid(mmc::Json))
                 {
-                    res->Type(Res::kMap);
+                    res->Type((Res::kJson));
                 }
                 else
                 {
