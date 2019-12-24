@@ -23,13 +23,13 @@ namespace RenderPipline {
             kClipView = 0x1,
         };
 
-        using TextureArray = std::vector<std::pair<std::string, SharePtr<RawTexture>>>;
-        SharePtr<RawMesh>    mMesh;
-        SharePtr<RawProgram> mProgram;
-        TextureArray        mTextures;
-        glm::mat4           mTransform;
-        glm::vec4           mClipview;
-        uint                mEnabled;
+        using PairImage = std::pair<std::string, SharePtr<RawImage>>;
+        SharePtr<RawMesh>       mMesh;
+        SharePtr<RawProgram>    mProgram;
+        std::vector<PairImage>  mPairImages;
+        glm::mat4               mTransform;
+        glm::vec4               mClipview;
+        uint                    mEnabled;
         FowardCommand()
             : mEnabled(0)
             , mClipview(0)

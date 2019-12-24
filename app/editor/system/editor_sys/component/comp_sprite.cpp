@@ -29,7 +29,7 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("uniform_texture", mTex.Instance<RawTexture>()));
+        command.mPairImages.emplace_back("uniform_texture", mTex.Instance<RawTexture>()->GetRefImage());
         canvas->Post(command);
     }
 }

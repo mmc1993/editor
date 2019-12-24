@@ -57,9 +57,9 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
         {
             uint texNum = 0;
             cmd.mProgram->UsePass(i);
-            for (auto & texture : cmd.mTextures)
+            for (auto & pair : cmd.mPairImages)
             {
-                cmd.mProgram->BindUniformTex2D(texture.first.c_str(), texture.second->GetID(), texNum++);
+                cmd.mProgram->BindUniformTex2D(pair.first.c_str(), pair.second->mID, texNum++);
             }
             if (cmd.mEnabled & RenderPipline::FowardCommand::kClipView)
             {

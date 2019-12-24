@@ -26,7 +26,7 @@ private:
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
-    using TexturePair = std::pair<std::string, SharePtr<RawTexture>>;
+    using PairImage = std::pair<std::string, SharePtr<RawImage>>;
 
     Res::Ref        mMap;
     glm::vec2       mSize;
@@ -35,5 +35,5 @@ private:
 
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;
-    std::vector<TexturePair> mTextures;
+    std::vector<PairImage> mPairImages;
 };

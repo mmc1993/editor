@@ -77,12 +77,11 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.emplace_back("uniform_texture",
-                mFont.Instance<RawFont>()->RefTexture());
-        command.mCallback = std::bind(
-            &CompText::OnDrawCallback, this,
-            std::placeholders::_1,
-            std::placeholders::_2);
+        command.mPairImages.emplace_back("uniform_texture",
+                mFont.Instance<RawFont>()->RefTexture()->GetRefImage());
+        command.mCallback = std::bind(&CompText::OnDrawCallback, this,
+                                      std::placeholders::_1,
+                                      std::placeholders::_2);
         canvas->Post(command);
     }
 }

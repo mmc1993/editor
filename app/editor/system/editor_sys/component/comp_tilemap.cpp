@@ -28,7 +28,7 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         RenderPipline::FowardCommand command;
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
-        command.mTextures   = mTextures;
+        command.mPairImages = mPairImages;
         command.mTransform  = canvas->GetMatrixStack().GetM();
 
         //  °ó¶¨äÖÈ¾»Øµ÷
@@ -107,7 +107,7 @@ void CompTilemap::Update()
             {
                 const auto & atlas = map->GetAtlass().at(i);
                 auto key = SFormat("uniform_texture{0}", i);
-                mTextures.emplace_back(key, atlas.mTexture);
+                mPairImages.emplace_back(key, atlas.mTexture->GetRefImage());
                 mSize.x = (float)map->GetMap().mPixelW;
                 mSize.y = (float)map->GetMap().mPixelH;
             }
@@ -137,7 +137,8 @@ void CompTilemap::OnDrawCallback(const RenderPipline::RenderCommand & command, u
 
 void CompTilemap::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    glm::vec2 min, max;
+    glm::vec2 min(0);
+    glm::vec2 max(0);
     switch (index)
     {
     case 0:

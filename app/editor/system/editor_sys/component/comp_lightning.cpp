@@ -35,7 +35,7 @@ void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mTextures.push_back(std::make_pair("texture0", mTex.Instance<RawTexture>()));
+        command.mPairImages.emplace_back("texture0", mTex.Instance<RawTexture>()->GetRefImage());
         canvas->Post(command);
     }
 }
