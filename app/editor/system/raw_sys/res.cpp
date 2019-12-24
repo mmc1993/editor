@@ -3,7 +3,7 @@
 #include "raw_sys.h"
 
 const std::string Res::sTypeString[TypeEnum::Length] = {
-    "NULL", "TXT", "IMG", "MAP", "FNT", "OBJ", "VAR", "BLUEPRINT"
+    "NULL", "JSON", "IMG", "MAP", "FONT", "OBJ", "VAR", "BLUEPRINT"
 };
 
 void Res::Ref::EncodeBinary(std::ostream & os, Project * project)
@@ -42,10 +42,10 @@ std::string Res::Path()
     switch (mType)
     {
     case Res::kNull:
-    case Res::kTxt:
+    case Res::kJson:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFnt:
+    case Res::kFont:
         {
             path = std::any_cast<std::string>(mMeta);
         }
@@ -138,10 +138,10 @@ void Res::EncodeBinary(std::ostream & os, Project * project)
     switch (mType)
     {
     case Res::kNull:
-    case Res::kTxt:
+    case Res::kJson:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFnt:
+    case Res::kFont:
         tools::Serialize(os, std::any_cast<std::string &>(mMeta));
         break;
     case Res::kObj:
@@ -163,10 +163,10 @@ void Res::DecodeBinary(std::istream & is, Project * project)
     switch (mType)
     {
     case Res::kNull:
-    case Res::kTxt:
+    case Res::kJson:
     case Res::kImg:
     case Res::kMap:
-    case Res::kFnt:
+    case Res::kFont:
         {
             mMeta.emplace<std::string>();
             tools::Deserialize(is, std::any_cast<std::string &>(mMeta));
@@ -205,14 +205,19 @@ SharePtr<RawTexture> Res::InstanceTex()
     return Global::Ref().mRawSys->Get<RawTexture>(Path());
 }
 
-SharePtr<RawFont> Res::InstanceFnt()
+SharePtr<RawFont> Res::InstanceFont()
 {
-    ASSERT_LOG(Type() == Res::kFnt, "");
+    ASSERT_LOG(Type() == Res::kFont, "");
     return Global::Ref().mRawSys->Get<RawFont>(Path());
 }
 
 SharePtr<RawMap> Res::InstanceMap()
 {
     return Global::Ref().mRawSys->Get<RawMap>(Path());
+}
+
+SharePtr<mmc::Json> Res::InstanceJson()
+{
+    return mmc::Json::FromFile(Path());
 }
 

@@ -89,7 +89,7 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &mFont,     (uint)(Res::TypeEnum::kFnt));
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &mFont,     (uint)(Res::TypeEnum::kFont));
     props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &mText);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &mSize);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &mAnchor);

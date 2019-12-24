@@ -28,7 +28,6 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         //RenderPipline::FowardCommand command;
         //command.mMesh       = mMesh;
         //command.mProgram    = mProgram;
-        //command.mTextures   = mTextures;
         //command.mTransform  = canvas->GetMatrixStack().GetM();
         //canvas->Post(command);
     }
@@ -75,6 +74,11 @@ std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
     return std::move(props);
 }
 
+void CompCollapseTerrain::Init()
+{
+    CollapseInfo info;
+}
+
 void CompCollapseTerrain::Update()
 {
     if (HasState(StateEnum::kUpdate))
@@ -83,7 +87,7 @@ void CompCollapseTerrain::Update()
 
         if (mMap.Modify())
         {
-            auto renderTarget = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
+            Init();
         }
 
         mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;

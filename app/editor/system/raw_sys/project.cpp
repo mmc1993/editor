@@ -108,10 +108,10 @@ void Project::DeleteObject(const SharePtr<GLObject> & object)
 bool Project::DeleteRes(Res * res)
 { 
     if (res->Type() == Res::kNull ||
-        res->Type() == Res::kTxt ||
+        res->Type() == Res::kJson ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
-        res->Type() == Res::kFnt)
+        res->Type() == Res::kFont)
     {
         std::filesystem::remove(res->Path());
         _resources.erase(res->GetID());
@@ -125,10 +125,10 @@ bool Project::DeleteRes(Res * res)
 bool Project::RenameRes(Res * res, const std::string & url)
 {
     if (res->Type() == Res::kNull ||
-        res->Type() == Res::kTxt ||
+        res->Type() == Res::kJson ||
         res->Type() == Res::kImg ||
         res->Type() == Res::kMap ||
-        res->Type() == Res::kFnt)
+        res->Type() == Res::kFont)
     {
         try
         {
@@ -151,10 +151,10 @@ bool Project::SetResType(Res * res, uint type)
             && type != Res::kVar 
             && type != Res::kBlueprint 
             && (res->Type() == Res::kNull ||
-                res->Type() == Res::kTxt ||
+                res->Type() == Res::kJson ||
                 res->Type() == Res::kImg ||
                 res->Type() == Res::kMap ||
-                res->Type() == Res::kFnt);
+                res->Type() == Res::kFont);
     if (ret) { res->Type((Res::TypeEnum)type); }
     return ret;
 }
@@ -170,10 +170,10 @@ void Project::Retrieve()
         switch (it->second->Type())
         {
         case Res::kNull:
-        case Res::kTxt:
+        case Res::kJson:
         case Res::kImg:
         case Res::kMap:
-        case Res::kFnt:
+        case Res::kFont:
             if (tools::IsFileExists(it->second->Meta<std::string>()))
             {
                 set0.insert(it->second->Meta<std::string>()); ++it;
@@ -206,7 +206,7 @@ void Project::Retrieve()
                 }
                 else if (type == typeid(RawFont))
                 {
-                    res->Type(Res::kFnt);
+                    res->Type(Res::kFont);
                 }
                 else if (type == typeid(RawMap))
                 {

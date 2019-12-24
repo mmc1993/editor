@@ -206,8 +206,8 @@ void UIDelegateExplorer::ListRClick(const SharePtr<UIObject>& object)
     auto res = mObj2Res.at(object);
     if (res->Type() == Res::TypeEnum::kNull ||
         res->Type() == Res::TypeEnum::kImg ||
-        res->Type() == Res::TypeEnum::kTxt ||
-        res->Type() == Res::TypeEnum::kFnt ||
+        res->Type() == Res::TypeEnum::kJson ||
+        res->Type() == Res::TypeEnum::kFont ||
         res->Type() == Res::TypeEnum::kMap)
     {
         std::vector<std::string> list;

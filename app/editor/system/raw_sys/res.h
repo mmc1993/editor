@@ -9,10 +9,10 @@ class Res : public Serializer {
 public:
     enum TypeEnum {
         kNull,       //  无
-        kTxt,        //  文本
+        kJson,       //  文本
         kImg,        //  图片
         kMap,        //  地图
-        kFnt,        //  字体
+        kFont,       //  字体
         kObj,        //  对象
         kVar,        //  变量
         kBlueprint,  //  蓝图
@@ -197,11 +197,15 @@ public:
         }
         else if constexpr (std::is_same_v<T, RawFont>)
         {
-            return InstanceFnt();
+            return InstanceFont();
         }
         else if constexpr (std::is_same_v<T, RawMap>)
         {
             return InstanceMap();
+        }
+        else if constexpr (std::is_same_v<T, mmc::Json>)
+        {
+            return InstanceJson();
         }
         else
         {
@@ -245,8 +249,9 @@ public:
 private:
     SharePtr<GLObject>   InstanceObj();
     SharePtr<RawTexture> InstanceTex();
-    SharePtr<RawFont>    InstanceFnt();
+    SharePtr<RawFont>    InstanceFont();
     SharePtr<RawMap>     InstanceMap();
+    SharePtr<mmc::Json>  InstanceJson();
 
 private:
     uint                mID;

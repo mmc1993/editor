@@ -28,8 +28,9 @@ protected:
     virtual std::vector<Property> CollectProperty() override;
 
 private:
+    void Init();
     void Update();
-    void PostInit();
+    std::vector<glm::vec2> GenEdge(SharePtr<RawImage> image);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
@@ -44,9 +45,8 @@ private:
 
     SharePtr<RawMesh> mMesh;
     SharePtr<RawProgram> mProgram;
-    SharePtr<RawTexture> mMaskBuff;
+    SharePtr<RawImage>   mMaskBuff;
     std::vector<Polygon> mPolygons;
     std::vector<CollapseInfo> mCollapseQueue;
     std::vector<SharePtr<RawMesh>> mMeshPool;
-    std::vector<std::pair<std::string, SharePtr<RawTexture>>> mTextures;
 };
