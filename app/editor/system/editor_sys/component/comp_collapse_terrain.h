@@ -6,6 +6,11 @@ class CompCollapseTerrain : public Component {
 public:
     using Polygon = std::vector<glm::vec2>;
 
+    struct EraseParam {
+        Polygon mPolygon;
+
+    };
+
     struct CollapseInfo {
         Polygon mPolygon;
         SharePtr<RawMesh> mMesh;

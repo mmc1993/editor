@@ -79,7 +79,28 @@ std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 
 void CompCollapseTerrain::Init()
 {
-    CollapseInfo info;
+    //  初始化MapImage
+    auto rt = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
+    mPairImages.clear();
+    mPairImages.emplace_back("texture0", rt->GetImage());
+    mPairImages.emplace_back("texture1", mMaskBuff);
+
+    //  初始化Polygon
+    for (auto & area : mTerrain.Instance<mmc::Json>()->At("List"))
+    {
+        std::vector<glm::vec2> points;
+        for (auto & point : area.mVal)
+        {
+            points.emplace_back(
+                point.mVal->At("x")->ToNumber(),
+                point.mVal->At("y")->ToNumber());
+        }
+        for (auto & convex : tools::StripConvexPoints(points))
+        {
+            auto triangles = tools::StripTrianglePoints(convex);
+            CollapseInfo info;
+        }
+    }
 }
 
 void CompCollapseTerrain::Update()
@@ -88,25 +109,9 @@ void CompCollapseTerrain::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        auto bInit = false;
-        if (mMap.Check() && mMap.Modify())
-        {
-            auto rt = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
-            mPairImages.clear();
-            mPairImages.emplace_back("texture0", rt->GetImage());
-            mPairImages.emplace_back("texture1", mMaskBuff);
-            bInit = true;
-        }
-
-        if (mTerrain.Check() && mTerrain.Modify())
-        {
-            bInit = true;
-        }
-
-        if (bInit)
-        {
-            Init();
-        }
+        auto bInit = mMap.Check() && mMap.Modify()
+            || mTerrain.Check() && mTerrain.Modify();
+        if (bInit) { Init(); }
 
         mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
         mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;

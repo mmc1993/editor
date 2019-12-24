@@ -374,15 +374,14 @@ namespace tools {
     }
 
     //  切割三角形
-    inline std::vector<std::array<glm::vec2, 3>> StripTrianglePoints(const std::vector<glm::vec2> & points)
+    inline std::vector<glm::vec2> StripTrianglePoints(const std::vector<glm::vec2> & points)
     {
-        std::vector<std::array<glm::vec2, 3>> result;
+        std::vector<glm::vec2> result;
         for (auto i = 1; i != points.size() - 1; ++i)
         {
-            result.emplace_back();
-            result.back().at(0) = points.at(0);
-            result.back().at(1) = points.at(i);
-            result.back().at(2) = points.at(i + 1);
+            result.emplace_back(points.at(0));
+            result.emplace_back(points.at(i));
+            result.emplace_back(points.at(i + 1));
         }
         return std::move(result);
     }
