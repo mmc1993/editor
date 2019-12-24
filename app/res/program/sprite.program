@@ -1,5 +1,4 @@
 Pass Beg
-    BlendFunc SrcAlpha OneMinusSrcAlpha
     VShader Beg
         #version 330 core
 
@@ -26,13 +25,13 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
-        uniform sampler2D uniform_texture;
+        uniform sampler2D texture0;
 
         out vec4 color_;
 
         void main()
         {
-            color_ = texture(uniform_texture, v_out_.mUV);
+            color_ = texture(texture0, v_out_.mUV);
         }
     FShader End
 Pass End

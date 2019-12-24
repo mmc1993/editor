@@ -45,8 +45,12 @@ void CompTilemap::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mClipview.z = max.x;
         command.mClipview.w = max.y;
 
-        //  ÆôÓÃ²Ã¼ô
-        command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
+        command.mBlendSrc = GL_SRC_ALPHA;
+        command.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+
+        command.mEnabledFlag
+            = RenderPipline::RenderCommand::kClipView
+            | RenderPipline::RenderCommand::kBlend;
 
         canvas->Post(command);
     }
@@ -106,8 +110,9 @@ void CompTilemap::Update()
             for (auto i = 0; i != map->GetAtlass().size(); ++i)
             {
                 const auto & atlas = map->GetAtlass().at(i);
-                auto key = SFormat("uniform_texture{0}", i);
-                mPairImages.emplace_back(key, atlas.mTexture->GetImage());
+                mPairImages.emplace_back(
+                    SFormat("texture{0}", i),
+                    atlas.mTexture->GetImage());
                 mSize.x = (float)map->GetMap().mPixelW;
                 mSize.y = (float)map->GetMap().mPixelH;
             }

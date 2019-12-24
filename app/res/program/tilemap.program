@@ -1,5 +1,4 @@
 Pass Beg
-    BlendFunc SrcAlpha OneMinusSrcAlpha
     VShader Beg
         #version 330 core
 
@@ -36,8 +35,8 @@ Pass Beg
             float mTex;
         } v_out_;
 
-        uniform sampler2D uniform_texture0;
-        uniform sampler2D uniform_texture1;
+        uniform sampler2D texture0;
+        uniform sampler2D texture1;
 
         out vec4 color_;
 
@@ -45,11 +44,11 @@ Pass Beg
         {
             if      (v_out_.mTex == 0)
             {
-                color_ = texture(uniform_texture0, v_out_.mUV);
+                color_ = texture(texture0, v_out_.mUV);
             }
             else if (v_out_.mTex == 1)
             {
-                color_ = texture(uniform_texture1, v_out_.mUV);
+                color_ = texture(texture1, v_out_.mUV);
             }
         }
     FShader End

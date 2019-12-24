@@ -77,18 +77,24 @@ void CompText::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mPairImages.emplace_back("uniform_texture",
+        command.mPairImages.emplace_back("texture0",
                 mFont.Instance<RawFont>()->RefTexture()->GetImage());
         command.mCallback = std::bind(&CompText::OnDrawCallback, this,
                                       std::placeholders::_1,
                                       std::placeholders::_2);
+
+        command.mBlendSrc = GL_SRC_ALPHA;
+        command.mBlendDst = GL_ONE;
+
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
         canvas->Post(command);
     }
 }
 std::vector<Component::Property> CompText::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &mFont,     (uint)(Res::TypeEnum::kFont));
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Font",      &mFont,     std::vector<uint>{ Res::TypeEnum::kFont });
     props.emplace_back(UIParser::StringValueTypeEnum::kString,  "Text",      &mText);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",      &mSize);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",    &mAnchor);
@@ -101,7 +107,8 @@ std::vector<Component::Property> CompText::CollectProperty()
 
 void CompText::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 { 
-    glm::vec2 min, max;
+    glm::vec2 min(0);
+    glm::vec2 max(0);
     switch (index)
     {
     case 0:

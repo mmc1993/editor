@@ -55,6 +55,12 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mCallback  = std::bind(&CompFieldOfView::OnDrawCallback,
                            CastPtr<CompFieldOfView>(shared_from_this()), 
                            std::placeholders::_1, std::placeholders::_2);
+
+        command.mBlendSrc = GL_ONE;
+        command.mBlendDst = GL_ZERO;
+
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
         canvas->Post(command);
     }
 }
@@ -203,9 +209,9 @@ glm::vec2 CompFieldOfView::RayExtended(const std::vector<glm::vec2>& segments, c
 void CompFieldOfView::OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos)
 {
     auto & cmd = (const RenderPipline::PostCommand &)command;
-    cmd.mProgram->BindUniformTex2D("uniform_sample", 
+    cmd.mProgram->BindUniformTex2D("uniform_sample",
         mClipObject.Instance<GLObject>()
             ->GetComponent<CompRenderTarget>()
-            ->GetImage()->mID,  texturePos);
+            ->GetImage()->GetID(), texturePos);
 }
 

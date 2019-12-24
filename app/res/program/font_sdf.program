@@ -1,5 +1,4 @@
 Pass Beg
-    BlendFunc SrcAlpha One
     VShader Beg
         #version 330 core
 
@@ -32,28 +31,28 @@ Pass Beg
 
         uniform float out_delta_;
         uniform vec4  out_color_;
-        uniform sampler2D uniform_texture;
+        uniform sampler2D texture0;
 
         const float mark = 0.498f;
         out vec4 color_;
 
         void main()
         {
-            float r = texture2D(uniform_texture, v_out_.mUV).r;
+            float r = texture2D(texture0, v_out_.mUV).r;
             
-            //  ÎÄ×ÖÑÕÉ«
+            //  æ–‡å­—é¢œè‰²
             vec4 color = vec4(v_out_.mColor.rgb, 0);
             if (r >= mark) { color.a = 1.0f; }
 
-            //  Ãè±ß
+            //  æè¾¹
             float r0 = smoothstep(mark - out_delta_ * 2, mark - out_delta_, r);
             vec4 outColor = vec4(out_color_.rgb, r0);
 
-            //  Íâ·¢¹â
+            //  å¤–å‘å…‰
             // r0 = smoothstep(mark - delta_ - out_delta_, mark - delta_, r);
             // vec4 outColor = vec4(out_color_.rgb, pow(r0, 64));
 
-            //  ÄÚ·¢¹â
+            //  å†…å‘å…‰
             // vec4 outColor = vec4(out_color_.rgb, 0);
             // if (r > mark && (r < mark + out_delta_))
             // {
@@ -64,7 +63,7 @@ Pass Beg
             // color_.rgb  = color.rgb + outColor.rgb;
             // color_.a    = color.a;
 
-            //  ×îÖÕÑÕÉ«
+            //  æœ€ç»ˆé¢œè‰²
             color_ = mix(outColor, color, color.a);
         }
     FShader End

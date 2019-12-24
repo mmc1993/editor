@@ -30,16 +30,16 @@ public:
             kUV = 0x4,
         };
 
-        Vertex()
+        Vertex(): v(0), c(0), uv(0)
         { }
 
-        Vertex(const glm::vec2 & _v) : v(_v)
+        Vertex(const glm::vec2 & _v) : v(_v), c(0), uv(0)
         { }
 
-        Vertex(const glm::vec2 & _v, const glm::vec4 & _c) : v(_v), c(_c)
+        Vertex(const glm::vec2 & _v, const glm::vec4 & _c) : v(_v), c(_c), uv(0)
         { }
 
-        Vertex(const glm::vec2 & _v, const glm::vec2 & _uv) : v(_v), uv(_uv)
+        Vertex(const glm::vec2 & _v, const glm::vec2 & _uv) : v(_v), uv(_uv), c(0)
         { }
 
         Vertex(const glm::vec2 & _v, const glm::vec4 & _c, const glm::vec2 & _uv) : v(_v), c(_c), uv(_uv)
@@ -97,6 +97,7 @@ class RawImage : public Raw {
 public:
     RawImage();
     ~RawImage();
+    uint GetID() { return mID; }
     void SetParam(int key, int val);
     void ModifyWH(uint w, uint h);
     void InitNull(uint fmt);
@@ -144,7 +145,7 @@ private:
 
 private:
     SharePtr<RawImage> mRefImg;
-    glm::vec4         mOffset;
+    glm::vec4          mOffset;
 };
 
 // ---
@@ -279,8 +280,6 @@ public:
 
 public:
     struct Pass {
-        iint        mBlendSrc;          //  混合
-        iint        mBlendDst;          //  混合
         iint        mStencilOpFail;	    //	模板测试失败
         iint        mStencilOpZFail;	//	深度测试失败
         iint        mStencilOpZPass;	//	深度测试通过

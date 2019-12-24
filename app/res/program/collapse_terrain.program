@@ -1,5 +1,4 @@
 Pass Beg
-    BlendFunc SrcAlpha OneMinusSrcAlpha
     VShader Beg
         #version 330 core
 

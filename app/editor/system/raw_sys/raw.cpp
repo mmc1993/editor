@@ -159,7 +159,7 @@ void RawImage::SetParam(int key, int val)
 // ---
 //  RawTexture
 // ---
-RawTexture::RawTexture()
+RawTexture::RawTexture() : mOffset(0.0f)
 { }
 
 RawTexture::~RawTexture()
@@ -475,31 +475,7 @@ bool RawProgram::Init(const std::string & url)
                 ss.str(line);
                 ss >> word;
 
-                if (word == "BlendFunc")
-                {
-                    ss >> word;
-                    if (word == "Zero") { pass->mBlendSrc = GL_ZERO; }
-                    else if (word == "One") { pass->mBlendSrc = GL_ONE; }
-                    else if (word == "SrcColor") { pass->mBlendSrc = GL_SRC_COLOR; }
-                    else if (word == "SrcAlpha") { pass->mBlendSrc = GL_SRC_ALPHA; }
-                    else if (word == "DstAlpha") { pass->mBlendSrc = GL_DST_ALPHA; }
-                    else if (word == "OneMinusSrcColor") { pass->mBlendSrc = GL_ONE_MINUS_SRC_COLOR; }
-                    else if (word == "OneMinusSrcAlpha") { pass->mBlendSrc = GL_ONE_MINUS_SRC_ALPHA; }
-                    else if (word == "OneMinusDstAlpha") { pass->mBlendSrc = GL_ONE_MINUS_DST_ALPHA; }
-                    else { ASSERT_LOG(false, "½âÎöPassÊôÐÔ´íÎó: {0}, {1}", word, line); }
-
-                    ss >> word;
-                    if (word == "Zero") { pass->mBlendDst = GL_ZERO; }
-                    else if (word == "One") { pass->mBlendDst = GL_ONE; }
-                    else if (word == "SrcColor") { pass->mBlendDst = GL_SRC_COLOR; }
-                    else if (word == "SrcAlpha") { pass->mBlendDst = GL_SRC_ALPHA; }
-                    else if (word == "DstAlpha") { pass->mBlendDst = GL_DST_ALPHA; }
-                    else if (word == "OneMinusSrcColor") { pass->mBlendDst = GL_ONE_MINUS_SRC_COLOR; }
-                    else if (word == "OneMinusSrcAlpha") { pass->mBlendDst = GL_ONE_MINUS_SRC_ALPHA; }
-                    else if (word == "OneMinusDstAlpha") { pass->mBlendDst = GL_ONE_MINUS_DST_ALPHA; }
-                    else { ASSERT_LOG(false, "½âÎöPassÊôÐÔ´íÎó: {0}, {1}", word, line); }
-                }
-                else if (word == "StencilTest")
+                if (word == "StencilTest")
                 {
                     ss >> word;
                     if (word == "Keep") { pass->mStencilOpFail = GL_KEEP; }
@@ -638,17 +614,6 @@ uint RawProgram::GetPassCount()
 void RawProgram::UsePass(uint i)
 {
     const auto & pass = _passs.at(i);
-    //  ¿ªÆô»ìºÏ
-    if (pass.mBlendSrc != 0 && pass.mBlendDst != 0)
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(pass.mBlendSrc, pass.mBlendDst);
-    }
-    else
-    {
-        glDisable(GL_BLEND);
-    }
-
     //  Ä£°å²âÊÔ
     if (pass.mStencilOpFail != 0 && pass.mStencilOpZFail != 0 && pass.mStencilOpZPass != 0)
     {

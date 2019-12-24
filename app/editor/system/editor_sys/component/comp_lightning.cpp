@@ -36,6 +36,12 @@ void CompLightning::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mPairImages.emplace_back("texture0", mTex.Instance<RawTexture>()->GetImage());
+
+        command.mBlendSrc = GL_SRC_ALPHA;
+        command.mBlendDst = GL_ONE;
+
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
         canvas->Post(command);
     }
 }

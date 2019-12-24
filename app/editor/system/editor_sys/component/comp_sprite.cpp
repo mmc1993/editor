@@ -29,7 +29,13 @@ void CompSprite::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
         command.mTransform  = canvas->GetMatrixStack().GetM();
-        command.mPairImages.emplace_back("uniform_texture", mTex.Instance<RawTexture>()->GetImage());
+        command.mPairImages.emplace_back("texture0", mTex.Instance<RawTexture>()->GetImage());
+
+        command.mBlendSrc = GL_SRC_ALPHA;
+        command.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
         canvas->Post(command);
     }
 }
@@ -117,7 +123,8 @@ void CompSprite::Update()
 
 void CompSprite::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    glm::vec2 min, max;
+    glm::vec2 min(0);
+    glm::vec2 max(0);
     switch (index)
     {
     case 0:

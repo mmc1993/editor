@@ -33,6 +33,12 @@ void CompSegment::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     command.mMesh       = mMesh;
     command.mProgram    = mProgram;
     command.mTransform  = canvas->GetMatrixStack().GetM();
+
+    command.mBlendSrc = GL_SRC_COLOR;
+    command.mBlendDst = GL_ZERO;
+
+    command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
     canvas->Post(command);
 }
 

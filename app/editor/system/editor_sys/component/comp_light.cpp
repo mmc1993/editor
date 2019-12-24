@@ -30,6 +30,12 @@ void CompLight::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     command.mType       = RenderPipline::PostCommand::kSample;
     command.mProgram    = mProgram;
     command.mMesh       = mMesh;
+
+    command.mBlendSrc = GL_SRC_ALPHA;
+    command.mBlendDst = GL_ONE;
+
+    command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
     canvas->Post(command);
 }
 
