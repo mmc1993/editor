@@ -7,17 +7,16 @@ public:
     using Polygon = std::vector<glm::vec2>;
 
     struct EraseParam {
+        glm::vec4 mColor;
         Polygon mPolygon;
-
-    };
-
-    struct CollapseInfo {
-        Polygon mPolygon;
-        SharePtr<RawMesh> mMesh;
+        uint mBlendSrc;
+        uint mBlendDst;
     };
 
 public:
     CompCollapseTerrain();
+    virtual void OnStart(UIObjectGLCanvas * canvas) override;
+    virtual void OnLeave(UIObjectGLCanvas * canvas) override;
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt) override;
 
     virtual const std::string & GetName() override;
@@ -51,7 +50,7 @@ private:
     SharePtr<RawImage>   mMaskBuff;
     std::vector<Polygon> mPolygons;
     SharePtr<RawProgram> mProgram;
-    std::vector<CollapseInfo> mCollapseQueue;
+    std::deque<EraseParam> mEraseQueue;
     std::vector<SharePtr<RawMesh>> mMeshPool;
     std::vector<std::pair<std::string, SharePtr<RawImage>>> mPairImages;
 };

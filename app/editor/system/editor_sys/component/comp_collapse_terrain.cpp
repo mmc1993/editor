@@ -19,6 +19,39 @@ CompCollapseTerrain::CompCollapseTerrain()
     AddState(StateEnum::kModifyTrackPoint, true);
 }
 
+void CompCollapseTerrain::OnStart(UIObjectGLCanvas* canvas)
+{
+    if (!mEraseQueue.empty())
+    {
+        RenderPipline::TargetCommand command;
+        command.mType = RenderPipline::TargetCommand::kPush;
+
+        command.mRenderTextures[0] = mMaskBuff;
+
+        command.mClipView.x = 0;
+        command.mClipView.y = 0;
+        command.mClipView.z = mSize.x;
+        command.mClipView.w = mSize.y;
+
+        command.mEnabledFlag  = RenderPipline::RenderCommand::kClipView;
+        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
+        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
+        canvas->Post(command);
+    }
+}
+
+void CompCollapseTerrain::OnLeave(UIObjectGLCanvas* canvas)
+{
+    if (!mEraseQueue.empty())
+    {
+        mEraseQueue.clear();
+
+        RenderPipline::TargetCommand command;
+        command.mType = RenderPipline::TargetCommand::kPop;
+        canvas->Post(command);
+    }
+}
+
 void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     Update();
@@ -80,9 +113,9 @@ std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 void CompCollapseTerrain::Init()
 {
     //  初始化MapImage
-    auto rt = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>();
+    auto mapImage = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>()->GetImage();
     mPairImages.clear();
-    mPairImages.emplace_back("texture0", rt->GetImage());
+    mPairImages.emplace_back("texture0", mapImage);
     mPairImages.emplace_back("texture1", mMaskBuff);
 
     //  初始化Polygon
@@ -98,8 +131,8 @@ void CompCollapseTerrain::Init()
         for (auto & convex : tools::StripConvexPoints(points))
         {
             auto triangles = tools::StripTrianglePoints(convex);
-            CollapseInfo info;
         }
+        mPolygons.emplace_back(points);
     }
 }
 
@@ -109,9 +142,11 @@ void CompCollapseTerrain::Update()
     {
         AddState(StateEnum::kUpdate, false);
 
-        auto bInit = mMap.Check() && mMap.Modify()
-            || mTerrain.Check() && mTerrain.Modify();
-        if (bInit) { Init(); }
+        if (mMap.Check() && mMap.Modify() ||
+            mTerrain.Check() && mTerrain.Modify())
+        {
+            Init();
+        }
 
         mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
         mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;

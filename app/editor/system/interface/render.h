@@ -17,11 +17,10 @@ namespace RenderPipline {
         enum EnabledEnum {
             kTargetColor0       = 0x1,      //  清除颜色
             kTargetColor1       = 0x2,      //  清除颜色
-            kUseCanvasSize      = 0x4,      //  使用画布尺寸
 
             //  启用功能
-            kClipView    = 0x8,      //  开启裁剪
-            kBlend       = 0x10,     //  开启混合
+            kClipView    = 0x4,         //  开启裁剪
+            kBlend       = 0x8,         //  开启混合
         };
         uint mEnabledFlag;
 
@@ -96,7 +95,7 @@ namespace RenderPipline {
         glm::vec4       mClipView;
 
         TargetCommand()
-            : RenderCommand(kTargetColor0 | kTargetColor1 | kUseCanvasSize)
+            : RenderCommand(kTargetColor0 | kTargetColor1)
             , mType(kPush)
             , mClipView(0)
             , mClearColor(0)

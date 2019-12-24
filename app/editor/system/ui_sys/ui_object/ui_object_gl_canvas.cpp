@@ -155,21 +155,21 @@ void UIObjectGLCanvas::CallCommands()
     {
         auto & command = *iter;
 
-        if (command.mEnabledFlag & RenderPipline::TargetCommand::kUseCanvasSize)
+        if (command.mEnabledFlag & RenderPipline::TargetCommand::kClipView)
         {
-            viewport[2].x = 0; viewport[2].z = (int)state->Move.z;
-            viewport[2].y = 0; viewport[2].w = (int)state->Move.w;
+            viewport[2] = command.mClipView;
         }
         else
         {
-            viewport[2] = command.mClipView;
+            viewport[2].x = 0; viewport[2].z = (int)state->Move.z;
+            viewport[2].y = 0; viewport[2].w = (int)state->Move.w;
         }
 
         //  调整视口
         if (viewport[1] != viewport[2])
         {
             viewport[1] = viewport[2];
-            glViewport(viewport[2].x, viewport[2].y, 
+            glViewport(viewport[2].x, viewport[2].y,
                        viewport[2].z, viewport[2].w);
         }
 
@@ -187,7 +187,7 @@ void UIObjectGLCanvas::CallCommands()
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
         glClearColor(command.mClearColor.x, command.mClearColor.y, command.mClearColor.z, command.mClearColor.w);
         uint buffers[2];
-        if (command.mEnabledFlag & (RenderPipline::RenderCommand::kTargetColor0 | RenderPipline::RenderCommand::kTargetColor0))
+        if (command.mEnabledFlag & (RenderPipline::RenderCommand::kTargetColor0 | RenderPipline::RenderCommand::kTargetColor1))
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_COLOR_ATTACHMENT1;
