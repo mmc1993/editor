@@ -35,6 +35,7 @@ Pass Beg
             vec4 c0 = texture(texture0, v_out_.mUV);
             vec4 c1 = texture(texture1, v_out_.mUV);
             color_ = c0.r * c1;
+            // color_ = c1;
         }
     FShader End
 Pass End

@@ -195,10 +195,6 @@ public:
         {
             return InstanceTex();
         }
-        else if constexpr   (std::is_same_v<T, RawImage>)
-        {
-            return InstanceImg();
-        }
         else if constexpr (std::is_same_v<T, RawFont>)
         {
             return InstanceFont();
@@ -253,7 +249,6 @@ public:
 private:
     SharePtr<GLObject>   InstanceObj();
     SharePtr<RawTexture> InstanceTex();
-    SharePtr<RawImage>   InstanceImg();
     SharePtr<RawFont>    InstanceFont();
     SharePtr<RawMap>     InstanceMap();
     SharePtr<mmc::Json>  InstanceJson();

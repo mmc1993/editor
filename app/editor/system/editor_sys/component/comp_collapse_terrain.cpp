@@ -18,8 +18,9 @@ CompCollapseTerrain::CompCollapseTerrain()
     mEraseProgram->Init(tools::GL_PROGRAM_SOLID_FILL);
 
     mPairImages.resize(2);
-    mPairImages.at(1).first = "texture0";
-    mPairImages.at(1).second = std::create_ptr<RawImage>();
+    mPairImages.at(0).first = "texture0";
+    mPairImages.at(0).second = std::create_ptr<RawImage>();
+    mPairImages.at(0).second->InitNull(GL_RED);
 }
 
 void CompCollapseTerrain::OnStart(UIObjectGLCanvas * canvas)
@@ -37,8 +38,8 @@ void CompCollapseTerrain::OnLeave(UIObjectGLCanvas * canvas)
             command.mRenderTextures[0] = mPairImages.at(0).second;
             command.mClipView.x = 0;
             command.mClipView.y = 0;
-            command.mClipView.z = (float)mMap.Instance<RawImage>()->mW;
-            command.mClipView.w = (float)mMap.Instance<RawImage>()->mH;
+            command.mClipView.z = (float)mMap.Instance<RawTexture>()->GetW();
+            command.mClipView.w = (float)mMap.Instance<RawTexture>()->GetH();
             command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
 
             if (mReset)
@@ -136,9 +137,9 @@ void CompCollapseTerrain::Init()
     mEraseQueue.clear();
 
     //  ≥ı ºªØMapImage
-    auto mapImage = mMap.Instance<RawImage>();
+    auto mapImage = mMap.Instance<RawTexture>();
     mPairImages.at(1).first  = "texture1";
-    mPairImages.at(1).second = mapImage;
+    mPairImages.at(1).second = mapImage->GetImage();
 
     for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
     {
@@ -167,8 +168,8 @@ bool CompCollapseTerrain::Update()
 
         if (mMap.Check())
         {
-            auto w = (iint)mMap.Instance<RawImage>()->mW;
-            auto h = (iint)mMap.Instance<RawImage>()->mH;
+            auto w = (iint)mMap.Instance<RawTexture>()->GetW();
+            auto h = (iint)mMap.Instance<RawTexture>()->GetH();
             mTrackPoints.at(0).x = -w *      mAnchor.x;
             mTrackPoints.at(0).y = -h *      mAnchor.y;
             mTrackPoints.at(1).x =  w * (1 - mAnchor.x);
@@ -182,6 +183,9 @@ bool CompCollapseTerrain::Update()
         mMesh->Update({ 
             { mTrackPoints.at(0), glm::vec2(0, 0) },
             { mTrackPoints.at(1), glm::vec2(1, 0) },
+            { mTrackPoints.at(2), glm::vec2(1, 1) },
+
+            { mTrackPoints.at(0), glm::vec2(0, 0) },
             { mTrackPoints.at(2), glm::vec2(1, 1) },
             { mTrackPoints.at(3), glm::vec2(0, 1) },
         }, {}, GL_DYNAMIC_DRAW, GL_STATIC_READ);
@@ -213,7 +217,7 @@ void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
         {
             if (erase.mBlendSrc != command.mBlendSrc ||
                 erase.mBlendDst != command.mBlendDst ||
-                erase.mMask != points.back().c.r)
+                !points.empty() && points.back().c.r != erase.mMask)
             {
                 command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
                                                   GL_STATIC_DRAW);
