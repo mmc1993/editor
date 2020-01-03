@@ -218,10 +218,14 @@ void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
                 points.clear();
                 command.mBlendSrc = erase.mBlendSrc;
                 command.mBlendDst = erase.mBlendDst;
-                command.mMesh = mEraseMeshs.at(commandCount);
-                ++commandCount;
+                command.mMesh = mEraseMeshs.at(commandCount++);
             }
+            points.emplace_back(erase.mTriangle[0], glm::vec4(erase.mMask, 0, 0, 0));
+            points.emplace_back(erase.mTriangle[1], glm::vec4(erase.mMask, 0, 0, 0));
+            points.emplace_back(erase.mTriangle[2], glm::vec4(erase.mMask, 0, 0, 0));
         }
+        command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
+                                          GL_STATIC_DRAW);
         canvas->Post(command);
     }
 }
