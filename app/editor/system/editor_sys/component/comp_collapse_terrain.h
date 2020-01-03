@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../../raw_sys/component.h"
-#include "comp_render_target.h"
 
 class CompCollapseTerrain : public Component {
 public:
@@ -38,19 +37,18 @@ private:
     void Init();
     bool Update();
     void HandleErase(UIObjectGLCanvas * canvas);
-    virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
 
 private:
+    Res::Ref    mMap;
     Res::Ref    mJson;
-    glm::vec2   mSize;
+    glm::vec2   mAnchor;
     bool        mReset;
 
     SharePtr<RawProgram>            mEraseProgram;
     std::deque<EraseParam>          mEraseQueue;
     std::vector<SharePtr<RawMesh>>  mEraseMeshs;
-    SharePtr<CompRenderTarget>      mMapTarget;
 
-    SharePtr<RawMesh>       mMesh;
-    SharePtr<RawProgram>    mProgram;
+    SharePtr<RawMesh>               mMesh;
+    SharePtr<RawProgram>            mProgram;
     std::vector<std::pair<std::string, SharePtr<RawImage>>> mPairImages;
 };

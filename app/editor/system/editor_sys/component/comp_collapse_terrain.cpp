@@ -1,10 +1,9 @@
 #include "comp_collapse_terrain.h"
 #include "../../raw_sys/raw_sys.h"
 #include "../../raw_sys/comp_transform.h"
-#include "comp_render_target.h"
 
 CompCollapseTerrain::CompCollapseTerrain()
-    : mSize(0.0f)
+    : mAnchor(0.5f, 0.5f)
 {
     mTrackPoints.resize(4);
 
@@ -21,8 +20,6 @@ CompCollapseTerrain::CompCollapseTerrain()
     mPairImages.resize(2);
     mPairImages.at(1).first = "texture0";
     mPairImages.at(1).second = std::create_ptr<RawImage>();
-
-    AddState(StateEnum::kModifyTrackPoint, true);
 }
 
 void CompCollapseTerrain::OnStart(UIObjectGLCanvas * canvas)
@@ -37,11 +34,11 @@ void CompCollapseTerrain::OnLeave(UIObjectGLCanvas * canvas)
         {
             RenderPipline::TargetCommand command;
             command.mType   = RenderPipline::TargetCommand::kPush;
-            command.mRenderTextures[0] = mPairImages.at(1).second;
+            command.mRenderTextures[0] = mPairImages.at(0).second;
             command.mClipView.x = 0;
             command.mClipView.y = 0;
-            command.mClipView.z = mSize.x;
-            command.mClipView.w = mSize.y;
+            command.mClipView.z = (float)mMap.Instance<RawImage>()->mW;
+            command.mClipView.w = (float)mMap.Instance<RawImage>()->mH;
             command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
 
             if (mReset)
@@ -87,14 +84,16 @@ const std::string & CompCollapseTerrain::GetName()
 void CompCollapseTerrain::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, mSize);
+    tools::Serialize(os, mAnchor);
+    mMap.EncodeBinary(os, project);
     mJson.EncodeBinary(os, project);
 }
 
 void CompCollapseTerrain::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
-    tools::Deserialize(is, mSize);
+    tools::Deserialize(is, mAnchor);
+    mMap.DecodeBinary(is, project);
     mJson.DecodeBinary(is, project);
 }
 
@@ -125,51 +124,60 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points, uint blen
 std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 {
     auto props = Component::CollectProperty();
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Map",      &mMap,      std::vector<uint>{ Res::TypeEnum::kImg  });
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Json",     &mJson,     std::vector<uint>{ Res::TypeEnum::kJson });
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &mSize);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
     return std::move(props);
 }
 
 void CompCollapseTerrain::Init()
 {
-    if (mMapTarget && mJson.Check())
+    mReset       = true;
+    mEraseQueue.clear();
+
+    //  初始化MapImage
+    auto mapImage = mMap.Instance<RawImage>();
+    mPairImages.at(1).first  = "texture1";
+    mPairImages.at(1).second = mapImage;
+
+    for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
     {
-        mReset       = true;
-        mEraseQueue.clear();
-
-        //  初始化MapImage
-        auto mapImage = mMapTarget->GetImage();
-        mPairImages.at(0).first  = "texture0";
-        mPairImages.at(0).second = mapImage;
-
-        for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
+        std::vector<glm::vec2> points;
+        for (auto & point : area.mVal)
         {
-            std::vector<glm::vec2> points;
-            for (auto & point : area.mVal)
-            {
-                points.emplace_back(
-                    point.mVal->At("x")->ToNumber(),
-                    point.mVal->At("y")->ToNumber());
-            }
-            Erase(points, GL_ONE, GL_ZERO, 1);
+            points.emplace_back(
+                point.mVal->At("x")->ToNumber(),
+                point.mVal->At("y")->ToNumber());
         }
+        Erase(points, GL_ONE, GL_ZERO, 1);
     }
 }
 
 bool CompCollapseTerrain::Update()
 {
-    auto target = GetOwner()->GetComponent<CompRenderTarget>();
-    if (target != mMapTarget) { mMapTarget = target; Init(); }
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
         
-        if (mJson.Check() && mJson.Modify()) { Init(); }
+        if ( mMap.Check()  && mJson.Check() && 
+            (mMap.Modify() || mJson.Modify()))
+        {
+            Init();
+        }
 
-        mTrackPoints.at(0).x = 0;       mTrackPoints.at(0).y = 0;
-        mTrackPoints.at(1).x = mSize.x; mTrackPoints.at(1).y = 0;
-        mTrackPoints.at(2).x = mSize.x; mTrackPoints.at(2).y = mSize.y;
-        mTrackPoints.at(3).x = 0;       mTrackPoints.at(3).y = mSize.y;
+        if (mMap.Check())
+        {
+            auto w = (iint)mMap.Instance<RawImage>()->mW;
+            auto h = (iint)mMap.Instance<RawImage>()->mH;
+            mTrackPoints.at(0).x = -w *      mAnchor.x;
+            mTrackPoints.at(0).y = -h *      mAnchor.y;
+            mTrackPoints.at(1).x =  w * (1 - mAnchor.x);
+            mTrackPoints.at(1).y = -h *      mAnchor.y;
+            mTrackPoints.at(2).x =  w * (1 - mAnchor.x);
+            mTrackPoints.at(2).y =  h * (1 - mAnchor.y);
+            mTrackPoints.at(3).x = -w *      mAnchor.x;
+            mTrackPoints.at(3).y =  h * (1 - mAnchor.y);
+        }
 
         mMesh->Update({ 
             { mTrackPoints.at(0), glm::vec2(0, 0) },
@@ -178,7 +186,7 @@ bool CompCollapseTerrain::Update()
             { mTrackPoints.at(3), glm::vec2(0, 1) },
         }, {}, GL_DYNAMIC_DRAW, GL_STATIC_READ);
     }
-    return mMapTarget && mJson.Check();
+    return mMap.Check() && mJson.Check();
 }
 
 void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
@@ -230,45 +238,4 @@ void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
                                           GL_STATIC_DRAW);
         canvas->Post(command);
     }
-}
-
-void CompCollapseTerrain::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
-{
-    glm::vec2 min(0);
-    glm::vec2 max(0);
-    switch (index)
-    {
-    case 0:
-        min.x = std::min(point.x, mTrackPoints.at(2).x);
-        min.y = std::min(point.y, mTrackPoints.at(2).y);
-        max.x = mTrackPoints.at(2).x;
-        max.y = mTrackPoints.at(2).y;
-        break;
-    case 1:
-        min.x = mTrackPoints.at(0).x;
-        min.y = std::min(point.y, mTrackPoints.at(3).y);
-        max.x = std::max(point.x, mTrackPoints.at(3).x);
-        max.y = mTrackPoints.at(2).y;
-        break;
-    case 2:
-        min.x = mTrackPoints.at(0).x;
-        min.y = mTrackPoints.at(0).y;
-        max.x = std::max(point.x, mTrackPoints.at(0).x);
-        max.y = std::max(point.y, mTrackPoints.at(0).y);
-        break;
-    case 3:
-        min.x = std::min(point.x, mTrackPoints.at(1).x);
-        min.y = mTrackPoints.at(0).y;
-        max.x = mTrackPoints.at(2).x;
-        max.y = std::max(point.y, mTrackPoints.at(1).y);
-        break;
-    }
-
-    mSize.x = max.x - min.x;
-    mSize.y = max.y - min.y;
-
-    const auto & coord = GetOwner()->LocalToParent(min);
-    GetOwner()->GetTransform()->Position(coord.x, coord.y);
-
-    AddState(StateEnum::kUpdate, true);
 }

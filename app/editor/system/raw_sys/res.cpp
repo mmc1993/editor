@@ -205,6 +205,12 @@ SharePtr<RawTexture> Res::InstanceTex()
     return Global::Ref().mRawSys->Get<RawTexture>(Path());
 }
 
+SharePtr<RawImage> Res::InstanceImg()
+{
+    ASSERT_LOG(Type() == Res::kImg, "");
+    return Global::Ref().mRawSys->Get<RawImage>(Path());
+}
+
 SharePtr<RawFont> Res::InstanceFont()
 {
     ASSERT_LOG(Type() == Res::kFont, "");
