@@ -25,13 +25,16 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
-        uniform sampler2D uniform_texture;
+        uniform sampler2D texture0; //  遮罩
+        uniform sampler2D texture1; //  原图
 
         out vec4 color_;
 
         void main()
         {
-            color_ = texture(uniform_texture, v_out_.mUV);
+            vec4 c0 = texture(texture0, v_out_.mUV);
+            vec4 c1 = texture(texture1, v_out_.mUV);
+            color_ = c0.r * c1;
         }
     FShader End
 Pass End

@@ -171,10 +171,12 @@ bool CompCollapseTerrain::Update()
         mTrackPoints.at(2).x = mSize.x; mTrackPoints.at(2).y = mSize.y;
         mTrackPoints.at(3).x = 0;       mTrackPoints.at(3).y = mSize.y;
 
-        mMesh->Update({ mTrackPoints.at(0),
-                        mTrackPoints.at(0),
-                        mTrackPoints.at(0),
-                        mTrackPoints.at(0) }, {}, GL_DYNAMIC_DRAW, GL_STATIC_READ);
+        mMesh->Update({ 
+            { mTrackPoints.at(0), glm::vec2(0, 0) },
+            { mTrackPoints.at(1), glm::vec2(1, 0) },
+            { mTrackPoints.at(2), glm::vec2(1, 1) },
+            { mTrackPoints.at(3), glm::vec2(0, 1) },
+        }, {}, GL_DYNAMIC_DRAW, GL_STATIC_READ);
     }
     return mMapTarget && mJson.Check();
 }

@@ -250,6 +250,7 @@ void UIObjectGLCanvas::DrawTrackPoint()
     glPointSize((float)VAL_TrackPointSize);
     for (auto & object : state->mOperation.mSelectObjects)
     {
+        uint compNum = 0;
         for (auto i0 = 0; i0 != object->GetComponents().size(); ++i0)
         {
             if (object->GetComponents().at(i0)->HasState(Component::StateEnum::kActive))
@@ -269,7 +270,7 @@ void UIObjectGLCanvas::DrawTrackPoint()
                     }
                 }
                 
-                auto & mesh = GetMeshBuffer(i0);
+                auto & mesh = GetMeshBuffer(compNum++);
                 state->mGLProgramSolidFill->UsePass(0);
                 Post(state->mGLProgramSolidFill,
                      object->GetWorldMatrix());
