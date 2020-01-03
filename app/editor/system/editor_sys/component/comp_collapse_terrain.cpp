@@ -5,7 +5,6 @@
 
 CompCollapseTerrain::CompCollapseTerrain()
     : mSize(0.0f)
-    , mAnchor(0.0f)
 {
     mTrackPoints.resize(4);
 
@@ -26,33 +25,28 @@ CompCollapseTerrain::CompCollapseTerrain()
     AddState(StateEnum::kModifyTrackPoint, true);
 }
 
-void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
+void CompCollapseTerrain::OnStart(UIObjectGLCanvas * canvas)
 {
-    auto resetTerrain = Update();
+}
 
-    if (mMap.Check() && mJson.Check())
+void CompCollapseTerrain::OnLeave(UIObjectGLCanvas * canvas)
+{
+    if (Update())
     {
-        //  开始擦除地形
         if (!mEraseQueue.empty())
         {
             RenderPipline::TargetCommand command;
-            command.mType = RenderPipline::TargetCommand::kPush;
-
+            command.mType   = RenderPipline::TargetCommand::kPush;
             command.mRenderTextures[0] = mPairImages.at(1).second;
-
             command.mClipView.x = 0;
             command.mClipView.y = 0;
             command.mClipView.z = mSize.x;
             command.mClipView.w = mSize.y;
             command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
 
-            if (resetTerrain)
+            if (mReset)
             {
-                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
-                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
-            }
-            else
-            {
+                mReset = false;
                 command.mClearColor.r = 0;
                 command.mClearColor.g = 0;
                 command.mClearColor.b = 0;
@@ -60,25 +54,27 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
                 command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor0;
                 command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor1;
             }
+            else
+            {
+                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
+                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
+            }
             canvas->Post(command);
 
             //  擦除地形
-            for (auto i = 0; i != mEraseQueue.size(); ++i)
-            {
-                Erase(i, canvas, mEraseQueue.at(i));
-            }
+            HandleErase(canvas);
             mEraseQueue.clear();
 
             command.mType = RenderPipline::TargetCommand::kPop;
             canvas->Post(command);
         }
 
-        //RenderPipline::FowardCommand command;
-        //command.mMesh       = mMesh;
-        //command.mProgram    = mProgram;
-        //command.mPairImages = mPairImages;
-        //command.mTransform  = canvas->GetMatrixStack().GetM();
-        //canvas->Post(command);
+        RenderPipline::FowardCommand command;
+        command.mMesh       = mMesh;
+        command.mProgram    = mProgram;
+        command.mPairImages = mPairImages;
+        command.mTransform  = canvas->GetMatrixStack().GetM();
+        canvas->Post(command);
     }
 }
 
@@ -92,8 +88,6 @@ void CompCollapseTerrain::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
     tools::Serialize(os, mSize);
-    tools::Serialize(os, mAnchor);
-    mMap.EncodeBinary(os, project);
     mJson.EncodeBinary(os, project);
 }
 
@@ -101,8 +95,6 @@ void CompCollapseTerrain::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
     tools::Deserialize(is, mSize);
-    tools::Deserialize(is, mAnchor);
-    mMap.DecodeBinary(is, project);
     mJson.DecodeBinary(is, project);
 }
 
@@ -112,16 +104,20 @@ bool CompCollapseTerrain::OnModifyProperty(const std::any & oldValue, const std:
     return true;
 }
 
-void CompCollapseTerrain::Erase(const Polygon & points, uint blendSrc, uint blendDst, const glm::vec4 & color)
+void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points, uint blendSrc, uint blendDst, uint mask)
 {
     for (auto & convex : tools::StripConvexPoints(points))
     {
-        auto & param    = mEraseQueue.emplace_back();
-        param.mBlendSrc = blendSrc;
-        param.mBlendDst = blendDst;
-        for (auto & point : tools::StripTrianglePoints(convex))
+        auto points = tools::StripTrianglePoints(convex);
+        for (auto i = 0; i != points.size(); i += 3)
         {
-            param.mPoints.emplace_back(point, color);
+            auto & param = mEraseQueue.emplace_back();
+            param.mTriangle[0] = points.at(i    );
+            param.mTriangle[1] = points.at(i + 1);
+            param.mTriangle[2] = points.at(i + 2);
+            param.mBlendSrc = blendSrc;
+            param.mBlendDst = blendDst;
+            param.mMask = mask;
         }
     }
 }
@@ -129,80 +125,105 @@ void CompCollapseTerrain::Erase(const Polygon & points, uint blendSrc, uint blen
 std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Map",      &mMap,      std::vector<uint>{ Res::TypeEnum::kObj });
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Json",     &mJson,     std::vector<uint>{ Res::TypeEnum::kJson });
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &mSize);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
     return std::move(props);
 }
 
 void CompCollapseTerrain::Init()
 {
-    //  初始化MapImage
-    auto mapImage = mMap.Instance<GLObject>()->GetComponent<CompRenderTarget>()->GetImage();
-    mPairImages.at(0).first = "texture0";
-    mPairImages.at(0).second = mapImage;
-
-    //  初始化Polygon
-    mPolygons.clear();
-    for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
+    if (mMapTarget && mJson.Check())
     {
-        auto & points = mPolygons.emplace_back();
-        for (auto & point : area.mVal)
+        mReset       = true;
+        mEraseQueue.clear();
+
+        //  初始化MapImage
+        auto mapImage = mMapTarget->GetImage();
+        mPairImages.at(0).first  = "texture0";
+        mPairImages.at(0).second = mapImage;
+
+        for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
         {
-            points.emplace_back(
-                point.mVal->At("x")->ToNumber(),
-                point.mVal->At("y")->ToNumber());
+            std::vector<glm::vec2> points;
+            for (auto & point : area.mVal)
+            {
+                points.emplace_back(
+                    point.mVal->At("x")->ToNumber(),
+                    point.mVal->At("y")->ToNumber());
+            }
+            Erase(points, GL_ONE, GL_ZERO, 1);
         }
-        Erase(points, GL_ONE, GL_ZERO, glm::vec4(1, 0, 0, 1));
     }
-}
-
-void CompCollapseTerrain::Erase(uint i, UIObjectGLCanvas * canvas, const EraseParam & param)
-{
-    if (i >= mEraseMeshs.size())
-    {
-        auto mesh = std::create_ptr<RawMesh>();
-        mesh->Init({}, {}, RawMesh::Vertex::kV |
-                           RawMesh::Vertex::kC);
-        mEraseMeshs.emplace_back(mesh);
-    }
-
-    mEraseMeshs.at(i)->Update(param.mPoints, {},
-                              GL_DYNAMIC_DRAW, 
-                              GL_DYNAMIC_DRAW);
-
-    RenderPipline::FowardCommand command;
-    command.mBlendSrc       = param.mBlendSrc;
-    command.mBlendDst       = param.mBlendDst;
-    command.mMesh           = mEraseMeshs.at(i);
-    command.mProgram        = mEraseProgram;
-    command.mTransform      = canvas->GetMatrixStack().GetM();
-    command.mEnabledFlag    = RenderPipline::RenderCommand::kBlend;
-    canvas->Post(command);
 }
 
 bool CompCollapseTerrain::Update()
 {
-    auto ret = false;
+    auto target = GetOwner()->GetComponent<CompRenderTarget>();
+    if (target != mMapTarget) { mMapTarget = target; Init(); }
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
+        
+        if (mJson.Check() && mJson.Modify()) { Init(); }
 
-        mTrackPoints.at(0).x = -mSize.x *      mAnchor.x;
-        mTrackPoints.at(0).y = -mSize.y *      mAnchor.y;
-        mTrackPoints.at(1).x =  mSize.x * (1 - mAnchor.x);
-        mTrackPoints.at(1).y = -mSize.y *      mAnchor.y;
-        mTrackPoints.at(2).x =  mSize.x * (1 - mAnchor.x);
-        mTrackPoints.at(2).y =  mSize.y * (1 - mAnchor.y);
-        mTrackPoints.at(3).x = -mSize.x *      mAnchor.x;
-        mTrackPoints.at(3).y =  mSize.y * (1 - mAnchor.y);
+        mTrackPoints.at(0).x = 0;       mTrackPoints.at(0).y = 0;
+        mTrackPoints.at(1).x = mSize.x; mTrackPoints.at(1).y = 0;
+        mTrackPoints.at(2).x = mSize.x; mTrackPoints.at(2).y = mSize.y;
+        mTrackPoints.at(3).x = 0;       mTrackPoints.at(3).y = mSize.y;
 
-        ret =   mMap.Check()  && mJson.Check()
-            && (mMap.Modify() || mJson.Modify());
-        if (ret) { Init(); }
+        mMesh->Update({ mTrackPoints.at(0),
+                        mTrackPoints.at(0),
+                        mTrackPoints.at(0),
+                        mTrackPoints.at(0) }, {}, GL_DYNAMIC_DRAW, GL_STATIC_READ);
     }
-    return ret;
+    return mMapTarget && mJson.Check();
+}
+
+void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
+{
+    if (!mEraseQueue.empty())
+    {
+        uint commandCount = 1;
+        if (mEraseMeshs.empty())
+        {
+            mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
+                ->Init({}, {}, RawMesh::Vertex::kV 
+                             | RawMesh::Vertex::kC);
+        }
+        RenderPipline::FowardCommand command;
+        command.mMesh = mEraseMeshs.front();
+        command.mProgram = mEraseProgram;
+        command.mBlendSrc = mEraseQueue.front().mBlendSrc;
+        command.mBlendDst = mEraseQueue.front().mBlendDst;
+        command.mTransform = canvas->GetMatrixStack().GetM();
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+
+        std::vector<RawMesh::Vertex> points;
+        for (const auto & erase : mEraseQueue)
+        {
+            if (erase.mBlendSrc != command.mBlendSrc ||
+                erase.mBlendDst != command.mBlendDst ||
+                erase.mMask != points.back().c.r)
+            {
+                command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
+                                                  GL_STATIC_DRAW);
+                canvas->Post(command);
+
+                if (mEraseMeshs.size() <= commandCount)
+                {
+                    mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
+                        ->Init({}, {}, RawMesh::Vertex::kV 
+                                     | RawMesh::Vertex::kC);
+                }
+                points.clear();
+                command.mBlendSrc = erase.mBlendSrc;
+                command.mBlendDst = erase.mBlendDst;
+                command.mMesh = mEraseMeshs.at(commandCount);
+                ++commandCount;
+            }
+        }
+        canvas->Post(command);
+    }
 }
 
 void CompCollapseTerrain::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
@@ -240,7 +261,7 @@ void CompCollapseTerrain::OnModifyTrackPoint(const size_t index, const glm::vec2
     mSize.x = max.x - min.x;
     mSize.y = max.y - min.y;
 
-    auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
+    const auto & coord = GetOwner()->LocalToParent(min);
     GetOwner()->GetTransform()->Position(coord.x, coord.y);
 
     AddState(StateEnum::kUpdate, true);
