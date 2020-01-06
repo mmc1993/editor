@@ -123,15 +123,8 @@ void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
         map->GetAtlass().front().mTexture->GetImage());
 
     fowardCommand.mProgram = mProgramInit;
-    fowardCommand.mViewMat = glm::lookAt(
-        glm::vec3((float)map->GetMap().mPixelW * 0.5f,
-                  (float)map->GetMap().mPixelH * 0.5f,  0),
-        glm::vec3((float)map->GetMap().mPixelW * 0.5f,
-                  (float)map->GetMap().mPixelH * 0.5f, -1),
-        glm::vec3(0, 1, 0));
-    fowardCommand.mProjMat = glm::ortho(
-        (float)map->GetMap().mPixelW * -0.5f, (float)map->GetMap().mPixelW * 0.5f,
-        (float)map->GetMap().mPixelH * -0.5f, (float)map->GetMap().mPixelH * 0.5f);
+    fowardCommand.mViewMat = glm::lookAt(glm::vec3(0, 0, 0.0f), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1, 0.0f));
+    fowardCommand.mProjMat = glm::ortho(0.0f, (float)map->GetMap().mPixelW, 0.0f, (float)map->GetMap().mPixelH);
     fowardCommand.mBlendSrc = GL_SRC_ALPHA;
     fowardCommand.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
     fowardCommand.mEnabledFlag = RenderPipline::RenderCommand::kProjMat
@@ -157,7 +150,7 @@ void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
     }
 }
 
-bool CompCollapseTerrain::Update(UIObjectGLCanvas* canvas)
+bool CompCollapseTerrain::Update(UIObjectGLCanvas * canvas)
 {
     if (HasState(StateEnum::kUpdate))
     {
@@ -198,16 +191,15 @@ bool CompCollapseTerrain::Update(UIObjectGLCanvas* canvas)
 
 void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 {
-    //  MMC TODO
     ASSERT_LOG(!mEraseList.empty(), "");
     const auto & map = mMap.Instance<RawMap>();
-    RenderPipline::TargetCommand targetCommand;
+    RenderPipline::TargetCommand  targetCommand;
     targetCommand.mRenderTextures[0] = mTexture;
     targetCommand.mClipView.x = 0;
     targetCommand.mClipView.y = 0;
     targetCommand.mClipView.z = (float)map->GetMap().mPixelW;
     targetCommand.mClipView.w = (float)map->GetMap().mPixelH;
-    targetCommand.mType = RenderPipline::TargetCommand::kPush;
+    targetCommand.mType        = RenderPipline::TargetCommand::kPush;
     targetCommand.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
     canvas->Post(targetCommand);
 
@@ -216,9 +208,8 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     fowardCommand.mMesh->Init(mEraseList, {}, RawMesh::Vertex::kV | RawMesh::Vertex::kC);
 
     fowardCommand.mProgram = mProgramDraw;
-    fowardCommand.mViewMat = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
-    fowardCommand.mProjMat = glm::ortho(map->GetMap().mPixelW * -0.5f, map->GetMap().mPixelW * 0.5f,
-                                        map->GetMap().mPixelH * -0.5f, map->GetMap().mPixelH * 0.5f);
+    fowardCommand.mViewMat = glm::lookAt(glm::vec3(0, 0, 0.0f), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1, 0.0f));
+    fowardCommand.mProjMat = glm::ortho(0.0f, (float)map->GetMap().mPixelW, 0.0f, (float)map->GetMap().mPixelH);
 
     fowardCommand.mEnabledFlag = RenderPipline::RenderCommand::kViewMat
                                | RenderPipline::RenderCommand::kProjMat;

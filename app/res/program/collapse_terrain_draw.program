@@ -3,7 +3,7 @@ Pass Beg
         #version 330 core
 
         layout(location = 0) in vec2 a_v_;
-        layout(location = 1) in vec2 a_c_;
+        layout(location = 1) in vec4 a_c_;
 
         out V_OUT_ {
             float mAlpha;
