@@ -3,6 +3,8 @@
 #include "../../raw_sys/raw_sys.h"
 #include "../../raw_sys/comp_transform.h"
 
+#include "comp_collapse_terrain.h"
+
 CompPolygon::CompPolygon()
 {
     mSegments.emplace_back(-50, -50);
@@ -18,6 +20,17 @@ CompPolygon::CompPolygon()
 
 void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
+    auto owner = GetOwner();
+    auto parent = GetOwner()->GetParent();
+    auto terrain = parent->GetComponent<CompCollapseTerrain>();
+    ASSERT_LOG(terrain != nullptr, "");
+
+    std::vector<glm::vec2> points;
+    std::transform(mTrackPoints.begin(), mTrackPoints.end(), std::back_inserter(points), [&owner](const auto & point)
+        {
+            return owner->LocalToWorld(point);
+        });
+    terrain->Erase(points);
 }
 
 const std::string & CompPolygon::GetName()

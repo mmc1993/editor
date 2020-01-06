@@ -174,6 +174,8 @@ void UIObjectGLCanvas::CollCommands()
     auto & command = state->mTargetCommandArray.emplace_back();
     command.mRenderTextures[0] = state->mRenderTextures[0];
     command.mRenderTextures[1] = state->mRenderTextures[1];
+    command.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
+                         | RenderPipline::RenderCommand::kTargetColor1;
     Global::Ref().mEditorSys->GetProject()->GetObject()->Update(this, 0.0f);
 }
 
@@ -220,27 +222,27 @@ void UIObjectGLCanvas::CallCommands()
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
         tools::RenderTargetAttachment(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, command.mRenderTextures[1]->mID);
         glClearColor(command.mClearColor.x, command.mClearColor.y, command.mClearColor.z, command.mClearColor.w);
-        uint buffers[2];
+        uint buffers[2] = { GL_NONE, GL_NONE };
         if (command.mEnabledFlag & (RenderPipline::RenderCommand::kTargetColor0 | RenderPipline::RenderCommand::kTargetColor1))
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_COLOR_ATTACHMENT1;
-            glDrawBuffers(2, buffers);
-
         }
         else if (command.mEnabledFlag & RenderPipline::RenderCommand::kTargetColor0)
         {
             buffers[0] = GL_COLOR_ATTACHMENT0;
             buffers[1] = GL_NONE;
-            glDrawBuffers(2, buffers);
         }
         else if (command.mEnabledFlag & RenderPipline::RenderCommand::kTargetColor1)
         {
             buffers[0] = GL_NONE;
             buffers[1] = GL_COLOR_ATTACHMENT1;
-            glDrawBuffers(2, buffers);
         }
-        glClear(GL_COLOR_BUFFER_BIT);
+        if (buffers[0] != GL_NONE || buffers[1] != GL_NONE)
+        {
+            glDrawBuffers(2, buffers);
+            glClear(GL_COLOR_BUFFER_BIT);
+        }
         buffers[0] = GL_COLOR_ATTACHMENT0;
         buffers[1] = GL_NONE;
         glDrawBuffers(2, buffers);
