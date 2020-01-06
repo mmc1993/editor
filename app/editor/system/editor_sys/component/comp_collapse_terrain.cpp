@@ -11,67 +11,58 @@ CompCollapseTerrain::CompCollapseTerrain()
     mMesh->Init({},{}, RawMesh::Vertex::kV | 
                        RawMesh::Vertex::kUV);
 
-    mProgram = std::create_ptr<RawProgram>();
-    mProgram->Init(tools::GL_PROGRAM_COLLAPSE_TERRAIN);
+    mTexture = std::create_ptr<RawImage>();
+    mTexture->InitNull(GL_RGBA);
 
-    mEraseProgram = std::create_ptr<RawProgram>();
-    mEraseProgram->Init(tools::GL_PROGRAM_SOLID_FILL);
-
-    mPairImages.resize(2);
-    mPairImages.at(0).first = "texture0";
-    mPairImages.at(0).second = std::create_ptr<RawImage>();
-    mPairImages.at(0).second->InitNull(GL_RED);
+    mProgramInit = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_COLLAPSE_TERRAIN_INIT);
+    mProgramDraw = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_COLLAPSE_TERRAIN_DRAW);
+    mProgramQuad = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SPRITE);
 }
 
-void CompCollapseTerrain::OnStart(UIObjectGLCanvas * canvas)
+void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-}
-
-void CompCollapseTerrain::OnLeave(UIObjectGLCanvas * canvas)
-{
-    if (Update())
+    if (Update(canvas))
     {
-        if (!mEraseQueue.empty())
-        {
-            RenderPipline::TargetCommand command;
-            command.mType   = RenderPipline::TargetCommand::kPush;
-            command.mRenderTextures[0] = mPairImages.at(0).second;
-            command.mClipView.x = 0;
-            command.mClipView.y = 0;
-            command.mClipView.z = (float)mMap.Instance<RawTexture>()->GetW();
-            command.mClipView.w = (float)mMap.Instance<RawTexture>()->GetH();
-            command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
+        //if (!mEraseQueue.empty())
+        //{
+        //    RenderPipline::TargetCommand command;
+        //    command.mType   = RenderPipline::TargetCommand::kPush;
+        //    command.mRenderTextures[0] = mPairImages.at(0).second;
+        //    command.mClipView.x = 0;
+        //    command.mClipView.y = 0;
+        //    command.mClipView.z = (float)mMap.Instance<RawTexture>()->GetW();
+        //    command.mClipView.w = (float)mMap.Instance<RawTexture>()->GetH();
+        //    command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
 
-            if (mReset)
-            {
-                mReset = false;
-                command.mClearColor.r = 0;
-                command.mClearColor.g = 0;
-                command.mClearColor.b = 0;
-                command.mClearColor.a = 0;
-                command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor0;
-                command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor1;
-            }
-            else
-            {
-                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
-                command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
-            }
-            canvas->Post(command);
+        //    if (mReset)
+        //    {
+        //        mReset = false;
+        //        command.mClearColor.r = 0;
+        //        command.mClearColor.g = 0;
+        //        command.mClearColor.b = 0;
+        //        command.mClearColor.a = 0;
+        //        command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor0;
+        //        command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor1;
+        //    }
+        //    else
+        //    {
+        //        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
+        //        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
+        //    }
+        //    canvas->Post(command);
 
-            //  擦除地形
-            HandleErase(canvas);
-            mEraseQueue.clear();
+        //    //  擦除地形
+        //    HandleErase(canvas);
+        //    mEraseQueue.clear();
 
-            command.mType = RenderPipline::TargetCommand::kPop;
-            canvas->Post(command);
-        }
+        //    command.mType = RenderPipline::TargetCommand::kPop;
+        //    canvas->Post(command);
+        //}
 
         RenderPipline::FowardCommand command;
-        command.mMesh       = mMesh;
-        command.mProgram    = mProgram;
-        command.mPairImages = mPairImages;
+        command.mMesh = mMesh;command.mProgram = mProgramQuad;
         command.mTransform  = canvas->GetMatrixStack().GetM();
+        command.mPairImages.emplace_back("texture0",mTexture);
         canvas->Post(command);
     }
 }
@@ -125,51 +116,95 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points, uint blen
 std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Map",      &mMap,      std::vector<uint>{ Res::TypeEnum::kImg  });
+    props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Map",      &mMap,      std::vector<uint>{ Res::TypeEnum::kMap  });
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Json",     &mJson,     std::vector<uint>{ Res::TypeEnum::kJson });
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
     return std::move(props);
 }
 
-void CompCollapseTerrain::Init()
+void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
 {
-    mReset       = true;
     mEraseQueue.clear();
 
-    //  初始化MapImage
-    auto mapImage = mMap.Instance<RawTexture>();
-    mPairImages.at(1).first  = "texture1";
-    mPairImages.at(1).second = mapImage->GetImage();
+    //  初始化地图.开始
+    const auto & map = mMap.Instance<RawMap>();
+    ASSERT_LOG(map->GetAtlass().size() == 1,"");
 
+    RenderPipline::TargetCommand targetCommand;
+    targetCommand.mRenderTextures[0] = mTexture;
+    targetCommand.mClearColor = glm::vec4(0.0f);
+    targetCommand.mClipView.x = 0;
+    targetCommand.mClipView.y = 0;
+    targetCommand.mClipView.z = (float)map->GetMap().mPixelW;
+    targetCommand.mClipView.w = (float)map->GetMap().mPixelH;
+    targetCommand.mType = RenderPipline::TargetCommand::kPush;
+    targetCommand.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
+                               | RenderPipline::RenderCommand::kTargetColor1
+                               | RenderPipline::RenderCommand::kClipView;
+    canvas->Post(targetCommand);
+
+    //  填充地图
+    RenderPipline::FowardCommand fowardCommand;
+    fowardCommand.mMesh = std::create_ptr<RawMesh>();
+    fowardCommand.mMesh->Init(map->GetPoints(), { },
+        RawMesh::Vertex::kV | RawMesh::Vertex::kUV);
+
+    fowardCommand.mPairImages.emplace_back( "texture0",
+        map->GetAtlass().front().mTexture->GetImage());
+
+    fowardCommand.mProgram = mProgramInit;
+    fowardCommand.mViewMat = glm::lookAt(
+        glm::vec3(
+            (float)map->GetMap().mPixelW * 0.5f,
+            (float)map->GetMap().mPixelH * 0.5f,  0),
+        glm::vec3(
+            (float)map->GetMap().mPixelW * 0.5f,
+            (float)map->GetMap().mPixelH * 0.5f, -1),
+        glm::vec3(0, 1, 0));
+    fowardCommand.mProjMat = glm::ortho(
+        (float)map->GetMap().mPixelW * -0.5f, (float)map->GetMap().mPixelW * 0.5f,
+        (float)map->GetMap().mPixelH * -0.5f, (float)map->GetMap().mPixelH * 0.5f);
+    fowardCommand.mBlendSrc = GL_SRC_ALPHA;
+    fowardCommand.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+    fowardCommand.mEnabledFlag = RenderPipline::RenderCommand::kProjMat
+                               | RenderPipline::RenderCommand::kViewMat
+                               | RenderPipline::RenderCommand::kBlend;
+    canvas->Post(fowardCommand);
+
+    //  初始化地图.结束
+    targetCommand.mType = RenderPipline::TargetCommand::kPop;
+    canvas->Post(targetCommand);
+
+    //  初始化碰撞边框
     for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
     {
-        std::vector<glm::vec2> points;
+        auto & points = mPolygons.emplace_back();
         for (auto & point : area.mVal)
         {
             points.emplace_back(
                 point.mVal->At("x")->ToNumber(),
                 point.mVal->At("y")->ToNumber());
         }
-        Erase(points, GL_ONE, GL_ZERO, 1);
+        mPolygons.emplace_back(points);
     }
 }
 
-bool CompCollapseTerrain::Update()
+bool CompCollapseTerrain::Update(UIObjectGLCanvas* canvas)
 {
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
         
-        if ( mMap.Check()  && mJson.Check() && 
+        if ( mMap.Check()  && mJson.Check() &&
             (mMap.Modify() || mJson.Modify()))
         {
-            Init();
+            Init(canvas);
         }
 
         if (mMap.Check())
         {
-            auto w = (iint)mMap.Instance<RawTexture>()->GetW();
-            auto h = (iint)mMap.Instance<RawTexture>()->GetH();
+            auto w = (iint)mMap.Instance<RawMap>()->GetMap().mPixelW;
+            auto h = (iint)mMap.Instance<RawMap>()->GetMap().mPixelH;
             mTrackPoints.at(0).x = -w *      mAnchor.x;
             mTrackPoints.at(0).y = -h *      mAnchor.y;
             mTrackPoints.at(1).x =  w * (1 - mAnchor.x);
@@ -180,7 +215,7 @@ bool CompCollapseTerrain::Update()
             mTrackPoints.at(3).y =  h * (1 - mAnchor.y);
         }
 
-        mMesh->Update({ 
+        mMesh->Update({
             { mTrackPoints.at(0), glm::vec2(0, 0) },
             { mTrackPoints.at(1), glm::vec2(1, 0) },
             { mTrackPoints.at(2), glm::vec2(1, 1) },
@@ -195,51 +230,51 @@ bool CompCollapseTerrain::Update()
 
 void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
 {
-    if (!mEraseQueue.empty())
-    {
-        uint commandCount = 1;
-        if (mEraseMeshs.empty())
-        {
-            mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
-                ->Init({}, {}, RawMesh::Vertex::kV 
-                             | RawMesh::Vertex::kC);
-        }
-        RenderPipline::FowardCommand command;
-        command.mMesh = mEraseMeshs.front();
-        command.mProgram = mEraseProgram;
-        command.mBlendSrc = mEraseQueue.front().mBlendSrc;
-        command.mBlendDst = mEraseQueue.front().mBlendDst;
-        command.mTransform = canvas->GetMatrixStack().GetM();
-        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+    //if (!mEraseQueue.empty())
+    //{
+    //    uint commandCount = 1;
+    //    if (mEraseMeshs.empty())
+    //    {
+    //        mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
+    //            ->Init({}, {}, RawMesh::Vertex::kV 
+    //                         | RawMesh::Vertex::kC);
+    //    }
+    //    RenderPipline::FowardCommand command;
+    //    command.mMesh = mEraseMeshs.front();
+    //    command.mProgram = mEraseProgram;
+    //    command.mBlendSrc = mEraseQueue.front().mBlendSrc;
+    //    command.mBlendDst = mEraseQueue.front().mBlendDst;
+    //    command.mTransform = canvas->GetMatrixStack().GetM();
+    //    command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
 
-        std::vector<RawMesh::Vertex> points;
-        for (const auto & erase : mEraseQueue)
-        {
-            if (erase.mBlendSrc != command.mBlendSrc ||
-                erase.mBlendDst != command.mBlendDst ||
-                !points.empty() && points.back().c.r != erase.mMask)
-            {
-                command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
-                                                  GL_STATIC_DRAW);
-                canvas->Post(command);
+    //    std::vector<RawMesh::Vertex> points;
+    //    for (const auto & erase : mEraseQueue)
+    //    {
+    //        if (erase.mBlendSrc != command.mBlendSrc ||
+    //            erase.mBlendDst != command.mBlendDst ||
+    //            !points.empty() && points.back().c.r != erase.mMask)
+    //        {
+    //            command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
+    //                                              GL_STATIC_DRAW);
+    //            canvas->Post(command);
 
-                if (mEraseMeshs.size() <= commandCount)
-                {
-                    mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
-                        ->Init({}, {}, RawMesh::Vertex::kV 
-                                     | RawMesh::Vertex::kC);
-                }
-                points.clear();
-                command.mBlendSrc = erase.mBlendSrc;
-                command.mBlendDst = erase.mBlendDst;
-                command.mMesh = mEraseMeshs.at(commandCount++);
-            }
-            points.emplace_back(erase.mTriangle[0], glm::vec4(erase.mMask, 0, 0, 0));
-            points.emplace_back(erase.mTriangle[1], glm::vec4(erase.mMask, 0, 0, 0));
-            points.emplace_back(erase.mTriangle[2], glm::vec4(erase.mMask, 0, 0, 0));
-        }
-        command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
-                                          GL_STATIC_DRAW);
-        canvas->Post(command);
-    }
+    //            if (mEraseMeshs.size() <= commandCount)
+    //            {
+    //                mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
+    //                    ->Init({}, {}, RawMesh::Vertex::kV 
+    //                                 | RawMesh::Vertex::kC);
+    //            }
+    //            points.clear();
+    //            command.mBlendSrc = erase.mBlendSrc;
+    //            command.mBlendDst = erase.mBlendDst;
+    //            command.mMesh = mEraseMeshs.at(commandCount++);
+    //        }
+    //        points.emplace_back(erase.mTriangle[0], glm::vec4(erase.mMask, 0, 0, 0));
+    //        points.emplace_back(erase.mTriangle[1], glm::vec4(erase.mMask, 0, 0, 0));
+    //        points.emplace_back(erase.mTriangle[2], glm::vec4(erase.mMask, 0, 0, 0));
+    //    }
+    //    command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
+    //                                      GL_STATIC_DRAW);
+    //    canvas->Post(command);
+    //}
 }

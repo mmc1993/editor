@@ -73,7 +73,8 @@ namespace tools {
     }
 
     //  Ô¤ÖÃ×ÅÉ«Æ÷
-    const char * const GL_PROGRAM_COLLAPSE_TERRAIN  = "res/program/collapse_terrain.program";
+    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_INIT = "res/program/collapse_terrain_init.program";
+    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_DRAW = "res/program/collapse_terrain_draw.program";
     const char * const GL_PROGRAM_FIELD_OF_VIEW     = "res/program/field_of_view.program";
     const char * const GL_PROGRAM_SOLID_FILL        = "res/program/solid_fill.program";
     const char * const GL_PROGRAM_LIGHTNING         = "res/program/lightning.program";

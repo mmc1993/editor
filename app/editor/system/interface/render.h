@@ -21,6 +21,8 @@ namespace RenderPipline {
             //  启用功能
             kClipView    = 0x4,         //  开启裁剪
             kBlend       = 0x8,         //  开启混合
+            kViewMat     = 0x10,        //  使用VMat
+            kProjMat     = 0x20,        //  使用pMat
         };
         uint mEnabledFlag;
 
@@ -42,12 +44,16 @@ namespace RenderPipline {
         glm::vec4               mClipview;
         uint                    mBlendSrc;
         uint                    mBlendDst;
+        glm::mat4               mViewMat;
+        glm::mat4               mProjMat;
         FowardCommand()
             : RenderCommand(0)
             , mTransform(0)
             , mClipview(0)
             , mBlendSrc(0)
             , mBlendDst(0)
+            , mViewMat(0)
+            , mProjMat(0)
         { }
     };
 
@@ -66,12 +72,16 @@ namespace RenderPipline {
         glm::vec4               mClipview;
         uint                    mBlendSrc;
         uint                    mBlendDst;
+        glm::mat4               mViewMat;
+        glm::mat4               mProjMat;
         PostCommand()
             : RenderCommand(0)
             , mTransform(0)
             , mClipview(0)
             , mBlendSrc(0)
             , mBlendDst(0)
+            , mViewMat(0)
+            , mProjMat(0)
             , mType(kSample)
         { }
     };
@@ -104,7 +114,7 @@ namespace RenderPipline {
 
     struct MatrixStack {
     public:
-        enum class TypeEnum {
+        enum TypeEnum {
             kModel,
             kView,
             kProj,
@@ -118,7 +128,12 @@ namespace RenderPipline {
 
         void Push(TypeEnum mode)
         {
-            GetStack(mode).push(GetStack(mode).top());
+            Push(mode, GetStack(mode).top());
+        }
+
+        void Push(TypeEnum mode, const glm::mat4 & mat)
+        {
+            GetStack(mode).push(mat);
         }
 
         void Identity(TypeEnum mode)

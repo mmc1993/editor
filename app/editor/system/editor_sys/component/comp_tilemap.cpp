@@ -105,16 +105,15 @@ void CompTilemap::Update()
         {
             auto map = mMap.Instance<RawMap>();
             mMesh->Update(map->GetPoints(),{});
+            mSize.x = (float)map->GetMap().mPixelW;
+            mSize.y = (float)map->GetMap().mPixelH;
             mMapWH.x = (float)map->GetMap().mPixelW;
             mMapWH.y = (float)map->GetMap().mPixelH;
             for (auto i = 0; i != map->GetAtlass().size(); ++i)
             {
                 const auto & atlas = map->GetAtlass().at(i);
-                mPairImages.emplace_back(
-                    SFormat("texture{0}", i),
-                    atlas.mTexture->GetImage());
-                mSize.x = (float)map->GetMap().mPixelW;
-                mSize.y = (float)map->GetMap().mPixelH;
+                mPairImages.emplace_back(SFormat("texture{0}", i),
+                                         atlas.mTexture->GetImage());
             }
             mTrackPoints.at(0).x = 0;       mTrackPoints.at(0).y = 0;
             mTrackPoints.at(1).x = mSize.x; mTrackPoints.at(1).y = 0;

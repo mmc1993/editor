@@ -4,6 +4,8 @@
 
 class CompCollapseTerrain : public Component {
 public:
+    using Polygon = std::vector<glm::vec2>;
+
     struct EraseParam {
         glm::vec2 mTriangle[3];
         uint mBlendSrc;
@@ -11,10 +13,11 @@ public:
         uint mMask;
     };
 
+    using PairImage = std::pair<std::string, SharePtr<RawImage>>;
+
 public:
     CompCollapseTerrain();
-    virtual void OnStart(UIObjectGLCanvas * canvas);
-    virtual void OnLeave(UIObjectGLCanvas * canvas);
+    virtual void OnUpdate(UIObjectGLCanvas* canvas, float dt) override;
 
     virtual const std::string & GetName() override;
     virtual void EncodeBinary(std::ostream & os, Project * project) override;
@@ -34,21 +37,21 @@ protected:
     virtual std::vector<Property> CollectProperty() override;
 
 private:
-    void Init();
-    bool Update();
+    void Init(UIObjectGLCanvas * canvas);
+    bool Update(UIObjectGLCanvas* canvas);
     void HandleErase(UIObjectGLCanvas * canvas);
 
 private:
     Res::Ref    mMap;
     Res::Ref    mJson;
     glm::vec2   mAnchor;
-    bool        mReset;
-
-    SharePtr<RawProgram>            mEraseProgram;
-    std::deque<EraseParam>          mEraseQueue;
-    std::vector<SharePtr<RawMesh>>  mEraseMeshs;
 
     SharePtr<RawMesh>               mMesh;
-    SharePtr<RawProgram>            mProgram;
-    std::vector<std::pair<std::string, SharePtr<RawImage>>> mPairImages;
+    SharePtr<RawImage>              mTexture;
+    std::vector<Polygon>            mPolygons;
+
+    SharePtr<RawProgram>            mProgramInit;
+    SharePtr<RawProgram>            mProgramDraw;
+    SharePtr<RawProgram>            mProgramQuad;
+    std::deque<EraseParam>          mEraseQueue;
 };

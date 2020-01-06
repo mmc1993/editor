@@ -31,6 +31,7 @@ void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command
         for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
         {
             cmd.mProgram->UsePass(i);
+            //  裁剪
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
                 glEnable(GL_SCISSOR_TEST);
@@ -46,19 +47,28 @@ void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command
                     (iint)max.x - (iint)min.x,
                     (iint)max.y - (iint)min.y);
             }
+            //  混合
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
             {
                 glEnable(GL_BLEND);
                 glBlendFunc(cmd.mBlendSrc, cmd.mBlendDst);
             }
-
+            //  重置vmat
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kViewMat)
+            {
+                GetMatrixStack().Push(RenderPipline::MatrixStack::kView, cmd.mViewMat);
+            }
+            //  重置pmat
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kProjMat)
+            {
+                GetMatrixStack().Push(RenderPipline::MatrixStack::kProj, cmd.mProjMat);
+            }
             tools::RenderTargetAttachment(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, 
                                           GL_TEXTURE_2D, command.mRenderTextures[0]->mID);
             cmd.mProgram->BindUniformTex2D("uniform_screen", command.mRenderTextures[1]->mID, 0);
             cmd.Call(1);
-            Post(
-                cmd.mProgram,
-                cmd.mTransform);
+            Post(cmd.mProgram,
+                 cmd.mTransform);
             cmd.mMesh->Draw(GL_TRIANGLES);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             //cmd.mMesh->Draw(GL_TRIANGLES);
@@ -76,6 +86,14 @@ void UIObjectGLCanvas::HandlePostCommands(RenderPipline::TargetCommand & command
             {
                 glDisable(GL_BLEND);
             }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kViewMat)
+            {
+                GetMatrixStack().Pop(RenderPipline::MatrixStack::kView);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kProjMat)
+            {
+                GetMatrixStack().Pop(RenderPipline::MatrixStack::kProj);
+            }
         }
     }
 }
@@ -87,12 +105,7 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
     {
         for (auto i = 0; i != cmd.mProgram->GetPassCount(); ++i)
         {
-            uint texNum = 0;
-            cmd.mProgram->UsePass(i);
-            for (auto & pair : cmd.mPairImages)
-            {
-                cmd.mProgram->BindUniformTex2D(pair.first.c_str(), pair.second->mID, texNum++);
-            }
+            //  开启裁剪
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
                 glEnable(GL_SCISSOR_TEST);
@@ -103,20 +116,37 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
                 max.y = state->Move.w - max.y;
                 if (min.x > max.x) { std::swap(min.x, max.x); }
                 if (min.y > max.y) { std::swap(min.y, max.y); }
-                glScissor(
-                    (iint)min.x, (iint)min.y,
-                    (iint)max.x - (iint)min.x,
-                    (iint)max.y - (iint)min.y);
+                glScissor((iint)min.x, (iint)min.y,
+                          (iint)max.x - (iint)min.x,
+                          (iint)max.y - (iint)min.y);
             }
+            //  开启混合
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
             {
                 glEnable(GL_BLEND);
                 glBlendFunc(cmd.mBlendSrc, cmd.mBlendDst);
             }
+            //  重置vmat
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kViewMat)
+            {
+                GetMatrixStack().Push(RenderPipline::MatrixStack::kView, cmd.mViewMat);
+            }
+            //  重置pmat
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kProjMat)
+            {
+                GetMatrixStack().Push(RenderPipline::MatrixStack::kProj, cmd.mProjMat);
+            }
+            uint texNum = 0;
+            cmd.mProgram->UsePass(i);
+            for (auto & pair : cmd.mPairImages)
+            {
+                cmd.mProgram->BindUniformTex2D(pair.first.c_str(),
+                                               pair.second->mID, 
+                                               texNum++);
+            }
             cmd.Call(texNum);
-            Post(
-                cmd.mProgram,
-                cmd.mTransform);
+            Post(cmd.mProgram,
+                 cmd.mTransform);
             cmd.mMesh->Draw(GL_TRIANGLES);
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
@@ -125,6 +155,14 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kBlend)
             {
                 glDisable(GL_BLEND);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kViewMat)
+            {
+                GetMatrixStack().Pop(RenderPipline::MatrixStack::kView);
+            }
+            if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kProjMat)
+            {
+                GetMatrixStack().Pop(RenderPipline::MatrixStack::kProj);
             }
         }
     }
@@ -644,7 +682,7 @@ glm::mat4 UIObjectGLCanvas::GetMatView()
 {
     auto state = GetState<UIStateGLCanvas>();
     auto view = glm::lookAt(state->mOperation.mViewCoord,
-                            state->mOperation.mViewCoord - glm::vec3(0, 0, 1),glm::vec3(0, 1, 0));
+                            state->mOperation.mViewCoord - glm::vec3(0, 0, 1), glm::vec3(0, 1, 0));
     return glm::scale(view, glm::vec3(state->mOperation.mViewScale, state->mOperation.mViewScale, 1));
 }
 
