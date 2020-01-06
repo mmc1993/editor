@@ -23,41 +23,11 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     if (Update(canvas))
     {
-        //if (!mEraseQueue.empty())
-        //{
-        //    RenderPipline::TargetCommand command;
-        //    command.mType   = RenderPipline::TargetCommand::kPush;
-        //    command.mRenderTextures[0] = mPairImages.at(0).second;
-        //    command.mClipView.x = 0;
-        //    command.mClipView.y = 0;
-        //    command.mClipView.z = (float)mMap.Instance<RawTexture>()->GetW();
-        //    command.mClipView.w = (float)mMap.Instance<RawTexture>()->GetH();
-        //    command.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
-
-        //    if (mReset)
-        //    {
-        //        mReset = false;
-        //        command.mClearColor.r = 0;
-        //        command.mClearColor.g = 0;
-        //        command.mClearColor.b = 0;
-        //        command.mClearColor.a = 0;
-        //        command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor0;
-        //        command.mEnabledFlag |= RenderPipline::RenderCommand::kTargetColor1;
-        //    }
-        //    else
-        //    {
-        //        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor0;
-        //        command.mEnabledFlag &= ~RenderPipline::RenderCommand::kTargetColor1;
-        //    }
-        //    canvas->Post(command);
-
-        //    //  擦除地形
-        //    HandleErase(canvas);
-        //    mEraseQueue.clear();
-
-        //    command.mType = RenderPipline::TargetCommand::kPop;
-        //    canvas->Post(command);
-        //}
+        if (!mEraseList.empty())
+        {
+            ClearErase(canvas);
+            mEraseList.clear();
+        }
 
         RenderPipline::FowardCommand command;
         command.mMesh = mMesh;command.mProgram = mProgramQuad;
@@ -95,20 +65,20 @@ bool CompCollapseTerrain::OnModifyProperty(const std::any & oldValue, const std:
     return true;
 }
 
-void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points, uint blendSrc, uint blendDst, uint mask)
+void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
 {
+    ASSERT_LOG(mMap.Check(), "");
+    // points 世界坐标集
+    const auto & map = mMap.Instance<RawMap>()->GetMap();
+    glm::vec2 offset(
+        map.mPixelW * mAnchor.x,
+        map.mPixelH * mAnchor.y);
+    glm::vec4 color(0, 0, 0, 0);
     for (auto & convex : tools::StripConvexPoints(points))
     {
-        auto points = tools::StripTrianglePoints(convex);
-        for (auto i = 0; i != points.size(); i += 3)
+        for (auto & point : tools::StripTrianglePoints(convex))
         {
-            auto & param = mEraseQueue.emplace_back();
-            param.mTriangle[0] = points.at(i    );
-            param.mTriangle[1] = points.at(i + 1);
-            param.mTriangle[2] = points.at(i + 2);
-            param.mBlendSrc = blendSrc;
-            param.mBlendDst = blendDst;
-            param.mMask = mask;
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(point) + offset, color);
         }
     }
 }
@@ -124,7 +94,7 @@ std::vector<Component::Property> CompCollapseTerrain::CollectProperty()
 
 void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
 {
-    mEraseQueue.clear();
+    mEraseList.clear();
 
     //  初始化地图.开始
     const auto & map = mMap.Instance<RawMap>();
@@ -154,12 +124,10 @@ void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
 
     fowardCommand.mProgram = mProgramInit;
     fowardCommand.mViewMat = glm::lookAt(
-        glm::vec3(
-            (float)map->GetMap().mPixelW * 0.5f,
-            (float)map->GetMap().mPixelH * 0.5f,  0),
-        glm::vec3(
-            (float)map->GetMap().mPixelW * 0.5f,
-            (float)map->GetMap().mPixelH * 0.5f, -1),
+        glm::vec3((float)map->GetMap().mPixelW * 0.5f,
+                  (float)map->GetMap().mPixelH * 0.5f,  0),
+        glm::vec3((float)map->GetMap().mPixelW * 0.5f,
+                  (float)map->GetMap().mPixelH * 0.5f, -1),
         glm::vec3(0, 1, 0));
     fowardCommand.mProjMat = glm::ortho(
         (float)map->GetMap().mPixelW * -0.5f, (float)map->GetMap().mPixelW * 0.5f,
@@ -228,53 +196,34 @@ bool CompCollapseTerrain::Update(UIObjectGLCanvas* canvas)
     return mMap.Check() && mJson.Check();
 }
 
-void CompCollapseTerrain::HandleErase(UIObjectGLCanvas * canvas)
+void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 {
-    //if (!mEraseQueue.empty())
-    //{
-    //    uint commandCount = 1;
-    //    if (mEraseMeshs.empty())
-    //    {
-    //        mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
-    //            ->Init({}, {}, RawMesh::Vertex::kV 
-    //                         | RawMesh::Vertex::kC);
-    //    }
-    //    RenderPipline::FowardCommand command;
-    //    command.mMesh = mEraseMeshs.front();
-    //    command.mProgram = mEraseProgram;
-    //    command.mBlendSrc = mEraseQueue.front().mBlendSrc;
-    //    command.mBlendDst = mEraseQueue.front().mBlendDst;
-    //    command.mTransform = canvas->GetMatrixStack().GetM();
-    //    command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+    //  MMC TODO
+    ASSERT_LOG(!mEraseList.empty(), "");
+    const auto & map = mMap.Instance<RawMap>();
+    RenderPipline::TargetCommand targetCommand;
+    targetCommand.mRenderTextures[0] = mTexture;
+    targetCommand.mClipView.x = 0;
+    targetCommand.mClipView.y = 0;
+    targetCommand.mClipView.z = (float)map->GetMap().mPixelW;
+    targetCommand.mClipView.w = (float)map->GetMap().mPixelH;
+    targetCommand.mType = RenderPipline::TargetCommand::kPush;
+    targetCommand.mEnabledFlag = RenderPipline::RenderCommand::kClipView;
+    canvas->Post(targetCommand);
 
-    //    std::vector<RawMesh::Vertex> points;
-    //    for (const auto & erase : mEraseQueue)
-    //    {
-    //        if (erase.mBlendSrc != command.mBlendSrc ||
-    //            erase.mBlendDst != command.mBlendDst ||
-    //            !points.empty() && points.back().c.r != erase.mMask)
-    //        {
-    //            command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
-    //                                              GL_STATIC_DRAW);
-    //            canvas->Post(command);
+    RenderPipline::FowardCommand fowardCommand;
+    fowardCommand.mMesh = std::create_ptr<RawMesh>();
+    fowardCommand.mMesh->Init(mEraseList, {}, RawMesh::Vertex::kV | RawMesh::Vertex::kC);
 
-    //            if (mEraseMeshs.size() <= commandCount)
-    //            {
-    //                mEraseMeshs.emplace_back(std::create_ptr<RawMesh>())
-    //                    ->Init({}, {}, RawMesh::Vertex::kV 
-    //                                 | RawMesh::Vertex::kC);
-    //            }
-    //            points.clear();
-    //            command.mBlendSrc = erase.mBlendSrc;
-    //            command.mBlendDst = erase.mBlendDst;
-    //            command.mMesh = mEraseMeshs.at(commandCount++);
-    //        }
-    //        points.emplace_back(erase.mTriangle[0], glm::vec4(erase.mMask, 0, 0, 0));
-    //        points.emplace_back(erase.mTriangle[1], glm::vec4(erase.mMask, 0, 0, 0));
-    //        points.emplace_back(erase.mTriangle[2], glm::vec4(erase.mMask, 0, 0, 0));
-    //    }
-    //    command.mMesh->Update(points, {}, GL_DYNAMIC_DRAW,
-    //                                      GL_STATIC_DRAW);
-    //    canvas->Post(command);
-    //}
+    fowardCommand.mProgram = mProgramDraw;
+    fowardCommand.mViewMat = glm::lookAt(glm::vec3(0, 0, 0), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0));
+    fowardCommand.mProjMat = glm::ortho(map->GetMap().mPixelW * -0.5f, map->GetMap().mPixelW * 0.5f,
+                                        map->GetMap().mPixelH * -0.5f, map->GetMap().mPixelH * 0.5f);
+
+    fowardCommand.mEnabledFlag = RenderPipline::RenderCommand::kViewMat
+                               | RenderPipline::RenderCommand::kProjMat;
+    canvas->Post(fowardCommand);
+
+    targetCommand.mType = RenderPipline::TargetCommand::kPop;
+    canvas->Post(targetCommand);
 }

@@ -3,18 +3,18 @@ Pass Beg
         #version 330 core
 
         layout(location = 0) in vec2 a_v_;
-        layout(location = 1) in vec2 a_uv_;
+        layout(location = 1) in vec2 a_c_;
 
         out V_OUT_ {
-            vec2 mUV;
+            float mAlpha;
         } v_out_;
 
-        uniform mat4 uniform_matrix_mvp;
+        uniform mat4 uniform_matrix_vp;
 
         void main()
         {
-            v_out_.mUV   = a_uv_;
-            gl_Position  = uniform_matrix_mvp * vec4(a_v_, 0, 1);
+            v_out_.mAlpha = a_c_.a;
+            gl_Position   = uniform_matrix_vp * vec4(a_v_, 0, 1);
         }
     VShader End
 
@@ -22,20 +22,14 @@ Pass Beg
         #version 330 core
 
         in V_OUT_ {
-            vec2 mUV;
+            float mAlpha;
         } v_out_;
-
-        uniform sampler2D texture0; //  遮罩
-        uniform sampler2D texture1; //  原图
 
         out vec4 color_;
 
         void main()
         {
-            vec4 c0 = texture(texture0, v_out_.mUV);
-            vec4 c1 = texture(texture1, v_out_.mUV);
-            color_ = c0.r * c1;
-            // color_ = c1;
+            color_ = vec4(0, 0, 0, v_out_.mAlpha);
         }
     FShader End
 Pass End

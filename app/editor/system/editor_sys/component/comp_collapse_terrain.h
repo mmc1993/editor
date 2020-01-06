@@ -8,9 +8,6 @@ public:
 
     struct EraseParam {
         glm::vec2 mTriangle[3];
-        uint mBlendSrc;
-        uint mBlendDst;
-        uint mMask;
     };
 
     using PairImage = std::pair<std::string, SharePtr<RawImage>>;
@@ -27,11 +24,7 @@ public:
         const std::any & newValue, 
         const std::string & title) override;
 
-    void Erase(
-        const std::vector<glm::vec2> & points,
-        uint blendSrc = GL_ONE,
-        uint blendDst = GL_ZERO,
-        uint mask = 0);         //  1 ÏÔÊ¾, 0 ²Á³ý
+    void Erase(const std::vector<glm::vec2> & points);
 
 protected:
     virtual std::vector<Property> CollectProperty() override;
@@ -39,7 +32,7 @@ protected:
 private:
     void Init(UIObjectGLCanvas * canvas);
     bool Update(UIObjectGLCanvas* canvas);
-    void HandleErase(UIObjectGLCanvas * canvas);
+    void ClearErase(UIObjectGLCanvas * canvas);
 
 private:
     Res::Ref    mMap;
@@ -53,5 +46,5 @@ private:
     SharePtr<RawProgram>            mProgramInit;
     SharePtr<RawProgram>            mProgramDraw;
     SharePtr<RawProgram>            mProgramQuad;
-    std::deque<EraseParam>          mEraseQueue;
+    std::vector<RawMesh::Vertex>    mEraseList;
 };
