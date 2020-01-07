@@ -33,6 +33,7 @@ private:
     void Init(UIObjectGLCanvas * canvas);
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
+    void ClearErase(const std::vector<glm::vec2> & points);
 
     //  ÍêÉÆºóÉ¾³ý
     //  Debug

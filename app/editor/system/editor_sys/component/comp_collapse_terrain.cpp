@@ -75,21 +75,26 @@ bool CompCollapseTerrain::OnModifyProperty(const std::any & oldValue, const std:
 void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
 {
     ASSERT_LOG(mMap.Check(), "");
-    const glm::vec4 zeroColor(0, 0, 0, 0.0f);
-    const glm::vec4 edgeColor(0, 0, 0, 0.2f);
-    const glm::vec4 normColor(0, 0, 0, 1.0f);
+    static const glm::vec4 zeroColor(0, 0, 0, 0.0f);
+    static const glm::vec4 edgeColor(0, 0, 0, 0.2f);
+    static const glm::vec4 normColor(0, 0, 0, 1.0f);
 
     // points 世界坐标集
     const auto & map = mMap.Instance<RawMap>()->GetMap();
-    glm::vec2 offset(map.mPixelW * mAnchor.x,
-                     map.mPixelH * mAnchor.y);
+    glm::vec2 offset(
+        map.mPixelW * mAnchor.x,
+        map.mPixelH * mAnchor.y);
+    std::vector<glm::vec2> clipPoints;
     for (auto & convex : tools::StripConvexPoints(points))
     {
         for (auto & point : tools::StripTrianglePoints(convex))
         {
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(point) + offset, zeroColor);
+            auto p = GetOwner()->WorldToLocal(point) + offset;
+            mEraseList.emplace_back(p, zeroColor);
+            clipPoints.emplace_back(p);
         }
     }
+    ClearErase(clipPoints);
 
     //  边缘处理
     auto order = tools::CalePointsOrder(points);
@@ -121,7 +126,6 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
 
-        auto ord = glm::cross(ab, bc);
         if (glm::cross(ab, bc) * order >= 0)
         {
             mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
@@ -269,6 +273,12 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 
     targetCommand.mType = RenderPipline::TargetCommand::kPop;
     canvas->Post(targetCommand);
+}
+
+void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
+{
+    //  擦除多边形
+
 }
 
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)
