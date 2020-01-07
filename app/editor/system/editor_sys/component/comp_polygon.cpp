@@ -20,17 +20,21 @@ CompPolygon::CompPolygon()
 
 void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    auto owner = GetOwner();
-    auto parent = GetOwner()->GetParent();
-    auto terrain = parent->GetComponent<CompCollapseTerrain>();
-    ASSERT_LOG(terrain != nullptr, "");
+    if (mLastCoord != GetOwner()->GetTransform()->GetPosition())
+    {
+        mLastCoord = GetOwner()->GetTransform()->GetPosition();
+        auto owner = GetOwner();
+        auto parent = GetOwner()->GetParent();
+        auto terrain = parent->GetComponent<CompCollapseTerrain>();
+        ASSERT_LOG(terrain != nullptr, "");
 
-    std::vector<glm::vec2> points;
-    std::transform(mTrackPoints.begin(), mTrackPoints.end(), std::back_inserter(points), [&owner](const auto & point)
-        {
-            return owner->LocalToWorld(point);
-        });
-    terrain->Erase(points);
+        std::vector<glm::vec2> points;
+        std::transform(mTrackPoints.begin(), mTrackPoints.end(), std::back_inserter(points), [&owner] (const auto & point)
+            {
+                return owner->LocalToWorld(point);
+            });
+        terrain->Erase(points);
+    }
 }
 
 const std::string & CompPolygon::GetName()

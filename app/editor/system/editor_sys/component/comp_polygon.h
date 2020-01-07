@@ -25,4 +25,6 @@ private:
 
 private:
     std::vector<glm::vec2> mSegments;
+
+    glm::vec2 mLastCoord;
 };

@@ -33,6 +33,9 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mMesh = mMesh;command.mProgram = mProgramQuad;
         command.mTransform  = canvas->GetMatrixStack().GetM();
         command.mPairImages.emplace_back("texture0",mTexture);
+        command.mBlendSrc = GL_SRC_ALPHA;
+        command.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
+        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
         canvas->Post(command);
     }
 }
@@ -68,18 +71,64 @@ bool CompCollapseTerrain::OnModifyProperty(const std::any & oldValue, const std:
 void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
 {
     ASSERT_LOG(mMap.Check(), "");
+    const glm::vec4 zeroColor(0, 0, 0, 0.0f);
+    const glm::vec4 edgeColor(0, 0, 0, 0.2f);
+    const glm::vec4 normColor(0, 0, 0, 1.0f);
+
     // points 世界坐标集
     const auto & map = mMap.Instance<RawMap>()->GetMap();
-    glm::vec2 offset(
-        map.mPixelW * mAnchor.x,
-        map.mPixelH * mAnchor.y);
-    glm::vec4 color(0, 0, 0, 0);
+    glm::vec2 offset(map.mPixelW * mAnchor.x,
+                     map.mPixelH * mAnchor.y);
     for (auto & convex : tools::StripConvexPoints(points))
     {
         for (auto & point : tools::StripTrianglePoints(convex))
         {
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(point) + offset, color);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(point) + offset, zeroColor);
         }
+    }
+
+    //  边缘处理
+    auto order = tools::CalePointsOrder(points);
+    ASSERT_LOG(order != 0, "");
+    order = order >= 0.0f ? 1.0f : -1.0f;
+    std::vector<RawMesh::Vertex> vertexs;
+    auto count = points.size();
+    for (auto i = 0; i != count; ++i)
+    {
+        auto & a = points.at(i);
+        auto & b = points.at((i + 1) % count);
+        auto & c = points.at((i + 2) % count);
+        auto ab = b - a;
+        auto bc = c - b;
+        auto abr = glm::vec2(ab.y, -ab.x);
+        auto bcr = glm::vec2(bc.y, -bc.x);
+        abr = glm::normalize(abr) * 10.0f * order;
+        bcr = glm::normalize(bcr) * 10.0f * order;
+
+        auto ab0 = a, ab1 = a + abr;
+        auto ab2 = b, ab3 = b + abr;
+        auto bc0 = b, bc1 = b + abr;
+
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab1) + offset, normColor);
+
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+
+        //if (glm::cross(ab, bc) >= 0)
+        //{
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(a  ) + offset, edgeColor);
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, edgeColor);
+        //}
+        //else
+        //{
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(a  ) + offset, edgeColor);
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, edgeColor);
+        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(bc0) + offset, edgeColor);
+        //}
     }
 }
 
@@ -211,8 +260,12 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     fowardCommand.mViewMat = glm::lookAt(glm::vec3(0, 0, 0.0f), glm::vec3(0, 0, -1.0f), glm::vec3(0, 1, 0.0f));
     fowardCommand.mProjMat = glm::ortho(0.0f, (float)map->GetMap().mPixelW, 0.0f, (float)map->GetMap().mPixelH);
 
+    fowardCommand.mBlendSrc = GL_DST_ALPHA;
+    fowardCommand.mBlendDst = GL_SRC_ALPHA;
+
     fowardCommand.mEnabledFlag = RenderPipline::RenderCommand::kViewMat
-                               | RenderPipline::RenderCommand::kProjMat;
+                               | RenderPipline::RenderCommand::kProjMat
+                               | RenderPipline::RenderCommand::kBlend;
     canvas->Post(fowardCommand);
 
     targetCommand.mType = RenderPipline::TargetCommand::kPop;
