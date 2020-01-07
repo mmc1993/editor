@@ -72,7 +72,7 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
 {
     ASSERT_LOG(mMap.Check(), "");
     const glm::vec4 zeroColor(0, 0, 0, 0.0f);
-    const glm::vec4 edgeColor(0, 0, 0, 0.2f);
+    const glm::vec4 edgeColor(0, 0, 0, 0.5f);
     const glm::vec4 normColor(0, 0, 0, 1.0f);
 
     // points 世界坐标集
@@ -102,12 +102,12 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
         auto bc = c - b;
         auto abr = glm::vec2(ab.y, -ab.x);
         auto bcr = glm::vec2(bc.y, -bc.x);
-        abr = glm::normalize(abr) * 10.0f * order;
-        bcr = glm::normalize(bcr) * 10.0f * order;
+        abr = glm::normalize(abr) * 5.0f * order;
+        bcr = glm::normalize(bcr) * 5.0f * order;
 
         auto ab0 = a, ab1 = a + abr;
         auto ab2 = b, ab3 = b + abr;
-        auto bc0 = b, bc1 = b + abr;
+        auto bc0 = b, bc1 = b + bcr;
 
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
@@ -117,18 +117,13 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
         mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
 
-        //if (glm::cross(ab, bc) >= 0)
-        //{
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(a  ) + offset, edgeColor);
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, edgeColor);
-        //}
-        //else
-        //{
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(a  ) + offset, edgeColor);
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, edgeColor);
-        //    mEraseList.emplace_back(GetOwner()->WorldToLocal(bc0) + offset, edgeColor);
-        //}
+        auto ord = glm::cross(ab, bc);
+        if (glm::cross(ab, bc) * order >= 0)
+        {
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, normColor);
+        }
     }
 }
 
