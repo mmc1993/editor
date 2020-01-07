@@ -13,6 +13,8 @@ CompCollapseTerrain::CompCollapseTerrain()
 
     mTexture = std::create_ptr<RawImage>();
     mTexture->InitNull(GL_RGBA);
+    mTexture->SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    mTexture->SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     mProgramInit = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_COLLAPSE_TERRAIN_INIT);
     mProgramDraw = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_COLLAPSE_TERRAIN_DRAW);
@@ -72,7 +74,7 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
 {
     ASSERT_LOG(mMap.Check(), "");
     const glm::vec4 zeroColor(0, 0, 0, 0.0f);
-    const glm::vec4 edgeColor(0, 0, 0, 0.5f);
+    const glm::vec4 edgeColor(0, 0, 0, 0.2f);
     const glm::vec4 normColor(0, 0, 0, 1.0f);
 
     // points 世界坐标集
