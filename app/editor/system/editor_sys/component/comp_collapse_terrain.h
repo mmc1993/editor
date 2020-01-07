@@ -34,6 +34,11 @@ private:
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
 
+    //  ÍêÉÆºóÉ¾³ý
+    //  Debug
+    void DebugPostDrawPolygons(UIObjectGLCanvas * canvas);
+    void DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Polygon & polygon);
+
 private:
     Res::Ref    mMap;
     Res::Ref    mJson;

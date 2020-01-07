@@ -39,6 +39,8 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mBlendDst = GL_ONE_MINUS_SRC_ALPHA;
         command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
         canvas->Post(command);
+
+        DebugPostDrawPolygons(canvas);
     }
 }
 
@@ -267,4 +269,46 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 
     targetCommand.mType = RenderPipline::TargetCommand::kPop;
     canvas->Post(targetCommand);
+}
+
+void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)
+{
+    for (auto & polygon : mPolygons)
+    {
+        DebugPostDrawPolygon(canvas, polygon);
+    }
+}
+
+void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Polygon & polygon)
+{
+    std::vector<RawMesh::Vertex> points;
+    auto count = polygon.size();
+    for (auto i = 0; i != count; ++i)
+    {
+        auto & a = polygon.at(i);
+        auto & b = polygon.at((i + 1) % count);
+        auto r = b - a;r = glm::vec2(r.y,-r.x);
+        r = glm::normalize(r) * 1.0f;
+
+        auto p0 = a - r;
+        auto p1 = a + r;
+        auto p2 = b - r;
+        auto p3 = b + r;
+
+        points.emplace_back(p0, glm::vec4(1, 1, 1, 1));
+        points.emplace_back(p1, glm::vec4(1, 1, 1, 1));
+        points.emplace_back(p3, glm::vec4(1, 1, 1, 1));
+
+        points.emplace_back(p0, glm::vec4(1, 1, 1, 1));
+        points.emplace_back(p3, glm::vec4(1, 1, 1, 1));
+        points.emplace_back(p2, glm::vec4(1, 1, 1, 1));
+    }
+
+    RenderPipline::FowardCommand command;
+    command.mMesh       = std::create_ptr<RawMesh>();
+    command.mMesh->Init(points, {}, RawMesh::Vertex::kV | RawMesh::Vertex::kC);
+    command.mProgram    = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);;
+    command.mTransform  = canvas->GetMatrixStack().GetM();
+
+    canvas->Post(command);
 }
