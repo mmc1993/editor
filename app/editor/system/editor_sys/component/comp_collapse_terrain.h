@@ -34,6 +34,11 @@ private:
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
     void ClearErase(const std::vector<glm::vec2> & points);
+    bool ClearErase(std::vector<glm::vec2> & points, 
+                    std::vector<Polygon> & polygons0,
+                    std::vector<Polygon> & polygons1);
+    auto CrossResult(const std::vector<glm::vec2> & points,
+                     const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, float, uint, uint, float>;
 
     //  ÍêÉÆºóÉ¾³ý
     //  Debug

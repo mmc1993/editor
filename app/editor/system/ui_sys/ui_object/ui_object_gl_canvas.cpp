@@ -867,7 +867,7 @@ std::tuple<iint, SharePtr<Component>, glm::vec2, uint> UIObjectGLCanvas::FromCoo
         {
             const auto coord = ProjectScreen(state->mOperation.mEditObject->LocalToWorld((*it)->GetTrackPoints().at(i)));
 
-            if (tools::IsCantains(coord, (float)VAL_TrackPointSize, screen))
+            if (tools::IsContains(coord, (float)VAL_TrackPointSize, screen))
             {
                 return std::make_tuple(1, *it, state->mOperation.mEditObject->WorldToLocal(ProjectWorld(screen)), (uint)i);
             }

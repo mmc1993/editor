@@ -277,8 +277,82 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 
 void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 {
-    //  擦除多边形
+    std::vector<Polygon> polygons[2];
+    for (auto i = 0; i != mPolygons.size();)
+    {
+        if (tools::IsCrossSegment(points, mPolygons.at(i)))
+        {
+            polygons[0].push_back(mPolygons.at(i));
+            mPolygons.erase(mPolygons.begin() + i);
+        }
+        else { ++i; }
+    }
 
+    for (auto clips = points; 
+        ClearErase(clips, polygons[0], polygons[1]);
+        std::swap(        polygons[0], polygons[1]))
+    { }
+
+    for (const auto & polygon : polygons[1])
+    {
+        auto center = tools::CalePointsCenter(polygon);
+        if (!tools::IsContains(points, center))
+        {
+            mPolygons.emplace_back(polygon);
+        }
+    }
+}
+
+bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
+{
+    //  调整切线集, 使得第一条切线起点不在多边形内
+    auto CheckPoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
+    {
+        auto it = std::find_if(points.begin(), points.end(), [&polygon] (const glm::vec2 & point)
+            {
+                return !tools::IsContains(polygon, point);
+            });
+        std::rotate(points.begin(), it, points.end());
+    };
+
+    for (auto & polygon : polygons0)
+    {
+        CheckPoints(points, polygon);
+        CrossResult(points, polygon);
+    }
+    return false;
+}
+
+auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, float, uint, uint, float>
+{
+    std::vector<std::tuple<uint, uint, float, float>> result0;
+    std::vector<std::tuple<uint, uint, float, float>> result1;
+    auto size   = points.size();
+    for (auto i = 0; i != size; ++i)
+    {
+        result0.clear();
+        auto j = (i + 1) % size;
+        auto & a = points.at(i);
+        auto & b = points.at(j);
+        if (tools::IsCrossSegment(a, b, polygon, &result0))
+        {
+            std::sort(result0.begin(), result0.end(), [&] (const auto & v0, const auto & v1)
+                {
+                    return std::get<3>(v0) < std::get<3>(v1);
+                });
+            for (const auto & result : result0)
+            {
+                if (!tools::Equal(std::get<2>(result), 0.0f) &&
+                    !tools::Equal(std::get<2>(result), 1.0f) &&
+                    !tools::Equal(std::get<3>(result), 0.0f) &&
+                    !tools::Equal(std::get<3>(result), 1.0f))
+                {
+                    //  MMC TODO_
+                }
+            }
+        }
+    }
+    return std::tuple<bool, uint, uint, float, uint, uint, float>();
 }
 
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)

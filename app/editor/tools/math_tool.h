@@ -25,7 +25,7 @@ namespace tools {
     }
     
     //  圆是否包含点
-    inline bool IsCantains(const glm::vec2 & center, const float radius, const glm::vec2 & point)
+    inline bool IsContains(const glm::vec2 & center, const float radius, const glm::vec2 & point)
     {
         auto diff = point - center;
         return glm::dot(diff, diff) <= radius * radius;
@@ -142,13 +142,79 @@ namespace tools {
     }
 
     //  线段与多边形相交
+    inline bool IsCrossSegment(
+        const glm::vec2 & a,
+        const glm::vec2 & b,
+        const std::vector<glm::vec2> & points,
+        const std::function<bool(uint, uint, float, float)> & callback)
+    {
+        bool ret = false;
+        auto crossA = 0.0f;
+        auto crossB = 0.0f;
+        auto size = points.size();
+        for (auto i = 0; i != size; ++i)
+        {
+            auto j = (i + 1) % size;
+            auto & c = points.at(i);
+            auto & d = points.at(j);
+            if (IsCrossSegment(a, b, c, d, &crossA, &crossB) && (ret = true))
+            {
+                if (!callback(i, j, crossA, crossB)) {break;}
+            }
+        }
+        return ret;
+    }
+
+    //  线段与多边形相交-仅相交
     inline bool IsCrossSegment(const glm::vec2 & a, const glm::vec2 & b, const std::vector<glm::vec2> & points)
     {
-        for (auto i = 0; i != points.size(); ++i)
+        return IsCrossSegment(a, b, points, [] (uint _aIndex, uint _bIndex, float _crossA, float _crossB)
+            {
+                return false;
+            });
+    }
+
+    //  线段与多边形相交-第一交点
+    inline bool IsCrossSegment(
+        const glm::vec2 & a,
+        const glm::vec2 & b,
+        const std::vector<glm::vec2> & points,
+        uint  * aIndex, uint  * bIndex,
+        float * crossA, float * crossB)
+    {
+        return IsCrossSegment(a, b, points, [&aIndex, &bIndex, &crossA, &crossB] (uint _aIndex, uint _bIndex, float _crossA, float _crossB)
+            {
+                *aIndex = _aIndex; *bIndex = _bIndex;
+                *crossA = _crossA; *crossB = _crossB;
+                return false;
+            });
+    }
+
+    //  线段与多边形相交-全部交点
+    inline bool IsCrossSegment(
+        const glm::vec2 & a,
+        const glm::vec2 & b,
+        const std::vector<glm::vec2> & points,
+        std::vector<std::tuple<uint, uint, float, float>> * output)
+    {
+        return IsCrossSegment(a, b, points, [&output] (uint _aIndex, uint _bIndex, float _crossA, float _crossB)
+            {
+                output->emplace_back(_aIndex, _bIndex,
+                                     _crossB, _crossA);
+                return true;
+            });
+    }
+
+    //  多边形与多边形相交
+    inline bool IsCrossSegment(const std::vector<glm::vec2> & points0, const std::vector<glm::vec2> & points1)
+    {
+        auto size = points0.size();
+        for (auto i = 0; i != size; ++i)
         {
-            auto & c = points.at(i                      );
-            auto & d = points.at((i + 1) % points.size());
-            if (IsCrossSegment(a, b, c, d))
+            auto j = (i + 1) % size;
+            auto & a = points0.at(i);
+            auto & b = points0.at(j);
+            if (IsCrossSegment(a, b, points1))
             {
                 return true;
             }
@@ -228,6 +294,17 @@ namespace tools {
             auto s = l * glm::dot(ap,ab);
             return l * s * ab - ap;
         }
+    }
+
+    //  计算顶点集中心
+    inline glm::vec2 CalePointsCenter(const std::vector<glm::vec2> & points)
+    {
+        glm::vec2 center(0.0f,0.0f);
+        for (auto & point : points)
+        {
+            center += point;
+        }
+        return center / (float)points.size();
     }
 
     //  计算多边形顶点顺序
