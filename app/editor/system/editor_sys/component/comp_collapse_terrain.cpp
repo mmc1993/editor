@@ -306,27 +306,34 @@ void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
 {
     //  调整切线集, 使得第一条切线起点不在多边形内
-    auto CheckPoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
+    auto UpdatePoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
     {
         auto it = std::find_if(points.begin(), points.end(), [&polygon] (const glm::vec2 & point)
             {
-                return !tools::IsContains(polygon, point);
+                return !tools::IsContains(polygon, point, false);
             });
         std::rotate(points.begin(), it, points.end());
     };
 
+    std::vector<glm::vec2> binary[2];
     for (auto & polygon : polygons0)
     {
-        CheckPoints(points, polygon);
-        CrossResult(points, polygon);
+        UpdatePoints(points, polygon);
+
+        if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
+        {
+            binary[0].clear();
+            binary[1].clear();
+            BinaryPoints(endA, endB, polygon, clipLine, binary);
+        }
     }
     return false;
 }
 
-auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, float, uint, uint, float>
+auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>
 {
-    std::vector<std::tuple<uint, uint, float, float>> result0;
-    std::vector<std::tuple<uint, uint, float, float>> result1;
+    std::vector<std::tuple<uint, uint, float, uint, uint, float>> result1;
+    std::vector<std::tuple<uint, uint, float, float>>             result0;
     auto size   = points.size();
     for (auto i = 0; i != size; ++i)
     {
@@ -342,17 +349,47 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                 });
             for (const auto & result : result0)
             {
-                if (!tools::Equal(std::get<2>(result), 0.0f) &&
-                    !tools::Equal(std::get<2>(result), 1.0f) &&
-                    !tools::Equal(std::get<3>(result), 0.0f) &&
-                    !tools::Equal(std::get<3>(result), 1.0f))
+                result1.size() == 0 && tools::IsContains(polygon, b);
+                if (!tools::Equal(std::get<2>(result), 0.0f) && !tools::Equal(std::get<2>(result), 1.0f) &&
+                    !tools::Equal(std::get<3>(result), 0.0f) && !tools::Equal(std::get<3>(result), 1.0f) ||
+                    result0.size() == 1 && result1.size() == 0 && !tools::Equal(std::get<3>(result), 1.0f) ||
+                    result0.size() == 1 && result1.size() == 1 && !tools::Equal(std::get<3>(result), 0.0f) ||
+                    result0.size()  > 1)
                 {
-                    //  MMC TODO_
+                    result1.emplace_back(i, j,
+                        std::get<3>(result),
+                        std::get<0>(result),
+                        std::get<1>(result),
+                        std::get<2>(result));
                 }
+                if (result1.size() == 2) { break; }
             }
         }
     }
-    return std::tuple<bool, uint, uint, float, uint, uint, float>();
+
+    std::vector<glm::vec2> clipLine{
+        glm::lerp(
+            points.at(std::get<0>(result1.at(0))),
+            points.at(std::get<1>(result1.at(0))),
+            std::get<2>(result1.at(0))),
+        glm::lerp(
+            points.at(std::get<0>(result1.at(1))), 
+            points.at(std::get<1>(result1.at(1))), 
+            std::get<2>(result1.at(1)))
+    };
+    
+    for (auto i  = std::get<1>(result1.at(0)); 
+              i != std::get<1>(result1.at(1));
+              i = (i + 1) % points.size())
+    {
+        clipLine.insert(std::prev(clipLine.end()), points.at(i));
+    }
+    return std::make_tuple(!result1.empty(), std::get<4>(result1.at(0)), std::get<4>(result1.at(1)), clipLine);
+}
+
+void CompCollapseTerrain::BinaryPoints(uint endA, uint endB, const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & clipLine, std::vector<glm::vec2> * output)
+{
+
 }
 
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)

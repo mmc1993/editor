@@ -240,7 +240,7 @@ namespace tools {
     }
 
     //  点是否在多边形内
-    inline bool IsContains(const std::vector<glm::vec2> & points, const glm::vec2 & a)
+    inline bool IsContains(const std::vector<glm::vec2> & points, const glm::vec2 & a, bool online = true)
     {
         glm::vec2 b(std::numeric_limits<float>::max(), a.y);
 
@@ -250,7 +250,10 @@ namespace tools {
         {
             auto & c = points.at(i             );
             auto & d = points.at((i + 1) % size);
-            if (IsOnSegment(a, c, d)) { return true; }
+            if (online && IsOnSegment(a, c, d))
+            {
+                return true;
+            }
             if (c.y != d.y)
             {
                 if (IsCrossSegment(a, b, c, d))

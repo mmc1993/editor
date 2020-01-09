@@ -38,7 +38,11 @@ private:
                     std::vector<Polygon> & polygons0,
                     std::vector<Polygon> & polygons1);
     auto CrossResult(const std::vector<glm::vec2> & points,
-                     const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, float, uint, uint, float>;
+                     const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>;
+    void BinaryPoints(uint endA, uint endB,
+                      const std::vector<glm::vec2> & points,
+                      const std::vector<glm::vec2> & clipLine, 
+                      std::vector<glm::vec2> * output);
 
     //  ÍêÉÆºóÉ¾³ý
     //  Debug
