@@ -20,7 +20,7 @@ CompPolygon::CompPolygon()
 
 void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (mLastCoord != GetOwner()->GetTransform()->GetPosition())
+    if (mLastCoord != GetOwner()->GetTransform()->GetPosition() && mTrackPoints.size() > 2)
     {
         mLastCoord = GetOwner()->GetTransform()->GetPosition();
         auto owner = GetOwner();

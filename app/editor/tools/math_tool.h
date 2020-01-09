@@ -299,6 +299,23 @@ namespace tools {
         }
     }
 
+    //  计算顶点集面积
+    inline bool IsPointsAreaZero(const std::vector<glm::vec2> & points)
+    {
+        auto size = points.size();
+        for (auto i = 0; i != size; ++i)
+        {
+            auto j = (i + 1) % size;
+            auto & a = points.at(i);
+            auto & b = points.at(j);
+            if (glm::cross(a, b) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     //  计算顶点集中心
     inline glm::vec2 CalePointsCenter(const std::vector<glm::vec2> & points)
     {
