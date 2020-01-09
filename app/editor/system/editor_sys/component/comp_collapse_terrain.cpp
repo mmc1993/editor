@@ -363,6 +363,12 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                 });
             for (const auto & result : result0)
             {
+                //  std::get<0>(result) endA
+                //  std::get<1>(result) endB
+                //  std::get<2>(result) crossB
+                //  std::get<3>(result) crossA
+
+
                 result1.emplace_back(i, j, std::get<3>(result), std::get<0>(result),
                                            std::get<1>(result), std::get<2>(result));
                 if (result1.size() == 2) { break; }
@@ -380,7 +386,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
             points.at(std::get<1>(result1.at(1))), 
             std::get<2>(result1.at(1)))
     };
-    
+
     for (auto i  = std::get<1>(result1.at(0)); 
               i != std::get<1>(result1.at(1));
               i = (i + 1) % points.size())
