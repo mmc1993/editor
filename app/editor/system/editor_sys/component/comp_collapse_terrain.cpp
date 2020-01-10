@@ -313,30 +313,28 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             {
                 return !tools::IsContains(polygon, point, false);
             });
-        std::rotate(points.begin(), it, points.end());
+        if (it != points.end())
+        {
+            std::rotate(points.begin(), it, points.end());
+        }
+        return it != points.end();
     };
 
     for (auto & polygon : polygons0)
     {
-        UpdatePoints(points, polygon);
-
-        if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
+        if (UpdatePoints(points, polygon))
         {
-            polygons1.emplace_back();
-            polygons1.emplace_back();
-            auto binary = &*std::prev(polygons1.end(), 2);
-            BinaryPoints(endA, endB, polygon, clipLine, binary);
-            if (tools::IsPointsAreaZero(binary[0]) ||
-                tools::IsPointsAreaZero(binary[1]))
+            if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
             {
-                polygons1.pop_back();
-                polygons1.pop_back();
+                polygons1.emplace_back();
+                polygons1.emplace_back();
+                auto binary = &*std::prev(polygons1.end(), 2);
+                BinaryPoints(endA, endB, polygon, clipLine, binary);
+            }
+            else
+            {
                 polygons1.emplace_back(polygon);
             }
-        }
-        else
-        {
-            polygons1.emplace_back(polygon);
         }
     }
     return polygons0.size() != polygons1.size();
