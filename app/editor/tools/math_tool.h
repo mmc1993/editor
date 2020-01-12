@@ -83,6 +83,12 @@ namespace tools {
             && Equal(v0.y, v1.y);
     }
 
+    //  计算点到点的距离
+    inline float DistanceSqrt(const glm::vec2 & v0, const glm::vec2 & v1)
+    {
+        return glm::length_sqrt((v1 - v0));
+    }
+
     //  点是否在线段上
     inline bool IsOnSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {

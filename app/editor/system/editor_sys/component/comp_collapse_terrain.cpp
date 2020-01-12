@@ -367,8 +367,14 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                     !tools::Equal(std::get<2>(result), 0.0f) && !tools::Equal(std::get<2>(result), 1.0f) &&
                     !tools::Equal(std::get<3>(result), 0.0f) && !tools::Equal(std::get<3>(result), 1.0f))
                 {
-                    result1.emplace_back(i, j, std::get<3>(result), std::get<0>(result),
-                                               std::get<1>(result), std::get<2>(result));
+                    auto p0 = polygon.at(std::get<0>(result));
+                    auto p1 = polygon.at(std::get<1>(result));
+                    auto p = glm::lerp(p0, p1, std::get<2>(result));
+                    if (tools::DistanceSqrt(p, p0) > 2 && tools::DistanceSqrt(p, p0) > 2)
+                    {
+                        result1.emplace_back(i, j, std::get<3>(result), std::get<0>(result),
+                                                   std::get<1>(result), std::get<2>(result));
+                    }
                 }
                 if (result1.size() == 2) { break; }
             }
@@ -376,7 +382,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
     }
 
     std::vector<glm::vec2> clipLine;
-    if (!result1.empty())
+    if (result1.size() == 2)
     {
         clipLine.emplace_back(
             glm::lerp(
@@ -407,7 +413,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
             std::get<4>(result1.at(0)), 
             std::get<4>(result1.at(1)), clipLine);
     }
-    return std::make_tuple(!result1.empty(), 0, 0, clipLine);
+    return std::make_tuple(false, 0, 0, clipLine);
 }
 
 void CompCollapseTerrain::BinaryPoints(uint endA, uint endB, const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & clipLine, std::vector<glm::vec2> * output)
