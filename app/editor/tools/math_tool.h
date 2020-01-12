@@ -157,7 +157,6 @@ namespace tools {
         bool ret = false;
         auto crossA = 0.0f;
         auto crossB = 0.0f;
-        auto crossC = std::numeric_limits<float>::max();
         auto size = points.size();
         for (auto i = 0; i != size; ++i)
         {
@@ -166,9 +165,8 @@ namespace tools {
             auto & d = points.at(j);
             if (IsCrossSegment(a, b, c, d, &crossA, &crossB) && (ret = true))
             {
-                if (!Equal(crossC, crossA) && !callback(i, j, crossA, crossB)) { break; }
+                if (!callback(i, j, crossA, crossB)) { break; }
             }
-            crossC = crossA;
         }
         return ret;
     }

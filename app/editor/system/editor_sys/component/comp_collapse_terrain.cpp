@@ -287,13 +287,10 @@ void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
             return glm::vec2(int(p.x), int(p.y));
         });
 
-    for (auto clips = points;
-        ClearErase(clips, polygons[0], polygons[1]);
-        polygons[0].clear(), std::swap(polygons[0], polygons[1]));
+    for (;ClearErase(clips, polygons[0], polygons[1])
+         ;polygons[0].clear(), std::swap(polygons[0], polygons[1]));
 
-    std::copy_if(
-        polygons[1].begin(), polygons[1].end(), std::back_inserter(mPolygons),
-        [&](const auto & polygon){return tools::IsContains(points,polygon);});
+    mPolygons = std::move(polygons[1]);
 }
 
 bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
@@ -352,7 +349,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
     //  PolygonBeg, PolygonEnd, PolygonCross, PointsCross,
     std::vector<std::tuple<uint, uint, float, float>>             result0;
     auto size   = points.size();
-    for (auto i = 0; i != size; ++i)
+    for (auto i = 0; i != size && result1.size() != 2; ++i)
     {
         result0.clear();
         auto j = (i + 1) % size;
@@ -366,40 +363,59 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                     return std::get<3>(a) < std::get<3>(b);
                 });
 
-            for (const auto & result : result0)
+            for (auto k = 0; k != result0.size() && result1.size() != 2; ++k)
             {
-                if (!tools::Equal(std::get<2>(result), 0.0f) && !tools::Equal(std::get<2>(result), 1.0f) &&
-                    !tools::Equal(std::get<3>(result), 0.0f) && !tools::Equal(std::get<3>(result), 1.0f))
+                if (result1.empty())
                 {
-                    auto p0 = polygon.at(std::get<0>(result));
-                    auto p1 = polygon.at(std::get<1>(result));
-                    auto p = glm::lerp(p0, p1, std::get<2>(result));
-                    if (tools::DistanceSqrt(p, p0) > 2 && tools::DistanceSqrt(p, p0) > 2)
+                    if (result0.size() == 1)
                     {
-                        result1.emplace_back(i, j, std::get<3>(result), std::get<0>(result),
-                                                   std::get<1>(result), std::get<2>(result));
+                        if (tools::IsContains(polygon, b, false))
+                        {
+                            result1.emplace_back(i, j, std::get<3>(result0.front()), std::get<0>(result0.front()),
+                                                       std::get<1>(result0.front()), std::get<2>(result0.front()));
+                        }
+                    }
+                    else
+                    {
+                        if (k + 1 == result0.size()) { break; }
+                        const auto & curr = result0.at(k);
+                        const auto & next = result0.at(k + 1);
+                        if (!tools::Equal(std::get<2>(next), 0.0f) && !tools::Equal(std::get<2>(next), 1.0f) ||
+                            !tools::Equal(std::get<2>(curr), 0.0f) && !tools::Equal(std::get<2>(curr), 1.0f) ||
+                            !tools::Equal(std::get<3>(curr), std::get<3>(next)) &&
+                            (tools::Equal(std::get<2>(curr), 0.0f) && std::abs((int)std::get<0>(curr) - (int)std::get<1>(next)) != 1 ||
+                             tools::Equal(std::get<2>(curr), 1.0f) && std::abs((int)std::get<1>(curr) - (int)std::get<0>(next)) != 1))
+                        {
+                            result1.emplace_back(i, j, std::get<3>(curr), std::get<0>(curr),
+                                                       std::get<1>(curr), std::get<2>(curr));
+                        }
                     }
                 }
-                if (result1.size() == 2) { break; }
+                else
+                {
+                    result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
+                                               std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
+                }
             }
         }
     }
 
     std::vector<glm::vec2> clipLine;
-    if (!result1.empty())
+    if (result1.size() == 2)
     {
-        ASSERT_LOG(result1.size() == 2, "");
-        clipLine.emplace_back(
-            glm::lerp(
-                points.at(std::get<0>(result1.at(0))),
-                points.at(std::get<1>(result1.at(0))),
-                std::get<2>(result1.at(0))));
+        auto beg = glm::lerp(
+            points.at(std::get<0>(result1.at(0))),
+            points.at(std::get<1>(result1.at(0))),
+            std::get<2>(result1.at(0)));
 
-        clipLine.emplace_back(
-            glm::lerp(
-                points.at(std::get<0>(result1.at(1))),
-                points.at(std::get<1>(result1.at(1))),
-                std::get<2>(result1.at(1))));
+        auto end = glm::lerp(
+            points.at(std::get<0>(result1.at(1))),
+            points.at(std::get<1>(result1.at(1))),
+            std::get<2>(result1.at(1)));
+
+        beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
+        end.x = std::floor(end.x); end.y = std::floor(end.y);
+        clipLine.emplace_back(beg); clipLine.emplace_back(end);
 
         for (auto i  = std::get<1>(result1.at(0)); 
                   i != std::get<1>(result1.at(1));
