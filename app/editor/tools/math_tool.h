@@ -112,7 +112,7 @@ namespace tools {
         assert(crossA != nullptr);
         assert(crossB != nullptr);
         auto cross = glm::cross(b - a, d - c);
-        if (cross != 0.0)
+        if (!Equal(cross, 0.0))
         {
             *crossA = glm::cross(d - c, a - c) / cross;
             *crossB = glm::cross(b - a, a - c) / cross;
