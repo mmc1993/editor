@@ -323,7 +323,7 @@ namespace tools {
     }
 
     //  计算顶点集中心
-    inline glm::vec2 CalePointsCenter(const std::vector<glm::vec2> & points)
+    inline glm::vec2 CenterPoint(const std::vector<glm::vec2> & points)
     {
         glm::vec2 center(0.0f,0.0f);
         for (auto & point : points)

@@ -279,29 +279,14 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
 void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 {
     std::vector<Polygon> polygons[2];
-    for (auto i = 0; i != mPolygons.size();)
-    {
-        if (tools::IsCrossSegment(points, mPolygons.at(i)))
-        {
-            polygons[0].push_back(mPolygons.at(i));
-            mPolygons.erase(mPolygons.begin() + i);
-        }
-        else { ++i; }
-    }
+    polygons[0]=std::move(mPolygons);
 
-    for (auto clips = points; 
+    for (auto clips = points;
         ClearErase(clips, polygons[0], polygons[1]);
-        polygons[0].clear(), std::swap(polygons[0], polygons[1]))
-    { }
+        polygons[0].clear(), std::swap(polygons[0], polygons[1]));
 
-    for (const auto & polygon : polygons[1])
-    {
-        auto center = tools::CalePointsCenter(polygon);
-        if (!tools::IsContains(points, center))
-        {
-            mPolygons.emplace_back(polygon);
-        }
-    }
+    std::copy_if(polygons[1].begin(), polygons[1].end(), std::back_inserter(mPolygons),
+        [&](const auto &ps){return!tools::IsContains(points,tools::CenterPoint(ps));});
 }
 
 bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
