@@ -157,6 +157,7 @@ namespace tools {
         bool ret = false;
         auto crossA = 0.0f;
         auto crossB = 0.0f;
+        auto crossC = std::numeric_limits<float>::max();
         auto size = points.size();
         for (auto i = 0; i != size; ++i)
         {
@@ -165,8 +166,9 @@ namespace tools {
             auto & d = points.at(j);
             if (IsCrossSegment(a, b, c, d, &crossA, &crossB) && (ret = true))
             {
-                if (!callback(i, j, crossA, crossB)) {break;}
+                if (!Equal(crossC, crossA) && !callback(i, j, crossA, crossB)) { break; }
             }
+            crossC = crossA;
         }
         return ret;
     }
@@ -272,6 +274,22 @@ namespace tools {
             }
         }
         return (num & 1) == 1;
+    }
+
+    //  点集是否在多边形内
+    inline bool IsContains(
+        const std::vector<glm::vec2> & polygon, 
+        const std::vector<glm::vec2> & points, 
+        bool online = true)
+    {
+        for (auto & p : points)
+        {
+            if (!IsContains(polygon, p, online))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     //  点是否在凸多边形内

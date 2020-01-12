@@ -281,12 +281,19 @@ void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
     std::vector<Polygon> polygons[2];
     polygons[0]=std::move(mPolygons);
 
+    std::vector<glm::vec2> clips;
+    std::transform(points.begin(), points.end(),
+        std::back_inserter(clips), [](auto & p) {
+            return glm::vec2(int(p.x), int(p.y));
+        });
+
     for (auto clips = points;
         ClearErase(clips, polygons[0], polygons[1]);
         polygons[0].clear(), std::swap(polygons[0], polygons[1]));
 
-    std::copy_if(polygons[1].begin(), polygons[1].end(), std::back_inserter(mPolygons),
-        [&](const auto &ps){return!tools::IsContains(points,tools::CenterPoint(ps));});
+    std::copy_if(
+        polygons[1].begin(), polygons[1].end(), std::back_inserter(mPolygons),
+        [&](const auto & polygon){return tools::IsContains(points,polygon);});
 }
 
 bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
@@ -296,7 +303,7 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
     {
         auto it = std::find_if(points.begin(), points.end(), [&polygon] (const glm::vec2 & point)
             {
-                return !tools::IsContains(polygon, point);
+                return !tools::IsContains(polygon, point, false);
             });
         if (it != points.end())
         {
@@ -305,21 +312,34 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
         return it != points.end();
     };
 
+    std::vector<glm::vec2> result[2];
     for (auto & polygon : polygons0)
     {
         if (UpdatePoints(points, polygon))
         {
             if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
             {
-                polygons1.emplace_back();
-                polygons1.emplace_back();
-                auto binary = &*std::prev(polygons1.end(), 2);
-                BinaryPoints(endA, endB, polygon, clipLine, binary);
+                BinaryPoints(endA, endB, polygon, clipLine, result);
+                if (!tools::IsContains(points, result[0]))
+                {
+                    polygons1.emplace_back(std::move(result[0]));
+                }
+                if (!tools::IsContains(points, result[1]))
+                {
+                    polygons1.emplace_back(std::move(result[1]));
+                }
             }
             else
             {
-                polygons1.emplace_back(polygon);
+                if (!tools::IsContains(points, polygon))
+                {
+                    polygons1.emplace_back(std::move(polygon));
+                }
             }
+        }
+        else
+        {
+            polygons1.emplace_back(std::move(polygon));
         }
     }
     return polygons0.size() != polygons1.size();
@@ -348,8 +368,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
 
             for (const auto & result : result0)
             {
-                if (!result1.empty() ||
-                    !tools::Equal(std::get<2>(result), 0.0f) && !tools::Equal(std::get<2>(result), 1.0f) &&
+                if (!tools::Equal(std::get<2>(result), 0.0f) && !tools::Equal(std::get<2>(result), 1.0f) &&
                     !tools::Equal(std::get<3>(result), 0.0f) && !tools::Equal(std::get<3>(result), 1.0f))
                 {
                     auto p0 = polygon.at(std::get<0>(result));
@@ -367,8 +386,9 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
     }
 
     std::vector<glm::vec2> clipLine;
-    if (result1.size() == 2)
+    if (!result1.empty())
     {
+        ASSERT_LOG(result1.size() == 2, "");
         clipLine.emplace_back(
             glm::lerp(
                 points.at(std::get<0>(result1.at(0))),
@@ -393,8 +413,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
         {
             std::reverse(clipLine.begin(), clipLine.end());
         }
-        return std::make_tuple(
-            !result1.empty(), 
+        return std::make_tuple(true, 
             std::get<4>(result1.at(0)), 
             std::get<4>(result1.at(1)), clipLine);
     }
