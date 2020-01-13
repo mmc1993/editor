@@ -107,8 +107,8 @@ namespace tools {
         {
             auto scale = glm::dot(ap, ab) / glm::length(ab);
             auto cross = glm::normalize(ab) * scale;
-            cross.x *= scale += a.x;
-            cross.y *= scale += a.y;
+            cross.x += a.x;
+            cross.y += a.y;
             return { cross, cross - p };
         }
     }

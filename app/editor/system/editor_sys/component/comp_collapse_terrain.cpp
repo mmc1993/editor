@@ -449,16 +449,10 @@ void CompCollapseTerrain::BinaryPoints(uint endA, uint endB, const std::vector<g
 
 bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, const std::vector<glm::vec2> & points1)
 {
-    //  是否包含在内
-    if (tools::IsContains(points0, points1))
-    {
-        return true;
-    }
-
     //  顶点是否在边附近
     for (auto & p : points1)
     {
-        auto skip = true;
+        auto pass = true;
         auto size = points0.size();
         for (auto i = 0; i != size; ++i)
         {
@@ -466,9 +460,9 @@ bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, con
             auto & a = points0.at(i);
             auto & b = points0.at(j);
             auto [cross, diff] = tools::Distance(a, b, p);
-            if (glm::length_sqrt(diff)>10) { skip=false; }
+            if (glm::length_sqrt(diff)<10) { pass=false; }
         }
-        if (skip) { return false; }
+        if (pass && !tools::IsContains(points0, p)) { return false; }
     }
     return true;
 }
