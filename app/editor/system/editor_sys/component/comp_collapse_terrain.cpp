@@ -89,50 +89,52 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
     {
         clipLine.emplace_back(GetOwner()->WorldToLocal(point));
     }
-    for (const auto & convex : tools::StripConvexPoints(clipLine))
+    if (ClearErase(clipLine))
     {
-        for (auto & point : tools::StripTrianglePoints(convex))
+        for (const auto & convex : tools::StripConvexPoints(clipLine))
         {
-            mEraseList.emplace_back(point + offset, zeroColor);
+            for (auto & point : tools::StripTrianglePoints(convex))
+            {
+                mEraseList.emplace_back(point + offset, zeroColor);
+            }
         }
-    }
-    ClearErase(clipLine);
 
-    //  边缘处理
-    auto order = tools::CalePointsOrder(points);
-    ASSERT_LOG(order != 0, "");
-    order = order >= 0.0f ? 1.0f : -1.0f;
-    std::vector<RawMesh::Vertex> vertexs;
-    auto count = points.size();
-    for (auto i = 0; i != count; ++i)
-    {
-        auto & a = points.at(i);
-        auto & b = points.at((i + 1) % count);
-        auto & c = points.at((i + 2) % count);
-        auto ab = b - a;
-        auto bc = c - b;
-        auto abr = glm::vec2(ab.y, -ab.x);
-        auto bcr = glm::vec2(bc.y, -bc.x);
-        abr = glm::normalize(abr) * 5.0f * order;
-        bcr = glm::normalize(bcr) * 5.0f * order;
-
-        auto ab0 = a, ab1 = a + abr;
-        auto ab2 = b, ab3 = b + abr;
-        auto bc0 = b, bc1 = b + bcr;
-
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab1) + offset, normColor);
-
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
-
-        if (glm::cross(ab, bc) * order >= 0)
+        //  边缘处理
+        auto order = tools::CalePointsOrder(points);
+        ASSERT_LOG(order != 0, "");
+        order = order >= 0.0f ? 1.0f : -1.0f;
+        std::vector<RawMesh::Vertex> vertexs;
+        auto count  = points.size();
+        for (auto i = 0; i != count; ++i)
         {
+            auto & a = points.at(i);
+            auto & b = points.at((i + 1) % count);
+            auto & c = points.at((i + 2) % count);
+            auto ab = b - a;
+            auto bc = c - b;
+            auto abr = glm::vec2(ab.y, -ab.x);
+            auto bcr = glm::vec2(bc.y, -bc.x);
+            abr = glm::normalize(abr) * 5.0f * order;
+            bcr = glm::normalize(bcr) * 5.0f * order;
+
+            auto ab0 = a, ab1 = a + abr;
+            auto ab2 = b, ab3 = b + abr;
+            auto bc0 = b, bc1 = b + bcr;
+
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab1) + offset, normColor);
+
             mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
             mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, normColor);
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+
+            if (glm::cross(ab, bc) * order >= 0)
+            {
+                mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
+                mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+                mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, normColor);
+            }
         }
     }
 }
@@ -276,7 +278,7 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     canvas->Post(targetCommand);
 }
 
-void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
+bool CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 {
     std::vector<Polygon> polygons[2];
     polygons[0]=std::move(mPolygons);
@@ -287,13 +289,15 @@ void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
             return glm::vec2(int(p.x), int(p.y));
         });
 
-    for (;ClearErase(clips, polygons[0], polygons[1])
+    bool isCheckClip = false;
+    for (;ClearErase(clips, polygons[0], polygons[1], &isCheckClip)
          ;polygons[0].clear(), std::swap(polygons[0], polygons[1]));
-
     mPolygons = std::move(polygons[1]);
+
+    return isCheckClip;
 }
 
-bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
+bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1, bool * isCheckClip)
 {
     //  调整切线集, 使得第一条切线起点不在多边形内
     auto UpdatePoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
@@ -325,6 +329,7 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
                 {
                     polygons1.emplace_back(std::move(result[1]));
                 }
+                *isCheckClip = *isCheckClip || true;
             }
             else
             {
@@ -372,7 +377,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                         if (tools::IsContains(polygon, b, false))
                         {
                             result1.emplace_back(i, j, std::get<3>(result0.front()), std::get<0>(result0.front()),
-                                                       std::get<1>(result0.front()), std::get<2>(result0.front()));
+                                std::get<1>(result0.front()), std::get<2>(result0.front()));
                         }
                     }
                     else
@@ -413,13 +418,13 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
             points.at(std::get<1>(result1.at(1))),
             std::get<2>(result1.at(1)));
 
-        beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
-        end.x = std::floor(end.x); end.y = std::floor(end.y);
+        //beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
+        //end.x = std::floor(end.x); end.y = std::floor(end.y);
         clipLine.emplace_back(beg); clipLine.emplace_back(end);
 
-        for (auto i  = std::get<1>(result1.at(0)); 
-                  i != std::get<1>(result1.at(1));
-                  i  = (i + 1) % points.size())
+        for (auto i = std::get<1>(result1.at(0));
+                 i != std::get<1>(result1.at(1));
+                 i  = (i + 1) % points.size())
         {
             clipLine.insert(std::prev(clipLine.end()), points.at(i));
         }
@@ -429,8 +434,8 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
         {
             std::reverse(clipLine.begin(), clipLine.end());
         }
-        return std::make_tuple(true, 
-            std::get<4>(result1.at(0)), 
+        return std::make_tuple(true,
+            std::get<4>(result1.at(0)),
             std::get<4>(result1.at(1)), clipLine);
     }
     return std::make_tuple(false, 0, 0, clipLine);

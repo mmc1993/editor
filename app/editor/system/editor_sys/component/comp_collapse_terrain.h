@@ -33,10 +33,11 @@ private:
     void Init(UIObjectGLCanvas * canvas);
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
-    void ClearErase(const std::vector<glm::vec2> & points);
+    bool ClearErase(const std::vector<glm::vec2> & points);
     bool ClearErase(std::vector<glm::vec2> & points, 
                     std::vector<Polygon> & polygons0,
-                    std::vector<Polygon> & polygons1);
+                    std::vector<Polygon> & polygons1,
+                    bool * isCheckClip);
     auto CrossResult(const std::vector<glm::vec2> & points,
                      const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>;
     void BinaryPoints(uint endA, uint endB,
