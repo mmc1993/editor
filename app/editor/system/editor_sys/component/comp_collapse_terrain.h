@@ -44,6 +44,8 @@ private:
                       const std::vector<glm::vec2> & points,
                       const std::vector<glm::vec2> & clipLine, 
                       std::vector<glm::vec2> * output);
+    bool IsContains(const std::vector<glm::vec2> & points0, 
+                    const std::vector<glm::vec2> & points1);
 
     //  ÍêÉÆºóÉ¾³ý
     //  Debug

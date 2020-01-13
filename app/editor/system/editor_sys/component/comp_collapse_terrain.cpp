@@ -318,11 +318,11 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             {
                 bskip = true; result[0].clear(); result[1].clear();
                 BinaryPoints(endA, endB, polygon, clipLine,result);
-                if (!tools::IsContains(points, result[0]))
+                if (!IsContains(points, result[0]))
                 {
                     polygons1.emplace_back(std::move(result[0]));
                 }
-                if (!tools::IsContains(points, result[1]))
+                if (!IsContains(points, result[1]))
                 {
                     polygons1.emplace_back(std::move(result[1]));
                 }
@@ -445,6 +445,32 @@ void CompCollapseTerrain::BinaryPoints(uint endA, uint endB, const std::vector<g
         output[1].emplace_back(points.at(i));
     }
     std::copy(clipLine.begin(), clipLine.end(), std::back_inserter(output[1]));
+}
+
+bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, const std::vector<glm::vec2> & points1)
+{
+    //  是否包含在内
+    if (tools::IsContains(points0, points1))
+    {
+        return true;
+    }
+
+    //  顶点是否在边附近
+    for (auto & p : points1)
+    {
+        auto skip = true;
+        auto size = points0.size();
+        for (auto i = 0; i != size; ++i)
+        {
+            auto j = (i + 1) % size;
+            auto & a = points0.at(i);
+            auto & b = points0.at(j);
+            auto [cross, diff] = tools::Distance(a, b, p);
+            if (glm::length_sqrt(diff)>10) { skip=false; }
+        }
+        if (skip) { return false; }
+    }
+    return true;
 }
 
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)

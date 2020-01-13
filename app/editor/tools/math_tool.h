@@ -89,6 +89,30 @@ namespace tools {
         return glm::length_sqrt((v1 - v0));
     }
 
+    //  计算点到线段的距离
+    inline auto Distance(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & p)->std::tuple<glm::vec2, glm::vec2>
+    {
+        auto ap = p - a;
+        auto bp = p - b;
+        auto ab = b - a;
+        if      (glm::dot(ap, ab) <= 0)
+        {
+            return { a, -ap };
+        }
+        else if (glm::dot(bp, ab) >= 0)
+        {
+            return { b, -bp };
+        }
+        else
+        {
+            auto scale = glm::dot(ap, ab) / glm::length(ab);
+            auto cross = glm::normalize(ab) * scale;
+            cross.x *= scale += a.x;
+            cross.y *= scale += a.y;
+            return { cross, cross - p };
+        }
+    }
+
     //  点是否在线段上
     inline bool IsOnSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
