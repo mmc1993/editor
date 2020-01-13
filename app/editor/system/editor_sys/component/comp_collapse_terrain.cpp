@@ -377,7 +377,7 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                         if (tools::IsContains(polygon, b, false))
                         {
                             result1.emplace_back(i, j, std::get<3>(result0.front()), std::get<0>(result0.front()),
-                                std::get<1>(result0.front()), std::get<2>(result0.front()));
+                                                       std::get<1>(result0.front()), std::get<2>(result0.front()));
                         }
                     }
                     else
