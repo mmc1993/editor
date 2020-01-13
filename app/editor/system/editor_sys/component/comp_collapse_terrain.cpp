@@ -503,7 +503,7 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
     RenderPipline::FowardCommand command;
     command.mMesh       = std::create_ptr<RawMesh>();
     command.mMesh->Init(points, {}, RawMesh::Vertex::kV | RawMesh::Vertex::kC);
-    command.mProgram    = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);;
+    command.mProgram    = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
     command.mTransform  = canvas->GetMatrixStack().GetM();
 
     canvas->Post(command);
