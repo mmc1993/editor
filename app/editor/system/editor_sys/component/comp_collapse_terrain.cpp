@@ -53,8 +53,8 @@ const std::string & CompCollapseTerrain::GetName()
 void CompCollapseTerrain::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
-    tools::Serialize(os, mAnchor);
-    mMap.EncodeBinary(os, project);
+    tools::Serialize(  os, mAnchor);
+    mMap.EncodeBinary( os, project);
     mJson.EncodeBinary(os, project);
 }
 
@@ -62,7 +62,7 @@ void CompCollapseTerrain::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
     tools::Deserialize(is, mAnchor);
-    mMap.DecodeBinary(is, project);
+    mMap.DecodeBinary( is, project);
     mJson.DecodeBinary(is, project);
 }
 
@@ -87,10 +87,7 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
     std::vector<glm::vec2> clipLine;
     for (const auto & point: points)
     {
-        auto p = GetOwner()->WorldToLocal(point);
-        p.x = std::floor(p.x);
-        p.y = std::floor(p.y);
-        clipLine.push_back(p);
+        clipLine.push_back(GetOwner()->WorldToLocal(point));
     }
     if (ClearErase(clipLine))
     {
@@ -337,6 +334,7 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             }
         }
         if (!bskip) { polygons1.emplace_back(polygon); }
+        int debug = 0;
     }
     return polygons0.size() != polygons1.size();
 }
@@ -412,9 +410,8 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
             points.at(std::get<1>(result1.at(1))),
             std::get<2>(result1.at(1)));
 
-        beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
-        end.x = std::floor(end.x); end.y = std::floor(end.y);
-        clipLine.emplace_back(beg); clipLine.emplace_back(end);
+        clipLine.emplace_back(beg);
+        clipLine.emplace_back(end);
 
         for (auto i = std::get<1>(result1.at(0));
                  i != std::get<1>(result1.at(1));

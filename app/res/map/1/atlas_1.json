@@ -1,0 +1,12 @@
+{ "columns":9,
+ "image":"atlas.png",
+ "imageheight":346,
+ "imagewidth":297,
+ "margin":0,
+ "name":"atlas",
+ "spacing":0,
+ "tilecount":90,
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset"
+}
