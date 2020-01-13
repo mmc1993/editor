@@ -87,7 +87,10 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
     std::vector<glm::vec2> clipLine;
     for (const auto & point: points)
     {
-        clipLine.emplace_back(GetOwner()->WorldToLocal(point));
+        auto p = GetOwner()->WorldToLocal(point);
+        p.x = std::floor(p.x);
+        p.y = std::floor(p.y);
+        clipLine.push_back(p);
     }
     if (ClearErase(clipLine))
     {
@@ -283,15 +286,10 @@ bool CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
     std::vector<Polygon> polygons[2];
     polygons[0]=std::move(mPolygons);
 
-    std::vector<glm::vec2> clips;
-    std::transform(points.begin(), points.end(),
-        std::back_inserter(clips), [](auto & p) {
-            return glm::vec2(int(p.x), int(p.y));
-        });
-
     bool isCheckClip = false;
-    for (;ClearErase(clips, polygons[0], polygons[1], &isCheckClip)
-         ;polygons[0].clear(), std::swap(polygons[0], polygons[1]));
+    for (auto clips = points;
+        ClearErase(clips, polygons[0], polygons[1], &isCheckClip);
+        polygons[0].clear(), std::swap(polygons[0], polygons[1]));
     mPolygons = std::move(polygons[1]);
 
     return isCheckClip;
@@ -320,6 +318,8 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
         {
             if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
             {
+                result[0].clear();
+                result[1].clear();
                 BinaryPoints(endA, endB, polygon, clipLine, result);
                 if (!tools::IsContains(points, result[0]))
                 {
@@ -335,13 +335,13 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             {
                 if (!tools::IsContains(points, polygon))
                 {
-                    polygons1.emplace_back(std::move(polygon));
+                    polygons1.emplace_back(polygon);
                 }
             }
         }
         else
         {
-            polygons1.emplace_back(std::move(polygon));
+            polygons1.emplace_back(polygon);
         }
     }
     return polygons0.size() != polygons1.size();
@@ -418,8 +418,8 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
             points.at(std::get<1>(result1.at(1))),
             std::get<2>(result1.at(1)));
 
-        //beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
-        //end.x = std::floor(end.x); end.y = std::floor(end.y);
+        beg.x = std::floor(beg.x); beg.y = std::floor(beg.y);
+        end.x = std::floor(end.x); end.y = std::floor(end.y);
         clipLine.emplace_back(beg); clipLine.emplace_back(end);
 
         for (auto i = std::get<1>(result1.at(0));
