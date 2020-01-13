@@ -314,13 +314,13 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
     std::vector<glm::vec2> result[2];
     for (auto & polygon : polygons0)
     {
+        auto bskip = false;
         if (UpdatePoints(points, polygon))
         {
             if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
             {
-                result[0].clear();
-                result[1].clear();
-                BinaryPoints(endA, endB, polygon, clipLine, result);
+                bskip = true; result[0].clear(); result[1].clear();
+                BinaryPoints(endA, endB, polygon, clipLine,result);
                 if (!tools::IsContains(points, result[0]))
                 {
                     polygons1.emplace_back(std::move(result[0]));
@@ -333,16 +333,10 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             }
             else
             {
-                if (!tools::IsContains(points, polygon))
-                {
-                    polygons1.emplace_back(polygon);
-                }
+                bskip = tools::IsContains(points, polygon);
             }
         }
-        else
-        {
-            polygons1.emplace_back(polygon);
-        }
+        if (!bskip) { polygons1.emplace_back(polygon); }
     }
     return polygons0.size() != polygons1.size();
 }
