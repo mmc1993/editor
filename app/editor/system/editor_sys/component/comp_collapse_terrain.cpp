@@ -40,7 +40,7 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
         canvas->Post(command);
 
-        DebugPostDrawPolygons(canvas);
+        //DebugPostDrawPolygons(canvas);
     }
 }
 
@@ -89,52 +89,50 @@ void CompCollapseTerrain::Erase(const std::vector<glm::vec2> & points)
     {
         clipLine.push_back(GetOwner()->WorldToLocal(point));
     }
-    if (ClearErase(clipLine))
+    for (const auto & convex : tools::StripConvexPoints(clipLine))
     {
-        for (const auto & convex : tools::StripConvexPoints(clipLine))
+        for (auto & point : tools::StripTrianglePoints(convex))
         {
-            for (auto & point : tools::StripTrianglePoints(convex))
-            {
-                mEraseList.emplace_back(point + offset, zeroColor);
-            }
+            mEraseList.emplace_back(point + offset, zeroColor);
         }
+    }
+    ClearErase(clipLine);
 
-        //  边缘处理
-        auto order = tools::CalePointsOrder(points);
-        ASSERT_LOG(order != 0, "");
-        order = order >= 0.0f ? 1.0f : -1.0f;
-        std::vector<RawMesh::Vertex> vertexs;
-        auto count  = points.size();
-        for (auto i = 0; i != count; ++i)
+    //  边缘处理
+    auto order = tools::CalePointsOrder(points);
+    ASSERT_LOG(order != 0, "");
+    order = order >= 0.0f ? 1.0f : -1.0f;
+    std::vector<RawMesh::Vertex> vertexs;
+    auto count  = points.size();
+    for (auto i = 0; i != count; ++i)
+    {
+        auto & a = points.at(i);
+        auto & b = points.at((i + 1) % count);
+        auto & c = points.at((i + 2) % count);
+        auto ab = b - a;
+        auto bc = c - b;
+        auto abr = glm::vec2(ab.y, -ab.x);
+        auto bcr = glm::vec2(bc.y, -bc.x);
+        abr = glm::normalize(abr) * 5.0f * order;
+        bcr = glm::normalize(bcr) * 5.0f * order;
+
+        auto ab0 = a, ab1 = a + abr;
+        auto ab2 = b, ab3 = b + abr;
+        auto bc0 = b, bc1 = b + bcr;
+
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab1) + offset, normColor);
+
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
+        mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
+
+        if (glm::cross(ab, bc) * order >= 0)
         {
-            auto & a = points.at(i);
-            auto & b = points.at((i + 1) % count);
-            auto & c = points.at((i + 2) % count);
-            auto ab = b - a;
-            auto bc = c - b;
-            auto abr = glm::vec2(ab.y, -ab.x);
-            auto bcr = glm::vec2(bc.y, -bc.x);
-            abr = glm::normalize(abr) * 5.0f * order;
-            bcr = glm::normalize(bcr) * 5.0f * order;
-
-            auto ab0 = a, ab1 = a + abr;
-            auto ab2 = b, ab3 = b + abr;
-            auto bc0 = b, bc1 = b + bcr;
-
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab1) + offset, normColor);
-
             mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
             mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-            mEraseList.emplace_back(GetOwner()->WorldToLocal(ab0) + offset, edgeColor);
-
-            if (glm::cross(ab, bc) * order >= 0)
-            {
-                mEraseList.emplace_back(GetOwner()->WorldToLocal(ab2) + offset, edgeColor);
-                mEraseList.emplace_back(GetOwner()->WorldToLocal(ab3) + offset, normColor);
-                mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, normColor);
-            }
+            mEraseList.emplace_back(GetOwner()->WorldToLocal(bc1) + offset, normColor);
         }
     }
 }
@@ -484,7 +482,7 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
         auto & a = polygon.at(i);
         auto & b = polygon.at((i + 1) % count);
         auto r = b - a;r = glm::vec2(r.y,-r.x);
-        r = glm::normalize(r) * 1.0f;
+        r = glm::normalize(r) * 0.5f;
 
         auto p0 = a - r;
         auto p1 = a + r;
