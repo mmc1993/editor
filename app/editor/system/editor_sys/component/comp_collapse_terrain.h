@@ -9,11 +9,6 @@ public:
     using Clip = std::vector<glm::vec2>;
     using Area = std::vector<glm::vec2>;
 
-    struct ClipCount {
-        uint mAreaIdx;
-        uint mAreaNum;
-    };
-
     struct ClipPoint {
         uint mAreaIdx0;
         uint mAreaIdx1;
@@ -28,6 +23,8 @@ public:
         uint mAreaEnd1;
         std::vector<glm::vec2> mLine;
     };
+
+    using ClipNums = std::vector<uint>;
 
 public:
     CompCollapseTerrain();
@@ -51,23 +48,30 @@ private:
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
     
-    auto GenClipCount(const Clip & clip)->std::vector<ClipCount>;
-
-    auto GenClipPoint(
-        const Area & area,
-        const Clip & clip,
-        bool onlyone)->std::vector<ClipPoint>;
+    auto GenClipNums(const Clip & clip)->ClipNums;
 
     auto GenClipLine(
         const Clip & clip,
         const ClipPoint & cp0,
         const ClipPoint & cp1)->ClipLine;
 
+    auto GenClipPoint(
+        const Area & area,
+        const Clip & clip,
+        bool onlyone = false)->std::vector<ClipPoint>;
+
     void BinaryPoints(
         const Area & area,
         const Clip & clip,
         const ClipLine & clipLine,
         std::vector<glm::vec2> * output);
+
+    bool UpdateClip(const Area & area, Clip & clip);
+
+    void HandleClip(
+        const Clip & clip,
+        const std::vector<Area> & input, 
+              std::vector<Area> & output);
 
     void HandleClip(const Clip & clip);
 

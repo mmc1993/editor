@@ -276,8 +276,58 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     canvas->Post(targetCommand);
 }
 
+auto CompCollapseTerrain::GenClipNums(const Clip & clip) -> ClipNums
+{
+    ClipNums result;
+    auto clip2=clip;
+    for (auto & area : mAreas)
+    {
+        UpdateClip(area, clip2);
+        auto cps = GenClipPoint(area,clip2);
+        result.emplace_back(cps.size() / 2);
+    }
+    return std::move(result);
+}
+
+auto CompCollapseTerrain::GenClipPoint(const Area & area, const Clip & clip, bool onlyone) -> std::vector<ClipPoint>
+{
+    return std::vector<ClipPoint>();
+}
+
+bool CompCollapseTerrain::UpdateClip(const Area & area, Clip & clip)
+{
+    auto it = std::find_if(clip.begin(), clip.end(), [&] (const glm::vec2 & point)
+        {
+            return !tools::IsContains(area, point);
+        });
+    if (it != clip.end())
+    {
+        std::rotate(clip.begin(), it, clip.end());
+    }
+    return it != clip.end();
+}
+
 void CompCollapseTerrain::HandleClip(const Clip & clip)
 {
+    auto clipNums = GenClipNums(clip);
+    std::vector<Clip> buffers[2];
+    auto clip2            = clip;
+
+    for (auto i = 0; i != clipNums.size(); ++i)
+    {
+        if (clipNums.at(i) != 0)
+        {
+            buffers[0].emplace_back(mAreas.at(i));
+            UpdateClip(buffers[0].front(), clip2);
+            buffers[1].clear();
+            for (auto j = 0; j != clipNums.at(i); ++j)
+            {
+                HandleClip(clip2, buffers[0], buffers[1]);
+                std::swap(        buffers[0], buffers[1]);
+            }
+            mAreas.insert(mAreas.end(), buffers[0].begin(), buffers[0].end());
+        }
+    }
 }
 
 void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
