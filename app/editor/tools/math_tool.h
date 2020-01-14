@@ -113,6 +113,12 @@ namespace tools {
         }
     }
 
+    //  点是否在线上
+    inline bool IsOnLine(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
+    {
+        return Equal(glm::cross(p - a, b - p), 0.0f);
+    }
+
     //  点是否在线段上
     inline bool IsOnSegment(const glm::vec2 & p, const glm::vec2 & a, const glm::vec2 & b)
     {
@@ -120,7 +126,7 @@ namespace tools {
             && p.x <= std::max(a.x, b.x)
             && p.y >= std::min(a.y, b.y)
             && p.y <= std::max(a.y, b.y)
-            && glm::cross(p - a, b - p) == 0.0f;
+            && Equal(glm::cross(p - a, b - p), 0.0f);
     }
 
     //  点是否在线段上
@@ -272,26 +278,35 @@ namespace tools {
     //  点是否在多边形内
     inline bool IsContains(const std::vector<glm::vec2> & points, const glm::vec2 & a, bool online = true)
     {
-        glm::vec2 b(std::numeric_limits<float>::max(), a.y);
-
-        auto num  = 0;
-        auto size = points.size();
+        auto num    = 0;
+        auto crossA = 0.0f;
+        auto crossB = 0.0f;
+        auto size   = points.size();
+        glm::vec2   b(a.x + 1, a.y);
         for (auto i = 0; i != size; ++i)
         {
-            auto & c = points.at(i             );
-            auto & d = points.at((i + 1) % size);
-            if (online && IsOnSegment(a, c, d))
+            auto j = (i + 1) % size;
+            auto & c = points.at(i);
+            auto & d = points.at(j);
+            if (a == c || a == d || IsOnSegment(a, c, d))
             {
-                return true;
+                return online;
             }
+
             if (c.y != d.y)
             {
-                if (IsCrossSegment(a, b, c, d))
+                if      (IsOnLine(a, b, c) && c.y > d.y)
                 {
-                    if (c.y < d.y)
-                    { if (c.y < a.y) ++num; }
-                    else
-                    { if (d.y < a.y) ++num; }
+                    ++num;
+                }
+                else if (IsOnLine(a, b, d) && d.y > c.y)
+                {
+                    ++num;
+                }
+                else if (IsCrossLine(a, b, c, d, &crossA, &crossB) &&
+                    crossA >= 0.0f && crossB > 0.0f && crossB < 1.0f)
+                {
+                    ++num;
                 }
             }
         }

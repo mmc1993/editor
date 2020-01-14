@@ -366,23 +366,29 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                     {
                         if (tools::IsContains(polygon, b, false))
                         {
-                            result1.emplace_back(i, j, std::get<3>(result0.front()), std::get<0>(result0.front()),
-                                                       std::get<1>(result0.front()), std::get<2>(result0.front()));
+                            result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
+                                                       std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
+                            break;
                         }
                     }
                     else
                     {
-                        if (k + 1 == result0.size()) { break; }
-                        const auto & curr = result0.at(k);
-                        const auto & next = result0.at(k + 1);
-                        if (!tools::Equal(std::get<2>(next), 0.0f) && !tools::Equal(std::get<2>(next), 1.0f) ||
-                            !tools::Equal(std::get<2>(curr), 0.0f) && !tools::Equal(std::get<2>(curr), 1.0f) ||
-                            !tools::Equal(std::get<3>(curr), std::get<3>(next)) &&
-                            (tools::Equal(std::get<2>(curr), 0.0f) && std::abs((int)std::get<0>(curr) - (int)std::get<1>(next)) != 1 ||
-                             tools::Equal(std::get<2>(curr), 1.0f) && std::abs((int)std::get<1>(curr) - (int)std::get<0>(next)) != 1))
+                        if      (k + 1 == result0.size() && tools::IsContains(polygon, b, false))
                         {
-                            result1.emplace_back(i, j, std::get<3>(curr), std::get<0>(curr),
-                                                       std::get<1>(curr), std::get<2>(curr));
+                            result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
+                                                       std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
+                            break;
+                        }
+                        else if (k + 1 != result0.size())
+                        {
+                            const auto & curr = result0.at(k);
+                            const auto & next = result0.at(k + 1);
+                            if (!tools::Equal(std::get<2>(next), 0.0f) && !tools::Equal(std::get<2>(next), 1.0f) ||
+                                !tools::Equal(std::get<2>(curr), 0.0f) && !tools::Equal(std::get<2>(curr), 1.0f))
+                            {
+                                result1.emplace_back(i, j, std::get<3>(curr), std::get<0>(curr),
+                                                           std::get<1>(curr), std::get<2>(curr));
+                            }
                         }
                     }
                 }
