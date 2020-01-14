@@ -691,7 +691,7 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
         auto & a = polygon.at(i);
         auto & b = polygon.at((i + 1) % count);
         auto r = b - a;r = glm::vec2(r.y,-r.x);
-        r = glm::normalize(r) * 0.1f;
+        r = glm::normalize(r) * 1.0f;
 
         auto p0 = a - r;
         auto p1 = a + r;

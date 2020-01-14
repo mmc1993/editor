@@ -71,7 +71,7 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
     //mTrackPoints.emplace_back(20, 20);
     //mTrackPoints.emplace_back(-20, 20);
 
-    const auto count = 20;
+    const auto count = 10;
     for (auto i = 0; i != count; ++i)
     {
         auto a = glm::pi<float>() * 2.0f / count * i;
