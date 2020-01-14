@@ -193,7 +193,7 @@ void CompCollapseTerrain::Init(UIObjectGLCanvas* canvas)
     //  初始化碰撞边框
     for (auto & area : mJson.Instance<mmc::Json>()->At("List"))
     {
-        auto & points = mPolygons.emplace_back();
+        auto & points = mAreas.emplace_back();
         for (auto & point : area.mVal)
         {
             points.emplace_back(
@@ -276,18 +276,22 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     canvas->Post(targetCommand);
 }
 
+void CompCollapseTerrain::HandleClip(const Clip & clip)
+{
+}
+
 void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 {
-    std::vector<Polygon> polygons[2];
-    polygons[0]=std::move(mPolygons);
+    std::vector<Area> polygons[2];
+    polygons[0]=std::move(mAreas);
 
     for (auto clips = points;
         ClearErase(clips, polygons[0], polygons[1]);
         polygons[0].clear(), std::swap(polygons[0], polygons[1]));
-    mPolygons = std::move(polygons[1]);
+    mAreas = std::move(polygons[1]);
 }
 
-bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
+bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Area> & polygons0, std::vector<Area> & polygons1)
 {
     //  调整切线集, 使得第一条切线起点不在多边形内
     auto UpdatePoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
@@ -490,13 +494,13 @@ void CompCollapseTerrain::Optimize(std::vector<glm::vec2> & polygon)
 
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)
 {
-    for (auto & polygon : mPolygons)
+    for (auto & polygon : mAreas)
     {
         DebugPostDrawPolygon(canvas, polygon);
     }
 }
 
-void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Polygon & polygon)
+void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Area & polygon)
 {
     std::vector<RawMesh::Vertex> points;
     auto count = polygon.size();

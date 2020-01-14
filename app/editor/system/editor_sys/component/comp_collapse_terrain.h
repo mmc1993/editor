@@ -4,13 +4,30 @@
 
 class CompCollapseTerrain : public Component {
 public:
-    using Polygon = std::vector<glm::vec2>;
+    using PairImage = std::pair<std::string, SharePtr<RawImage>>;
 
-    struct EraseParam {
-        glm::vec2 mTriangle[3];
+    using Clip = std::vector<glm::vec2>;
+    using Area = std::vector<glm::vec2>;
+
+    struct ClipCount {
+        uint mAreaIdx;
+        uint mAreaNum;
     };
 
-    using PairImage = std::pair<std::string, SharePtr<RawImage>>;
+    struct ClipPoint {
+        uint mAreaIdx0;
+        uint mAreaIdx1;
+        float mAreaCross;
+        uint mClipIdx0;
+        uint mClipIdx1;
+        float mClipCross;
+    };
+
+    struct ClipLine {
+        uint mAreaEnd0;
+        uint mAreaEnd1;
+        std::vector<glm::vec2> mLine;
+    };
 
 public:
     CompCollapseTerrain();
@@ -33,10 +50,35 @@ private:
     void Init(UIObjectGLCanvas * canvas);
     bool Update(UIObjectGLCanvas* canvas);
     void ClearErase(UIObjectGLCanvas * canvas);
+    
+    auto GenClipCount(const Clip & clip)->std::vector<ClipCount>;
+
+    auto GenClipPoint(
+        const Area & area,
+        const Clip & clip,
+        bool onlyone)->std::vector<ClipPoint>;
+
+    auto GenClipLine(
+        const Clip & clip,
+        const ClipPoint & cp0,
+        const ClipPoint & cp1)->ClipLine;
+
+    void BinaryPoints(
+        const Area & area,
+        const Clip & clip,
+        const ClipLine & clipLine,
+        std::vector<glm::vec2> * output);
+
+    void HandleClip(const Clip & clip);
+
+
+
+
+
     void ClearErase(const std::vector<glm::vec2> & points);
     bool ClearErase(std::vector<glm::vec2> & points, 
-                    std::vector<Polygon> & polygons0,
-                    std::vector<Polygon> & polygons1);
+                    std::vector<Area> & polygons0,
+                    std::vector<Area> & polygons1);
     auto CrossResult(const std::vector<glm::vec2> & points,
                      const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>;
     void BinaryPoints(uint endA, uint endB,
@@ -50,16 +92,17 @@ private:
     //  ÍêÉÆºóÉ¾³ý
     //  Debug
     void DebugPostDrawPolygons(UIObjectGLCanvas * canvas);
-    void DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Polygon & polygon);
+    void DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const Area & polygon);
 
 private:
     Res::Ref    mMap;
     Res::Ref    mJson;
     glm::vec2   mAnchor;
 
+    std::vector<Area>               mAreas;
+
     SharePtr<RawMesh>               mMesh;
     SharePtr<RawImage>              mTexture;
-    std::vector<Polygon>            mPolygons;
 
     SharePtr<RawProgram>            mProgramInit;
     SharePtr<RawProgram>            mProgramDraw;
