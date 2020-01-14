@@ -40,7 +40,7 @@ void CompCollapseTerrain::OnUpdate(UIObjectGLCanvas * canvas, float dt)
         command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
         canvas->Post(command);
 
-        //DebugPostDrawPolygons(canvas);
+        DebugPostDrawPolygons(canvas);
     }
 }
 
