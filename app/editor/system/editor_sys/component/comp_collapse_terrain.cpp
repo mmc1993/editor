@@ -276,28 +276,25 @@ void CompCollapseTerrain::ClearErase(UIObjectGLCanvas * canvas)
     canvas->Post(targetCommand);
 }
 
-bool CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
+void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
 {
     std::vector<Polygon> polygons[2];
     polygons[0]=std::move(mPolygons);
 
-    bool isCheckClip = false;
     for (auto clips = points;
-        ClearErase(clips, polygons[0], polygons[1], &isCheckClip);
+        ClearErase(clips, polygons[0], polygons[1]);
         polygons[0].clear(), std::swap(polygons[0], polygons[1]));
     mPolygons = std::move(polygons[1]);
-
-    return isCheckClip;
 }
 
-bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1, bool * isCheckClip)
+bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Polygon> & polygons0, std::vector<Polygon> & polygons1)
 {
     //  调整切线集, 使得第一条切线起点不在多边形内
     auto UpdatePoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
     {
         auto it = std::find_if(points.begin(), points.end(), [&polygon] (const glm::vec2 & point)
             {
-                return !tools::IsContains(polygon, point, false);
+                return !tools::IsContains(polygon, point);
             });
         if (it != points.end())
         {
@@ -306,6 +303,7 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
         return it != points.end();
     };
 
+    auto ret = false;
     std::vector<glm::vec2> result[2];
     for (auto & polygon : polygons0)
     {
@@ -316,15 +314,16 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             {
                 bskip = true; result[0].clear(); result[1].clear();
                 BinaryPoints(endA, endB, polygon, clipLine,result);
+                Optimize(result[0]);
+                Optimize(result[1]);
                 if (!IsContains(points, result[0]))
                 {
-                    polygons1.emplace_back(std::move(result[0]));
+                    ret = true; polygons1.emplace_back(std::move(result[0]));
                 }
                 if (!IsContains(points, result[1]))
                 {
-                    polygons1.emplace_back(std::move(result[1]));
+                    ret = true; polygons1.emplace_back(std::move(result[1]));
                 }
-                *isCheckClip = *isCheckClip || true;
             }
             else
             {
@@ -332,9 +331,8 @@ bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vecto
             }
         }
         if (!bskip) { polygons1.emplace_back(polygon); }
-        int debug = 0;
     }
-    return polygons0.size() != polygons1.size();
+    return ret;
 }
 
 auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>
@@ -368,7 +366,6 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                         {
                             result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
                                                        std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
-                            break;
                         }
                     }
                     else
@@ -377,14 +374,19 @@ auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, con
                         {
                             result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
                                                        std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
-                            break;
                         }
                         else if (k + 1 != result0.size())
                         {
                             const auto & curr = result0.at(k);
                             const auto & next = result0.at(k + 1);
-                            if (!tools::Equal(std::get<2>(next), 0.0f) && !tools::Equal(std::get<2>(next), 1.0f) ||
-                                !tools::Equal(std::get<2>(curr), 0.0f) && !tools::Equal(std::get<2>(curr), 1.0f))
+                            auto p0 = polygon.at(std::get<0>(curr));
+                            auto p1 = polygon.at(std::get<1>(curr));
+                            auto p2 = polygon.at(std::get<0>(next));
+                            auto p3 = polygon.at(std::get<1>(next));
+                            auto v0 = glm::lerp(p0, p1, std::get<2>(curr));
+                            auto v1 = glm::lerp(p2, p3, std::get<2>(next));
+                            if (tools::DistanceSqrt(p0, v0) > 1 && tools::DistanceSqrt(p1, v0) > 1 ||
+                                tools::DistanceSqrt(p2, v1) > 1 && tools::DistanceSqrt(p3, v1) > 1)
                             {
                                 result1.emplace_back(i, j, std::get<3>(curr), std::get<0>(curr),
                                                            std::get<1>(curr), std::get<2>(curr));
@@ -471,6 +473,21 @@ bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, con
     return true;
 }
 
+void CompCollapseTerrain::Optimize(std::vector<glm::vec2> & polygon)
+{
+    auto output = std::move(polygon);
+    polygon.emplace_back(output.front());
+    for (auto i = 1; i != output.size(); ++i)
+    {
+        auto & a = polygon.back();
+        auto & b = output.at(i);
+        if (tools::DistanceSqrt(a, b) > 2)
+        {
+            polygon.emplace_back(b);
+        }
+    }
+}
+
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)
 {
     for (auto & polygon : mPolygons)
@@ -488,20 +505,24 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
         auto & a = polygon.at(i);
         auto & b = polygon.at((i + 1) % count);
         auto r = b - a;r = glm::vec2(r.y,-r.x);
-        r = glm::normalize(r) * 0.5f;
+        r = glm::normalize(r) * 0.1f;
 
         auto p0 = a - r;
         auto p1 = a + r;
         auto p2 = b - r;
         auto p3 = b + r;
 
-        points.emplace_back(p0, glm::vec4(1, 1, 1, 1));
-        points.emplace_back(p1, glm::vec4(1, 1, 1, 1));
-        points.emplace_back(p3, glm::vec4(1, 1, 1, 1));
+        auto color = i == 0 
+            ? glm::vec4(1, 0, 0, 1) : i == 1
+            ? glm::vec4(0, 1, 0, 1)
+            : glm::vec4(1, 1, 1, 1);
+        points.emplace_back(p0, color);
+        points.emplace_back(p1, color);
+        points.emplace_back(p3, color);
 
-        points.emplace_back(p0, glm::vec4(1, 1, 1, 1));
-        points.emplace_back(p3, glm::vec4(1, 1, 1, 1));
-        points.emplace_back(p2, glm::vec4(1, 1, 1, 1));
+        points.emplace_back(p0, color);
+        points.emplace_back(p3, color);
+        points.emplace_back(p2, color);
     }
 
     RenderPipline::FowardCommand command;

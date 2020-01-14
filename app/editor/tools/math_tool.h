@@ -295,16 +295,11 @@ namespace tools {
 
             if (c.y != d.y)
             {
-                if      (IsOnLine(a, b, c) && c.y > d.y)
-                {
-                    ++num;
-                }
-                else if (IsOnLine(a, b, d) && d.y > c.y)
-                {
-                    ++num;
-                }
-                else if (IsCrossLine(a, b, c, d, &crossA, &crossB) &&
-                    crossA >= 0.0f && crossB > 0.0f && crossB < 1.0f)
+                auto ret = IsCrossLine(a, b, c, d, &crossA, &crossB);
+                if (ret && crossA >= 0.0f && 
+                    (Equal(crossB, 0.0f) && c.y > d.y ||
+                     Equal(crossB, 1.0f) && d.y > c.y ||
+                     crossB > 0.0f && crossB < 1.0f))
                 {
                     ++num;
                 }
