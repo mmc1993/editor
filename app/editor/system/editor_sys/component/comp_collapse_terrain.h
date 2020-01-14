@@ -16,6 +16,21 @@ public:
         uint mClipIdx0;
         uint mClipIdx1;
         float mClipCross;
+
+        ClipPoint(
+            uint    areaIdx0    = 0,
+            uint    areaIdx1    = 0,
+            float   areaCross   = 0,
+            uint    clipIdx0    = 0,
+            uint    clipIdx1    = 0,
+            float   clipCross   = 0)
+            : mAreaIdx0(areaIdx0)
+            , mAreaIdx1(areaIdx1)
+            , mAreaCross(areaCross)
+            , mClipIdx0(clipIdx0)
+            , mClipIdx1(clipIdx1)
+            , mClipCross(clipCross)
+        { }
     };
 
     struct ClipLine {
@@ -79,19 +94,19 @@ private:
 
 
 
-    void ClearErase(const std::vector<glm::vec2> & points);
-    bool ClearErase(std::vector<glm::vec2> & points, 
-                    std::vector<Area> & polygons0,
-                    std::vector<Area> & polygons1);
-    auto CrossResult(const std::vector<glm::vec2> & points,
-                     const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>;
-    void BinaryPoints(uint endA, uint endB,
-                      const std::vector<glm::vec2> & points,
-                      const std::vector<glm::vec2> & clipLine, 
-                      std::vector<glm::vec2> * output);
+    //void ClearErase(const std::vector<glm::vec2> & points);
+    //bool ClearErase(std::vector<glm::vec2> & points, 
+    //                std::vector<Area> & polygons0,
+    //                std::vector<Area> & polygons1);
+    //auto CrossResult(const std::vector<glm::vec2> & points,
+    //                 const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>;
+    //void BinaryPoints(uint endA, uint endB,
+    //                  const std::vector<glm::vec2> & points,
+    //                  const std::vector<glm::vec2> & clipLine, 
+    //                  std::vector<glm::vec2> * output);
     bool IsContains(const std::vector<glm::vec2> & points0, 
                     const std::vector<glm::vec2> & points1);
-    void Optimize(std::vector<glm::vec2> & polygon);
+    //void Optimize(std::vector<glm::vec2> & polygon);
 
     //  ÍêÉÆºóÉ¾³ý
     //  Debug

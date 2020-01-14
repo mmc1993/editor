@@ -20,10 +20,11 @@ CompPolygon::CompPolygon()
 
 void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (ImGui::IsKeyPressed('A', false))
+    if (ImGui::IsKeyPressed('A', true))
     {
-        if (mTrackPoints.size() > 2)
+        if (mLastCoord != GetOwner()->GetTransform()->GetPosition() && mTrackPoints.size() > 2)
         {
+            mLastCoord = GetOwner()->GetTransform()->GetPosition();
             auto owner = GetOwner();
             auto parent = GetOwner()->GetParent();
             auto terrain = parent->GetComponent<CompCollapseTerrain>();
@@ -70,7 +71,7 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
     //mTrackPoints.emplace_back(20, 20);
     //mTrackPoints.emplace_back(-20, 20);
 
-    const auto count = 5;
+    const auto count = 20;
     for (auto i = 0; i != count; ++i)
     {
         auto a = glm::pi<float>() * 2.0f / count * i;
