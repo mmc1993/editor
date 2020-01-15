@@ -156,11 +156,12 @@ void CompTransform::OnModifyTrackPoint(const size_t index, const glm::vec2 & poi
 
 void CompTransform::UpdateMatrix()
 {
+    static const auto ZAxis = glm::vec3(0, 0, 1);
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
         mMatrix = glm::translate(glm::mat4(1), glm::vec3(mPosition, 0));
-        mMatrix = glm::rotate(mMatrix, glm::radians(mAngle), glm::vec3(0, 0, 1));
+        mMatrix = glm::rotate(mMatrix, glm::radians(mAngle), ZAxis);
         mMatrix = glm::scale(mMatrix, glm::vec3(mScale, 1));
     }
 }
