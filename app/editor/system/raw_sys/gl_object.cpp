@@ -306,29 +306,29 @@ void GLObject::ClearComponents()
 	}
 }
 
-SharePtr<GLObject> GLObject::AddComponent(const SharePtr<Component> & component)
+void GLObject::AddComponent(const SharePtr<Component> & component)
 {
     ASSERT_LOG(mID != ~0, "");
     mComponents.push_back(component);
     component->SetOwner(this);
     component->OnAdd();
-    return shared_from_this();
 }
 
-SharePtr<GLObject> GLObject::DelComponent(const SharePtr<Component> & component)
+void GLObject::DelComponent(const SharePtr<Component> & component)
 {
     auto it = std::find(mComponents.begin(), mComponents.end(), component);
     if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
-    return shared_from_this();
 }
 
-SharePtr<GLObject> GLObject::DelComponent(const std::type_info & type)
+void GLObject::DelComponent(const std::type_info & type)
 {
     auto it = std::find_if(mComponents.begin(), mComponents.end(),
-        [&type](const SharePtr<Component> & component) 
+        [&](const SharePtr<Component> & component) 
         { return typeid(*component) == type; });
-    if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
-    return shared_from_this();
+    if (it != mComponents.end()) 
+    { 
+        (*it)->OnDel(); mComponents.erase(it);
+    }
 }
 
 std::vector<SharePtr<Component>> & GLObject::GetComponents()

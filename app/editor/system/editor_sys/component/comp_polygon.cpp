@@ -22,13 +22,12 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
     if (ImGui::IsKeyPressed('A', true))
     {
-        if (mLastCoord != GetOwner()->GetTransform()->GetPosition() && mTrackPoints.size() > 2)
+        auto owner = GetOwner();
+        auto parent = GetOwner()->GetParent();
+        auto terrain = parent->QueryComponent<CompCollapseTerrain>();
+        if (terrain && mLastCoord != GetOwner()->GetTransform()->GetPosition() && mTrackPoints.size() > 2)
         {
             mLastCoord = GetOwner()->GetTransform()->GetPosition();
-            auto owner = GetOwner();
-            auto parent = GetOwner()->GetParent();
-            auto terrain = parent->QueryComponent<CompCollapseTerrain>();
-            ASSERT_LOG(terrain != nullptr, "");
 
             std::vector<glm::vec2> points;
             std::transform(mTrackPoints.begin(), mTrackPoints.end(), std::back_inserter(points), [&owner] (const auto & point)
