@@ -59,27 +59,27 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
     tools::Deserialize(is, mSegments);
     tools::Deserialize(is, mTrackPoints);
 
-    mSegments.clear();
+    //mSegments.clear();
     //mSegments.emplace_back(-20, -20);
     //mSegments.emplace_back( 20, -20);
     //mSegments.emplace_back( 20,  20);
     //mSegments.emplace_back(-20,  20);
 
-    mTrackPoints.clear();
+    //mTrackPoints.clear();
     //mTrackPoints.emplace_back(-20, -20);
     //mTrackPoints.emplace_back(20, -20);
     //mTrackPoints.emplace_back(20, 20);
     //mTrackPoints.emplace_back(-20, 20);
 
-    const auto count = 10;
-    for (auto i = 0; i != count; ++i)
-    {
-        auto a = glm::pi<float>() * 2.0f / count * i;
-        mTrackPoints.emplace_back(
-            std::cos(a) * 10,
-            std::sin(a) * 10);
-        mSegments.emplace_back(mTrackPoints.back());
-    }
+    //const auto count = 10;
+    //for (auto i = 0; i != count; ++i)
+    //{
+    //    auto a = glm::pi<float>() * 2.0f / count * i;
+    //    mTrackPoints.emplace_back(
+    //        std::cos(a) * 10,
+    //        std::sin(a) * 10);
+    //    mSegments.emplace_back(mTrackPoints.back());
+    //}
 }
 
 bool CompPolygon::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
