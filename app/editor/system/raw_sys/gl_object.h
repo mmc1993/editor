@@ -95,29 +95,29 @@ public:
         return std::move(result);
     }
 
-    template <class T>
-    std::vector<SharePtr<T>> QueryComponents()
-    {
-        std::vector<SharePtr<T>> result;
-        std::copy_if(mComponents.begin(), mComponents.end(), std::back_inserter(result),
-            [] (const SharePtr<Component> & component)
-            {return typeid(*component) == typeid(T);});
-        return std::move(result);
-    }
+    //template <class T>
+    //std::vector<SharePtr<T>> QueryComponents()
+    //{
+    //    std::vector<SharePtr<T>> result;
+    //    std::copy_if(mComponents.begin(), mComponents.end(), std::back_inserter(result),
+    //        [] (const SharePtr<Component> & component)
+    //        {return typeid(*component) == typeid(T);});
+    //    return std::move(result);
+    //}
 
-    template <class T>
-    std::vector<SharePtr<T>> QueryComponentsInChildrens()
-    {
-        std::vector<SharePtr<T>> result;
-        auto comps = QueryComponents<T>();
-        result.insert(result.end(), comps.begin(), comps.end());
-        for (const auto & v : mChildren)
-        {
-            auto comps = std::move(v->QueryComponentsInChildrens<T>());
-            result.insert(result.end(), comps.begin(), comps.end());
-        }
-        return std::move(result);
-    }
+    //template <class T>
+    //std::vector<SharePtr<T>> QueryComponentsInChildrens()
+    //{
+    //    std::vector<SharePtr<T>> result;
+    //    auto comps = QueryComponents<T>();
+    //    result.insert(result.end(), comps.begin(), comps.end());
+    //    for (const auto & v : mChildren)
+    //    {
+    //        auto comps = std::move(v->QueryComponentsInChildrens<T>());
+    //        result.insert(result.end(), comps.begin(), comps.end());
+    //    }
+    //    return std::move(result);
+    //}
 
 private:
     uint                                mID;

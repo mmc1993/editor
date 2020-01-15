@@ -343,6 +343,12 @@ bool EditorSys::ObjectName(uint id, const std::string & name)
     return ObjectName(GetProject()->GetObject(id), name);
 }
 
+SharePtr<GLObject> EditorSys::NewObject()
+{
+    ASSERT_LOG(mProject->IsOpen(), "");
+    return mProject->NewObject();
+}
+
 const std::vector<SharePtr<GLObject>> & EditorSys::GetSelectedObjects()
 {
     return mSelected;

@@ -74,6 +74,8 @@ public:
     std::string ObjectName(uint id);
     bool        ObjectName(const SharePtr<GLObject> & parent, const std::string & name);
     bool        ObjectName(uint id, const std::string & name);
+    //  新建一个GLObject
+    SharePtr<GLObject> NewObject();
     //  获取当前选中的对象
     const std::vector<SharePtr<GLObject>> & GetSelectedObjects();
 };
