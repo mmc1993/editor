@@ -108,8 +108,8 @@ private:
     SharePtr<RawMesh>               mMesh;
     SharePtr<RawImage>              mTexture;
 
+    std::vector<RawMesh::Vertex>    mEraseList;
     SharePtr<RawProgram>            mProgramInit;
     SharePtr<RawProgram>            mProgramDraw;
     SharePtr<RawProgram>            mProgramQuad;
-    std::vector<RawMesh::Vertex>    mEraseList;
 };
