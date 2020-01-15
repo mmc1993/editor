@@ -462,183 +462,6 @@ void CompCollapseTerrain::HandleClip(const Clip & clip)
     mAreas.erase(mAreas.begin(), mAreas.begin() + clipNums.size());
 }
 
-//void CompCollapseTerrain::ClearErase(const std::vector<glm::vec2> & points)
-//{
-//    std::vector<Area> polygons[2];
-//    polygons[0]=std::move(mAreas);
-//
-//    for (auto clips = points;
-//        ClearErase(clips, polygons[0], polygons[1]);
-//        polygons[0].clear(), std::swap(polygons[0], polygons[1]));
-//    mAreas = std::move(polygons[1]);
-//}
-
-//bool CompCollapseTerrain::ClearErase(std::vector<glm::vec2> & points, std::vector<Area> & polygons0, std::vector<Area> & polygons1)
-//{
-//    //  调整切线集, 使得第一条切线起点不在多边形内
-//    auto UpdatePoints = [] (std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon)
-//    {
-//        auto it = std::find_if(points.begin(), points.end(), [&polygon] (const glm::vec2 & point)
-//            {
-//                return !tools::IsContains(polygon, point);
-//            });
-//        if (it != points.end())
-//        {
-//            std::rotate(points.begin(), it, points.end());
-//        }
-//        return it != points.end();
-//    };
-//
-//    auto ret = false;
-//    std::vector<glm::vec2> result[2];
-//    for (auto & polygon : polygons0)
-//    {
-//        auto bskip = false;
-//        if (UpdatePoints(points, polygon))
-//        {
-//            if (auto [cross, endA, endB, clipLine] = CrossResult(points, polygon); cross)
-//            {
-//                bskip = true; result[0].clear(); result[1].clear();
-//                BinaryPoints(endA, endB, polygon, clipLine,result);
-//                Optimize(result[0]);
-//                Optimize(result[1]);
-//                if (!IsContains(points, result[0]))
-//                {
-//                    ret = true; polygons1.emplace_back(std::move(result[0]));
-//                }
-//                if (!IsContains(points, result[1]))
-//                {
-//                    ret = true; polygons1.emplace_back(std::move(result[1]));
-//                }
-//            }
-//            else
-//            {
-//                bskip = tools::IsContains(points, polygon);
-//            }
-//        }
-//        if (!bskip) { polygons1.emplace_back(polygon); }
-//    }
-//    return ret;
-//}
-//
-//auto CompCollapseTerrain::CrossResult(const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & polygon) -> std::tuple<bool, uint, uint, std::vector<glm::vec2>>
-//{
-//    //  PointsBeg, PointsEnd, PointsCross, PolygonBeg, PolygonEnd, PolygonCross
-//    std::vector<std::tuple<uint, uint, float, uint, uint, float>> result1;
-//    //  PolygonBeg, PolygonEnd, PolygonCross, PointsCross,
-//    std::vector<std::tuple<uint, uint, float, float>>             result0;
-//    auto size   = points.size();
-//    for (auto i = 0; i != size && result1.size() != 2; ++i)
-//    {
-//        result0.clear();
-//        auto j = (i + 1) % size;
-//        auto & a = points.at(i);
-//        auto & b = points.at(j);
-//        ASSERT_LOG(a != b, " ");
-//        if (tools::IsCrossSegment(a, b, polygon, &result0))
-//        {
-//            std::sort(result0.begin(), result0.end(), [] (const auto & a, const auto & b)
-//                {
-//                    return std::get<3>(a) < std::get<3>(b);
-//                });
-//
-//            for (auto k = 0; k != result0.size() && result1.size() != 2; ++k)
-//            {
-//                if (result1.empty())
-//                {
-//                    if (result0.size() == 1)
-//                    {
-//                        if (tools::IsContains(polygon, b, false))
-//                        {
-//                            result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
-//                                                       std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
-//                        }
-//                    }
-//                    else
-//                    {
-//                        if      (k + 1 == result0.size() && tools::IsContains(polygon, b, false))
-//                        {
-//                            result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
-//                                                       std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
-//                        }
-//                        else if (k + 1 != result0.size())
-//                        {
-//                            const auto & curr = result0.at(k);
-//                            const auto & next = result0.at(k + 1);
-//                            auto p0 = polygon.at(std::get<0>(curr));
-//                            auto p1 = polygon.at(std::get<1>(curr));
-//                            auto p2 = polygon.at(std::get<0>(next));
-//                            auto p3 = polygon.at(std::get<1>(next));
-//                            auto v0 = glm::lerp(p0, p1, std::get<2>(curr));
-//                            auto v1 = glm::lerp(p2, p3, std::get<2>(next));
-//                            if (tools::DistanceSqrt(p0, v0) > 1 && tools::DistanceSqrt(p1, v0) > 1 ||
-//                                tools::DistanceSqrt(p2, v1) > 1 && tools::DistanceSqrt(p3, v1) > 1)
-//                            {
-//                                result1.emplace_back(i, j, std::get<3>(curr), std::get<0>(curr),
-//                                                           std::get<1>(curr), std::get<2>(curr));
-//                            }
-//                        }
-//                    }
-//                }
-//                else
-//                {
-//                    result1.emplace_back(i, j, std::get<3>(result0.at(k)), std::get<0>(result0.at(k)),
-//                                               std::get<1>(result0.at(k)), std::get<2>(result0.at(k)));
-//                }
-//            }
-//        }
-//    }
-//
-//    std::vector<glm::vec2> clipLine;
-//    if (result1.size() == 2)
-//    {
-//        auto beg = glm::lerp(
-//            points.at(std::get<0>(result1.at(0))),
-//            points.at(std::get<1>(result1.at(0))),
-//            std::get<2>(result1.at(0)));
-//
-//        auto end = glm::lerp(
-//            points.at(std::get<0>(result1.at(1))),
-//            points.at(std::get<1>(result1.at(1))),
-//            std::get<2>(result1.at(1)));
-//
-//        clipLine.emplace_back(beg);
-//        clipLine.emplace_back(end);
-//
-//        for (auto i = std::get<1>(result1.at(0));
-//                 i != std::get<1>(result1.at(1));
-//                 i  = (i + 1) % points.size())
-//        {
-//            clipLine.insert(std::prev(clipLine.end()), points.at(i));
-//        }
-//
-//        if (std::get<4>(result1.at(0)) == std::get<4>(result1.at(1)) &&
-//            std::get<5>(result1.at(0))  < std::get<5>(result1.at(1)))
-//        {
-//            std::reverse(clipLine.begin(), clipLine.end());
-//        }
-//        return std::make_tuple(true,
-//            std::get<4>(result1.at(0)),
-//            std::get<4>(result1.at(1)), clipLine);
-//    }
-//    return std::make_tuple(false, 0, 0, clipLine);
-//}
-//
-//void CompCollapseTerrain::BinaryPoints(uint endA, uint endB, const std::vector<glm::vec2> & points, const std::vector<glm::vec2> & clipLine, std::vector<glm::vec2> * output)
-//{
-//    for (auto i = endA; output[0].empty() || i != endB; i = (i + 1) % points.size())
-//    {
-//        output[0].emplace_back(points.at(i));
-//    }
-//    std::copy(clipLine.rbegin(), clipLine.rend(), std::back_inserter(output[0]));
-//
-//    for (auto i = endB; endB != endA && i != endA; i = (i + 1) % points.size())
-//    {
-//        output[1].emplace_back(points.at(i));
-//    }
-//    std::copy(clipLine.begin(), clipLine.end(), std::back_inserter(output[1]));
-//}
-
 bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, const std::vector<glm::vec2> & points1)
 {
     //  顶点是否在边附近
@@ -659,21 +482,6 @@ bool CompCollapseTerrain::IsContains(const std::vector<glm::vec2> & points0, con
     return true;
 }
 
-//void CompCollapseTerrain::Optimize(std::vector<glm::vec2> & polygon)
-//{
-//    auto output = std::move(polygon);
-//    polygon.emplace_back(output.front());
-//    for (auto i = 1; i != output.size(); ++i)
-//    {
-//        auto & a = polygon.back();
-//        auto & b = output.at(i);
-//        if (tools::DistanceSqrt(a, b) > 2)
-//        {
-//            polygon.emplace_back(b);
-//        }
-//    }
-//}
-
 void CompCollapseTerrain::DebugPostDrawPolygons(UIObjectGLCanvas * canvas)
 {
     for (auto & polygon : mAreas)
@@ -691,7 +499,7 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
         auto & a = polygon.at(i);
         auto & b = polygon.at((i + 1) % count);
         auto r = b - a;r = glm::vec2(r.y,-r.x);
-        r = glm::normalize(r) * 1.0f;
+        r = glm::normalize(r) * 0.5f;
 
         auto p0 = a - r;
         auto p1 = a + r;
