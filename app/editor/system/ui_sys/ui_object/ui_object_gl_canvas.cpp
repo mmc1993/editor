@@ -171,18 +171,25 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
 void UIObjectGLCanvas::CollCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    auto & command = state->mTargetCommandArray.emplace_back();
+    
+    RenderPipline::TargetCommand command;
+    command.mType = RenderPipline::TargetCommand::kPush;
     command.mRenderTextures[0] = state->mRenderTextures[0];
-    command.mRenderTextures[1] = state->mRenderTextures[1];
     command.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
                          | RenderPipline::RenderCommand::kTargetColor1;
+    Post(command);
+
     Global::Ref().mEditorSys->GetProject()->GetObject()->Update(this, 0.0f);
+    ASSERT_LOG(state->mTargetCommandStack.size() == 1, "");
+
+    command.mType = RenderPipline::TargetCommand::kPop;
+    Post(command);
 }
 
 void UIObjectGLCanvas::CallCommands()
 {
     auto state = GetState<UIStateGLCanvas>();
-    ASSERT_LOG(state->mTargetCommandStack == 0, "");
+    ASSERT_LOG(state->mTargetCommandStack.empty(), "");
     tools::RenderTargetBind(state->mRenderTarget, GL_FRAMEBUFFER);
 
     //  当前视口, 旧的视口, 新的视口
@@ -190,8 +197,8 @@ void UIObjectGLCanvas::CallCommands()
     glGetIntegerv(GL_VIEWPORT, &viewport[0][0]);
     glGetIntegerv(GL_VIEWPORT, &viewport[1][0]);
 
-    for (auto iter = state->mTargetCommandArray.rbegin(); 
-              iter != state->mTargetCommandArray.rend(); ++iter)
+    for (auto iter  = state->mTargetCommandArray.begin(); 
+              iter != state->mTargetCommandArray.end(); ++iter)
     {
         auto & command = *iter;
         if (command.mEnabledFlag & RenderPipline::TargetCommand::kClipView)
@@ -357,9 +364,12 @@ void UIObjectGLCanvas::DrawSelectRect()
 
 void UIObjectGLCanvas::Post(const RenderPipline::PostCommand & cmd)
 {
-    auto state = GetState<UIStateGLCanvas>();
-    ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
-    state->mTargetCommandArray.at(state->mTargetCommandStack).mPostCommands.emplace_back(cmd);
+    GetState<UIStateGLCanvas>()->mTargetCommandStack.back().mPostCommands.emplace_back(cmd);
+}
+
+void UIObjectGLCanvas::Post(const RenderPipline::FowardCommand & cmd)
+{
+    GetState<UIStateGLCanvas>()->mTargetCommandStack.back().mFowardCommands.emplace_back(cmd);
 }
 
 void UIObjectGLCanvas::Post(const::RenderPipline::TargetCommand & cmd)
@@ -367,23 +377,15 @@ void UIObjectGLCanvas::Post(const::RenderPipline::TargetCommand & cmd)
     auto state = GetState<UIStateGLCanvas>();
     if      (cmd.mType == RenderPipline::TargetCommand::TypeEnum::kPush)
     {
-        auto & command = state->mTargetCommandArray.emplace_back(cmd);
-        //command.mRenderTextures[0] = command.mRenderTextures[0];
-        command.mRenderTextures[1] = state->mRenderTextures[1];
-        ++state->mTargetCommandStack;
+        auto & top = state->mTargetCommandStack.emplace_back(cmd);
+        top.mRenderTextures[1] = state->mRenderTextures[1];
     }
     else if (cmd.mType == RenderPipline::TargetCommand::TypeEnum::kPop)
     {
-        ASSERT_LOG(state->mTargetCommandStack != 0, "");
-        --state->mTargetCommandStack;
+        auto & top = state->mTargetCommandStack.back();
+        state->mTargetCommandArray.emplace_back(std::move(top));
+        state->mTargetCommandStack.pop_back();
     }
-}
-
-void UIObjectGLCanvas::Post(const RenderPipline::FowardCommand & cmd)
-{
-    auto state = GetState<UIStateGLCanvas>();
-    ASSERT_LOG(state->mTargetCommandStack < state->mTargetCommandArray.size(), "");
-    state->mTargetCommandArray.at(state->mTargetCommandStack).mFowardCommands.emplace_back(cmd);
 }
 
 void UIObjectGLCanvas::Post(const SharePtr<RawProgram> & program, const glm::mat4 & transform)

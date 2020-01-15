@@ -129,8 +129,8 @@ public:
     GLuint mRenderTarget;
     SharePtr<RawImage> mRenderTextures[2];
     RenderPipline::MatrixStack mMatrixStack;
-    uint                                        mTargetCommandStack;
-    std::vector<RenderPipline::TargetCommand>   mTargetCommandArray;
+    std::vector<RenderPipline::TargetCommand> mTargetCommandStack;
+    std::vector<RenderPipline::TargetCommand> mTargetCommandArray;
 
     //  编辑功能相关
     struct Operation {
