@@ -19,7 +19,13 @@ protected:
     virtual void OnDel();
     virtual void OnStart(UIObjectGLCanvas * canvas) override;
     virtual void OnLeave(UIObjectGLCanvas * canvas) override;
+    virtual std::vector<Property> CollectProperty() override;
 
 private:
+    bool mDraw;
+
+    SharePtr<RawMesh>       mMesh;
+    SharePtr<RawProgram>    mProgram;
+
     SharePtr<RawImage> mImage;
 };
