@@ -415,7 +415,7 @@ void UIDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & objec
     {
         for (auto component : object->GetComponents())
         {
-            auto header = std::create_ptr<UIComponentHeader>(component->GetName());
+            auto header = std::create_ptr<UIComponentHeader>(component);
             GetOwner()->InsertObject(header);
 
             for (auto property : component->CreateUIPropertys())
@@ -428,7 +428,7 @@ void UIDelegateMainComList::OnEventSelectObject(const SharePtr<GLObject> & objec
 
 void UIDelegateMainComList::OnEventAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
-    auto header = std::create_ptr<UIComponentHeader>(component->GetName());
+    auto header = std::create_ptr<UIComponentHeader>(component);
     GetOwner()->InsertObject(header);
 
     for (auto property : component->CreateUIPropertys())

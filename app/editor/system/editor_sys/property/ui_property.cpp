@@ -1,10 +1,24 @@
 #include "ui_property.h"
+#include "../editor_sys.h"
 #include "../../ui_sys/ui_sys.h"
 #include "../../ui_sys/ui_list.h"
 
+UIComponentHeader::UIComponentHeader(const SharePtr<Component> & owner)
+    : UIObject(UITypeEnum::kOther, new UIState())
+    , mOwner(owner)
+    , mOpen(true)
+{
+    GetState()->Name = owner->GetName();
+}
+
 bool UIComponentHeader::OnEnter()
 {
-    return ImGui::CollapsingHeader(GetState()->Name.c_str(), ImGuiTreeNodeFlags_DefaultOpen);
+    return ImGui::CollapsingHeader(GetState()->Name.c_str(), &mOpen, ImGuiTreeNodeFlags_DefaultOpen);
+}
+
+void UIComponentHeader::OnLeave(bool ret)
+{
+    if (!mOpen) { Global::Ref().mEditorSys->OptDeleteComponent(mOwner->GetOwner(), mOwner); }
 }
 
 bool UIPropertyInt::OnEnter()

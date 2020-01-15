@@ -5,13 +5,15 @@
 
 class UIComponentHeader : public UIObject {
 public:
-    UIComponentHeader(const std::string & name): UIObject(UITypeEnum::kOther, new UIState())
-    {
-        GetState()->Name = name;
-    }
+    UIComponentHeader(const SharePtr<Component> & owner);
 
 private:
-    virtual bool OnEnter() override;
+    virtual bool OnEnter(        ) override;
+    virtual void OnLeave(bool ret) override;
+
+private:
+    SharePtr<Component> mOwner;
+    bool                mOpen;
 };
 
 template <class T>

@@ -53,6 +53,8 @@ public:
         const std::any & newValue, 
         const std::string & title) override;
 
+    const std::vector<Area> & GetAreas() { return mAreas; }
+
     void Erase(const std::vector<glm::vec2> & points);
 
 protected:
