@@ -27,7 +27,7 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
             mLastCoord = GetOwner()->GetTransform()->GetPosition();
             auto owner = GetOwner();
             auto parent = GetOwner()->GetParent();
-            auto terrain = parent->GetComponent<CompCollapseTerrain>();
+            auto terrain = parent->QueryComponent<CompCollapseTerrain>();
             ASSERT_LOG(terrain != nullptr, "");
 
             std::vector<glm::vec2> points;
@@ -85,6 +85,11 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
 bool CompPolygon::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     return true;
+}
+
+void CompPolygon::ResetSegments(const std::vector<glm::vec2> & segments)
+{
+    mSegments = segments;
 }
 
 std::vector<Component::Property> CompPolygon::CollectProperty()

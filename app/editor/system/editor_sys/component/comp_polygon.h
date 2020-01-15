@@ -14,6 +14,7 @@ public:
                                   const std::any & newValue, 
                                   const std::string & title) override;
     std::vector<glm::vec2> & GetSegments() { return mSegments; }
+    void ResetSegments(const std::vector<glm::vec2> & segments);
 
 protected:
     virtual std::vector<Property> CollectProperty() override;

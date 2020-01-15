@@ -98,7 +98,7 @@ void CompFieldOfView::GenView()
     const auto origin = GetOwner()->LocalToWorld(glm::vec2(0));
 
     std::vector<glm::vec2> segments;
-    for (auto & polygon : mPolyObject.Instance<GLObject>()->GetComponentsInChildren<CompPolygon>())
+    for (auto & polygon : mPolyObject.Instance<GLObject>()->QueryComponentInChildren<CompPolygon>())
     {
         for (auto i = 0u, n = polygon->GetSegments().size(); i != n; ++i)
         {
@@ -211,7 +211,7 @@ void CompFieldOfView::OnDrawCallback(const RenderPipline::RenderCommand & comman
     auto & cmd = (const RenderPipline::PostCommand &)command;
     cmd.mProgram->BindUniformTex2D("uniform_sample",
         mClipObject.Instance<GLObject>()
-            ->GetComponent<CompRenderTarget>()
+            ->QueryComponent<CompRenderTarget>()
             ->GetImage()->GetID(), texturePos);
 }
 

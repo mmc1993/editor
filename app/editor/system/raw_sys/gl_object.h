@@ -57,9 +57,9 @@ public:
     SharePtr<CompTransform> GetTransform();
 
 	void ClearComponents();
-    void AddComponent(const SharePtr<Component> & component);
-    void DelComponent(const SharePtr<Component> & component);
-    void DelComponent(const std::type_info & type);
+    SharePtr<GLObject> AddComponent(const SharePtr<Component> & component);
+    SharePtr<GLObject> DelComponent(const SharePtr<Component> & component);
+    SharePtr<GLObject> DelComponent(const std::type_info & type);
     std::vector<SharePtr<Component>> & GetComponents();
 
     glm::mat4 GetWorldMatrix();
@@ -70,27 +70,51 @@ public:
     glm::vec2 LocalToParent(const glm::vec2 & point);
 
     template <class T>
-    SharePtr<T> GetComponent()
+    SharePtr<T> QueryComponent()
     {
         auto iter = std::find_if(mComponents.begin(), mComponents.end(),
-           [](const SharePtr<Component> & component) 
-           { return typeid(*component) == typeid(T); });
+           [](const SharePtr<Component> & component)
+           {return typeid(*component)==typeid(T); });
         return CastPtr<T>(iter != mComponents.end() ? *iter : nullptr);
     }
 
     template <class T>
-    std::vector<SharePtr<T>> GetComponentsInChildren()
+    std::vector<SharePtr<T>> QueryComponentInChildren()
     {
         std::vector<SharePtr<T>> result;
-        auto self = GetComponent<T>();
+        auto self = QueryComponent<T>();
         if (self != nullptr)
         {
             result.push_back(self);
         }
         for (const auto & v : mChildren)
         {
-            auto ret = std::move(v->GetComponentsInChildren<T>());
-            result.insert(result.end(), ret.begin(), ret.end());
+            auto comps =std::move(v->QueryComponentInChildren<T>());
+            result.insert(result.end(), comps.begin(), comps.end());
+        }
+        return std::move(result);
+    }
+
+    template <class T>
+    std::vector<SharePtr<T>> QueryComponents()
+    {
+        std::vector<SharePtr<T>> result;
+        std::copy_if(mComponents.begin(), mComponents.end(), std::back_inserter(result),
+            [] (const SharePtr<Component> & component)
+            {return typeid(*component) == typeid(T);});
+        return std::move(result);
+    }
+
+    template <class T>
+    std::vector<SharePtr<T>> QueryComponentsInChildrens()
+    {
+        std::vector<SharePtr<T>> result;
+        auto comps = QueryComponents<T>();
+        result.insert(result.end(), comps.begin(), comps.end());
+        for (const auto & v : mChildren)
+        {
+            auto comps = std::move(v->QueryComponentsInChildrens<T>());
+            result.insert(result.end(), comps.begin(), comps.end());
         }
         return std::move(result);
     }

@@ -67,9 +67,9 @@ void GLObject::DecodeBinary(std::istream & is, Project * project)
 
         auto comp = Component::Create(name);
         comp->DecodeBinary(is, project);
-        AddComponent(comp);
+        (void)AddComponent(comp);
     }
-    SetTransform(GetComponent<CompTransform>());
+    SetTransform(QueryComponent<CompTransform>());
 
     //  вс╫з╣Ц
     count = 0;
@@ -306,26 +306,29 @@ void GLObject::ClearComponents()
 	}
 }
 
-void GLObject::AddComponent(const SharePtr<Component> & component)
+SharePtr<GLObject> GLObject::AddComponent(const SharePtr<Component> & component)
 {
     ASSERT_LOG(mID != ~0, "");
     mComponents.push_back(component);
     component->SetOwner(this);
     component->OnAdd();
+    return shared_from_this();
 }
 
-void GLObject::DelComponent(const SharePtr<Component> & component)
+SharePtr<GLObject> GLObject::DelComponent(const SharePtr<Component> & component)
 {
     auto it = std::find(mComponents.begin(), mComponents.end(), component);
     if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
+    return shared_from_this();
 }
 
-void GLObject::DelComponent(const std::type_info & type)
+SharePtr<GLObject> GLObject::DelComponent(const std::type_info & type)
 {
     auto it = std::find_if(mComponents.begin(), mComponents.end(),
         [&type](const SharePtr<Component> & component) 
         { return typeid(*component) == type; });
     if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
+    return shared_from_this();
 }
 
 std::vector<SharePtr<Component>> & GLObject::GetComponents()
