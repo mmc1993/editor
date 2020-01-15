@@ -5,13 +5,17 @@
 
 CompRenderTarget::CompRenderTarget(): mDraw(false)
 {
-    mProgram = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SCREEN);
+    mImage = std::create_ptr<RawImage>();
+    mImage->InitNull(GL_RGBA);
+
     mMesh = std::create_ptr<RawMesh>();
     mMesh->Init({ RawMesh::Vertex({ -1.0f, -1.0f }, { 0.0f, 0.0f }),
                   RawMesh::Vertex({  1.0f, -1.0f }, { 1.0f, 0.0f }),
                   RawMesh::Vertex({  1.0f,  1.0f }, { 1.0f, 1.0f }),
                   RawMesh::Vertex({ -1.0f,  1.0f }, { 0.0f, 1.0f }) }, { 0, 1, 2, 0, 2, 3 }, 
                   RawMesh::Vertex::kV | RawMesh::Vertex::kUV);
+    
+    mProgram = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SCREEN);
 }
 
 const std::string & CompRenderTarget::GetName()
@@ -40,17 +44,6 @@ bool CompRenderTarget::OnModifyProperty(const std::any & oldValue, const std::an
 SharePtr<RawImage> CompRenderTarget::GetImage()
 {
     return mImage;
-}
-
-void CompRenderTarget::OnAdd()
-{ 
-    mImage = std::create_ptr<RawImage>();
-    mImage->InitNull(GL_RGBA);
-}
-
-void CompRenderTarget::OnDel()
-{
-    mImage.reset();
 }
 
 void CompRenderTarget::OnStart(UIObjectGLCanvas * canvas)

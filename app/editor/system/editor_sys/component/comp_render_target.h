@@ -15,8 +15,6 @@ public:
     SharePtr<RawImage> GetImage();
 
 protected:
-    virtual void OnAdd();
-    virtual void OnDel();
     virtual void OnStart(UIObjectGLCanvas * canvas) override;
     virtual void OnLeave(UIObjectGLCanvas * canvas) override;
     virtual std::vector<Property> CollectProperty() override;
