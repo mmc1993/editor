@@ -438,14 +438,8 @@ void UIObjectGLCanvas::OpDragSelects(const glm::vec2 & worldBeg, const glm::vec2
         const SharePtr<GLObject>              & object, 
         const std::vector<SharePtr<GLObject>> & objects)
     {
-        for (auto parent = object->GetParent(); parent != nullptr; parent = parent->GetParent())
-        {
-            if (std::find(objects.begin(), objects.end(), parent) != objects.end())
-            {
-                return true;
-            }
-        }
-        return false;
+        return objects.end() != std::find_if(objects.begin(), objects.end(), 
+            [&] (const auto & target){return object->Relation(target)==2;});
     };
 
     auto state = GetState<UIStateGLCanvas>();

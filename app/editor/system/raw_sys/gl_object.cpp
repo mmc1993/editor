@@ -145,11 +145,11 @@ int GLObject::Relation(const SharePtr<GLObject> & target)
         return 1;
     }
     //  ³¤±²
-    for (auto parent = target->GetParent(); 
+    for (auto parent  = GetParent(); 
               parent != nullptr;
-              parent = parent->GetParent())
+              parent  = parent->GetParent())
     {
-        if (this == parent.get()) { return 2; }
+        if (parent == target) { return 2; }
     }
     //  Íí±²
     std::deque<SharePtr<GLObject>> list{ 
@@ -158,7 +158,7 @@ int GLObject::Relation(const SharePtr<GLObject> & target)
     while (!list.empty())
     {
         auto & front = list.front();
-        if (front.get() == this)
+        if (front == target)
         {
             return 3;
         }
