@@ -37,42 +37,100 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
                 });
             terrain->Erase(points);
 
-            auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
-            auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
+            //auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
+            //auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
 
-            auto & objects = polys->GetObjects();
-            while (objects.size() > terrain->GetAreas().size())
-            {
-                Global::Ref().mEditorSys->OptDeleteObject(objects.back());
-            }
+            //auto & objects = polys->GetObjects();
+            //while (objects.size() > terrain->GetAreas().size())
+            //{
+            //    Global::Ref().mEditorSys->OptDeleteObject(objects.back());
+            //}
 
-            for (auto i = 0; i != terrain->GetAreas().size(); ++i)
-            {
-                if (i == objects.size())
-                {
-                    auto name   = Global::Ref().mEditorSys->ObjectName(polys);
-                    auto object = Global::Ref().mEditorSys->NewObject();
-                    (void)object->SetName(name);
+            //for (auto i = 0; i != terrain->GetAreas().size(); ++i)
+            //{
+            //    if (i == objects.size())
+            //    {
+            //        auto name   = Global::Ref().mEditorSys->ObjectName(polys);
+            //        auto object = Global::Ref().mEditorSys->NewObject();
+            //        (void)object->SetName(name);
 
-                    auto comp = std::create_ptr<CompPolygon>();
-                    Global::Ref().mEditorSys->OptInsertObject(object, polys);
-                    Global::Ref().mEditorSys->OptAppendComponent(object, comp);
-                    object->GetTransform()->Position(0, 0);
-                }
-                auto object = objects.at(i);
-                auto & area = terrain->GetAreas().at(i);
+            //        auto comp = std::create_ptr<CompPolygon>();
+            //        Global::Ref().mEditorSys->OptInsertObject(object, polys);
+            //        Global::Ref().mEditorSys->OptAppendComponent(object, comp);
+            //        object->GetTransform()->Position(0, 0);
+            //    }
+            //    auto object = objects.at(i);
+            //    auto & area = terrain->GetAreas().at(i);
 
-                std::vector<glm::vec2> points;
-                for (auto & point : area)
-                {
-                    auto world = terrain->GetOwner()->LocalToWorld(point);
-                    auto local = polys->WorldToLocal(world);
-                    points.emplace_back(local);
-                }
-                object->QueryComponent<CompPolygon>()->ResetSegments(points);
-            }
+            //    std::vector<glm::vec2> points;
+            //    for (auto & point : area)
+            //    {
+            //        auto world = terrain->GetOwner()->LocalToWorld(point);
+            //        auto local = polys->WorldToLocal(world);
+            //        points.emplace_back(local);
+            //    }
+            //    object->QueryComponent<CompPolygon>()->ResetSegments(points);
+            //}
         }
     }
+
+    //if (mTrackPoints.size() > 2)
+    //{
+    //    //  Debug
+    //    std::vector<RawMesh::Vertex> vertexs;
+    //    for (const auto & convex : tools::StripConvexPoints(mTrackPoints))
+    //    {
+    //        for (auto & point : tools::StripTrianglePoints(convex))
+    //        {
+    //            vertexs.emplace_back(point, glm::vec4(1, 1, 1, 1));
+    //        }
+    //    }
+
+    //    //  ±ßÔµ´¦Àí
+    //    auto order = tools::CalePointsOrder(mTrackPoints);
+    //    ASSERT_LOG(order != 0, "");
+    //    order = order >= 0.0f ? 1.0f : -1.0f;
+    //    auto count = mTrackPoints.size();
+    //    for (auto i = 0; i != count; ++i)
+    //    {
+    //        auto & a = mTrackPoints.at(i);
+    //        auto & b = mTrackPoints.at((i + 1) % count);
+    //        auto & c = mTrackPoints.at((i + 2) % count);
+    //        auto ab = b - a;
+    //        auto bc = c - b;
+    //        auto abr = glm::vec2(ab.y, -ab.x);
+    //        auto bcr = glm::vec2(bc.y, -bc.x);
+    //        abr = glm::normalize(abr) * 5.0f * order;
+    //        bcr = glm::normalize(bcr) * 5.0f * order;
+
+    //        auto ab0 = a, ab1 = a + abr;
+    //        auto ab2 = b, ab3 = b + abr;
+    //        auto bc0 = b, bc1 = b + bcr;
+
+    //        vertexs.emplace_back(ab0, glm::vec4(1, 1, 1, 0.2f));
+    //        vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
+    //        vertexs.emplace_back(ab1, glm::vec4(1, 1, 1, 1.0f));
+
+    //        vertexs.emplace_back(ab2, glm::vec4(1, 1, 1, 0.2f));
+    //        vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
+    //        vertexs.emplace_back(ab0, glm::vec4(1, 1, 1, 0.2f));
+
+    //        if (glm::cross(ab, bc) * order >= 0)
+    //        {
+    //            vertexs.emplace_back(ab2, glm::vec4(1, 1, 1, 0.2f));
+    //            vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
+    //            vertexs.emplace_back(bc1, glm::vec4(1, 1, 1, 1.0f));
+    //        }
+    //    }
+
+    //    RenderPipline::FowardCommand command;
+    //    command.mMesh = std::create_ptr<RawMesh>();
+    //    command.mMesh->Init(vertexs, {}, RawMesh::Vertex::kV | 
+    //                                     RawMesh::Vertex::kC);
+    //    command.mTransform  = canvas->GetMatrixStack().GetM();
+    //    command.mProgram    = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
+    //    canvas->Post(command);
+    //}
 }
 
 const std::string & CompPolygon::GetName()
@@ -106,15 +164,17 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
     //mTrackPoints.emplace_back(20, 20);
     //mTrackPoints.emplace_back(-20, 20);
 
-    //const auto count = 10;
-    //for (auto i = 0; i != count; ++i)
-    //{
-    //    auto a = glm::pi<float>() * 2.0f / count * i;
-    //    mTrackPoints.emplace_back(
-    //        std::cos(a) * 10,
-    //        std::sin(a) * 10);
-    //    mSegments.emplace_back(mTrackPoints.back());
-    //}
+    mSegments.clear();
+    mTrackPoints.clear();
+    const auto count = 10;
+    for (auto i = 0; i != count; ++i)
+    {
+        auto a = glm::pi<float>() * 2.0f / count * i;
+        mTrackPoints.emplace_back(
+            std::cos(a) * 10,
+            std::sin(a) * 10);
+        mSegments.emplace_back(mTrackPoints.back());
+    }
 }
 
 bool CompPolygon::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)

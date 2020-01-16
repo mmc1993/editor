@@ -147,7 +147,10 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
             cmd.Call(texNum);
             Post(cmd.mProgram,
                  cmd.mTransform);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             cmd.mMesh->Draw(GL_TRIANGLES);
+            //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)
             {
                 glDisable(GL_SCISSOR_TEST);
@@ -175,6 +178,10 @@ void UIObjectGLCanvas::CollCommands()
     RenderPipline::TargetCommand command;
     command.mType = RenderPipline::TargetCommand::kPush;
     command.mRenderTextures[0] = state->mRenderTextures[0];
+    command.mClearColor.x = 1.0f;
+    command.mClearColor.y = 1.0f;
+    command.mClearColor.z = 1.0f;
+    command.mClearColor.a = 1.0f;
     command.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
                          | RenderPipline::RenderCommand::kTargetColor1;
     Post(command);
