@@ -37,40 +37,40 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
                 });
             terrain->Erase(points);
 
-            //auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
-            //auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
+            auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
+            auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
 
-            //auto & objects = polys->GetObjects();
-            //while (objects.size() > terrain->GetAreas().size())
-            //{
-            //    Global::Ref().mEditorSys->OptDeleteObject(objects.back());
-            //}
+            auto & objects = polys->GetObjects();
+            while (objects.size() > terrain->GetAreas().size())
+            {
+                Global::Ref().mEditorSys->OptDeleteObject(objects.back());
+            }
 
-            //for (auto i = 0; i != terrain->GetAreas().size(); ++i)
-            //{
-            //    if (i == objects.size())
-            //    {
-            //        auto name   = Global::Ref().mEditorSys->ObjectName(polys);
-            //        auto object = Global::Ref().mEditorSys->NewObject();
-            //        (void)object->SetName(name);
+            for (auto i = 0; i != terrain->GetAreas().size(); ++i)
+            {
+                if (i == objects.size())
+                {
+                    auto name   = Global::Ref().mEditorSys->ObjectName(polys);
+                    auto object = Global::Ref().mEditorSys->NewObject();
+                    (void)object->SetName(name);
 
-            //        auto comp = std::create_ptr<CompPolygon>();
-            //        Global::Ref().mEditorSys->OptInsertObject(object, polys);
-            //        Global::Ref().mEditorSys->OptAppendComponent(object, comp);
-            //        object->GetTransform()->Position(0, 0);
-            //    }
-            //    auto object = objects.at(i);
-            //    auto & area = terrain->GetAreas().at(i);
+                    auto comp = std::create_ptr<CompPolygon>();
+                    Global::Ref().mEditorSys->OptInsertObject(object, polys);
+                    Global::Ref().mEditorSys->OptAppendComponent(object, comp);
+                    object->GetTransform()->Position(0, 0);
+                }
+                auto object = objects.at(i);
+                auto & area = terrain->GetAreas().at(i);
 
-            //    std::vector<glm::vec2> points;
-            //    for (auto & point : area)
-            //    {
-            //        auto world = terrain->GetOwner()->LocalToWorld(point);
-            //        auto local = polys->WorldToLocal(world);
-            //        points.emplace_back(local);
-            //    }
-            //    object->QueryComponent<CompPolygon>()->ResetSegments(points);
-            //}
+                std::vector<glm::vec2> points;
+                for (auto & point : area)
+                {
+                    auto world = terrain->GetOwner()->LocalToWorld(point);
+                    auto local = polys->WorldToLocal(world);
+                    points.emplace_back(local);
+                }
+                object->QueryComponent<CompPolygon>()->ResetSegments(points);
+            }
         }
     }
 
@@ -82,7 +82,7 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     //    {
     //        for (auto & point : tools::StripTrianglePoints(convex))
     //        {
-    //            vertexs.emplace_back(point, glm::vec4(1, 1, 1, 1));
+    //            vertexs.emplace_back(point, glm::vec4(0, 0, 0, 1));
     //        }
     //    }
 
@@ -107,19 +107,19 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
     //        auto ab2 = b, ab3 = b + abr;
     //        auto bc0 = b, bc1 = b + bcr;
 
-    //        vertexs.emplace_back(ab0, glm::vec4(1, 1, 1, 0.2f));
-    //        vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
-    //        vertexs.emplace_back(ab1, glm::vec4(1, 1, 1, 1.0f));
+    //        vertexs.emplace_back(ab0, glm::vec4(0, 0, 0, 0.2f));
+    //        vertexs.emplace_back(ab3, glm::vec4(0, 0, 0, 1.0f));
+    //        vertexs.emplace_back(ab1, glm::vec4(0, 0, 0, 1.0f));
 
-    //        vertexs.emplace_back(ab2, glm::vec4(1, 1, 1, 0.2f));
-    //        vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
-    //        vertexs.emplace_back(ab0, glm::vec4(1, 1, 1, 0.2f));
+    //        vertexs.emplace_back(ab2, glm::vec4(0, 0, 0, 0.2f));
+    //        vertexs.emplace_back(ab3, glm::vec4(0, 0, 0, 1.0f));
+    //        vertexs.emplace_back(ab0, glm::vec4(0, 0, 0, 0.2f));
 
     //        if (glm::cross(ab, bc) * order >= 0)
     //        {
-    //            vertexs.emplace_back(ab2, glm::vec4(1, 1, 1, 0.2f));
-    //            vertexs.emplace_back(ab3, glm::vec4(1, 1, 1, 1.0f));
-    //            vertexs.emplace_back(bc1, glm::vec4(1, 1, 1, 1.0f));
+    //            vertexs.emplace_back(ab2, glm::vec4(0, 0, 0, 0.2f));
+    //            vertexs.emplace_back(ab3, glm::vec4(0, 0, 0, 1.0f));
+    //            vertexs.emplace_back(bc1, glm::vec4(0, 0, 0, 1.0f));
     //        }
     //    }
 
@@ -164,17 +164,17 @@ void CompPolygon::DecodeBinary(std::istream & is, Project * project)
     //mTrackPoints.emplace_back(20, 20);
     //mTrackPoints.emplace_back(-20, 20);
 
-    mSegments.clear();
-    mTrackPoints.clear();
-    const auto count = 10;
-    for (auto i = 0; i != count; ++i)
-    {
-        auto a = glm::pi<float>() * 2.0f / count * i;
-        mTrackPoints.emplace_back(
-            std::cos(a) * 10,
-            std::sin(a) * 10);
-        mSegments.emplace_back(mTrackPoints.back());
-    }
+    //mSegments.clear();
+    //mTrackPoints.clear();
+    //const auto count = 10;
+    //for (auto i = 0; i != count; ++i)
+    //{
+    //    auto a = glm::pi<float>() * 2.0f / count * i;
+    //    mTrackPoints.emplace_back(
+    //        std::cos(a) * 10,
+    //        std::sin(a) * 10);
+    //    mSegments.emplace_back(mTrackPoints.back());
+    //}
 }
 
 bool CompPolygon::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)

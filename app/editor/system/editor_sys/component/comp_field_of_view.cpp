@@ -117,11 +117,9 @@ void CompFieldOfView::GenView()
         auto point = RayTracking(segments, segments.at(i));
         if (tools::Equal(point,            segments.at(i)))
         {
-            const auto normal = segments.at(i + 1)-segments.at(i);
+            const auto normal = segments.at(i + 1) - segments.at(i);
             auto cross = glm::cross(point, normal);
-            //ASSERT_LOG(cross != 0.0f, "");
-            auto offset = cross == 0.0f 
-                ? glm::normalize(normal) : cross > 0
+            auto offset = cross >= 0.0f
                 ? glm::normalize(glm::vec2(point.y, -point.x))  //  向右延长
                 : glm::normalize(glm::vec2(-point.y, point.x)); //  向左延长
             _tracks.emplace_back(RayExtended(segments, point + offset));
