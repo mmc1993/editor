@@ -71,10 +71,7 @@ void CompRenderTarget::OnLeave(UIObjectGLCanvas * canvas)
         RenderPipline::FowardCommand command;
         command.mMesh       = mMesh;
         command.mProgram    = mProgram;
-        command.mBlendSrc   = GL_SRC_ALPHA;
-        command.mBlendDst   = GL_ONE_MINUS_SRC_ALPHA;
         command.mPairImages.emplace_back("texture0", mImage);
-        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
         canvas->Post(command);
     }
 }

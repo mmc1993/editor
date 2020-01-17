@@ -506,7 +506,7 @@ void CompCollapseTerrain::DebugPostDrawPolygon(UIObjectGLCanvas * canvas, const 
         auto p2 = b - r;
         auto p3 = b + r;
 
-        auto color = glm::vec4(1, 1, 1, 1);
+        auto color = glm::vec4(0, 0, 0, 1);
         points.emplace_back(p0, color);
         points.emplace_back(p1, color);
         points.emplace_back(p3, color);

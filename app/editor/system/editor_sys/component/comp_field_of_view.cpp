@@ -56,10 +56,10 @@ void CompFieldOfView::OnUpdate(UIObjectGLCanvas * canvas, float dt)
                            CastPtr<CompFieldOfView>(shared_from_this()), 
                            std::placeholders::_1, std::placeholders::_2);
 
-        command.mBlendSrc = GL_ONE;
-        command.mBlendDst = GL_ZERO;
+        //command.mBlendSrc = GL_ONE;
+        //command.mBlendDst = GL_ZERO;
 
-        command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
+        //command.mEnabledFlag = RenderPipline::RenderCommand::kBlend;
 
         canvas->Post(command);
     }
