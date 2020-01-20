@@ -12,18 +12,20 @@
 #include "../editor_sys/component/comp_text.h"
 #include "../editor_sys/property/ui_property.h"
 
+#define COMP_MAP_FUN(Key, Type) std::make_pair(Key, []() { return CastPtr<Component>(std::create_ptr<Type>()); }),
+
 static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
-    std::make_pair("CollapseTerrain",   []() { return CastPtr<Component>(std::create_ptr<CompCollapseTerrain>());   }),
-    std::make_pair("RenderTarget",      []() { return CastPtr<Component>(std::create_ptr<CompRenderTarget>());      }),
-    std::make_pair("FieldOfView",       []() { return CastPtr<Component>(std::create_ptr<CompFieldOfView>());       }),
-    std::make_pair("Transform",         []() { return CastPtr<Component>(std::create_ptr<CompTransform>());         }),
-    std::make_pair("Lightning",         []() { return CastPtr<Component>(std::create_ptr<CompLightning>());         }),
-    std::make_pair("Polygon",           []() { return CastPtr<Component>(std::create_ptr<CompPolygon>());           }),
-    std::make_pair("Tilemap",           []() { return CastPtr<Component>(std::create_ptr<CompTilemap>());           }),
-    std::make_pair("Segment",           []() { return CastPtr<Component>(std::create_ptr<CompSegment>());           }),
-    std::make_pair("Sprite",            []() { return CastPtr<Component>(std::create_ptr<CompSprite>());            }),
-    std::make_pair("Light",             []() { return CastPtr<Component>(std::create_ptr<CompLight>());             }),
-    std::make_pair("Text",              []() { return CastPtr<Component>(std::create_ptr<CompText>());              }),
+    COMP_MAP_FUN("CollapseTerrain", CompCollapseTerrain )
+    COMP_MAP_FUN("RenderTarget",    CompRenderTarget    )
+    COMP_MAP_FUN("FieldOfView",     CompFieldOfView     )
+    COMP_MAP_FUN("Transform",       CompTransform       )
+    COMP_MAP_FUN("Lightning",       CompLightning       )
+    COMP_MAP_FUN("Polygon",         CompPolygon         )
+    COMP_MAP_FUN("Tilemap",         CompTilemap         )
+    COMP_MAP_FUN("Segment",         CompSegment         )
+    COMP_MAP_FUN("Sprite",          CompSprite          )
+    COMP_MAP_FUN("Light",           CompLight           )
+    COMP_MAP_FUN("Text",            CompText            )
 };
 
 SharePtr<Component> Component::Create(const std::string & name)
