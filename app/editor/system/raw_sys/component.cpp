@@ -33,12 +33,12 @@ SharePtr<Component> Component::Create(const std::string & name)
     return it->second();
 }
 
-void Component::OnAdd()
+void Component::OnAppend()
 { 
     AddState(StateEnum::kUpdate, true);
 }
 
-void Component::OnDel()
+void Component::OnDelete()
 { }
 
 void Component::OnStart(UIObjectGLCanvas * canvas)

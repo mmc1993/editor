@@ -52,8 +52,8 @@ public:
         , mState((uint)StateEnum::kActive | 
                  (uint)StateEnum::kUpdate) { }
 	virtual ~Component() { }
-    virtual void OnAdd();
-    virtual void OnDel();
+    virtual void OnAppend();
+    virtual void OnDelete();
     virtual void OnStart(UIObjectGLCanvas * canvas);
     virtual void OnLeave(UIObjectGLCanvas * canvas);
     virtual void OnUpdate(UIObjectGLCanvas * canvas, float dt);

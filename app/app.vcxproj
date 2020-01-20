@@ -66,6 +66,7 @@
     <ClInclude Include="editor\base.h" />
     <ClInclude Include="editor\system\cfg_sys\cfg_sys.h" />
     <ClInclude Include="editor\system\editor_sys\component\comp_collapse_terrain.h" />
+    <ClInclude Include="editor\system\editor_sys\component\comp_script.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\explorer\ui_delegate_explorer.h" />
     <ClInclude Include="editor\system\editor_sys\delegate\ui_delegate_base.h" />
     <ClInclude Include="editor\system\editor_sys\property\ui_property.h" />

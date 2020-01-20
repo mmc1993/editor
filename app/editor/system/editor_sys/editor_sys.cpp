@@ -199,7 +199,7 @@ void EditorSys::OptRenameObject(uint objectID, const std::string & name)
 
 void EditorSys::OptAppendComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
-    object->AddComponent(component);
+    object->AppendComponent(component);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kAppendComponent, std::make_tuple(object, component));
 }
 
@@ -210,7 +210,7 @@ void EditorSys::OptAppendComponent(uint objectID, const SharePtr<Component> & co
 
 void EditorSys::OptDeleteComponent(const SharePtr<GLObject> & object, const SharePtr<Component> & component)
 {
-    object->DelComponent(component);
+    object->DeleteComponent(component);
     Global::Ref().mEventSys->Post(EventSys::TypeEnum::kDeleteComponent, std::make_tuple(object, component));
 }
 

@@ -18,7 +18,7 @@ GLObject::GLObject(uint id)
     , mParent(nullptr)
 {
     mTransform = std::create_ptr<CompTransform>();
-    AddComponent(mTransform);
+    AppendComponent(mTransform);
 }
 
 GLObject::~GLObject()
@@ -67,7 +67,7 @@ void GLObject::DecodeBinary(std::istream & is, Project * project)
 
         auto comp = Component::Create(name);
         comp->DecodeBinary(is, project);
-        (void)AddComponent(comp);
+        (void)AppendComponent(comp);
     }
     SetTransform(QueryComponent<CompTransform>());
 
@@ -100,7 +100,7 @@ void GLObject::InsertObject(const SharePtr<GLObject> & object, uint pos)
 void GLObject::DeleteObject(const SharePtr<GLObject> & object)
 {
     auto it = std::find(mChildren.begin(), mChildren.end(), object);
-    ASSERT_LOG(it != mChildren.end(), "Object DelChildIdx");
+    ASSERT_LOG(it != mChildren.end(), "Object DeleteObject");
     DeleteObject(std::distance(mChildren.begin(), it));
 }
 
@@ -117,7 +117,7 @@ void GLObject::DeleteObject(const std::string & name)
 
 void GLObject::DeleteObject(size_t idx)
 {
-    ASSERT_LOG(idx < mChildren.size(), "Object DelChildIdx: {0}", idx);
+    ASSERT_LOG(idx < mChildren.size(), "Object DeleteObject: {0}", idx);
     auto it = std::next(mChildren.begin(), idx);
     (*it)->mParent = nullptr;
     mChildren.erase(it);
@@ -300,34 +300,34 @@ void GLObject::ClearComponents()
 {
 	while (!mComponents.empty())
 	{
-        mComponents.back()->OnDel();
+        mComponents.back()->OnDelete();
         mComponents.back()->SetOwner(nullptr);
 		mComponents.pop_back();
 	}
 }
 
-void GLObject::AddComponent(const SharePtr<Component> & component)
+void GLObject::AppendComponent(const SharePtr<Component> & component)
 {
     ASSERT_LOG(mID != ~0, "");
     mComponents.push_back(component);
     component->SetOwner(this);
-    component->OnAdd();
+    component->OnAppend();
 }
 
-void GLObject::DelComponent(const SharePtr<Component> & component)
+void GLObject::DeleteComponent(const SharePtr<Component> & component)
 {
     auto it = std::find(mComponents.begin(), mComponents.end(), component);
-    if (it != mComponents.end()) { (*it)->OnDel(); mComponents.erase(it); }
+    if (it != mComponents.end()) {(*it)->OnDelete();mComponents.erase(it);}
 }
 
-void GLObject::DelComponent(const std::type_info & type)
+void GLObject::DeleteComponent(const std::type_info & type)
 {
     auto it = std::find_if(mComponents.begin(), mComponents.end(),
         [&](const SharePtr<Component> & component) 
         { return typeid(*component) == type; });
     if (it != mComponents.end()) 
     { 
-        (*it)->OnDel(); mComponents.erase(it);
+        (*it)->OnDelete(); mComponents.erase(it);
     }
 }
 

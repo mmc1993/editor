@@ -57,9 +57,9 @@ public:
     SharePtr<CompTransform> GetTransform();
 
 	void ClearComponents();
-    void AddComponent(const SharePtr<Component> & component);
-    void DelComponent(const SharePtr<Component> & component);
-    void DelComponent(const std::type_info & type);
+    void AppendComponent(const SharePtr<Component> & component);
+    void DeleteComponent(const SharePtr<Component> & component);
+    void DeleteComponent(const std::type_info & type);
     std::vector<SharePtr<Component>> & GetComponents();
 
     glm::mat4 GetWorldMatrix();
