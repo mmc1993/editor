@@ -102,7 +102,7 @@ bool UIDelegateMainObjList::OnCallEventMessage(UIEventEnum e, const UIEvent::Eve
                 auto parent = Global::Ref().mEditorSys->GetProject()->GetObject(objectID);
                 auto object = Global::Ref().mEditorSys->GetProject()->NewObject();
                 auto name = Global::Ref().mEditorSys->ObjectName(parent);
-                object->SetName(name);
+                (void)object->SetName(name);
                 Global::Ref().mEditorSys->OptInsertObject(object,parent);
             }
             else if (menu.mPath == "Del Object")
