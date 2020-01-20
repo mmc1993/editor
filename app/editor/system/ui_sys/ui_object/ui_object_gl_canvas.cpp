@@ -575,6 +575,16 @@ bool UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
         }
         ready = true;
     }
+    else if (param.mState == 0 
+        && param.mAct == 2 
+        && param.mKey == GLFW_KEY_DELETE 
+        && HasOpMode(UIStateGLCanvas::Operation::kEdit)
+        && state->mOperation.mEditComponent  != nullptr 
+        && state->mOperation.mEditTrackPoint != ~0)
+    {
+        state->mOperation.mEditComponent->DeleteTrackPoint(state->mOperation.mEditTrackPoint, glm::vec2());
+        state->mOperation.mEditTrackPoint = ~0;
+    }
     return ready;
 }
 

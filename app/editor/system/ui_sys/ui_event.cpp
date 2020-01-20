@@ -1,7 +1,8 @@
 #include "ui_event.h"
 
 std::vector<int> UIEvent::Key::Hotkeys = {
-    GLFW_KEY_ENTER
+    GLFW_KEY_ENTER,
+    GLFW_KEY_DELETE,
 };
 
 int UIEvent::CheckStateKey()
