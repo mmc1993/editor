@@ -141,6 +141,9 @@
     <ClCompile Include="editor\system\editor_sys\component\comp_collapse_terrain.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="editor\system\editor_sys\component\comp_sprite_shader.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="imgui\imconfig.h">
@@ -1053,6 +1056,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\comp_script.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="editor\system\editor_sys\component\comp_sprite_shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

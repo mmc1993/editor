@@ -73,15 +73,16 @@ namespace tools {
     }
 
     //  预置着色器
-    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_INIT = "res/program/collapse_terrain_init.program";
-    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_DRAW = "res/program/collapse_terrain_draw.program";
-    const char * const GL_PROGRAM_FIELD_OF_VIEW     = "res/program/field_of_view.program";
-    const char * const GL_PROGRAM_SOLID_FILL        = "res/program/solid_fill.program";
-    const char * const GL_PROGRAM_LIGHTNING         = "res/program/lightning.program";
-    const char * const GL_PROGRAM_FONT_SDF          = "res/program/font_sdf.program";
-    const char * const GL_PROGRAM_TILEMAP           = "res/program/tilemap.program";
-    const char * const GL_PROGRAM_SEGMENT           = "res/program/segment.program";
-    const char * const GL_PROGRAM_SPRITE            = "res/program/sprite.program";
-    const char * const GL_PROGRAM_SCREEN            = "res/program/screen.program";
-    const char * const GL_PROGRAM_LIGHT             = "res/program/light.program";
+    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_INIT = "res/program/collapse_terrain_init.program";      //  地形擦除
+    const char * const GL_PROGRAM_COLLAPSE_TERRAIN_DRAW = "res/program/collapse_terrain_draw.program";      //  地形擦除
+    const char * const GL_PROGRAM_FIELD_OF_VIEW     = "res/program/field_of_view.program";                  //  遮挡剔除
+    const char * const GL_PROGRAM_SOLID_FILL        = "res/program/solid_fill.program";                     //  纯色填充
+    const char * const GL_PROGRAM_LIGHTNING         = "res/program/lightning.program";                      //  闪电
+    const char * const GL_PROGRAM_FONT_SDF          = "res/program/font_sdf.program";                       //  字体
+    const char * const GL_PROGRAM_TILEMAP           = "res/program/tilemap.program";                        //  地图
+    const char * const GL_PROGRAM_SEGMENT           = "res/program/segment.program";                        //  线段
+    const char * const GL_PROGRAM_SPRITE            = "res/program/sprite.program";                         //  精灵
+    const char * const GL_PROGRAM_SCREEN            = "res/program/screen.program";                         //  全屏
+    const char * const GL_PROGRAM_LIGHT             = "res/program/light.program";                          //  光源
+    const char * const GL_PROGRAM_SPRITE_SHADER0    = "res/program/sprite_shader0.program";                 //  精灵Shader 0
 }

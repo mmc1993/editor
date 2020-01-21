@@ -3,6 +3,7 @@
 #include "../editor_sys/component/comp_collapse_terrain.h"
 #include "../editor_sys/component/comp_field_of_view.h"
 #include "../editor_sys/component/comp_render_target.h"
+#include "../editor_sys/component/comp_sprite_shader.h"
 #include "../editor_sys/component/comp_lightning.h"
 #include "../editor_sys/component/comp_tilemap.h"
 #include "../editor_sys/component/comp_segment.h"
@@ -17,6 +18,7 @@
 static const std::map<std::string, SharePtr<Component> (*)()> s_ComponentMap = {
     COMP_MAP_FUN("CollapseTerrain", CompCollapseTerrain )
     COMP_MAP_FUN("RenderTarget",    CompRenderTarget    )
+    COMP_MAP_FUN("SpriteShader",    CompSpriteShader    )
     COMP_MAP_FUN("FieldOfView",     CompFieldOfView     )
     COMP_MAP_FUN("Transform",       CompTransform       )
     COMP_MAP_FUN("Lightning",       CompLightning       )
