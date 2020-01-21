@@ -124,20 +124,14 @@ void CompSegment::GenSegm()
         {
             if (i == 1)
             {
-                auto & a = mTrackPoints.back();
-                auto & b = mTrackPoints.at(i - 1);
-                auto & c = mTrackPoints.at(i    );
-                auto & d = mTrackPoints.at(i + 1);
+                auto & a = mTrackPoints.at(i - 1);
+                auto & b = mTrackPoints.at(i    );
+                auto & c = mTrackPoints.at(i + 1);
                 auto mab = glm::lerp(a, b, 0.5f);
                 auto mbc = glm::lerp(b, c, 0.5f);
-                auto mcd = glm::lerp(c, d, 0.5f);
-                auto m0 = glm::lerp(mab, mbc, 0.5f);
-                auto m1 = glm::lerp(mbc, mcd, 0.5f);
-                auto diff0 = b - m0, diff1 = c - m1;
-                auto p0 = mbc + diff0;
-                auto p1 = mbc + diff1;
-                p       = mcd + diff1;
-                DrawBezier(b, p0, p1, c);
+                auto m = glm::lerp(mab, mbc, 0.5f);
+                auto diff=b-m; mab+=diff;mbc+=diff;
+                DrawBezier(a, mab, b); p = mbc;
             }
             else if (i == size - 1)
             {
@@ -158,56 +152,6 @@ void CompSegment::GenSegm()
             }
         }
     }
-
-    //  ±´Èû¶û²åÖµ
-    //std::vector<glm::vec2> ctrlPoints;
-
-    //if (mTrackPoints.size() > 2)
-    //{
-    //    auto size = mTrackPoints.size();
-    //    for (auto i = 0; i != size; ++i)
-    //    {
-    //        auto & a = mTrackPoints.at((i + size - 1) % size);
-    //        auto & b = mTrackPoints.at(i                    );
-    //        auto & c = mTrackPoints.at((i + 1)        % size);
-
-    //        auto mid0 = glm::lerp(a, b, 0.5f);
-    //        auto mid1 = glm::lerp(b, c, 0.5f);
-
-    //        auto abLen = glm::length(b - a);
-    //        auto bcLen = glm::length(c - b);
-    //        auto sunLen = abLen + bcLen;
-
-    //        auto offset = b - glm::lerp(mid0, mid1, abLen / sunLen);
-    //        ctrlPoints.emplace_back(mid0 + offset);
-    //        ctrlPoints.emplace_back(mid1 + offset);
-    //    }
-    //}
-
-    //mSegments.clear();
-    //if (ctrlPoints.size() == 2)
-    //{
-    //    //  1´Î±´Èû¶ûÇúÏß
-    //    mSegments.emplace_back(ctrlPoints.at(0));
-    //    mSegments.emplace_back(ctrlPoints.at(1));
-    //}
-    //else
-    //{
-    //    //  N´Î±´Èû¶ûÇúÏß
-    //    for (auto i = 0; i != mTrackPoints.size() - 1; ++i)
-    //    {
-    //        auto & a = mTrackPoints.at(i    );
-    //        auto & b = ctrlPoints.at((i * 2) + 1);
-    //        auto & c = ctrlPoints.at((i + 1) * 2);
-    //        auto & d = mTrackPoints.at(i + 1);
-    //        auto count = iint(1.0f / mSmooth);
-    //        for (auto s = 0; s != count; ++s)
-    //        {
-    //            DrawBezier(a, b, c, d, s * mSmooth);
-    //        }
-    //    }
-    //    mSegments.emplace_back(mTrackPoints.back());
-    //}
 
     //  À­¿¨ÀÊÈÕ²åÖµ
     //if (mSmooth != 1.0f)
