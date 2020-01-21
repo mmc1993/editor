@@ -125,6 +125,12 @@ void CompSpriteShader::Update()
 
             if (sPoints.empty())
             {
+                mTrackPoints.at(4) = glm::lerp(mTrackPoints.at(0), mTrackPoints.at(2), 0.5f);
+
+                if (mTrackPoints.size() > 5)
+                {
+                    mTrackPoints.erase(mTrackPoints.begin() + 5, mTrackPoints.end());
+                }
                 for (auto y = 0; y != 10; ++y)
                 {
                     auto py = glm::lerp(mTrackPoints.at(2).y, mTrackPoints.at(0).y, y / 10.0f);
@@ -154,13 +160,13 @@ void CompSpriteShader::OnDrawCallback(const RenderPipline::RenderCommand & comma
     auto & foward = (const RenderPipline::FowardCommand &)command;
     auto & min = mTrackPoints.at(0);
     auto & max = mTrackPoints.at(2);
-    auto & mid = mTrackPoints.back();
+    auto & mid = mTrackPoints.at(4);
     auto w = max.x - min.x;
     auto h = max.y - min.y;
     glm::vec2 coord(
-        (mid.x - min.x) / w, 
-        (mid.y - min.y) / h);
-    foward.mProgram->BindUniformVector("coord_", coord);
+        1.0f - (mid.x - min.x) / w, 
+        1.0f - (mid.y - min.y) / h);
+    foward.mProgram->BindUniformVector("target_", coord);
 }
 
 void CompSpriteShader::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
@@ -197,22 +203,20 @@ void CompSpriteShader::OnModifyTrackPoint(const size_t index, const glm::vec2 & 
         {
             mTrackPoints.at(index).x = glm::clamp(point.x, mTrackPoints.at(0).x, mTrackPoints.at(2).x);
             mTrackPoints.at(index).y = glm::clamp(point.y, mTrackPoints.at(0).y, mTrackPoints.at(2).y);
-            glm::vec2 center(
-                0.5f * (mTrackPoints.at(2).x - mTrackPoints.at(0).x),
-                0.5f * (mTrackPoints.at(2).y - mTrackPoints.at(0).y));
+            glm::vec2 center = glm::lerp(mTrackPoints.at(0), mTrackPoints.at(2), 0.5f);
 
-            for (auto i = 5; i != sPoints.size(); ++i)
+            const auto & target = mTrackPoints.at(index);
+            const auto & offset = target - center;
+            const auto length = glm::length(offset);
+            for (auto i = 0; i != sPoints.size(); ++i)
             {
-                auto & point = sPoints.at(i);
+                const auto & point = sPoints.at(i);
 
-                auto offset = mTrackPoints.at(index) - center;
-
-                auto direct = point - mTrackPoints.at(index);
-
-                auto normal = point - center;
-
-                auto diff = direct * glm::dot(glm::normalize(normal), glm::normalize(offset));
-
+                auto normal     = center - point;
+                auto distace    = target - point;
+                auto l = glm::length(normal);
+                auto s = std::max(0.0f, length - l);
+                glm::vec2 diff = s / length*(distace);
                 mTrackPoints.at(i + 5) = point + diff;
             }
         }

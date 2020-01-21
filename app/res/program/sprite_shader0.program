@@ -25,25 +25,46 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
-        uniform vec2      coord_;
+        uniform vec2      target_;
         uniform sampler2D texture0;
 
         out vec4 color_;
 
         void main()
         {
-            vec2 center   = vec2(0.5f, 0.5f);
-            vec2 offset   = coord_ - center;
+            //  鱼眼，周边放大
+            // vec2 point = v_out_.mUV;
+            // vec2 normal = target_ - point;
+            // float scale = length(normal);
+            // vec2 diff = normal * scale;
+            // color_ = texture(texture0, point + diff);
 
-            vec2 distace  = v_out_.mUV - center;
-            vec2 direct   = v_out_.mUV - coord_;
 
-            float cos = dot(normalize(offset), normalize(direct));
-            vec2 diff = normalize(direct) * length(distace) * cos;
-            
-            color_ = texture(texture0, v_out_.mUV);
-            // color_.x = diff.x;
-            // color_.a = 1;
+            //  鱼眼，周边缩小
+            // vec2 point = v_out_.mUV;
+            // vec2 normal = target_ - point;
+            // float scale = 1.0f - length(normal);
+            // vec2 diff = normal * scale;
+            // color_ = texture(texture0, point + diff);
+
+            //  拖动局部
+            // vec2 point = v_out_.mUV;
+            // vec2 center = vec2(0.5f, 0.5f);
+            // vec2 offset = target_ - center;
+
+            // vec2 dist = point - center;
+            // float s = max(0.0f, 0.3f - length(dist));
+            // vec2 diff = (target_ - point) * s;
+            // color_ = texture(texture0, point + diff);
+
+            vec2 center = vec2(0.5f, 0.5f);
+            vec2 offset = target_ - center;
+
+            vec2 normal     = center  - v_out_.mUV;
+            vec2 distance   = target_ - v_out_.mUV;
+            float s = max(0.0f, 1.0f - length(normal));
+            vec2 diff       = s / 1.0f * distance;
+            color_ = texture(texture0, v_out_.mUV + diff);
         }
     FShader End
 Pass End
