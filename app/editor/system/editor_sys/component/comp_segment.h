@@ -28,11 +28,14 @@ private:
     void GenSegm();
     void GenMesh();
     void DrawBezier(
+        const glm::vec2 & a,
+        const glm::vec2 & b,
+        const glm::vec2 & c);
+    void DrawBezier(
         const glm::vec2 & a, 
         const glm::vec2 & b, 
         const glm::vec2 & c,
-        const glm::vec2 & d,
-        float t);
+        const glm::vec2 & d);
     virtual void OnModifyTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnInsertTrackPoint(const size_t index, const glm::vec2 & point) override;
     virtual void OnDeleteTrackPoint(const size_t index, const glm::vec2 & point) override;

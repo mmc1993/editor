@@ -110,55 +110,104 @@ void CompSegment::Update()
 
 void CompSegment::GenSegm()
 {
-    //  ±´Èû¶û²åÖµ
-    std::vector<glm::vec2> ctrlPoints;
-
-    if (mTrackPoints.size() > 2)
-    {
-        auto size = mTrackPoints.size();
-        for (auto i = 0; i != size; ++i)
-        {
-            auto & a = mTrackPoints.at((i + size - 1) % size);
-            auto & b = mTrackPoints.at(i                    );
-            auto & c = mTrackPoints.at((i + 1)        % size);
-
-            auto mid0 = glm::lerp(a, b, 0.5f);
-            auto mid1 = glm::lerp(b, c, 0.5f);
-
-            auto abLen = glm::length(b - a);
-            auto bcLen = glm::length(c - b);
-            auto sunLen = abLen + bcLen;
-
-            auto offset = b - glm::lerp(mid0, mid1, abLen / sunLen);
-            ctrlPoints.emplace_back(mid0 + offset);
-            ctrlPoints.emplace_back(mid1 + offset);
-        }
-    }
-
     mSegments.clear();
-    if (ctrlPoints.size() == 2)
+    if (mTrackPoints.size() == 2)
     {
-        //  1´Î±´Èû¶ûÇúÏß
-        mSegments.emplace_back(ctrlPoints.at(0));
-        mSegments.emplace_back(ctrlPoints.at(1));
+        mSegments.emplace_back(mTrackPoints.at(0));
+        mSegments.emplace_back(mTrackPoints.at(1));
     }
     else
     {
-        //  N´Î±´Èû¶ûÇúÏß
-        for (auto i = 0; i != mTrackPoints.size() - 1; ++i)
+        glm::vec2 p;
+        auto size = mTrackPoints.size();
+        for (auto i = 1; i != size; ++i)
         {
-            auto & a = mTrackPoints.at(i    );
-            auto & b = ctrlPoints.at((i * 2) + 1);
-            auto & c = ctrlPoints.at((i + 1) * 2);
-            auto & d = mTrackPoints.at(i + 1);
-            auto count = iint(1.0f / mSmooth);
-            for (auto s = 0; s != count; ++s)
+            if (i == 1)
             {
-                DrawBezier(a, b, c, d, s * mSmooth);
+                auto & a = mTrackPoints.back();
+                auto & b = mTrackPoints.at(i - 1);
+                auto & c = mTrackPoints.at(i    );
+                auto & d = mTrackPoints.at(i + 1);
+                auto mab = glm::lerp(a, b, 0.5f);
+                auto mbc = glm::lerp(b, c, 0.5f);
+                auto mcd = glm::lerp(c, d, 0.5f);
+                auto m0 = glm::lerp(mab, mbc, 0.5f);
+                auto m1 = glm::lerp(mbc, mcd, 0.5f);
+                auto diff0 = b - m0, diff1 = c - m1;
+                auto p0 = mbc + diff0;
+                auto p1 = mbc + diff1;
+                p       = mcd + diff1;
+                DrawBezier(b, p0, p1, c);
+            }
+            else if (i == size - 1)
+            {
+                auto & a = mTrackPoints.at(i - 1);
+                auto & b = mTrackPoints.at(i    );
+                DrawBezier(a, p, b);
+            }
+            else
+            {
+                auto & a = mTrackPoints.at(i - 1);
+                auto & b = mTrackPoints.at(i    );
+                auto & c = mTrackPoints.at(i + 1);
+                auto mab = glm::lerp(a, b, 0.5f);
+                auto mbc = glm::lerp(b, c, 0.5f);
+                auto m = glm::lerp(mab, mbc, 0.5f);
+                auto diff=b-m; mab+=diff;mbc+=diff;
+                DrawBezier(a, p, mab, b); p = mbc;
             }
         }
-        mSegments.emplace_back(mTrackPoints.back());
     }
+
+    //  ±´Èû¶û²åÖµ
+    //std::vector<glm::vec2> ctrlPoints;
+
+    //if (mTrackPoints.size() > 2)
+    //{
+    //    auto size = mTrackPoints.size();
+    //    for (auto i = 0; i != size; ++i)
+    //    {
+    //        auto & a = mTrackPoints.at((i + size - 1) % size);
+    //        auto & b = mTrackPoints.at(i                    );
+    //        auto & c = mTrackPoints.at((i + 1)        % size);
+
+    //        auto mid0 = glm::lerp(a, b, 0.5f);
+    //        auto mid1 = glm::lerp(b, c, 0.5f);
+
+    //        auto abLen = glm::length(b - a);
+    //        auto bcLen = glm::length(c - b);
+    //        auto sunLen = abLen + bcLen;
+
+    //        auto offset = b - glm::lerp(mid0, mid1, abLen / sunLen);
+    //        ctrlPoints.emplace_back(mid0 + offset);
+    //        ctrlPoints.emplace_back(mid1 + offset);
+    //    }
+    //}
+
+    //mSegments.clear();
+    //if (ctrlPoints.size() == 2)
+    //{
+    //    //  1´Î±´Èû¶ûÇúÏß
+    //    mSegments.emplace_back(ctrlPoints.at(0));
+    //    mSegments.emplace_back(ctrlPoints.at(1));
+    //}
+    //else
+    //{
+    //    //  N´Î±´Èû¶ûÇúÏß
+    //    for (auto i = 0; i != mTrackPoints.size() - 1; ++i)
+    //    {
+    //        auto & a = mTrackPoints.at(i    );
+    //        auto & b = ctrlPoints.at((i * 2) + 1);
+    //        auto & c = ctrlPoints.at((i + 1) * 2);
+    //        auto & d = mTrackPoints.at(i + 1);
+    //        auto count = iint(1.0f / mSmooth);
+    //        for (auto s = 0; s != count; ++s)
+    //        {
+    //            DrawBezier(a, b, c, d, s * mSmooth);
+    //        }
+    //    }
+    //    mSegments.emplace_back(mTrackPoints.back());
+    //}
 
     //  À­¿¨ÀÊÈÕ²åÖµ
     //if (mSmooth != 1.0f)
@@ -208,8 +257,9 @@ void CompSegment::GenSegm()
 
 void CompSegment::GenMesh()
 {
+    if (mSegments.empty()) { return; }
     std::vector<RawMesh::Vertex> points;
-    std::vector<uint>           indexs;
+    std::vector<uint>            indexs;
     for (auto i = 0; i != mSegments.size() - 1; ++i)
     {
         auto & a = mSegments.at(i    );
@@ -244,14 +294,29 @@ void CompSegment::GenMesh()
     mMesh->Update(points, indexs);
 }
 
-void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d, float t)
+void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c)
 {
-    auto p0 = glm::lerp(a, b, t);
-    auto p1 = glm::lerp(b, c, t);
-    auto p2 = glm::lerp(c, d, t);
-    auto p3 = glm::lerp(p0, p1, t);
-    auto p4 = glm::lerp(p1, p2, t);
-    mSegments.emplace_back(glm::lerp(p3, p4, t));
+    const auto max = 1.0f + mSmooth;
+    for (auto t = 0.0f; t < max; t += mSmooth)
+    {
+        auto p0 = glm::lerp(a, b, t);
+        auto p1 = glm::lerp(b, c, t);
+        mSegments.emplace_back(glm::lerp(p0, p1, t));
+    }
+}
+
+void CompSegment::DrawBezier(const glm::vec2 & a, const glm::vec2 & b, const glm::vec2 & c, const glm::vec2 & d)
+{
+    const auto max = 1.0f + mSmooth;
+    for (auto t = 0.0f; t < max; t += mSmooth)
+    {
+        auto p0 = glm::lerp(a, b, t);
+        auto p1 = glm::lerp(b, c, t);
+        auto p2 = glm::lerp(c, d, t);
+        auto p3 = glm::lerp(p0, p1, t);
+        auto p4 = glm::lerp(p1, p2, t);
+        mSegments.emplace_back(glm::lerp(p3, p4, t));
+    }
 }
 
 void CompSegment::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
