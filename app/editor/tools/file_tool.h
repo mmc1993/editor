@@ -38,7 +38,8 @@ namespace tools {
         auto ret = false;
         for (auto & name : split)
         {
-            ret = std::filesystem::create_directory(name);
+            //  TODO MMC_
+            ret = std::experimental::filesystem::create_directory(name);
         }
         return ret;
     }
@@ -48,12 +49,12 @@ namespace tools {
     {
         for (std::deque<std::string> list{ dir }; !list.empty(); list.pop_front())
         {
-            for (auto & item : std::filesystem::directory_iterator(list.front()))
+            //  TODO MMC_
+            for (auto & item : std::experimental::filesystem::directory_iterator(list.front()))
             {
                 auto path = Replace(item.path().string(), "\\", "/");
-                if (item.is_directory())
-                {list.push_back(path);}
-                else {func(path);}
+                if (item.status().type() == std::experimental::filesystem::file_type::directory) { list.push_back(path); }
+                else { func(path); }
             }
         }
     }

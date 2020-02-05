@@ -34,6 +34,8 @@ private:
     glm::vec2           mAnchor;
     uint                mUpdate;
 
+    glm::vec4           mRadian;
+
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;
 };

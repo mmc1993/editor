@@ -93,6 +93,7 @@ std::vector<Component::Property> CompSpriteShader::CollectProperty()
     auto props = Component::CollectProperty();
     props.emplace_back(UIParser::StringValueTypeEnum::kAsset,   "Tex",      &mTex,      std::vector<uint>{ (uint)Res::TypeEnum::kImg });
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &mSize);
+    props.emplace_back(UIParser::StringValueTypeEnum::kColor4,  "Radian",   &mRadian);
     props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
     return std::move(props);
 }
@@ -123,33 +124,19 @@ void CompSpriteShader::Update()
             mTrackPoints.at(4).x = glm::clamp(mTrackPoints.at(4).x, mTrackPoints.at(0).x, mTrackPoints.at(2).x);
             mTrackPoints.at(4).y = glm::clamp(mTrackPoints.at(4).y, mTrackPoints.at(0).y, mTrackPoints.at(2).y);
 
-            if (sPoints.empty())
-            {
-                mTrackPoints.at(4) = glm::lerp(mTrackPoints.at(0), mTrackPoints.at(2), 0.5f);
-
-                if (mTrackPoints.size() > 5)
-                {
-                    mTrackPoints.erase(mTrackPoints.begin() + 5, mTrackPoints.end());
-                }
-                for (auto y = 0; y != 10; ++y)
-                {
-                    auto py = glm::lerp(mTrackPoints.at(2).y, mTrackPoints.at(0).y, y / 10.0f);
-                    for (auto x = 0; x != 10; ++x)
-                    {
-                        auto px = glm::lerp(mTrackPoints.at(2).x, mTrackPoints.at(0).x, x / 10.0f);
-                        mTrackPoints.emplace_back(px, py);
-                        sPoints.emplace_back(px, py);
-                    }
-                }
-            }
-
-            std::vector<RawMesh::Vertex> vertexs;
             auto & offset = mTex.Instance<RawTexture>()->GetOffset();
+            glm::vec2 center;
+            center.x = glm::lerp(offset.x, offset.z, 0.5f);
+            center.y = glm::lerp(offset.y, offset.w, 0.5f);
+            
+            std::vector<RawMesh::Vertex> vertexs;
             vertexs.emplace_back(mTrackPoints.at(0), glm::vec2(offset.x, offset.y));
             vertexs.emplace_back(mTrackPoints.at(1), glm::vec2(offset.z, offset.y));
             vertexs.emplace_back(mTrackPoints.at(2), glm::vec2(offset.z, offset.w));
             vertexs.emplace_back(mTrackPoints.at(3), glm::vec2(offset.x, offset.w));
-            mMesh->Update(vertexs, { 0, 1, 2, 0, 2, 3 });
+            vertexs.emplace_back(mTrackPoints.at(4), center);
+
+            mMesh->Update(vertexs, { 0, 1, 4, 1, 2, 4, 2, 3, 4, 3, 0, 4 });
         }
         mUpdate = 0;
     }
@@ -167,12 +154,13 @@ void CompSpriteShader::OnDrawCallback(const RenderPipline::RenderCommand & comma
         1.0f - (mid.x - min.x) / w, 
         1.0f - (mid.y - min.y) / h);
     foward.mProgram->BindUniformVector("target_", coord);
+    foward.mProgram->BindUniformNumber("radian_", 360 * mRadian.a);
 }
 
 void CompSpriteShader::OnModifyTrackPoint(const size_t index, const glm::vec2 & point)
 {
-    glm::vec2 min(0);
-    glm::vec2 max(0);
+    glm::vec2 min = mTrackPoints.at(0);
+    glm::vec2 max = mTrackPoints.at(2);
     switch (index)
     {
     case 0:
@@ -200,39 +188,17 @@ void CompSpriteShader::OnModifyTrackPoint(const size_t index, const glm::vec2 & 
         max.y = std::max(point.y, mTrackPoints.at(1).y);
         break;
     case 4:
-        {
-            mTrackPoints.at(index).x = glm::clamp(point.x, mTrackPoints.at(0).x, mTrackPoints.at(2).x);
-            mTrackPoints.at(index).y = glm::clamp(point.y, mTrackPoints.at(0).y, mTrackPoints.at(2).y);
-            glm::vec2 center = glm::lerp(mTrackPoints.at(0), mTrackPoints.at(2), 0.5f);
-
-            const auto & target = mTrackPoints.at(index);
-            const auto & offset = target - center;
-            const auto length = glm::length(offset);
-            for (auto i = 0; i != sPoints.size(); ++i)
-            {
-                const auto & point = sPoints.at(i);
-
-                auto normal     = center - point;
-                auto distace    = target - point;
-                auto l = glm::length(normal);
-                auto s = std::max(0.0f, length - l);
-                glm::vec2 diff = s / length*(distace);
-                mTrackPoints.at(i + 5) = point + diff;
-            }
-        }
+        mTrackPoints.at(index).x = glm::clamp(point.x, mTrackPoints.at(0).x, mTrackPoints.at(2).x);
+        mTrackPoints.at(index).y = glm::clamp(point.y, mTrackPoints.at(0).y, mTrackPoints.at(2).y);
         break;
     }
 
-    if (index < 4)
-    {
-        mSize.x = max.x - min.x;
-        mSize.y = max.y - min.y;
+    mUpdate |= kTrackPoint;
+    mSize.x = max.x - min.x;
+    mSize.y = max.y - min.y;
 
-        auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
-        GetOwner()->GetTransform()->Position(coord.x, coord.y);
+    auto coord = GetOwner()->LocalToParent(mSize * mAnchor + min);
+    GetOwner()->GetTransform()->Position(coord.x, coord.y);
 
-        mUpdate |= kTrackPoint;
-
-        AddState(StateEnum::kUpdate, true);
-    }
+    AddState(StateEnum::kUpdate, true);
 }
