@@ -39,7 +39,7 @@ Pass Beg
             color_ = color * v_out_.mColor;
             if (color.a < 0.8f)
             {
-                color_.a *= 0.5f;
+                color_.a *= 0.8f;
             }
         }
     FShader End
