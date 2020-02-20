@@ -26,6 +26,7 @@ Pass Beg
         } v_out_;
 
         uniform vec2      target_;
+        uniform float     radian_;
         uniform sampler2D texture0;
 
         out vec4 color_;
@@ -57,14 +58,23 @@ Pass Beg
             // vec2 diff = (target_ - point) * s;
             // color_ = texture(texture0, point + diff);
 
+            float pi = 3.1415926f;
+            vec2 uv  = v_out_.mUV;
             vec2 center = vec2(0.5f, 0.5f);
-            vec2 offset = target_ - center;
+            vec2 offset = uv -center;
+            float d = length(offset);
+            float s = (0.8f - d)  / 0.8f;
+            float a = acos(offset.x / d);
+            if (offset.y < 0)
+            {
+                a = pi * 2 - a;
+            }
 
-            vec2 normal     = center  - v_out_.mUV;
-            vec2 distance   = target_ - v_out_.mUV;
-            float s = max(0.0f, 1.0f - length(normal));
-            vec2 diff       = s / 1.0f * distance;
-            color_ = texture(texture0, v_out_.mUV + diff);
+            a += pi / 180.0f * radian_ * s;
+            float u = cos(a) * d + center.x;
+            float v = sin(a) * d + center.y;
+            color_ = texture(texture0, vec2(u, v));
+            // color_ = texture(texture0, v_out_.mUV);
         }
     FShader End
 Pass End

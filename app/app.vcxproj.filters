@@ -146,6 +146,8 @@
     </ClCompile>
     <ClCompile Include="editor\system\editor_sys\component\comp_sprite_diffuse.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>    <ClCompile Include="editor\system\editor_sys\component\comp_sprite_bezier.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1065,6 +1067,8 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="editor\system\editor_sys\component\comp_sprite_diffuse.h">
+      <Filter>头文件</Filter>
+    </ClInclude>    <ClInclude Include="editor\system\editor_sys\component\comp_sprite_bezier.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
