@@ -38,6 +38,9 @@ using uint = unsigned int;
 #define STB_IMAGE_STATIC
 #define STB_IMAGE_IMPLEMENTATION
 #include "third/stb_image.h"
+#define STB_IMAGE_WRITE_STATIC
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "third/stb_image_write.h"
 #include "third/glm/glm.hpp"
 #include "third/glm/gtc/type_ptr.hpp"
 #include "third/glm/gtx/exterior_product.hpp"

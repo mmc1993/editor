@@ -37,40 +37,40 @@ void CompPolygon::OnUpdate(UIObjectGLCanvas * canvas, float dt)
                 });
             terrain->Erase(points);
 
-            auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
-            auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
+            //auto root   = Global::Ref().mEditorSys->GetProject()->GetObject();
+            //auto polys  = root->GetObject("SceneCanvas")->GetObject("Polys");
 
-            auto & objects = polys->GetObjects();
-            while (objects.size() > terrain->GetAreas().size())
-            {
-                Global::Ref().mEditorSys->OptDeleteObject(objects.back());
-            }
+            //auto & objects = polys->GetObjects();
+            //while (objects.size() > terrain->GetAreas().size())
+            //{
+            //    Global::Ref().mEditorSys->OptDeleteObject(objects.back());
+            //}
 
-            for (auto i = 0; i != terrain->GetAreas().size(); ++i)
-            {
-                if (i == objects.size())
-                {
-                    auto name   = Global::Ref().mEditorSys->ObjectName(polys);
-                    auto object = Global::Ref().mEditorSys->NewObject();
-                    (void)object->SetName(name);
+            //for (auto i = 0; i != terrain->GetAreas().size(); ++i)
+            //{
+            //    if (i == objects.size())
+            //    {
+            //        auto name   = Global::Ref().mEditorSys->ObjectName(polys);
+            //        auto object = Global::Ref().mEditorSys->NewObject();
+            //        (void)object->SetName(name);
 
-                    auto comp = std::create_ptr<CompPolygon>();
-                    Global::Ref().mEditorSys->OptInsertObject(object, polys);
-                    Global::Ref().mEditorSys->OptAppendComponent(object, comp);
-                    object->GetTransform()->Position(0, 0);
-                }
-                auto object = objects.at(i);
-                auto & area = terrain->GetAreas().at(i);
+            //        auto comp = std::create_ptr<CompPolygon>();
+            //        Global::Ref().mEditorSys->OptInsertObject(object, polys);
+            //        Global::Ref().mEditorSys->OptAppendComponent(object, comp);
+            //        object->GetTransform()->Position(0, 0);
+            //    }
+            //    auto object = objects.at(i);
+            //    auto & area = terrain->GetAreas().at(i);
 
-                std::vector<glm::vec2> points;
-                for (auto & point : area)
-                {
-                    auto world = terrain->GetOwner()->LocalToWorld(point);
-                    auto local = polys->WorldToLocal(world);
-                    points.emplace_back(local);
-                }
-                object->QueryComponent<CompPolygon>()->ResetSegments(points);
-            }
+            //    std::vector<glm::vec2> points;
+            //    for (auto & point : area)
+            //    {
+            //        auto world = terrain->GetOwner()->LocalToWorld(point);
+            //        auto local = polys->WorldToLocal(world);
+            //        points.emplace_back(local);
+            //    }
+            //    object->QueryComponent<CompPolygon>()->ResetSegments(points);
+            //}
         }
     }
 

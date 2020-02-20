@@ -9,6 +9,7 @@
         "Graphics/FieldOfView",
         "Graphics/RenderTarget",
         "Graphics/SpriteShader",
+        "Graphics/SpriteDiffuse",
         "Graphics/CollapseTerrain",
         "Utility/Polygon"
     ]

@@ -178,10 +178,10 @@ void UIObjectGLCanvas::CollCommands()
     RenderPipline::TargetCommand command;
     command.mType = RenderPipline::TargetCommand::kPush;
     command.mRenderTextures[0] = state->mRenderTextures[0];
-    command.mClearColor.x = 0.0f;
-    command.mClearColor.y = 0.0f;
-    command.mClearColor.z = 0.0f;
-    command.mClearColor.a = 0.0f;
+    command.mClearColor.x = 1.0f;
+    command.mClearColor.y = 1.0f;
+    command.mClearColor.z = 1.0f;
+    command.mClearColor.a = 1.0f;
     command.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
                          | RenderPipline::RenderCommand::kTargetColor1;
     Post(command);
@@ -508,6 +508,18 @@ glm::vec2 UIObjectGLCanvas::ProjectWorld(const glm::vec2 & screen)
     return glm::unProject(coord, GetMatView(), GetMatProj(), viewPort);
 }
 
+void UIObjectGLCanvas::CanvasToFile(const std::string & name)
+{
+    auto state = GetState<UIStateGLCanvas>();
+    auto texW = state->mRenderTextures[0]->mW;
+    auto texH = state->mRenderTextures[0]->mH;
+    std::unique_ptr<char[]> data(new char[texW * texH * 4]);
+    glBindTexture(GL_TEXTURE_2D, state->mRenderTextures[0]->GetID());
+    glGetTexImage(GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE, data.get());
+    stbi_write_png(name.c_str(), texW, texH, 4, data.get(), texW * 4);
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 RenderPipline::MatrixStack & UIObjectGLCanvas::GetMatrixStack()
 {
     return GetState<UIStateGLCanvas>()->mMatrixStack;
@@ -574,6 +586,10 @@ bool UIObjectGLCanvas::OnEventKey(const UIEvent::Key & param)
             OpEditObject(state->mOperation.mSelectObjects.front());
         }
         ready = true;
+
+        //  TODO MMC_
+        //  保存当前画布图像。
+        CanvasToFile("C:/Users/Administrator/Desktop/Debug/canvas.png");
     }
     else if (param.mState == 0 
         && param.mAct == 2 

@@ -85,4 +85,5 @@ namespace tools {
     const char * const GL_PROGRAM_SCREEN            = "res/program/screen.program";                         //  全屏
     const char * const GL_PROGRAM_LIGHT             = "res/program/light.program";                          //  光源
     const char * const GL_PROGRAM_SPRITE_SHADER0    = "res/program/sprite_shader0.program";                 //  精灵Shader 0
+    const char * const GL_PROGRAM_SPRITE_DIFFUSE    = "res/program/sprite_diffuse.program";                 //  精灵Shader 0
 }

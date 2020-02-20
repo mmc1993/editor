@@ -164,6 +164,8 @@ public:
     glm::vec2 ProjectScreen(const glm::vec2 & world);
     glm::vec2 ProjectWorld(const glm::vec2 & screen);
 
+    void CanvasToFile(const std::string & name);
+
 private:
     void HandleFowardCommands(RenderPipline::TargetCommand & command);
     void HandlePostCommands(  RenderPipline::TargetCommand & command);

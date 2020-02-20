@@ -140,8 +140,8 @@ bool RawImage::Init(const std::string & url)
         glTexImage2D( GL_TEXTURE_2D, 0, mFormat, mW, mH, 0, mFormat, GL_UNSIGNED_BYTE, data);
         glBindTexture(GL_TEXTURE_2D, 0);
 
-        SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        SetParam(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         SetParam(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
         SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         stbi_image_free(data);
