@@ -8,9 +8,7 @@ CompSpriteDiffuse::CompSpriteDiffuse()
     , mUpdate(kTexture | kTrackPoint)
     , mThreshold(0)
 {
-    mTrackPoints.resize(5);
-    mTrackPoints.back().x = 0;
-    mTrackPoints.back().y = 0;
+    mTrackPoints.resize(4);
 
     mMesh = std::create_ptr<RawMesh>();
     mMesh->Init({}, {}, RawMesh::Vertex::kV |
@@ -141,10 +139,6 @@ void CompSpriteDiffuse::OnDrawCallback(const RenderPipline::RenderCommand & comm
 {
     auto & foward = (const RenderPipline::FowardCommand &)command;
     //foward.mProgram->BindUniformNumber("threshold_",mThreshold.x);
-
-    auto u = (mTrackPoints.back().x - mTrackPoints.at(0).x) / mSize.x;
-    auto v = (mTrackPoints.back().y - mTrackPoints.at(0).y) / mSize.y;
-    foward.mProgram->BindUniformVector("origin_", glm::vec2(u, 1 - v));
     foward.mProgram->BindUniformVector("params_", mThreshold);
 }
 
@@ -178,15 +172,7 @@ void CompSpriteDiffuse::OnModifyTrackPoint(const size_t index, const glm::vec2 &
         max.x = mTrackPoints.at(2).x;
         max.y = std::max(point.y, mTrackPoints.at(1).y);
         break;
-    case 4:
-        mTrackPoints.at(4) = point;
-        break;
     }
-
-    auto u = (mTrackPoints.back().x - mTrackPoints.at(0).x) / mSize.x - 0.5f;
-    auto v = (mTrackPoints.back().y - mTrackPoints.at(0).y) / mSize.y - 0.5f;
-    auto r = atan(v / u);
-    std::cout << r << std::endl;
 
     if (index < 4)
     {

@@ -39,7 +39,7 @@ namespace tools {
         for (auto & name : split)
         {
             //  TODO MMC_
-            ret = std::experimental::filesystem::create_directory(name);
+            ret = std::filesystem::create_directory(name);
         }
         return ret;
     }
@@ -50,10 +50,10 @@ namespace tools {
         for (std::deque<std::string> list{ dir }; !list.empty(); list.pop_front())
         {
             //  TODO MMC_
-            for (auto & item : std::experimental::filesystem::directory_iterator(list.front()))
+            for (auto & item : std::filesystem::directory_iterator(list.front()))
             {
                 auto path = Replace(item.path().string(), "\\", "/");
-                if (item.status().type() == std::experimental::filesystem::file_type::directory) { list.push_back(path); }
+                if (item.is_directory()) { list.push_back(path); }
                 else { func(path); }
             }
         }

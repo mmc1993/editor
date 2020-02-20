@@ -25,49 +25,48 @@ Pass Beg
             vec2 mUV;
         } v_out_;
 
-        uniform vec2      origin_;
         uniform vec4      params_;
-        // uniform float     threshold_;
         uniform sampler2D texture0;
-        uniform sampler2D texture1;
 
         out vec4 color_;
 
-        const float PI = 3.1415926f;
-        const float PI2 = PI * 2.0f;
         const vec2 center = vec2(0.5f, 0.5f);
+
+        float calcWeight(vec2 uv, vec4 color)
+        {
+            float r = color.r;
+            float d = length(uv - center);
+
+            float v0 = smoothstep(0.0f, 1.0f, 1.0f - r);
+            float v1 = smoothstep(0.0f, 0.7f, 0.7f - d);
+            return mix(v0, v1 * v1 * v1 * v1, 0.1f) * color.a;
+        }
 
         void main()
         {
-            float radian = (params_.r * 2 - 1) * PI2;
-            vec2 point = v_out_.mUV - origin_;
-            float l = length(point);
-            float a = acos(point.x / l);
-            float u = cos(a + radian) * l + origin_.x;
-            float v = sin(a + radian) * l + origin_.y;
+            float core[] = float[](
+                1,1,1,
+                1,1,1,
+                1,1,1
+            );
 
-            vec4 color0 = texture(texture0, vec2(u, v));
-            color_ = color0;
+            // float texStep = 1.0f / textureSize(texture0, 0);
 
-            // vec2 center = vec2(0.5f, 0.5f);
-            // vec2 radian = v_out_.mUV - center;
-            // vec4 color0 = texture(texture0, v_out_.mUV);
-            // vec2 step = 1.0f / textureSize(texture0, 0);
+            // float w = 0;
+            // for (int i = 0; i != 9; ++i)
+            // {
 
-            // float r = dot(radian, radian);
-            // float v = 1.0f - smoothstep(0.0f, 0.25f, r);
+            // }
+            vec4 color   = texture(texture0, v_out_.mUV);
+            float weight = calcWeight(v_out_.mUV, color);
 
-            // color_.r = max(v, 0.01f);
-            // color_.g = max(v, 0.01f);
-            // color_.b = max(v, 0.01f);
-            // color_.a = 1;
-
-
-
-            // vec4 color0 = texture(texture0, v_out_.mUV);
-            // vec4 color1 = texture(texture1, v_out_.mUV);
-            // float value = step(threshold_, color1.r);
-            // color_ = color0 * value;
+            float show = step(params_.r, weight);
+            color_ = color * show;
+            
+            // color_.r = weight;
+            // color_.g = weight;
+            // color_.b = weight;
+            // color_.a = 1.0f;
         }
     FShader End
 Pass End
