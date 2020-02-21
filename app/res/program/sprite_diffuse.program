@@ -39,24 +39,11 @@ Pass Beg
 
             float v0 = smoothstep(0.0f, 1.0f, 1.0f - r);
             float v1 = smoothstep(0.0f, 0.7f, 0.7f - d);
-            return mix(v0, v1 * v1 * v1 * v1, 0.1f) * color.a;
+            return smoothstep(v0, v1, 0.5f) * color.a;
         }
 
         void main()
         {
-            float core[] = float[](
-                1,1,1,
-                1,1,1,
-                1,1,1
-            );
-
-            // float texStep = 1.0f / textureSize(texture0, 0);
-
-            // float w = 0;
-            // for (int i = 0; i != 9; ++i)
-            // {
-
-            // }
             vec4 color   = texture(texture0, v_out_.mUV);
             float weight = calcWeight(v_out_.mUV, color);
 
