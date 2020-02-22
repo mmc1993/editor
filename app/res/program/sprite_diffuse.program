@@ -27,33 +27,25 @@ Pass Beg
 
         uniform vec4      params_;
         uniform sampler2D texture0;
+        uniform sampler2D texture1;
 
         out vec4 color_;
 
-        const vec2 center = vec2(0.5f, 0.5f);
-
-        float calcWeight(vec2 uv, vec4 color)
-        {
-            float r = color.r;
-            float d = length(uv - center);
-
-            float v0 = smoothstep(0.0f, 1.0f, 1.0f - r);
-            float v1 = smoothstep(0.0f, 0.7f, 0.7f - d);
-            return smoothstep(v0, v1, 0.5f) * color.a;
-        }
-
         void main()
         {
-            vec4 color   = texture(texture0, v_out_.mUV);
-            float weight = calcWeight(v_out_.mUV, color);
+            vec2 origin = vec2(0.5f, 0.5f);
+            vec2 offset = v_out_.mUV - origin;
+            float scale = length(offset) / 0.7f;
 
-            float show = step(params_.r, weight);
-            color_ = color * show;
-            
-            // color_.r = weight;
-            // color_.g = weight;
-            // color_.b = weight;
-            // color_.a = 1.0f;
+            vec4 color0 = texture(texture0, v_out_.mUV);
+            vec4 color1 = texture(texture1, v_out_.mUV);
+
+            float value = color1.r * 0.1f + scale * 0.9f;
+
+            float alpha = smoothstep(0, 0.2f, params_.r - value);
+
+            color_   = color0 * step(value, params_.r);
+            color_.a = color0.a * alpha;
         }
     FShader End
 Pass End
