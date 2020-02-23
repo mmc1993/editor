@@ -40,7 +40,7 @@ Pass Beg
             vec4 color0 = texture(texture0, v_out_.mUV);
             vec4 color1 = texture(texture1, v_out_.mUV);
 
-            float value = color1.r * 0.1f + scale * 0.9f;
+            float value = color1.r * 0.2f + scale * 0.8f;
 
             float alpha = smoothstep(0, 0.2f, params_.r - value);
 
