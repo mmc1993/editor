@@ -1,0 +1,92 @@
+Pass Beg
+    VShader Beg
+        #version 330 core
+
+        layout(location = 0) in vec2 a_v_;
+        layout(location = 1) in vec2 a_uv_;
+
+        uniform mat4 uniform_matrix_mvp;
+
+        out V_OUT_ {
+            vec2 mUV;
+        } v_out_;
+
+        void main()
+        {
+            v_out_.mUV   = a_uv_;
+            gl_Position  = uniform_matrix_mvp * vec4(a_v_, 0, 1);
+        }
+    VShader End
+
+    FShader Beg
+        #version 330 core
+
+        in V_OUT_ {
+            vec2 mUV;
+        } v_out_;
+
+        uniform vec2 grads_[512];
+        uniform vec2 cellwh_;
+        uniform vec2 size_;
+        uniform float xnum_;
+        uniform float ynum_;
+
+        out vec4 color_;
+
+        int toindex(float x, float y)
+        {
+            return int(y * xnum_ + x);
+        }
+
+        float fade(float t)
+        {
+            // 6t5 + 15t4 + 10t3
+            return t * t * t * (t * (t * 6 - 15) + 10); 
+        }
+
+        float perlin(float cx, float cy)
+        {
+            float x0 = floor(cx / cellwh_.x);
+            float y0 = floor(cy / cellwh_.y);
+            float x1 = floor((cx + cellwh_.x) / cellwh_.x);
+            float y1 = floor((cy + cellwh_.y) / cellwh_.y);
+
+            vec2 g0 = grads_[toindex(x0, y0)];
+            vec2 g1 = grads_[toindex(x1, y0)];
+            vec2 g2 = grads_[toindex(x0, y1)];
+            vec2 g3 = grads_[toindex(x1, y1)];
+
+            vec2 coord = vec2(fract(cx / cellwh_.x),
+                              fract(cy / cellwh_.y));
+
+            //  Value Noise
+            // float s0 = mix(g0.x, g1.x, coord.x);
+            // float s1 = mix(g2.x, g3.x, coord.x);
+            // float s0 = mix(g0.x, g1.x, fade(coord.x));
+            // float s1 = mix(g2.x, g3.x, fade(coord.x));
+            // return mix(s0, s1, fade(coord.y));
+
+            //  Perlin Noise
+            float d0 = dot(coord,              g0);
+            float d1 = dot(coord - vec2(1, 0), g1);
+            float d2 = dot(coord - vec2(0, 1), g2);
+            float d3 = dot(coord - vec2(1, 1), g3);
+
+            // float v0 = mix(fade(d0), fade(d1), coord.x);
+            // float v1 = mix(fade(d2), fade(d3), coord.x);
+            float v0 = mix(d0, d1, coord.x);
+            float v1 = mix(d2, d3, coord.x);
+            float v =  mix(v0, v1, coord.y);
+            // v = v * 0.5f + 0.5f;
+            return v;
+        }
+
+        void main()
+        {
+            float value = perlin(size_.x * v_out_.mUV.x,
+                                 size_.y * v_out_.mUV.y);
+            color_ = vec4(value, value, value, 1.0f);
+            // color_ = vec4(1.0f, 0, 0, 1.0f);
+        }
+    FShader End
+Pass End

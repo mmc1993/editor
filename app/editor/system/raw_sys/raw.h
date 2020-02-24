@@ -308,6 +308,10 @@ public:
     void BindUniformMatrix(const char * const key, const glm::mat4 & val) const { glUniformMatrix4fv(glGetUniformLocation(mUse, key), 1, GL_FALSE, &val[0][0]); }
     void BindUniformTex2D(const char * const key, const uint val, iint pos) const { glActiveTexture(GL_TEXTURE0 + pos); glBindTexture(GL_TEXTURE_2D,  val); glUniform1i(glGetUniformLocation(mUse, key), pos); }
 
+    void BindUniformVector(const char * const key, const glm::vec2 & arr, uint num) const { glUniform2fv(glGetUniformLocation(mUse, key), num, &arr.x); }
+    void BindUniformVector(const char * const key, const glm::vec3 & arr, uint num) const { glUniform3fv(glGetUniformLocation(mUse, key), num, &arr.x); }
+    void BindUniformVector(const char * const key, const glm::vec4 & arr, uint num) const { glUniform4fv(glGetUniformLocation(mUse, key), num, &arr.x); }
+
 private:
     void AssertPass(uint shaderID, const std::string & errorTxt) const
     {

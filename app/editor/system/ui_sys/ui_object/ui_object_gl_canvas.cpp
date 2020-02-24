@@ -178,10 +178,10 @@ void UIObjectGLCanvas::CollCommands()
     RenderPipline::TargetCommand command;
     command.mType = RenderPipline::TargetCommand::kPush;
     command.mRenderTextures[0] = state->mRenderTextures[0];
-    command.mClearColor.x = 1.0f;
-    command.mClearColor.y = 1.0f;
-    command.mClearColor.z = 1.0f;
-    command.mClearColor.a = 1.0f;
+    command.mClearColor.x = 0.0f;
+    command.mClearColor.y = 0.0f;
+    command.mClearColor.z = 0.0f;
+    command.mClearColor.a = 0.0f;
     command.mEnabledFlag = RenderPipline::RenderCommand::kTargetColor0
                          | RenderPipline::RenderCommand::kTargetColor1;
     Post(command);
