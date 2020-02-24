@@ -39,7 +39,6 @@ Pass Beg
             // vec4 color1 = texture(texture1, uv1);
             // color_      = color0 * step(color1.r, color0.r);
             // color_.a    = smoothstep(0.0f, 0.2f, color0.r - color1.r);
-            // color_.a    = smoothstep(0.0f, 1.0f, color0.r - color1.r);
 
 
 
