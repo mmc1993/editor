@@ -33,6 +33,17 @@ Pass Beg
 
         void main()
         {
+            // vec2 uv0 = v_out_.mUV + vec2(params_.r, 0);
+            // vec2 uv1 = v_out_.mUV;
+            // vec4 color0 = texture(texture0, uv0);
+            // vec4 color1 = texture(texture1, uv1);
+            // color_      = color0 * step(color1.r, color0.r);
+            // color_.a    = smoothstep(0.0f, 0.2f, color0.r - color1.r);
+            // color_.a    = smoothstep(0.0f, 1.0f, color0.r - color1.r);
+
+
+
+            //  消融-圆形扩散
             vec2 origin = vec2(0.5f, 0.5f);
             vec2 offset = v_out_.mUV - origin;
             float scale = length(offset) / 0.7f;
@@ -42,7 +53,7 @@ Pass Beg
 
             float value = color1.r * 0.2f + scale * 0.8f;
 
-            float alpha = smoothstep(0, 0.2f, params_.r - value);
+            float alpha = smoothstep(0, 0.05f, params_.r - value);
 
             color_   = color0 * step(value, params_.r);
             color_.a = color0.a * alpha;

@@ -74,7 +74,7 @@ void CompSpriteDiffuse::DecodeBinary(std::istream & is, Project * project)
 bool CompSpriteDiffuse::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
 {
     AddState(StateEnum::kUpdate, true);
-    if (title == "Tex")
+    if (title == "Image" || title == "Noise")
     {
         mUpdate |= kTexture
                 |  kTrackPoint;
@@ -110,6 +110,10 @@ void CompSpriteDiffuse::Update()
                 mSize.x = (float)mImage.Instance<RawTexture>()->GetW();
                 mSize.y = (float)mImage.Instance<RawTexture>()->GetH();
             }
+            mImage.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_WRAP_S, GL_REPEAT);
+            mImage.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_WRAP_T, GL_REPEAT);
+            mNoise.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_WRAP_S, GL_REPEAT);
+            mNoise.Instance<RawTexture>()->GetImage()->SetParam(GL_TEXTURE_WRAP_T, GL_REPEAT);
         }
 
         if (mUpdate & kTrackPoint)

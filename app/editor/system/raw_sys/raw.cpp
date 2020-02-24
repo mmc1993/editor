@@ -114,8 +114,8 @@ void RawImage::InitNull(uint fmt)
 {
     mFormat          = fmt;
     glGenTextures(1, &mID);
-    SetParam(GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    SetParam(GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    SetParam(GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    SetParam(GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     SetParam(GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     SetParam(GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
