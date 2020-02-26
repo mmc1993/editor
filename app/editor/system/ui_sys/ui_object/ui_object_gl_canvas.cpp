@@ -148,7 +148,7 @@ void UIObjectGLCanvas::HandleFowardCommands(RenderPipline::TargetCommand & comma
             Post(cmd.mProgram,
                  cmd.mTransform);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-            cmd.mMesh->Draw(GL_TRIANGLES);
+            cmd.mMesh->Draw(cmd.mDrawMode);
             //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
             if (cmd.mEnabledFlag & RenderPipline::RenderCommand::kClipView)

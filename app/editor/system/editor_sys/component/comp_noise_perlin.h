@@ -23,12 +23,15 @@ private:
     void OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos);
 
 private:
-    std::vector<glm::vec2> mGrads;
-
-    glm::vec2           mAnchor;
-    glm::vec2           mCellWH;
-    glm::vec2           mSize;
+    glm::vec2 mAnchor;
+    glm::vec2 mSize;
+    glm::vec2 mSpan;
+    float mFrequency;
+    float mAmplitude;
 
     SharePtr<RawMesh>    mMesh;
     SharePtr<RawProgram> mProgram;
+
+    //  TODO MMC_
+    SharePtr<RawProgram> mSolidFill;
 };

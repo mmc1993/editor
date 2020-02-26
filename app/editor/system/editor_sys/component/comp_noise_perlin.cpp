@@ -2,10 +2,35 @@
 #include "../../raw_sys/raw_sys.h"
 #include "../../raw_sys/comp_transform.h"
 
+glm::vec2 Random(const glm::vec2 & v)
+{
+    auto p = glm::vec2(glm::dot(v, glm::vec2(127.1f, 311.7f)),
+                       glm::dot(v, glm::vec2(269.5f, 183.3f)));
+    return -1.0f + 2.0f * glm::fract(glm::sin(p) * 43758.5453f);
+}
+
+float NoisePerlin(glm::vec2 p)
+{
+    auto i = glm::floor(p);
+    auto f = glm::fract(p);
+
+    float a = glm::dot(Random(i), f);
+    float b = glm::dot(Random(i + glm::vec2(1, 0)), f - glm::vec2(1, 0));
+    float c = glm::dot(Random(i + glm::vec2(0, 1)), f - glm::vec2(0, 1));
+    float d = glm::dot(Random(i + glm::vec2(1, 1)), f - glm::vec2(1, 1));
+
+    f = glm::smoothstep(0.0f, 1.0f, f);
+    float v0 = glm::mix(a, b, f.x);
+    float v1 = glm::mix(c, d, f.x);
+    return glm::mix(v0, v1, f.y);
+}
+
 CompNoisePerlin::CompNoisePerlin()
-    : mSize(0.0f, 0.0f)
-    , mAnchor(0.5f, 0.5f)
-    , mCellWH(0.0f, 0.0f)
+    : mAnchor(0.5f, 0.5f)
+    , mSize(0.0f, 0.0f)
+    , mSpan(0.0f, 0.0f)
+    , mFrequency(0.0f)
+    , mAmplitude(0.0f)
 {
     mTrackPoints.resize(4);
 
@@ -13,14 +38,14 @@ CompNoisePerlin::CompNoisePerlin()
     mMesh->Init({}, {}, RawMesh::Vertex::kV |
                         RawMesh::Vertex::kUV);
 
-    mProgram = std::create_ptr<RawProgram>();
-    mProgram->Init(tools::GL_PROGRAM_NOISE_PERLIN);
+    mProgram = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_NOISE_PERLIN);
+    mSolidFill = Global::Ref().mRawSys->Get<RawProgram>(tools::GL_PROGRAM_SOLID_FILL);
 }
 
 void CompNoisePerlin::OnUpdate(UIObjectGLCanvas * canvas, float dt)
 {
-    if (mSize.x   != 0.0f && mSize.y   != 0.0f && 
-        mCellWH.x != 0.0f && mCellWH.y != 0.0f)
+    if (mSize.x != 0.0f && mSize.y != 0.0f &&
+        mSpan.x != 0.0f && mSpan.y != 0.0f)
     {
         Update();
 
@@ -35,6 +60,72 @@ void CompNoisePerlin::OnUpdate(UIObjectGLCanvas * canvas, float dt)
             std::placeholders::_1, std::placeholders::_2);
 
         canvas->Post(command);
+
+        //std::vector<RawMesh::Vertex> points;
+        //auto num = mSize / mSpan;
+        //num.x = std::floor(num.x);
+        //num.y = std::floor(num.y);
+
+        //points.clear();
+        //for (auto x = 0.0f; x != mSize.x; ++x)
+        //{
+        //    for (auto y = 0.0f; y != mSize.y; ++y)
+        //    {
+        //        auto coord = glm::vec2(x, y);
+        //        auto v = NoisePerlin(coord / mSpan);
+        //        points.emplace_back(coord, glm::vec4(v, v, v, 1.0f));
+        //    }
+        //}
+        //command.mMesh = std::create_ptr<RawMesh>();
+        //command.mMesh->Init(points, {}, RawMesh::Vertex::kV
+        //                              | RawMesh::Vertex::kC);
+        //command.mTransform = canvas->GetMatrixStack().GetM();
+        //command.mProgram = mSolidFill;
+        //command.mDrawMode = GL_POINTS;
+        //command.mCallback = nullptr;
+        //canvas->Post(command);
+
+
+        //points.clear();
+        //for (auto x = 0; x != num.x; ++x)
+        //{
+        //    points.emplace_back(glm::vec2(mTrackPoints.at(0).x + x * mSpan.x, mTrackPoints.at(1).y), glm::vec4(1, 0, 0, 1));
+        //    points.emplace_back(glm::vec2(mTrackPoints.at(0).x + x * mSpan.x, mTrackPoints.at(2).y), glm::vec4(1, 0, 0, 1));
+        //}
+        //for (auto y = 0; y != num.y; ++y)
+        //{
+        //    points.emplace_back(glm::vec2(mTrackPoints.at(0).x, mTrackPoints.at(0).y + y * mSpan.y), glm::vec4(1, 0, 0, 1));
+        //    points.emplace_back(glm::vec2(mTrackPoints.at(1).x, mTrackPoints.at(0).y + y * mSpan.y), glm::vec4(1, 0, 0, 1));
+        //}
+        //command.mMesh = std::create_ptr<RawMesh>();
+        //command.mMesh->Init(points, {}, RawMesh::Vertex::kV 
+        //                              | RawMesh::Vertex::kC);
+        //command.mTransform = canvas->GetMatrixStack().GetM();
+        //command.mProgram = mSolidFill;
+        //command.mDrawMode = GL_LINES;
+        //command.mCallback = nullptr;
+        //canvas->Post(command);
+
+        //points.clear();
+        //for (auto x = 0; x != num.x + 1; ++x)
+        //{
+        //    for (auto y = 0; y != num.y + 1; ++y)
+        //    {
+        //        auto coord = glm::vec2(mTrackPoints.at(0).x + x * mSpan.x,
+        //                               mTrackPoints.at(0).y + y * mSpan.y);
+        //        auto normal = coord + Random(glm::floor(coord / mSpan)) * 10.0f;
+        //        points.emplace_back(coord,  glm::vec4(0, 1, 0, 1));
+        //        points.emplace_back(normal, glm::vec4(0, 1, 0, 1));
+        //    }
+        //}
+        //command.mMesh = std::create_ptr<RawMesh>();
+        //command.mMesh->Init(points, {}, RawMesh::Vertex::kV
+        //                              | RawMesh::Vertex::kC);
+        //command.mTransform = canvas->GetMatrixStack().GetM();
+        //command.mProgram = mSolidFill;
+        //command.mDrawMode = GL_LINES;
+        //command.mCallback = nullptr;
+        //canvas->Post(command);
     }
 }
 
@@ -48,16 +139,20 @@ void CompNoisePerlin::EncodeBinary(std::ostream & os, Project * project)
 {
     Component::EncodeBinary(os, project);
     tools::Serialize(os, mSize);
-    tools::Serialize(os, mCellWH);
+    tools::Serialize(os, mSpan);
     tools::Serialize(os, mAnchor);
+    tools::Serialize(os, mFrequency);
+    tools::Serialize(os, mAmplitude);
 }
 
 void CompNoisePerlin::DecodeBinary(std::istream & is, Project * project)
 {
     Component::DecodeBinary(is, project);
     tools::Deserialize(is, mSize);
-    tools::Deserialize(is, mCellWH);
+    tools::Deserialize(is, mSpan);
     tools::Deserialize(is, mAnchor);
+    tools::Deserialize(is, mFrequency);
+    tools::Deserialize(is, mAmplitude);
 }
 
 bool CompNoisePerlin::OnModifyProperty(const std::any & oldValue, const std::any & newValue, const std::string & title)
@@ -69,9 +164,11 @@ bool CompNoisePerlin::OnModifyProperty(const std::any & oldValue, const std::any
 std::vector<Component::Property> CompNoisePerlin::CollectProperty()
 {
     auto props = Component::CollectProperty();
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",   &mSize);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "CellWH", &mCellWH);
-    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor", &mAnchor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Anchor",   &mAnchor);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Size",     &mSize);
+    props.emplace_back(UIParser::StringValueTypeEnum::kVector2, "Span",     &mSpan);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Frequency",  &mFrequency);
+    props.emplace_back(UIParser::StringValueTypeEnum::kFloat, "Amplitude",  &mAmplitude);
     return std::move(props);
 }
 
@@ -80,52 +177,6 @@ void CompNoisePerlin::Update()
     if (HasState(StateEnum::kUpdate))
     {
         AddState(StateEnum::kUpdate, false);
-
-        static const glm::vec2 s_GRADS[] = {
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-            glm::normalize(glm::vec2(tools::Random(0.0f, 1.0f), tools::Random(0.0f, 1.0f))), // * std::sqrt(glm::dot(mCellWH, mCellWH)),
-        };
-        mGrads.clear();
-        auto xnum = (int)(mSize.x / mCellWH.x) + 1;
-        auto ynum = (int)(mSize.y / mCellWH.y) + 1;
-        for (auto i = 0; i != xnum * ynum; ++i)
-        {
-            auto size  = std::length(s_GRADS);
-            auto index = tools::Random(0, size - 1);
-            mGrads.emplace_back(s_GRADS[index]);
-            //mGrads.emplace_back(tools::Random(0.0f, 1.0f), 0.0f);
-        }
-
-        //mGrads.emplace_back(s_GRADS[0]);
-        //mGrads.emplace_back(s_GRADS[0]);
-        //mGrads.emplace_back(s_GRADS[1]);
-        //mGrads.emplace_back(s_GRADS[1]);
-        //mGrads.emplace_back(s_GRADS[1]);
-        //mGrads.emplace_back(s_GRADS[1]);
-
-
-        //mGrads.emplace_back(glm::vec2(0.0f, 0.0f));
-        //mGrads.emplace_back(glm::vec2(0.3f, 0.3f));
-        //mGrads.emplace_back(glm::vec2(0.8f, 0.1f));
-        //mGrads.emplace_back(glm::vec2(0.8f, 0.5f));
-        //mGrads.emplace_back(glm::vec2(0.1f, 0.10));
-        //mGrads.emplace_back(glm::vec2(0.9f, 0.0f));
-        //mGrads.emplace_back(glm::vec2(0.5f, 0.5f));
-        //mGrads.emplace_back(glm::vec2(0.2f, 0.10));
-        //mGrads.emplace_back(glm::vec2(0.7f, 0.0f));
-
-
-
-
 
         mTrackPoints.at(0).x = -mSize.x * mAnchor.x;
         mTrackPoints.at(0).y = -mSize.y * mAnchor.y;
@@ -147,13 +198,9 @@ void CompNoisePerlin::Update()
 
 void CompNoisePerlin::OnDrawCallback(const RenderPipline::RenderCommand & command, uint texturePos)
 {
-    auto xnum = (int)mSize.y / mCellWH.y;
-    auto ynum = (int)mSize.x / mCellWH.x;
-
     auto & foward = (const RenderPipline::FowardCommand &)command;
-    foward.mProgram->BindUniformVector("grads_",  mGrads[0], mGrads.size());
-    foward.mProgram->BindUniformVector("cellwh_", mCellWH);
-    foward.mProgram->BindUniformVector("size_",   mSize);
-    foward.mProgram->BindUniformNumber("xnum_",   xnum);
-    foward.mProgram->BindUniformNumber("ynum_",   ynum);
+    foward.mProgram->BindUniformVector("size_", mSize);
+    foward.mProgram->BindUniformVector("span_", mSpan);
+    foward.mProgram->BindUniformNumber("frequency_", mFrequency);
+    foward.mProgram->BindUniformNumber("amplitude_", mAmplitude);
 }

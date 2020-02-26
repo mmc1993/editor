@@ -44,6 +44,7 @@ namespace RenderPipline {
         glm::vec4               mClipview;
         uint                    mBlendSrc;
         uint                    mBlendDst;
+        uint                    mDrawMode;
         glm::mat4               mViewMat;
         glm::mat4               mProjMat;
         FowardCommand()
@@ -52,6 +53,7 @@ namespace RenderPipline {
             , mClipview(0)
             , mBlendSrc(0)
             , mBlendDst(0)
+            , mDrawMode(GL_TRIANGLES)
             , mViewMat(0)
             , mProjMat(0)
         { }

@@ -62,7 +62,6 @@ UIStateGLCanvas::UIStateGLCanvas()
     : mTargetCommandStack(0)
 {
     glGenFramebuffers(1,  &mRenderTarget);
-    mOperation.mViewScale = 3;
 }
 
 UIStateGLCanvas::~UIStateGLCanvas()
